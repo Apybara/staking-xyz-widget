@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Staking.xyz Widget
 
-## Getting Started
+## Installation
 
-First, run the development server:
+It's advisable to employ a Node version manager that aligns with the `.nvmrc` or `package.json/engines/node` configurations, such as [nvm](https://github.com/nvm-sh/nvm), [asdf](https://github.com/asdf-vm/asdf), or [n](https://github.com/tj/n). For instance, the command below from [nvm](https://github.com/nvm-sh/nvm) provides step-by-step instructions to install and engage the right Node.js version:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+$ nvm use
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+We use [`pnpm`](https://pnpm.io/installation) to manage packages.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+$ pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Development
 
-## Learn More
+To run the app locally, execute:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+$ pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Valid environment variables are required to run the app. Please follow these steps:
 
-## Deploy on Vercel
+1. Duplicate and rename the `.env.example` file to `.env`
+2. Ask for the valid variables from the teammates and replace the placeholders in the newly created `.env` with the valid ones
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Quality check
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+To maintain code quality, we use [lint-staged](https://github.com/lint-staged/lint-staged) and [Husky](https://github.com/typicode/husky) to run TypeScript type checks against all staged TS files and [Prettier](https://prettier.io/) formatter against the staged files.
