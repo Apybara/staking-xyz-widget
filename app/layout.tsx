@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../theme/global.css";
+import { WidgetProviders } from "./_providers/WidgetProviders";
 
 export const metadata: Metadata = {
   title: "Staking.xyz",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <WidgetProviders>{children}</WidgetProviders>
+      </body>
     </html>
   );
 }
