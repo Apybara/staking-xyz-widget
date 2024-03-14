@@ -13,6 +13,8 @@ import {
   WalletType,
 } from "graz";
 import { CHAINS } from "../_providers/Graz";
+import { weights } from "../../theme/theme.css";
+import { monospaced } from "../../theme/typography.css";
 
 export const Demo = () => {
   const { data: account } = useAccount();
@@ -58,12 +60,23 @@ const AccountBox = ({ address, chain }: { address?: string; chain: ChainInfo }) 
   return (
     <div>
       <div style={{ marginBottom: "1rem" }}>
-        <h2>Connected with {walletType}</h2>
+        <h2 style={{ fontWeight: weights.bold }}>Connected with {walletType}</h2>
         <button onClick={() => disconnect({ chainId: chain.chainId })}>Disconnect</button>
       </div>
-      <p>Account: {address}</p>
-      <p>Balance: {!isBalanceLoading ? balance?.amount : "Fetching balance..."}</p>
-      <p>Balance staked: {!isBalanceStakedLoading ? balanceStaked?.amount : "Fetching staked balance..."}</p>
+      <p>
+        Account: <span className={monospaced}>{address}</span>
+      </p>
+      <p>
+        Balance: {!isBalanceLoading ? <span className={monospaced}>{balance?.amount}</span> : "Fetching balance..."}
+      </p>
+      <p>
+        Balance staked:{" "}
+        {!isBalanceStakedLoading ? (
+          <span className={monospaced}>{balanceStaked?.amount}</span>
+        ) : (
+          "Fetching staked balance..."
+        )}
+      </p>
     </div>
   );
 };
