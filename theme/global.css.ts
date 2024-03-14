@@ -9,5 +9,6 @@ globalStyle("html", {
   color: vars.color.black000,
   background: vars.color.black900,
   fontSize: 16,
+  fontFamily: vars.typography.fonts.primary,
   textRendering: "optimizeLegibility",
 });

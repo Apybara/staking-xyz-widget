@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import "../theme/global.css";
+import localFont from "next/font/local";
 import { WidgetProviders } from "./_providers/WidgetProviders";
+
+const pretendard = localFont({
+  src: "./_assets/PretendardStdVariable.woff2",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Staking.xyz",
@@ -13,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={pretendard.className}>
       <body>
         <WidgetProviders>{children}</WidgetProviders>
       </body>
