@@ -10,3 +10,10 @@ export type NetworkInfo = {
 
 export type BaseCurrency = (typeof BaseCurrencyVariants)[number];
 export type Currency = BaseCurrency | string;
+
+export type RouterStruct = {
+  searchParams?: {
+    network?: string;
+    currency?: string;
+  };
+};
