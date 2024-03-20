@@ -1,10 +1,11 @@
 import type { Dispatch, Reducer, ReactNode } from "react";
-import type { CurrencyOption } from "../../_components/CurrencyTabs";
+import type { Currency, Network } from "../../types";
 
 export type WidgetContext = WidgetStates & {};
 
 export type WidgetStates = {
-  currency: CurrencyOption | null;
+  network: Network | null;
+  currency: Currency | null;
   setStates: Dispatch<Partial<WidgetStates>>;
 };
 

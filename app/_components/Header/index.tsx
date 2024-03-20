@@ -1,16 +1,22 @@
 "use client";
 
 import { RootHeader } from "./RootHeader";
-import { useCurrencyChange } from "../CurrencyTabs/hooks";
+import { useNetworkChange, useCurrencyChange } from "../../_contexts/WidgetContext/hooks";
 
 export const Header = () => {
-  const { activeCurrency, onChange } = useCurrencyChange();
+  const { activeNetwork, onChange: onNetworkChange } = useNetworkChange();
+  const { activeCurrency, activeNetworkDenom, onChange: onCurrencyChange } = useCurrencyChange();
 
   return (
     <RootHeader
       currencyTabs={{
-        activeOption: activeCurrency,
-        onCurrencyChange: (cur) => onChange(cur),
+        activeCurrency: activeCurrency,
+        activeNetworkDenom,
+        onCurrencyChange: (cur) => onCurrencyChange(cur),
+      }}
+      networkSelect={{
+        activeNetwork,
+        onNetworkChange: (net) => onNetworkChange(net),
       }}
     />
   );
