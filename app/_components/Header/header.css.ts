@@ -13,3 +13,8 @@ export const logo = style({
   display: "inline-block",
   lineHeight: 0,
 });
+
+export const endBox = style({
+  display: "flex",
+  gap: pxToRem(20),
+});

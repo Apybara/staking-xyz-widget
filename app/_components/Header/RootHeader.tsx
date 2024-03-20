@@ -2,12 +2,14 @@ import Link from "next/link";
 import cn from "classnames";
 import * as S from "./header.css";
 import { type CurrencyTabsProps, CurrencyTabs } from "../CurrencyTabs";
+import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
 
 export type RootHeaderProps = {
   currencyTabs: CurrencyTabsProps;
+  networkSelect: NetworkSelectProps;
 };
 
-export const RootHeader = ({ currencyTabs }: RootHeaderProps) => {
+export const RootHeader = ({ currencyTabs, networkSelect }: RootHeaderProps) => {
   return (
     <header className={cn(S.header)}>
       <Link href="/" className={cn(S.logo)}>
@@ -28,10 +30,10 @@ export const RootHeader = ({ currencyTabs }: RootHeaderProps) => {
           />
         </svg>
       </Link>
-
-      <div>
+      <ul className={cn(S.endBox)}>
         <CurrencyTabs {...currencyTabs} />
-      </div>
+        <NetworkSelect {...networkSelect} />
+      </ul>
     </header>
   );
 };

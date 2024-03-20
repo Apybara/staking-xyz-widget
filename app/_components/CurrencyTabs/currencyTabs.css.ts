@@ -9,12 +9,20 @@ export const tabs = style({
   gap: pxToRem(2),
   borderRadius: pxToRem(8),
   backgroundColor: colors.black750,
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      display: "none",
+      visibility: "hidden",
+    },
+  },
 });
 
 export const tabButton = recipe({
   base: {
     textAlign: "center",
-    padding: pxToRem(6),
+    paddingBlock: pxToRem(5),
+    paddingInline: pxToRem(6),
     borderRadius: pxToRem(4),
     fontSize: pxToRem(14),
     fontWeight: weights.semibold,
@@ -38,4 +46,28 @@ export const tabButton = recipe({
   defaultVariants: {
     state: "default",
   },
+});
+
+export const selectTabs = style({
+  display: "none",
+  visibility: "hidden",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      display: "block",
+      visibility: "visible",
+    },
+  },
+});
+
+export const selectTrigger = style({
+  fontSize: pxToRem(14),
+  fontWeight: weights.semibold,
+});
+
+export const selectOptionText = style({
+  fontSize: pxToRem(14),
+  fontWeight: weights.semibold,
+  textAlign: "center",
+  minInlineSize: pxToRem(48),
 });
