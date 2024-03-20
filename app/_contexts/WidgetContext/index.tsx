@@ -28,5 +28,5 @@ export const WidgetProvider = ({ children }: T.WidgetProviderProps) => {
 const initialStates: T.WidgetContext = {
   network: null,
   currency: null,
-  setStates: () => {},
+  setStates: () => { },
 };

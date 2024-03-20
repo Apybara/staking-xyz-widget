@@ -1,20 +1,24 @@
 import type { ReactNode } from "react";
 import { WidgetProviders } from "../_providers/WidgetProviders";
-import { Demo } from "../_components/Demo";
 import { Header } from "../_components/Header";
+import { WalletAccountDialog } from "../_components/WalletAccountDialog";
+import { WalletConnectionDialog } from "../_components/WalletConnectionDialog";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <Base>
       <Header />
-      <main style={{ blockSize: "100vw", inlineSize: "100vh" }}>
-        {/* <Demo /> */}
-        {children}
-      </main>
+      <main>{children}</main>
     </Base>
   );
 }
 
 const Base = ({ children }: { children: ReactNode }) => {
-  return <WidgetProviders>{children}</WidgetProviders>;
+  return (
+    <WidgetProviders>
+      {children}
+      <WalletAccountDialog />
+      <WalletConnectionDialog />
+    </WidgetProviders>
+  );
 };
