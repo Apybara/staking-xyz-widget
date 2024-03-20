@@ -4,19 +4,19 @@ import { RootHeader } from "./RootHeader";
 import { useNetworkChange, useCurrencyChange } from "../../_contexts/WidgetContext/hooks";
 
 export const Header = () => {
-  const { activeNetwork, onChange: onNetworkChange } = useNetworkChange();
-  const { activeCurrency, activeNetworkDenom, onChange: onCurrencyChange } = useCurrencyChange();
+  const { activeNetwork, onUpdateRouter: onNetworkRouterUpdate } = useNetworkChange();
+  const { activeCurrency, activeNetworkDenom, onUpdateRouter: onCurrencyRouterUpdate } = useCurrencyChange();
 
   return (
     <RootHeader
       currencyTabs={{
         activeCurrency: activeCurrency,
         activeNetworkDenom,
-        onCurrencyChange: (cur) => onCurrencyChange(cur),
+        onCurrencyChange: (cur) => onCurrencyRouterUpdate(cur),
       }}
       networkSelect={{
         activeNetwork,
-        onNetworkChange: (net) => onNetworkChange(net),
+        onNetworkChange: (net) => onNetworkRouterUpdate(net),
       }}
     />
   );

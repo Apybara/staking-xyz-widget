@@ -6,6 +6,7 @@ export const networkDenom: Record<Network, string> = {
   celestia: "TIA",
   "mocha-4": "TIA",
 };
+export const networkRegex = /(celestia|mocha-4)/;
 
 export const networkInfo: Record<Network, NetworkInfo> = {
   celestia: {
@@ -24,3 +25,4 @@ export const networkInfo: Record<Network, NetworkInfo> = {
 
 export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
+export const currencyRegex = /(usd|eur|tia)/i;

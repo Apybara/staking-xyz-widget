@@ -1,38 +1,35 @@
 "use client";
 
 import type { Currency, Network } from "../../types";
-import { useEffect, useMemo } from "react";
+import type { WidgetContext } from "./types";
+import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useWidget } from "../../_contexts/WidgetContext";
-import { networkDenom } from "../../consts";
+import { networkDenom, networkRegex, currencyRegex } from "../../consts";
+
+export const useActiveNetwork = ({ setStates }: { setStates: WidgetContext["setStates"] }) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const network = searchParams.get("network");
+    if (!network || !networkRegex.test(network)) {
+      // The redirect operation is handled in the page component
+      return;
+    }
+
+    setStates({ network: network as Network });
+  }, [searchParams]);
+
+  return null;
+};
 
 export const useNetworkChange = () => {
-  const { setStates } = useWidget();
+  const { network } = useWidget();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    if (getIsNetworkOption(current.get("network") || "")) {
-      setStates({ network: current.get("network") as Network });
-      return;
-    }
-
-    current.set("network", "celestia");
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`${pathname}${query}`);
-  }, [searchParams]);
-
-  const activeNetwork = useMemo(() => {
-    const current = searchParams.get("network") || "";
-    return getIsNetworkOption(current) ? current : "celestia";
-  }, [searchParams]);
-
-  const onChange = (net: Network) => {
-    setStates({ network: net });
-
+  const onUpdateRouter = (net: Network) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set("network", net);
     const search = current.toString();
@@ -41,55 +38,43 @@ export const useNetworkChange = () => {
   };
 
   return {
-    activeNetwork,
-    onChange,
+    activeNetwork: network || "celestia",
+    onUpdateRouter,
   };
 };
 
+export const useActiveCurrency = ({ setStates }: { setStates: WidgetContext["setStates"] }) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const currency = searchParams.get("currency");
+    if (!currency || !currencyRegex.test(currency)) {
+      // The redirect operation is handled in the page component
+      return;
+    }
+    setStates({ currency: currency.toUpperCase() as Currency });
+  }, [searchParams]);
+
+  return null;
+};
+
 export const useCurrencyChange = () => {
-  const { network, setStates } = useWidget();
+  const { network, currency } = useWidget();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
+  const onUpdateRouter = (curr: Currency) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    if (getIsCurrencyOption(current.get("currency") || "", network && networkDenom[network])) {
-      setStates({ currency: current.get("currency") as Currency });
-      return;
-    }
-
-    current.set("currency", "USD");
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`${pathname}${query}`);
-  }, [searchParams]);
-
-  const activeCurrency = useMemo(() => {
-    const current = searchParams.get("currency") || "";
-    return getIsCurrencyOption(current, network && networkDenom[network]) ? current : "USD";
-  }, [searchParams]);
-
-  const onChange = (cur: Currency) => {
-    setStates({ currency: cur });
-
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set("currency", cur);
+    current.set("currency", curr);
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);
   };
 
   return {
-    activeCurrency,
+    activeCurrency: currency || "USD",
     activeNetworkDenom: network && networkDenom[network],
-    onChange,
+    onUpdateRouter,
   };
 };
-
-const getIsCurrencyOption = (arg: string, activeNetworkDenom: string | null): arg is Currency => {
-  if (!activeNetworkDenom) return ["USD", "EUR"].includes(arg);
-  return ["USD", "EUR", activeNetworkDenom].includes(arg);
-};
-
-const getIsNetworkOption = (arg: string): arg is Network => ["celestia", "mocha-4"].includes(arg);
