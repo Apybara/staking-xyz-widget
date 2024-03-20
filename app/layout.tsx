@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import "../theme/global.css";
 import localFont from "next/font/local";
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  SITE_IMAGE
+} from "./consts";
 
 const pretendard = localFont({
   src: "./_assets/PretendardStdVariable.woff2",
   display: "swap",
 });
-
-const SITE_TITLE = "Staking.xyz";
-const SITE_DESCRIPTION = "Your portal to staking";
-const SITE_URL = "https://staking.xyz";
-const SITE_IMAGE = "/og-image.png";
 
 export const viewport: Viewport = {
   width: "device-width",

@@ -13,6 +13,9 @@ export const trigger = style({
   backgroundColor: colors.black750,
 
   selectors: {
+    "&:hover": {
+      backgroundColor: colors.black700,
+    },
     "&[data-state='open']": {
       backgroundColor: colors.black700,
     },

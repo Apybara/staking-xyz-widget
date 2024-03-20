@@ -1,12 +1,11 @@
 export type IconProps = {
-  name: "chevron";
-  width?: number;
-  height?: number;
+  name: "chevron" | "copy" | "check";
+  size?: number;
 };
 
-export const Icon = ({ name, width, height }: IconProps) => {
+export const Icon = ({ name, size = 14 }: IconProps) => {
   return (
-    <svg width={width || 14} height={height || 14} style={{ color: "inherit" }}>
+    <svg width={size} height={size} style={{ color: "inherit" }}>
       <use href={`/icons.svg#${name}`} />
     </svg>
   );

@@ -1,6 +1,5 @@
 import type { Network } from "../../types";
 import cn from "classnames";
-import Link from "next/link";
 import Image from "next/image";
 import * as Select from "../Select";
 import { networkVariants, networkInfo } from "../../consts";

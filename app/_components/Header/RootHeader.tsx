@@ -3,6 +3,7 @@ import cn from "classnames";
 import * as S from "./header.css";
 import { type CurrencyTabsProps, CurrencyTabs } from "../CurrencyTabs";
 import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
+import { WalletCapsule } from "../WalletCapsule";
 
 export type RootHeaderProps = {
   currencyTabs: CurrencyTabsProps;
@@ -33,6 +34,7 @@ export const RootHeader = ({ currencyTabs, networkSelect }: RootHeaderProps) => 
       <ul className={cn(S.endBox)}>
         <CurrencyTabs {...currencyTabs} />
         <NetworkSelect {...networkSelect} />
+        <WalletCapsule />
       </ul>
     </header>
   );
