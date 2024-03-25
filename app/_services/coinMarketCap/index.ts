@@ -10,7 +10,7 @@ export const getAllCoinPrices = async ({
 
   return {
     celestia: celestiaPrice.formatted,
-    "mocha-4": celestiaPrice.formatted,
+    celestiatestnet3: celestiaPrice.formatted,
   };
 };
 

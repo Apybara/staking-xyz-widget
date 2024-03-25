@@ -3,8 +3,9 @@ import cn from "classnames";
 import Image from "next/image";
 import { networkWalletPrefixes, networkDenom } from "../../consts";
 import * as Dialog from "../Dialog";
-import { CTAButton, Loader } from "../CTAButton";
+import { Skeleton } from "../Skeleton";
 import { CopyButton } from "../CopyButton";
+import { CTAButton, Loader } from "../CTAButton";
 import { FormattedAddress } from "../FormattedAddress";
 import * as S from "./walletAccountDialog.css";
 
@@ -76,7 +77,13 @@ const AccountBox = ({
         <CopyButton content={address} />
       </div>
       <p className={cn(S.balanceBox)}>
-        <span>{balance.balance}</span> <span>{unit}</span>
+        {balance.isLoading ? (
+          <Skeleton width={64} />
+        ) : (
+          <>
+            <span>{balance.error ? "N/A" : balance.balance}</span> <span>{unit}</span>
+          </>
+        )}
       </p>
     </div>
   );

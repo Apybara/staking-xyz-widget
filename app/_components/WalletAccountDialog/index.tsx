@@ -19,7 +19,7 @@ export const WalletAccountDialog = () => {
   const formattedBalance = useFormattedTokenPrice({ val: balanceData });
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
-  const disconnectors = useWalletDisconnectors();
+  const disconnectors = useWalletDisconnectors(network || "celestia");
 
   if (!address || !activeWallet) {
     // TODO: HANDLE ERROR UI

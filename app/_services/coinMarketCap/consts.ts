@@ -10,5 +10,5 @@ export const priceConversionCurrencyVariants = [...PriceConversionCurrencyVarian
 
 export const networkPriceConversionId: Record<Network, PriceConversionIdVariant> = {
   celestia: 22861,
-  "mocha-4": 22861,
+  celestiatestnet3: 22861,
 };
