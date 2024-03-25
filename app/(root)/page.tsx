@@ -1,7 +1,8 @@
-import type { RouterStruct } from "../types";
-import { redirect } from "next/navigation";
+import type { RouterStruct, Network } from "../types";
 import Link from "next/link";
-import { networkRegex, currencyRegex } from "../consts";
+import { redirect } from "next/navigation";
+import { revalidateTag } from "next/cache";
+import { networkRegex, currencyRegex, networkCoinPriceSymbol } from "../consts";
 
 export default function Home({ searchParams }: RouterStruct) {
   const { network, currency } = searchParams || {};
@@ -11,6 +12,8 @@ export default function Home({ searchParams }: RouterStruct) {
   if (!currencyRegex.test(currency || "")) {
     redirect(`/?network=${network}&currency=usd`);
   }
+
+  revalidateTag("coin-price" + networkCoinPriceSymbol[network as Network]);
 
   return (
     <nav style={{ marginTop: "5rem" }}>
