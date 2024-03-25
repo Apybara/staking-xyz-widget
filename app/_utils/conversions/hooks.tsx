@@ -18,5 +18,14 @@ export const useFormattedTokenPrice = ({ val }: { val?: string | number }) => {
   }
 
   const price = coinPrice?.[castedNetwork]?.[castedCurrency] || 0;
-  return getFormattedCoinPrice({ val, price, currency: castedCurrency });
+  return getFormattedCoinPrice({
+    val,
+    price,
+    currency: castedCurrency,
+    options: {
+      formatOptions: {
+        currencySymbol: castedCurrency === "USD" ? "$" : "€",
+      },
+    },
+  });
 };

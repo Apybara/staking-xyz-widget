@@ -7,11 +7,12 @@ import { useChainWallet, useChain } from "@cosmos-kit/react-lite";
 import { getIsCosmosNetwork } from ".";
 
 export const useCosmosKitWalletSupports = (network: CosmosNetwork): Record<CosmosWalletType, boolean> => {
-  const { keplr: keplrContext, leap: leapContext } = useCosmosKitWalletContexts(network);
+  const { keplr: keplrContext, leap: leapContext, okx: okxContext } = useCosmosKitWalletContexts(network);
 
   return {
     keplr: keplrContext?.status !== "NotExist",
     leap: leapContext?.status !== "NotExist",
+    okx: okxContext?.status !== "NotExist",
   };
 };
 
@@ -38,10 +39,12 @@ export const useCosmosKitConnectors = (
   const walletContexts = useCosmosKitWalletContexts(network);
   const keplrConnect = walletContexts?.keplr?.connect || null;
   const leapConnect = walletContexts?.leap?.connect || null;
+  const okxConnect = walletContexts?.okx?.connect || null;
 
   return {
     keplr: keplrConnect,
     leap: leapConnect,
+    okx: okxConnect,
   };
 };
 
@@ -71,6 +74,7 @@ export const useCosmosWalletStates = ({ network = "celestia" }: { network?: Cosm
   const walletName = useMemo<WalletStates["activeWallet"]>(() => {
     if (wallet?.name === "keplr-extension") return "keplr";
     if (wallet?.name === "leap-extension") return "leap";
+    if (wallet?.name === "okxwallet-extension") return "okx";
     return null;
   }, [wallet]);
 
@@ -105,9 +109,11 @@ const useCosmosKitWalletContexts = (
 ): Record<CosmosWalletType, ChainWalletContext | undefined> => {
   const keplrContext = useChainWallet(network, "keplr-extension");
   const leapContext = useChainWallet(network, "leap-extension");
+  const okxContext = useChainWallet(network, "okxwallet-extension");
 
   return {
     keplr: keplrContext,
     leap: leapContext,
+    okx: okxContext,
   };
 };

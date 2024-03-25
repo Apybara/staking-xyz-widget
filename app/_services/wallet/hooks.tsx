@@ -12,13 +12,16 @@ import { useCosmosKitConnectors, useCosmosKitDisconnector, useCosmosKitBalancePr
 
 export const useWalletConnectors: UseWalletConnectors = (network) => {
   const isCosmosNetwork = getIsCosmosNetwork(network);
-  const { keplr: keplrConnect, leap: leapConnect } = useCosmosKitConnectors(
-    isCosmosNetwork ? (network as CosmosNetwork) : "celestia",
-  );
+  const {
+    keplr: keplrConnect,
+    leap: leapConnect,
+    okx: okxConnect,
+  } = useCosmosKitConnectors(isCosmosNetwork ? (network as CosmosNetwork) : "celestia");
 
   return {
     keplr: keplrConnect,
     leap: leapConnect,
+    okx: okxConnect,
   };
 };
 
@@ -28,6 +31,7 @@ export const useWalletDisconnectors: UseWalletDisconnectors = (network) => {
   return {
     keplr: disconnect,
     leap: disconnect,
+    okx: disconnect,
   };
 };
 
