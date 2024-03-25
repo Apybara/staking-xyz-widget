@@ -1,4 +1,4 @@
-import type { WalletInfo, Network } from "../../types";
+import type { WalletInfo, Network, Currency } from "../../types";
 import cn from "classnames";
 import Image from "next/image";
 import { networkWalletPrefixes, networkDenom } from "../../consts";
@@ -16,6 +16,7 @@ export type RootWalletAccountDialogProps = {
   wallet: WalletInfo;
   address: string;
   network: Network;
+  currency: Currency;
   balance: {
     isLoading: boolean;
     error: Error | null;
@@ -33,6 +34,7 @@ export const RootWalletAccountDialog = ({
   wallet,
   address,
   balance,
+  currency,
   network,
   disconnection,
 }: RootWalletAccountDialogProps) => {
@@ -43,7 +45,7 @@ export const RootWalletAccountDialog = ({
           <div className={cn(S.logoWrapper)}>
             <Image src={wallet.logo} width={56} height={56} alt={`Logo of ${wallet.name}`} />
           </div>
-          <AccountBox address={address} balance={balance} network={network} />
+          <AccountBox address={address} balance={balance} network={network} currency={currency} />
           <CTAButton
             variant="tertiary"
             state={disconnection.isLoading ? "loading" : "default"}
@@ -63,7 +65,10 @@ const AccountBox = ({
   address,
   balance,
   network,
-}: Pick<RootWalletAccountDialogProps, "address" | "balance" | "network">) => {
+  currency,
+}: Pick<RootWalletAccountDialogProps, "address" | "balance" | "network" | "currency">) => {
+  const unit = currency === networkDenom[network] ? networkDenom[network] : currency;
+
   return (
     <div className={cn(S.accountBox)}>
       <div className={cn(S.addressBox)}>
@@ -71,7 +76,7 @@ const AccountBox = ({
         <CopyButton content={address} />
       </div>
       <p className={cn(S.balanceBox)}>
-        <span>{balance.balance}</span> <span>{networkDenom[network]}</span>
+        <span>{balance.balance}</span> <span>{unit}</span>
       </p>
     </div>
   );

@@ -6,6 +6,10 @@ export const networkDenom: Record<Network, string> = {
   celestia: "TIA",
   "mocha-4": "TIA",
 };
+export const networkCoinPriceSymbol: Record<Network, string> = {
+  celestia: "celestia",
+  "mocha-4": "celestia",
+};
 export const networkRegex = /(celestia|mocha-4)/;
 
 export const networkInfo: Record<Network, NetworkInfo> = {

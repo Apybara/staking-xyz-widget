@@ -19,6 +19,7 @@ export type CosmosNetwork = (typeof CosmosNetworkVariants)[number];
 
 export type BaseCurrency = (typeof BaseCurrencyVariants)[number];
 export type Currency = BaseCurrency | string;
+export type CoinPrice = Record<Network, Record<BaseCurrency, number>>;
 
 export type CosmosWalletType = (typeof CosmosWalletVariants)[number];
 export type WalletType = (typeof WalletVariants)[number];
