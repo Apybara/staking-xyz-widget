@@ -1,9 +1,10 @@
 import type { ChainWalletContext } from "@cosmos-kit/core";
 import type { WalletStates } from "../../_contexts/WalletContext/types";
-import type { CosmosNetwork, CosmosWalletType } from "../../types";
+import type { Network, CosmosNetwork, CosmosWalletType } from "../../types";
 import type { GetBalanceProps } from "../cosmos/types";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useChainWallet, useChain } from "@cosmos-kit/react-lite";
+import { getIsCosmosNetwork } from ".";
 
 export const useCosmosKitWalletSupports = (network: CosmosNetwork): Record<CosmosWalletType, boolean> => {
   const { keplr: keplrContext, leap: leapContext } = useCosmosKitWalletContexts(network);
@@ -12,6 +13,23 @@ export const useCosmosKitWalletSupports = (network: CosmosNetwork): Record<Cosmo
     keplr: keplrContext?.status !== "NotExist",
     leap: leapContext?.status !== "NotExist",
   };
+};
+
+export const useCosmosKitError = ({ network, modalOpen }: { network?: Network | null; modalOpen: boolean }) => {
+  const isCosmosNetwork = network && getIsCosmosNetwork(network);
+  const { status, openView, closeView } = useChain(isCosmosNetwork ? network : "celestia");
+
+  // Need to trigger modal open/close to reset CosmosKit status
+  useEffect(() => {
+    if (!modalOpen) {
+      closeView();
+      return;
+    }
+    openView();
+  }, [modalOpen]);
+
+  if (!isCosmosNetwork) return null;
+  return status === "Error" || status === "Rejected";
 };
 
 export const useCosmosKitConnectors = (

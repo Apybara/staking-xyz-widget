@@ -11,7 +11,12 @@ export const logoWrapper = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  inlineSize: "fit-content",
   marginBlockEnd: pxToRem(16),
+  marginInline: "auto",
+  padding: pxToRem(12),
+  borderRadius: pxToRem(28),
+  border: `${pxToRem(4)} solid ${colors.black700}`,
 });
 
 export const accountBox = style({
