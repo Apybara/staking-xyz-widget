@@ -1,12 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import "../theme/global.css";
 import localFont from "next/font/local";
-import {
-  SITE_TITLE,
-  SITE_DESCRIPTION,
-  SITE_URL,
-  SITE_IMAGE
-} from "./consts";
+import "../theme/global.css";
+import "react-loading-skeleton/dist/skeleton.css";
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, SITE_IMAGE } from "./consts";
 
 const pretendard = localFont({
   src: "./_assets/PretendardStdVariable.woff2",

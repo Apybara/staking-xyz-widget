@@ -43,6 +43,7 @@ export const useWalletBalance = ({ address, network, activeWallet }: UseWalletBa
     queryKey: ["walletBalance", address, network],
     queryFn: getBalance,
     refetchOnWindowFocus: true,
+    refetchInterval: 30000,
   });
 
   return {
@@ -62,6 +63,6 @@ const useWalletBalanceGetters: UseWalletBalanceGetters = ({ address, network, ac
 
   return {
     celestia: async () => await getBalance(cosmosProps),
-    "mocha-4": async () => await getBalance(cosmosProps),
+    celestiatestnet3: async () => await getBalance(cosmosProps),
   };
 };

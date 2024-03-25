@@ -1,17 +1,16 @@
 import type { Network, NetworkInfo, WalletInfo, WalletType } from "./types";
-import { wallets as okxwallet } from "@cosmos-kit/okxwallet";
 
-export const NetworkVariants = ["celestia", "mocha-4"] as const;
+export const NetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
 export const networkDenom: Record<Network, string> = {
   celestia: "TIA",
-  "mocha-4": "TIA",
+  celestiatestnet3: "TIA",
 };
 export const networkCoinPriceSymbol: Record<Network, string> = {
   celestia: "celestia",
-  "mocha-4": "celestia",
+  celestiatestnet3: "celestia",
 };
-export const networkRegex = /(celestia|mocha-4)/;
+export const networkRegex = /\b(celestia|celestiatestnet3)\b/;
 
 export const networkInfo: Record<Network, NetworkInfo> = {
   celestia: {
@@ -20,25 +19,25 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     logo: "/networks/celestia-logo.svg",
     denom: networkDenom.celestia,
   },
-  "mocha-4": {
-    id: "mocha-4",
+  celestiatestnet3: {
+    id: "celestiatestnet3",
     name: "Celestia Testnet",
     logo: "/networks/celestia-logo.svg",
-    denom: networkDenom["mocha-4"],
+    denom: networkDenom.celestiatestnet3,
   },
 };
 
-export const CosmosNetworkVariants = ["celestia", "mocha-4"] as const;
+export const CosmosNetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const cosmosNetworkVariants = [...CosmosNetworkVariants];
 
 export const networkWalletPrefixes: Record<Network, string> = {
   celestia: "celestia1",
-  "mocha-4": "celestia1",
+  celestiatestnet3: "celestia1",
 };
 
 export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
-export const currencyRegex = /(usd|eur|tia)/i;
+export const currencyRegex = /\b(usd|eur|tia)\b/i;
 
 export const CosmosWalletVariants = ["keplr", "leap", "okx"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
@@ -48,7 +47,7 @@ export const walletVariants = [...WalletVariants];
 
 export const networkWalletVariants: Record<Network, Array<string>> = {
   celestia: cosmosWalletVariants,
-  "mocha-4": cosmosWalletVariants,
+  celestiatestnet3: cosmosWalletVariants,
 };
 
 export const walletsInfo: Record<WalletType, WalletInfo> = {
@@ -73,7 +72,7 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
 };
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
   celestia: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.okx],
-  "mocha-4": [walletsInfo.keplr, walletsInfo.leap, walletsInfo.okx],
+  celestiatestnet3: [walletsInfo.keplr, walletsInfo.leap],
 };
 
 export const ConnectorVariants = ["cosmosKit"] as const;

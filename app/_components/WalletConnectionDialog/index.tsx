@@ -17,7 +17,7 @@ export const WalletConnectionDialog = () => {
   const { network } = useWidget();
   const { walletsSupport, connectionStatus, activeWallet } = useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
-  const connectors = useWalletConnectors();
+  const connectors = useWalletConnectors(network || "celestia");
   const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open });
 
   // Eager connection states

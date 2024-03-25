@@ -31,7 +31,7 @@ export type WalletInfo = {
 };
 export type NetworkWalletType = {
   celestia: CosmosWalletType[];
-  "mocha-4": CosmosWalletType[];
+  celestiatestnet3: CosmosWalletType[];
 };
 export type ConnectorType = (typeof ConnectorVariants)[number];
 
