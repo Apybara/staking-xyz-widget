@@ -1,3 +1,4 @@
+import { recipe } from "@vanilla-extract/recipes";
 import { style, globalStyle } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
@@ -10,25 +11,46 @@ globalStyle(title, {
   marginInlineStart: pxToRem(10),
 });
 
-export const walletCardButton = style({
+export const walletCardButton = recipe({
+  base: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: pxToRem(10),
+    inlineSize: "100%",
+    padding: pxToRem(10),
+    borderRadius: pxToRem(8),
+    backgroundColor: colors.black900,
+    fontSize: pxToRem(14),
+    fontWeight: weights.semibold,
+
+    selectors: {
+      "&:hover": {
+        backgroundColor: colors.black700,
+      },
+    },
+  },
+  variants: {
+    state: {
+      default: {},
+      loading: {
+        cursor: "progress",
+      },
+      disabled: {
+        pointerEvents: "none",
+        opacity: 0.3,
+      },
+    },
+  },
+  defaultVariants: {
+    state: "default",
+  },
+});
+
+export const walletCardButtonInfo = style({
   display: "flex",
   alignItems: "center",
   gap: pxToRem(10),
-  inlineSize: "100%",
-  padding: pxToRem(10),
-  borderRadius: pxToRem(8),
-  backgroundColor: colors.black900,
-  fontSize: pxToRem(14),
-  fontWeight: weights.semibold,
-
-  selectors: {
-    "&:hover": {
-      backgroundColor: colors.black700,
-    },
-    "&:disabled": {
-      opacity: 0.5,
-    },
-  },
 });
 
 export const list = style({

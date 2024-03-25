@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 import type { ButtonVariants } from "./ctaButton.css";
 import cn from "classnames";
 import { button } from "./ctaButton.css";
-import { LogoLoader } from "../LogoLoader";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 export type CTAButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & ButtonVariants & {};
 
@@ -14,4 +14,4 @@ export const CTAButton = ({ variant, state, className, children, ...props }: CTA
   );
 };
 
-export const Loader = LogoLoader;
+export const Loader = LoadingSpinner;

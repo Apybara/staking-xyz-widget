@@ -6,12 +6,12 @@ import type {
   UseWalletBalanceGettersProps,
 } from "./types";
 import { useQuery } from "@tanstack/react-query";
-import { cosmosNetworkVariants } from "../../consts";
 import { getBalance } from "../cosmos";
+import { getIsCosmosNetwork } from "../cosmosKit";
 import { useCosmosKitConnectors, useCosmosKitDisconnector, useCosmosKitBalanceProps } from "../cosmosKit/hooks";
 
 export const useWalletConnectors: UseWalletConnectors = (network) => {
-  const isCosmosNetwork = cosmosNetworkVariants.some((variant) => variant === network);
+  const isCosmosNetwork = getIsCosmosNetwork(network);
   const { keplr: keplrConnect, leap: leapConnect } = useCosmosKitConnectors(
     isCosmosNetwork ? (network as CosmosNetwork) : "celestia",
   );
@@ -49,7 +49,7 @@ export const useWalletBalance = ({ address, network, activeWallet }: UseWalletBa
 };
 
 const useWalletBalanceGetters: UseWalletBalanceGetters = ({ address, network, activeWallet }) => {
-  const isCosmosNetwork = cosmosNetworkVariants.some((variant) => variant === network);
+  const isCosmosNetwork = getIsCosmosNetwork(network);
   const cosmosProps = useCosmosKitBalanceProps({
     address,
     network: isCosmosNetwork ? (network as CosmosNetwork) : "celestia",
