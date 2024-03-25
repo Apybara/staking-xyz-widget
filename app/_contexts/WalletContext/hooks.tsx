@@ -4,11 +4,16 @@ import { getIsCosmosNetwork } from "../../_services/cosmosKit";
 import { useCosmosKitWalletSupports, useCosmosWalletStates } from "../../_services/cosmosKit/hooks";
 
 export const useWalletsSupport = (network?: Network) => {
-  const { keplr: isKeplrSupported, leap: isLeapSupported } = useCosmosKitWalletSupports(network || "celestia");
+  const {
+    keplr: isKeplrSupported,
+    leap: isLeapSupported,
+    okx: isOkxSupported,
+  } = useCosmosKitWalletSupports(network || "celestia");
 
   return {
     keplr: isKeplrSupported,
     leap: isLeapSupported,
+    okx: isOkxSupported,
   };
 };
 

@@ -31,9 +31,10 @@ const initialStates: T.WalletContext = {
   walletsSupport: {
     keplr: null,
     leap: null,
+    okx: null,
   },
   activeWallet: null,
   address: null,
   connectionStatus: "disconnected",
-  setStates: () => { },
+  setStates: () => {},
 };

@@ -39,11 +39,7 @@ export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
 export const currencyRegex = /(usd|eur|tia)/i;
 
-export const CosmosWalletVariants = [
-  "keplr",
-  "leap",
-  // 'okx',
-] as const;
+export const CosmosWalletVariants = ["keplr", "leap", "okx"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
 
 export const WalletVariants = [...cosmosWalletVariants] as const;
@@ -65,10 +61,15 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     name: "Leap",
     logo: "/wallets/leap.svg",
   },
+  okx: {
+    id: "okx",
+    name: "OKX",
+    logo: "/wallets/okx.svg",
+  },
 };
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
-  celestia: [walletsInfo.keplr, walletsInfo.leap],
-  "mocha-4": [walletsInfo.keplr, walletsInfo.leap],
+  celestia: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.okx],
+  "mocha-4": [walletsInfo.keplr, walletsInfo.leap, walletsInfo.okx],
 };
 
 export const ConnectorVariants = ["cosmosKit"] as const;
