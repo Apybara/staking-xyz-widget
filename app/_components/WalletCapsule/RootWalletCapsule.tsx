@@ -36,7 +36,11 @@ const MainContent = ({ state, wallet, network }: Pick<RootWalletCapsuleProps, "s
     return (
       <div className={cn(S.account)}>
         <Image src={wallet.info.logo} width={18} height={18} alt={`Logo of ${wallet.info.name}`} />
-        <FormattedAddress address={wallet.address} prefixString={networkWalletPrefixes[network]} />
+        <FormattedAddress
+          address={wallet.address}
+          prefixString={networkWalletPrefixes[network]}
+          className={cn(S.accountAddress)}
+        />
       </div>
     );
   }
