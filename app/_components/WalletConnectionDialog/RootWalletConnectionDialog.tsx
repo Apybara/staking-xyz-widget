@@ -32,7 +32,11 @@ export const RootWalletConnectionDialog = ({ dialog, wallets, connection }: Root
           <ul className={cn(S.list)}>
             {wallets.map((wallet) => (
               <li key={"walletDialog-" + wallet.id}>
-                <WalletCardButton connection={connection} wallet={wallet} />
+                {wallet.isSupported ? (
+                  <WalletCardButton connection={connection} wallet={wallet} />
+                ) : (
+                  <WalletInstallButton wallet={wallet} />
+                )}
               </li>
             ))}
           </ul>
@@ -69,6 +73,17 @@ const WalletCardButton = ({
       {connecting && <LoadingSpinner />}
       {connection.error?.walletId === wallet.id && <MessageTag message="Failed" variant="warning" />}
     </button>
+  );
+};
+
+const WalletInstallButton = ({ wallet }: { wallet: Wallet }) => {
+  return (
+    <a className={cn(S.walletCardButton())} href={wallet.downloadLink} target="_blank" rel="noopener noreferrer">
+      <div className={cn(S.walletCardButtonInfo)}>
+        <Image src={wallet.logo} width={24} height={24} alt={`Logo of ${wallet.name}`} />
+        <p>Install {wallet.name}</p>
+      </div>
+    </a>
   );
 };
 

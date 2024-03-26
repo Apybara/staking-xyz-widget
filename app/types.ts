@@ -27,6 +27,7 @@ export type WalletInfo = {
   id: WalletType;
   name: string;
   logo: string;
+  downloadLink: string;
 };
 export type NetworkWalletType = {
   celestia: CosmosWalletType[];
