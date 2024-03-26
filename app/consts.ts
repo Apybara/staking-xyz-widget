@@ -1,4 +1,5 @@
 import type { Network, NetworkInfo, WalletInfo, WalletType } from "./types";
+import { wallets as okxwallet } from "@cosmos-kit/okxwallet";
 
 export const NetworkVariants = ["celestia", "mocha-4"] as const;
 export const networkVariants = [...NetworkVariants];
@@ -55,16 +56,19 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     id: "keplr",
     name: "Keplr",
     logo: "/wallets/keplr.svg",
+    downloadLink: "https://www.keplr.app/download",
   },
   leap: {
     id: "leap",
     name: "Leap",
     logo: "/wallets/leap.svg",
+    downloadLink: "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg",
   },
   okx: {
     id: "okx",
-    name: "OKX",
+    name: "OKX wallet",
     logo: "/wallets/okx.svg",
+    downloadLink: "https://www.okx.com/download",
   },
 };
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {

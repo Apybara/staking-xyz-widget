@@ -10,9 +10,9 @@ export const useCosmosKitWalletSupports = (network: CosmosNetwork): Record<Cosmo
   const { keplr: keplrContext, leap: leapContext, okx: okxContext } = useCosmosKitWalletContexts(network);
 
   return {
-    keplr: keplrContext?.status !== "NotExist",
-    leap: leapContext?.status !== "NotExist",
-    okx: okxContext?.status !== "NotExist",
+    keplr: keplrContext?.isWalletNotExist !== true,
+    leap: leapContext?.isWalletNotExist !== true,
+    okx: okxContext?.isWalletNotExist !== true,
   };
 };
 

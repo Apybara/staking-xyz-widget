@@ -11,25 +11,33 @@ globalStyle(title, {
   marginInlineStart: pxToRem(10),
 });
 
-export const walletCardButton = recipe({
-  base: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: pxToRem(10),
-    inlineSize: "100%",
-    padding: pxToRem(10),
-    borderRadius: pxToRem(8),
-    backgroundColor: colors.black900,
-    fontSize: pxToRem(14),
-    fontWeight: weights.semibold,
+const baseWalletCardStyle = style({
+  inlineSize: "100%",
+  padding: pxToRem(10),
+  borderRadius: pxToRem(8),
+  backgroundColor: colors.black900,
+  fontSize: pxToRem(14),
+  fontWeight: weights.semibold,
 
-    selectors: {
-      "&:hover": {
-        backgroundColor: colors.black700,
-      },
+  selectors: {
+    "&:hover": {
+      backgroundColor: colors.black700,
     },
   },
+});
+
+export const walletInstallButton = style([baseWalletCardStyle, {}]);
+
+export const walletCardButton = recipe({
+  base: [
+    baseWalletCardStyle,
+    {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: pxToRem(10),
+    },
+  ],
   variants: {
     state: {
       default: {},
