@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { networkRegex, currencyRegex } from "../consts";
 import { getCurrentSearchParams } from "../_utils/routes";
 
-export const redirectPage = (searchParams: RouterStruct["searchParams"], page: string) => {
+export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
   const { network, currency } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
 
@@ -21,4 +21,4 @@ export const redirectPage = (searchParams: RouterStruct["searchParams"], page: s
     const query = search ? `?${search}` : "";
     redirect(`/${page}${query}`);
   }
-};
+}

@@ -1,13 +1,13 @@
 import type { RouterStruct } from "../types";
 import Link from "next/link";
-import { revalidatePageQueries } from "../_actions/query";
-import { redirectPage } from "../_actions/routes";
+import revalidatePageQueries from "../_actions/revalidatePageQueries";
+import redirectPage from "../_actions/redirectPage";
 import { getLinkWithSearchParams } from "../_utils/routes";
 
-export default function Home({ searchParams }: RouterStruct) {
+export default async function Home({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
-  redirectPage(searchParams, "");
-  revalidatePageQueries(network);
+  await redirectPage(searchParams, "");
+  await revalidatePageQueries(network);
 
   return (
     <nav style={{ display: "flex", gap: 24 }}>

@@ -42,7 +42,7 @@ export const CosmosKitProvider = ({
       }}
       disableIframe={false}
       subscribeConnectEvents={true}
-      logLevel={"DEBUG"}
+      // logLevel={"DEBUG"}
     >
       {children}
     </ChainProvider>

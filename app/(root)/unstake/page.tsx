@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
 import Link from "next/link";
-import { redirectPage } from "../../_actions/routes";
-import { revalidatePageQueries } from "../../_actions/query";
+import redirectPage from "../../_actions/redirectPage";
+import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 
-export default function Unstake({ searchParams }: RouterStruct) {
+export default async function Unstake({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
-  redirectPage(searchParams, "unstake");
-  revalidatePageQueries(network);
+  await redirectPage(searchParams, "unstake");
+  await revalidatePageQueries(network);
 
   return (
     <div style={{ marginTop: "5rem" }}>

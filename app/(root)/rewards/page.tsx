@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
 import Link from "next/link";
-import { redirectPage } from "../../_actions/routes";
-import { revalidatePageQueries } from "../../_actions/query";
+import redirectPage from "../../_actions/redirectPage";
+import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 
-export default function Rewards({ searchParams }: RouterStruct) {
+export default async function Rewards({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
-  redirectPage(searchParams, "rewards");
-  revalidatePageQueries(network);
+  await redirectPage(searchParams, "rewards");
+  await revalidatePageQueries(network);
 
   return (
     <div style={{ marginTop: "5rem" }}>
