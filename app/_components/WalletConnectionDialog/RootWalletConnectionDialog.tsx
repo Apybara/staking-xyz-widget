@@ -21,16 +21,24 @@ export type RootWalletConnectionDialogProps = {
     };
     onConnect: (wallet: WalletInfo) => void;
   };
+  isOnMobileDevice?: boolean;
 };
 
-export const RootWalletConnectionDialog = ({ dialog, wallets, connection }: RootWalletConnectionDialogProps) => {
+export const RootWalletConnectionDialog = ({
+  dialog,
+  wallets,
+  connection,
+  isOnMobileDevice,
+}: RootWalletConnectionDialogProps) => {
+  const filteredWalletsByDevice = isOnMobileDevice ? wallets.filter((wallet) => !wallet.isDesktopOnly) : wallets;
+
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
       <Dialog.Main>
         <Dialog.Content>
           <Dialog.Title className={cn(S.title)}>Select a wallet</Dialog.Title>
           <ul className={cn(S.list)}>
-            {wallets.map((wallet) => (
+            {filteredWalletsByDevice.map((wallet) => (
               <li key={"walletDialog-" + wallet.id}>
                 {wallet.isSupported ? (
                   <WalletCardButton connection={connection} wallet={wallet} />

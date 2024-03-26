@@ -8,6 +8,12 @@ export const selectItem = style({
   justifyContent: "space-between",
   paddingBlock: pxToRem(14),
   gap: pxToRem(48),
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      gap: pxToRem(24),
+    },
+  },
 });
 
 export const selectItemMain = style({
@@ -16,7 +22,7 @@ export const selectItemMain = style({
   gap: pxToRem(8),
 });
 
-export const itemTitle = style({
+export const triggerItemTitle = style({
   fontSize: pxToRem(14),
   fontWeight: weights.semibold,
 
@@ -26,6 +32,11 @@ export const itemTitle = style({
       visibility: "hidden",
     },
   },
+});
+
+export const itemTitle = style({
+  fontSize: pxToRem(14),
+  fontWeight: weights.semibold,
 });
 
 export const itemSubtitle = style({

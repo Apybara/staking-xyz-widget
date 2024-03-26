@@ -7,11 +7,13 @@ export type WidgetStates = {
   network: Network | null;
   currency: Currency | null;
   coinPrice: CoinPrice | null;
+  isOnMobileDevice?: boolean;
   setStates: Dispatch<Partial<WidgetStates>>;
 };
 
 export type WidgetProviderProps = {
   initialCoinPrice?: CoinPrice;
+  isOnMobileDevice?: boolean;
   children: ReactNode;
 };
 

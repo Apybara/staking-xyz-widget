@@ -16,7 +16,7 @@ export const Main = ({ label, triggerContent, items, defaultValue, onValueChange
   <RootSelect.Root defaultValue={defaultValue} onValueChange={onValueChange} {...props}>
     {triggerContent ?? TriggerSet({ label: label || "Select" })}
     <RootSelect.Portal>
-      <RootSelect.Content position="popper" align="end" className={cn(S.content)}>
+      <RootSelect.Content position="popper" className={cn(S.content)}>
         <RootSelect.Viewport className={cn(S.viewport)}>{items}</RootSelect.Viewport>
       </RootSelect.Content>
     </RootSelect.Portal>

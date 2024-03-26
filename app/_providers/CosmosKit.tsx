@@ -11,31 +11,38 @@ import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from "../consts";
 import celestiatestnet3Chains from "../_services/cosmos/celestiatestnet3/chain.json";
 import celestiatestnet3AssetList from "../_services/cosmos/celestiatestnet3/assetlist.json";
 
-export const CosmosKitProvider = ({ children }: { children: ReactNode }) => {
+export const CosmosKitProvider = ({
+  walletConnectAPIKey,
+  children,
+}: {
+  walletConnectAPIKey: string;
+  children: ReactNode;
+}) => {
   return (
     <ChainProvider
       chains={chainsList}
       assetLists={assetLists}
-      wallets={[keplr[0], leap[0], ...okxwallet]}
+      wallets={[...keplr, ...leap, ...okxwallet]}
       endpointOptions={{
         isLazy: true,
         endpoints,
       }}
       walletModal={WalletConnectionDialog}
-      // walletConnectOptions={{
-      //   signClient: {
-      //     projectId: "",
-      //     relayUrl: "",
-      //     metadata: {
-      //       name: SITE_TITLE,
-      //       description: SITE_DESCRIPTION,
-      //       url: SITE_URL,
-      //       icons: [""],
-      //     },
-      //   },
-      // }}
+      walletConnectOptions={{
+        signClient: {
+          projectId: walletConnectAPIKey,
+          relayUrl: "wss://relay.walletconnect.org",
+          metadata: {
+            name: SITE_TITLE,
+            description: SITE_DESCRIPTION,
+            url: SITE_URL,
+            icons: [""],
+          },
+        },
+      }}
+      disableIframe={false}
       subscribeConnectEvents={true}
-      // logLevel={"DEBUG"}
+      logLevel={"DEBUG"}
     >
       {children}
     </ChainProvider>

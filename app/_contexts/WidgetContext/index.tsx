@@ -7,7 +7,7 @@ const WidgetContext = createContext({} as T.WidgetContext);
 
 export const useWidget = () => useContext(WidgetContext);
 
-export const WidgetProvider = ({ initialCoinPrice, children }: T.WidgetProviderProps) => {
+export const WidgetProvider = ({ initialCoinPrice, isOnMobileDevice, children }: T.WidgetProviderProps) => {
   const [states, setStates] = useReducer<T.UseWidgetReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
   useActiveCurrency({ setStates });
@@ -18,6 +18,7 @@ export const WidgetProvider = ({ initialCoinPrice, children }: T.WidgetProviderP
       value={{
         ...states,
         coinPrice: initialCoinPrice || states.coinPrice,
+        isOnMobileDevice,
         setStates,
       }}
     >
@@ -30,5 +31,6 @@ const initialStates: T.WidgetContext = {
   network: null,
   currency: null,
   coinPrice: null,
+  isOnMobileDevice: undefined,
   setStates: () => {},
 };

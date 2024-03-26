@@ -3,14 +3,23 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
 import { networkRegex, currencyRegex, networkCoinPriceSymbol } from "../consts";
+import { getCurrentSearchParams } from "../_utils/routes";
 
-export default function Home({ searchParams }: RouterStruct) {
+export default function Home({ searchParams, ...props }: RouterStruct) {
   const { network, currency } = searchParams || {};
+  const current = getCurrentSearchParams(searchParams);
+
   if (!network || !networkRegex.test(network)) {
-    redirect("/?network=celestia&currency=usd");
+    current.set("network", "celestia");
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    redirect(`/${query}`);
   }
   if (!currencyRegex.test(currency || "")) {
-    redirect(`/?network=${network}&currency=usd`);
+    current.set("currency", "usd");
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    redirect(`/${query}`);
   }
 
   revalidateTag("coin-price" + networkCoinPriceSymbol[network as Network]);

@@ -11,4 +11,10 @@ globalStyle("html", {
   fontSize: 16,
   fontFamily: vars.typography.fonts.primary,
   textRendering: "optimizeLegibility",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      fontSize: 15,
+    },
+  },
 });

@@ -63,6 +63,7 @@ export const selectTabs = style({
 export const selectTrigger = style({
   fontSize: pxToRem(14),
   fontWeight: weights.semibold,
+  blockSize: "100%",
 });
 
 export const selectOptionText = style({

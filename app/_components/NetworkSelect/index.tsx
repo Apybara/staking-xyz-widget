@@ -19,7 +19,7 @@ export const NetworkSelect = ({ activeNetwork, onNetworkChange }: NetworkSelectP
         <Select.Trigger label="Network">
           <Image src={networkInfo[activeNetwork].logo} width={18} height={18} alt={`Logo of ${activeNetwork}`} />
           <Select.Value asChild>
-            <p className={cn(S.itemTitle)}>{networkInfo[activeNetwork].name}</p>
+            <p className={cn(S.triggerItemTitle)}>{networkInfo[activeNetwork].name}</p>
           </Select.Value>
           <Select.TriggerIcon />
         </Select.Trigger>

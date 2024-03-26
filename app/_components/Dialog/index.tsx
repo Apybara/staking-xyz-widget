@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import type { DialogContentProps } from "@radix-ui/react-dialog";
+import { forwardRef } from "react";
 import cn from "classnames";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as S from "./dialog.css";
@@ -19,10 +20,12 @@ export const Main = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const Content = ({ children, className, ...props }: { children: ReactNode } & DialogContentProps) => {
+export const Content = forwardRef(({ children, className, ...props }: ContentProps, ref: Ref<HTMLDivElement>) => {
   return (
     <DialogPrimitive.Content className={cn(S.content, className)} {...props}>
       {children}
     </DialogPrimitive.Content>
   );
-};
+});
+
+type ContentProps = { children: ReactNode } & DialogContentProps;
