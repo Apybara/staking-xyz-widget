@@ -1,32 +1,20 @@
-import type { RouterStruct, Network } from "../types";
+import type { RouterStruct } from "../types";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { revalidateTag } from "next/cache";
-import { networkRegex, currencyRegex, networkCoinPriceSymbol } from "../consts";
-import { getCurrentSearchParams } from "../_utils/routes";
+import { revalidatePageQueries } from "../_actions/query";
+import { redirectPage } from "../_actions/routes";
+import { getLinkWithSearchParams } from "../_utils/routes";
 
-export default function Home({ searchParams, ...props }: RouterStruct) {
-  const { network, currency } = searchParams || {};
-  const current = getCurrentSearchParams(searchParams);
-
-  if (!network || !networkRegex.test(network)) {
-    current.set("network", "celestia");
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    redirect(`/${query}`);
-  }
-  if (!currencyRegex.test(currency || "")) {
-    current.set("currency", "usd");
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    redirect(`/${query}`);
-  }
-
-  revalidateTag("coin-price" + networkCoinPriceSymbol[network as Network]);
+export default function Home({ searchParams }: RouterStruct) {
+  const { network } = searchParams || {};
+  redirectPage(searchParams, "");
+  revalidatePageQueries(network);
 
   return (
-    <nav style={{ marginTop: "5rem" }}>
-      <Link href="/stake">Stake</Link>
+    <nav style={{ display: "flex", gap: 24 }}>
+      <Link href={getLinkWithSearchParams(searchParams, "stake")}>Stake</Link>
+      <Link href={getLinkWithSearchParams(searchParams, "unstake")}>Unstake</Link>
+      <Link href={getLinkWithSearchParams(searchParams, "rewards")}>Rewards</Link>
+      <Link href={getLinkWithSearchParams(searchParams, "activity")}>Activity</Link>
     </nav>
   );
 }

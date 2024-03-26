@@ -10,3 +10,10 @@ export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"
 
   return new URLSearchParams(params);
 };
+
+export const getLinkWithSearchParams = (searchParams: RouterStruct["searchParams"], page: string) => {
+  const current = getCurrentSearchParams(searchParams);
+  const search = current.toString();
+  const query = search ? `?${search}` : "";
+  return `/${page}${query}`;
+};

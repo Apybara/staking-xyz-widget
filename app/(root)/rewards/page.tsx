@@ -5,14 +5,14 @@ import { redirectPage } from "../../_actions/routes";
 import { revalidatePageQueries } from "../../_actions/query";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 
-export default function Stake({ searchParams }: RouterStruct) {
+export default function Rewards({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
-  redirectPage(searchParams, "stake");
+  redirectPage(searchParams, "rewards");
   revalidatePageQueries(network);
 
   return (
     <div style={{ marginTop: "5rem" }}>
-      <h1>Stake view</h1>
+      <h1>Rewards view</h1>
 
       <nav style={{ marginTop: "5rem" }}>
         <Link href={getLinkWithSearchParams(searchParams, "")}>Back to home</Link>
@@ -22,6 +22,6 @@ export default function Stake({ searchParams }: RouterStruct) {
 }
 
 export const metadata: Metadata = {
-  title: "Stake | Staking.xyz",
+  title: "Rewards | Staking.xyz",
   description: "Your portal to staking",
 };
