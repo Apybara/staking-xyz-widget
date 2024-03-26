@@ -10,15 +10,19 @@ import { UIContextProvider } from "../_contexts/UIContext";
 
 export const WidgetProviders = ({
   initialCoinPrice,
+  isOnMobileDevice,
+  walletConnectAPIKey,
   children,
 }: {
   initialCoinPrice: WidgetProviderProps["initialCoinPrice"];
+  isOnMobileDevice: WidgetProviderProps["isOnMobileDevice"];
+  walletConnectAPIKey: string;
   children: ReactNode;
 }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <WidgetProvider initialCoinPrice={initialCoinPrice}>
-        <CosmosKitProvider>
+      <WidgetProvider initialCoinPrice={initialCoinPrice} isOnMobileDevice={isOnMobileDevice}>
+        <CosmosKitProvider walletConnectAPIKey={walletConnectAPIKey}>
           <WalletProvider>
             <UIContextProvider>{children}</UIContextProvider>
           </WalletProvider>

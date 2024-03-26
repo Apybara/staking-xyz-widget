@@ -30,7 +30,9 @@ export const WalletProvider = ({ children }: T.WalletProviderProps) => {
 const initialStates: T.WalletContext = {
   walletsSupport: {
     keplr: null,
+    keplrMobile: null,
     leap: null,
+    leapMobile: null,
     okx: null,
   },
   activeWallet: null,

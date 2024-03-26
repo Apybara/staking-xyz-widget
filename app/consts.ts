@@ -39,7 +39,7 @@ export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
 export const currencyRegex = /\b(usd|eur|tia)\b/i;
 
-export const CosmosWalletVariants = ["keplr", "leap", "okx"] as const;
+export const CosmosWalletVariants = ["keplr", "leap", "okx", "keplrMobile", "leapMobile"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
 
 export const WalletVariants = [...cosmosWalletVariants] as const;
@@ -56,18 +56,35 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     name: "Keplr",
     logo: "/wallets/keplr.svg",
     downloadLink: "https://www.keplr.app/download",
+    isDesktopOnly: true,
+  },
+  keplrMobile: {
+    id: "keplrMobile",
+    name: "Keplr WalletConnect",
+    logo: "/wallets/keplr.svg",
+    downloadLink: "https://www.keplr.app/download",
+    isDesktopOnly: false,
   },
   leap: {
     id: "leap",
     name: "Leap",
     logo: "/wallets/leap.svg",
-    downloadLink: "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg",
+    downloadLink: "https://www.leapwallet.io/download",
+    isDesktopOnly: true,
+  },
+  leapMobile: {
+    id: "leapMobile",
+    name: "Leap WalletConnect",
+    logo: "/wallets/leap.svg",
+    downloadLink: "https://www.leapwallet.io/download",
+    isDesktopOnly: false,
   },
   okx: {
     id: "okx",
     name: "OKX wallet",
     logo: "/wallets/okx.svg",
     downloadLink: "https://www.okx.com/download",
+    isDesktopOnly: true,
   },
 };
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {

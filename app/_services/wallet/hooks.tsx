@@ -14,13 +14,17 @@ export const useWalletConnectors: UseWalletConnectors = (network) => {
   const isCosmosNetwork = getIsCosmosNetwork(network);
   const {
     keplr: keplrConnect,
+    keplrMobile: keplrMobileConnect,
     leap: leapConnect,
+    leapMobile: leapMobileConnect,
     okx: okxConnect,
   } = useCosmosKitConnectors(isCosmosNetwork ? (network as CosmosNetwork) : "celestia");
 
   return {
     keplr: keplrConnect,
+    keplrMobile: keplrMobileConnect,
     leap: leapConnect,
+    leapMobile: leapMobileConnect,
     okx: okxConnect,
   };
 };
@@ -30,7 +34,9 @@ export const useWalletDisconnectors: UseWalletDisconnectors = (network) => {
 
   return {
     keplr: disconnect,
+    keplrMobile: disconnect,
     leap: disconnect,
+    leapMobile: disconnect,
     okx: disconnect,
   };
 };

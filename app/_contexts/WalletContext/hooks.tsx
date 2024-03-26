@@ -6,13 +6,17 @@ import { useCosmosKitWalletSupports, useCosmosWalletStates } from "../../_servic
 export const useWalletsSupport = (network?: Network) => {
   const {
     keplr: isKeplrSupported,
+    keplrMobile: isKeplrMobileSupported,
     leap: isLeapSupported,
+    leapMobile: isLeapMobileSupported,
     okx: isOkxSupported,
   } = useCosmosKitWalletSupports(network || "celestia");
 
   return {
     keplr: isKeplrSupported,
+    keplrMobile: isKeplrMobileSupported,
     leap: isLeapSupported,
+    leapMobile: isLeapMobileSupported,
     okx: isOkxSupported,
   };
 };

@@ -14,7 +14,7 @@ export const WalletConnectionDialog = () => {
   const [connectingWallet, setConnectingWallet] = useState<WalletType | null>(null);
   const { error, setError } = useProceduralStates();
 
-  const { network } = useWidget();
+  const { network, isOnMobileDevice } = useWidget();
   const { walletsSupport, connectionStatus, activeWallet } = useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || "celestia");
@@ -87,6 +87,7 @@ export const WalletConnectionDialog = () => {
           }
         },
       }}
+      isOnMobileDevice={isOnMobileDevice}
     />
   );
 };
