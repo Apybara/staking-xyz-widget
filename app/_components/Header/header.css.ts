@@ -32,7 +32,7 @@ export const logo = style({
 
 export const logoLigature = style({
   "@container": {
-    "(max-width: 480px)": {
+    "(max-width: 520px)": {
       display: "none",
     },
   },

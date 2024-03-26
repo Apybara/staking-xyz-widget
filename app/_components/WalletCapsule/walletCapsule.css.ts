@@ -34,3 +34,11 @@ export const account = style({
   alignItems: "center",
   gap: pxToRem(6),
 });
+
+export const accountAddress = style({
+  "@media": {
+    "screen and (max-width: 420px)": {
+      display: "none",
+    },
+  },
+});
