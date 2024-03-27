@@ -6,7 +6,7 @@ import { useWidget } from "../../_contexts/WidgetContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_services/hooks";
 import { useWalletConnectors } from "../../_services/wallet/hooks";
-import { useCosmosKitError } from "../../_services/cosmosKit/hooks";
+import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
 import { networkWalletInfos } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
 
@@ -15,7 +15,7 @@ export const WalletConnectionDialog = () => {
   const { error, setError } = useProceduralStates();
 
   const { network, isOnMobileDevice } = useWidget();
-  const { walletsSupport, connectionStatus, activeWallet } = useWallet();
+  const { walletsSupport, connectionStatus, activeWallet, setStates } = useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || "celestia");
   const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open });
@@ -88,6 +88,7 @@ export const WalletConnectionDialog = () => {
         },
       }}
       isOnMobileDevice={isOnMobileDevice}
+      onCancelConnection={() => setStates({ connectionStatus: "disconnected" })}
     />
   );
 };

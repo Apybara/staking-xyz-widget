@@ -15,7 +15,7 @@ export const WalletAccountDialog = () => {
     data: balanceData,
     isLoading: isBalanceLoading,
     error: balanceError,
-  } = useWalletBalance({ address, network, activeWallet });
+  } = useWalletBalance({ address, network, activeWallet }) || {};
   const formattedBalance = useFormattedTokenPrice({ val: balanceData });
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
@@ -39,8 +39,8 @@ export const WalletAccountDialog = () => {
       network={network || "celestia"}
       currency={currency || "USD"}
       balance={{
-        isLoading: isBalanceLoading,
-        error: balanceError,
+        isLoading: isBalanceLoading || false,
+        error: balanceError || null,
         balance: formattedBalance,
       }}
       disconnection={{

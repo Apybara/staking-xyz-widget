@@ -3,10 +3,10 @@
 import type { ReactNode } from "react";
 import type { WidgetProviderProps } from "../_contexts/WidgetContext/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { CosmosKitProvider } from "./CosmosKit";
 import { WidgetProvider } from "../_contexts/WidgetContext";
 import { WalletProvider } from "../_contexts/WalletContext";
 import { UIContextProvider } from "../_contexts/UIContext";
+import { CosmosProviders } from "./Cosmos";
 
 export const WidgetProviders = ({
   initialCoinPrice,
@@ -22,11 +22,11 @@ export const WidgetProviders = ({
   return (
     <QueryClientProvider client={queryClient}>
       <WidgetProvider initialCoinPrice={initialCoinPrice} isOnMobileDevice={isOnMobileDevice}>
-        <CosmosKitProvider walletConnectAPIKey={walletConnectAPIKey}>
+        <CosmosProviders walletConnectAPIKey={walletConnectAPIKey}>
           <WalletProvider>
             <UIContextProvider>{children}</UIContextProvider>
           </WalletProvider>
-        </CosmosKitProvider>
+        </CosmosProviders>
       </WidgetProvider>
     </QueryClientProvider>
   );

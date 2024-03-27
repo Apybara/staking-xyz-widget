@@ -1,74 +1,56 @@
-import type { CosmosNetwork } from "../../types";
+import type { CosmosNetwork, CosmosWalletType } from "../../types";
 import type {
+  UseWalletStates,
   UseWalletConnectors,
   UseWalletDisconnectors,
-  UseWalletBalanceGetters,
   UseWalletBalanceGettersProps,
 } from "./types";
-import { useQuery } from "@tanstack/react-query";
-import { getBalance } from "../cosmos";
-import { getIsCosmosNetwork } from "../cosmosKit";
-import { useCosmosKitConnectors, useCosmosKitDisconnector, useCosmosKitBalanceProps } from "../cosmosKit/hooks";
+import { getIsCosmosNetwork, getIsCosmosWalletType } from "../cosmos/utils";
+import {
+  useCosmosWalletStates,
+  useCosmosWalletBalance,
+  useCosmosWalletConnectors,
+  useCosmosWalletDisconnectors,
+} from "../cosmos/hooks";
+
+export const useWalletStates: UseWalletStates = ({ network }) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network);
+  const cosmosWalletStates = useCosmosWalletStates({ network });
+
+  if (isCosmosNetwork) return cosmosWalletStates;
+  return null;
+};
 
 export const useWalletConnectors: UseWalletConnectors = (network) => {
   const isCosmosNetwork = getIsCosmosNetwork(network);
-  const {
-    keplr: keplrConnect,
-    keplrMobile: keplrMobileConnect,
-    leap: leapConnect,
-    leapMobile: leapMobileConnect,
-    okx: okxConnect,
-  } = useCosmosKitConnectors(isCosmosNetwork ? (network as CosmosNetwork) : "celestia");
+  const cosmosConnectors = useCosmosWalletConnectors({
+    network: isCosmosNetwork ? (network as CosmosNetwork) : undefined,
+  });
 
   return {
-    keplr: keplrConnect,
-    keplrMobile: keplrMobileConnect,
-    leap: leapConnect,
-    leapMobile: leapMobileConnect,
-    okx: okxConnect,
+    ...cosmosConnectors,
   };
 };
 
 export const useWalletDisconnectors: UseWalletDisconnectors = (network) => {
-  const disconnect = useCosmosKitDisconnector({ network });
+  const isCosmosNetwork = getIsCosmosNetwork(network);
+  const cosmosDisconnectors = useCosmosWalletDisconnectors({
+    network: isCosmosNetwork ? (network as CosmosNetwork) : undefined,
+  });
 
   return {
-    keplr: disconnect,
-    keplrMobile: disconnect,
-    leap: disconnect,
-    leapMobile: disconnect,
-    okx: disconnect,
+    ...cosmosDisconnectors,
   };
 };
 
 export const useWalletBalance = ({ address, network, activeWallet }: UseWalletBalanceGettersProps) => {
-  const balanceGetters = useWalletBalanceGetters({ address, network: network || "celestia", activeWallet });
-  const getBalance = balanceGetters[network || "celestia"];
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["walletBalance", address, network],
-    queryFn: getBalance,
-    refetchOnWindowFocus: true,
-    refetchInterval: 30000,
-  });
-
-  return {
-    isLoading,
-    error,
-    data,
-  };
-};
-
-const useWalletBalanceGetters: UseWalletBalanceGetters = ({ address, network, activeWallet }) => {
-  const isCosmosNetwork = getIsCosmosNetwork(network);
-  const cosmosProps = useCosmosKitBalanceProps({
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const isCosmosWalletType = getIsCosmosWalletType(activeWallet || "");
+  const cosmosBalance = useCosmosWalletBalance({
     address,
-    network: isCosmosNetwork ? (network as CosmosNetwork) : "celestia",
-    activeWallet,
+    network,
+    activeWallet: isCosmosWalletType ? (activeWallet as CosmosWalletType) : null,
   });
 
-  return {
-    celestia: async () => await getBalance(cosmosProps),
-    celestiatestnet3: async () => await getBalance(cosmosProps),
-  };
+  if (isCosmosNetwork) return cosmosBalance;
 };

@@ -1,31 +1,39 @@
-import type { Network } from "../../types";
+import type { WalletStates } from "./types";
+import { useEffect } from "react";
 import { useWidget } from "../WidgetContext";
-import { getIsCosmosNetwork } from "../../_services/cosmosKit";
-import { useCosmosKitWalletSupports, useCosmosWalletStates } from "../../_services/cosmosKit/hooks";
+import { getIsCosmosNetwork } from "../../_services/cosmos/utils";
+import { useCosmosWalletStates, useCosmosWalletSupports } from "../../_services/cosmos/hooks";
 
-export const useWalletsSupport = (network?: Network) => {
-  const {
-    keplr: isKeplrSupported,
-    keplrMobile: isKeplrMobileSupported,
-    leap: isLeapSupported,
-    leapMobile: isLeapMobileSupported,
-    okx: isOkxSupported,
-  } = useCosmosKitWalletSupports(network || "celestia");
+export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
+  const { network } = useWidget();
+  const cosmosWalletsSupport = useCosmosWalletSupports(network || "celestia");
 
-  return {
-    keplr: isKeplrSupported,
-    keplrMobile: isKeplrMobileSupported,
-    leap: isLeapSupported,
-    leapMobile: isLeapMobileSupported,
-    okx: isOkxSupported,
-  };
+  useEffect(() => {
+    setStates({ walletsSupport: { ...cosmosWalletsSupport } });
+  }, [
+    cosmosWalletsSupport.keplr,
+    cosmosWalletsSupport.leap,
+    cosmosWalletsSupport.okx,
+    cosmosWalletsSupport.walletConnect,
+  ]);
+
+  return null;
 };
 
-export const useActiveWalletStates = () => {
+export const useActiveWalletStates = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const { network } = useWidget();
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
   const cosmosWalletStates = useCosmosWalletStates({ network: isCosmosNetwork ? network : undefined });
 
-  if (isCosmosNetwork) return cosmosWalletStates;
-  return null;
+  useEffect(() => {
+    if (isCosmosNetwork) {
+      setStates({ ...cosmosWalletStates });
+      return;
+    }
+  }, [
+    isCosmosNetwork,
+    cosmosWalletStates.activeWallet,
+    cosmosWalletStates.connectionStatus,
+    cosmosWalletStates.address,
+  ]);
 };

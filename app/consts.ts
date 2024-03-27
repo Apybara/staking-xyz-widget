@@ -39,7 +39,7 @@ export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
 export const currencyRegex = /\b(usd|eur|tia)\b/i;
 
-export const CosmosWalletVariants = ["keplr", "leap", "okx", "keplrMobile", "leapMobile"] as const;
+export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
 
 export const WalletVariants = [...cosmosWalletVariants] as const;
@@ -56,40 +56,54 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     name: "Keplr",
     logo: "/wallets/keplr.svg",
     downloadLink: "https://www.keplr.app/download",
-    isDesktopOnly: true,
+    devicesSupport: ["desktop"],
   },
   keplrMobile: {
     id: "keplrMobile",
-    name: "Keplr WalletConnect",
+    name: "Keplr mobile",
     logo: "/wallets/keplr.svg",
-    downloadLink: "https://www.keplr.app/download",
-    isDesktopOnly: false,
+    downloadLink: undefined,
+    devicesSupport: ["mobile"],
   },
   leap: {
     id: "leap",
     name: "Leap",
     logo: "/wallets/leap.svg",
     downloadLink: "https://www.leapwallet.io/download",
-    isDesktopOnly: true,
+    devicesSupport: ["desktop"],
   },
   leapMobile: {
     id: "leapMobile",
-    name: "Leap WalletConnect",
+    name: "Leap mobile",
     logo: "/wallets/leap.svg",
-    downloadLink: "https://www.leapwallet.io/download",
-    isDesktopOnly: false,
+    downloadLink: undefined,
+    devicesSupport: ["mobile"],
   },
   okx: {
     id: "okx",
     name: "OKX wallet",
     logo: "/wallets/okx.svg",
     downloadLink: "https://www.okx.com/download",
-    isDesktopOnly: true,
+    devicesSupport: ["desktop"],
+  },
+  walletConnect: {
+    id: "walletConnect",
+    name: "WalletConnect",
+    logo: "/wallets/wc.svg",
+    downloadLink: undefined,
+    devicesSupport: ["desktop"],
   },
 };
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
-  celestia: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.okx],
-  celestiatestnet3: [walletsInfo.keplr, walletsInfo.leap],
+  celestia: [
+    walletsInfo.keplr,
+    walletsInfo.leap,
+    walletsInfo.okx,
+    walletsInfo.keplrMobile,
+    walletsInfo.leapMobile,
+    walletsInfo.walletConnect,
+  ],
+  celestiatestnet3: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.keplrMobile, walletsInfo.leapMobile],
 };
 
 export const ConnectorVariants = ["cosmosKit"] as const;
