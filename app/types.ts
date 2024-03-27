@@ -27,8 +27,8 @@ export type WalletInfo = {
   id: WalletType;
   name: string;
   logo: string;
-  downloadLink: string;
-  isDesktopOnly: boolean;
+  downloadLink?: string;
+  devicesSupport: Array<Device>;
 };
 export type NetworkWalletType = {
   celestia: CosmosWalletType[];
@@ -40,6 +40,8 @@ export type RouterStruct = {
   searchParams?: {
     network?: string;
     currency?: string;
-    device?: "mobile" | "desktop";
+    device?: Device;
   };
 };
+
+type Device = "mobile" | "desktop";

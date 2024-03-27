@@ -1,23 +1,14 @@
-"use client";
-
 import type { ReactNode } from "react";
 import { assets, chains } from "chain-registry";
 import { ChainProvider } from "@cosmos-kit/react-lite";
-import { wallets as keplr } from "@cosmos-kit/keplr";
-import { wallets as leap } from "@cosmos-kit/leap";
+import { wallets as keplr } from "@cosmos-kit/keplr-extension";
+import { wallets as leap } from "@cosmos-kit/leap-extension";
 import { wallets as okxwallet } from "@cosmos-kit/okxwallet";
-import { WalletConnectionDialog } from "../_components/WalletConnectionDialog";
-import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from "../consts";
-import celestiatestnet3Chains from "../_services/cosmos/celestiatestnet3/chain.json";
-import celestiatestnet3AssetList from "../_services/cosmos/celestiatestnet3/assetlist.json";
+import { WalletConnectionDialog } from "../../_components/WalletConnectionDialog";
+import celestiatestnet3Chains from "../../_services/cosmos/celestiatestnet3/chain.json";
+import celestiatestnet3AssetList from "../../_services/cosmos/celestiatestnet3/assetlist.json";
 
-export const CosmosKitProvider = ({
-  walletConnectAPIKey,
-  children,
-}: {
-  walletConnectAPIKey: string;
-  children: ReactNode;
-}) => {
+export const CosmosKitProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ChainProvider
       chains={chainsList}
@@ -28,18 +19,6 @@ export const CosmosKitProvider = ({
         endpoints,
       }}
       walletModal={WalletConnectionDialog}
-      walletConnectOptions={{
-        signClient: {
-          projectId: walletConnectAPIKey,
-          relayUrl: "wss://relay.walletconnect.org",
-          metadata: {
-            name: SITE_TITLE,
-            description: SITE_DESCRIPTION,
-            url: SITE_URL,
-            icons: [""],
-          },
-        },
-      }}
       disableIframe={false}
       subscribeConnectEvents={true}
       // logLevel={"DEBUG"}

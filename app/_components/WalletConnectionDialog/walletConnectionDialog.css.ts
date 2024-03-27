@@ -68,3 +68,7 @@ export const list = style({
 globalStyle(`${list} > * + *`, {
   marginBlockStart: pxToRem(6),
 });
+
+export const cancelButton = style({
+  marginBlockStart: pxToRem(12),
+});

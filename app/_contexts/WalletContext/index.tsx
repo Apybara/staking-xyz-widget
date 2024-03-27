@@ -10,15 +10,13 @@ export const useWallet = () => useContext(WalletContext);
 export const WalletProvider = ({ children }: T.WalletProviderProps) => {
   const [states, setStates] = useReducer<T.UseWalletReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
-  const walletsSupport = useWalletsSupport();
-  const activeWalletStates = useActiveWalletStates();
+  useWalletsSupport({ setStates });
+  useActiveWalletStates({ setStates });
 
   return (
     <WalletContext.Provider
       value={{
         ...states,
-        ...activeWalletStates,
-        walletsSupport,
         setStates,
       }}
     >
@@ -34,6 +32,7 @@ const initialStates: T.WalletContext = {
     leap: null,
     leapMobile: null,
     okx: null,
+    walletConnect: null,
   },
   activeWallet: null,
   address: null,

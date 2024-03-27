@@ -3,8 +3,9 @@ import { useMemo } from "react";
 import cn from "classnames";
 import Image from "next/image";
 import * as Dialog from "../Dialog";
-import { LoadingSpinner } from "../LoadingSpinner";
+import { CTAButton } from "../CTAButton";
 import { MessageTag } from "../MessageTag";
+import { LoadingSpinner } from "../LoadingSpinner";
 import * as S from "./walletConnectionDialog.css";
 
 export type RootWalletConnectionDialogProps = {
@@ -22,6 +23,7 @@ export type RootWalletConnectionDialogProps = {
     onConnect: (wallet: WalletInfo) => void;
   };
   isOnMobileDevice?: boolean;
+  onCancelConnection?: () => void;
 };
 
 export const RootWalletConnectionDialog = ({
@@ -29,8 +31,11 @@ export const RootWalletConnectionDialog = ({
   wallets,
   connection,
   isOnMobileDevice,
+  onCancelConnection,
 }: RootWalletConnectionDialogProps) => {
-  const filteredWalletsByDevice = isOnMobileDevice ? wallets.filter((wallet) => !wallet.isDesktopOnly) : wallets;
+  const filteredWalletsByDevice = wallets.filter((wallet) =>
+    wallet.devicesSupport.includes(isOnMobileDevice ? "mobile" : "desktop"),
+  );
 
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
@@ -48,6 +53,11 @@ export const RootWalletConnectionDialog = ({
               </li>
             ))}
           </ul>
+          {isOnMobileDevice && connection.isLoading && (
+            <CTAButton variant="tertiary" onClick={onCancelConnection} className={cn(S.cancelButton)}>
+              Cancel connection
+            </CTAButton>
+          )}
         </Dialog.Content>
       </Dialog.Main>
     </Dialog.Root>
