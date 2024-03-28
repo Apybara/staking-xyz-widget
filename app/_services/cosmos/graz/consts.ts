@@ -1,8 +1,8 @@
 import type { ChainInfo } from "@keplr-wallet/types";
 import type { CosmosNetwork } from "../../../types";
-import { cosmosWalletVariants } from "../../../consts";
 
-export const grazWalletVariants = cosmosWalletVariants.filter((variant) => variant === "walletConnect");
+export const GrazWalletVariants = ["keplrMobile", "leapMobile", "walletConnect"] as const;
+export const grazWalletVariants = [...GrazWalletVariants];
 
 const celestia = {
   chainId: "celestia",

@@ -1,8 +1,8 @@
 import type { ChainWalletContext } from "@cosmos-kit/core";
 import type { WalletStates } from "../../../_contexts/WalletContext/types";
-import type { Network, CosmosNetwork } from "../../../types";
-import type { GetBalanceProps } from "../types";
+import type { Network, CosmosNetwork, CosmosWalletType } from "../../../types";
 import type { UseWalletBalanceGettersProps } from "../../wallet/types";
+import type { GetBalanceProps } from "../types";
 import type { CosmosKitWalletType } from "./types";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -34,7 +34,15 @@ export const useCosmosKitWalletSupports = () => {
   } as Record<CosmosKitWalletType, boolean>;
 };
 
-export const useCosmosKitError = ({ network, modalOpen }: { network?: Network | null; modalOpen: boolean }) => {
+export const useCosmosKitError = ({
+  network,
+  walletType,
+  modalOpen,
+}: {
+  network?: Network | null;
+  walletType: CosmosWalletType | null;
+  modalOpen: boolean;
+}) => {
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
   const { status, openView, closeView } = useChain(isCosmosNetwork ? network : "celestia");
 
@@ -47,7 +55,7 @@ export const useCosmosKitError = ({ network, modalOpen }: { network?: Network | 
     openView();
   }, [modalOpen]);
 
-  if (!isCosmosNetwork) return null;
+  if (!isCosmosNetwork || !getIsCosmosKitWalletType(walletType || "")) return null;
   return status === "Error" || status === "Rejected";
 };
 

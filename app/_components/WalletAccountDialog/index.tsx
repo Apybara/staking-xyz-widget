@@ -56,6 +56,7 @@ export const WalletAccountDialog = () => {
             setError(e as Error);
           } finally {
             setIsLoading(false);
+            toggleOpen(false);
           }
         },
       }}

@@ -1,3 +1,3 @@
-import type { grazWalletVariants } from "./consts";
+import type { GrazWalletVariants } from "./consts";
 
-export type GrazWalletType = (typeof grazWalletVariants)[number];
+export type GrazWalletType = (typeof GrazWalletVariants)[number];
