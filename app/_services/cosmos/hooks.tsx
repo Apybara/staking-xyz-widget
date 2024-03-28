@@ -66,7 +66,7 @@ export const useCosmosWalletDisconnectors = ({ network = "celestia" }: { network
 };
 
 export const useCosmosWalletSupports = (network: CosmosNetwork) => {
-  const { keplr: isKeplrSupported, leap: isLeapSupported, okx: isOkxSupported } = useCosmosKitWalletSupports(network);
+  const { keplr: isKeplrSupported, leap: isLeapSupported, okx: isOkxSupported } = useCosmosKitWalletSupports();
 
   return {
     keplr: isKeplrSupported,

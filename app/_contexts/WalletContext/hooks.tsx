@@ -12,7 +12,9 @@ export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setS
     setStates({ walletsSupport: { ...cosmosWalletsSupport } });
   }, [
     cosmosWalletsSupport.keplr,
+    cosmosWalletsSupport.keplrMobile,
     cosmosWalletsSupport.leap,
+    cosmosWalletsSupport.leapMobile,
     cosmosWalletsSupport.okx,
     cosmosWalletsSupport.walletConnect,
   ]);

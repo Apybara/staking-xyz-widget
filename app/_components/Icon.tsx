@@ -1,5 +1,5 @@
 export type IconProps = {
-  name: "chevron" | "copy" | "check";
+  name: "chevron" | "copy" | "check" | "external-link";
   size?: number;
 };
 

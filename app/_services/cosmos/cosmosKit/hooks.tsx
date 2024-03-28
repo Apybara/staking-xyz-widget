@@ -4,20 +4,33 @@ import type { Network, CosmosNetwork } from "../../../types";
 import type { GetBalanceProps } from "../types";
 import type { UseWalletBalanceGettersProps } from "../../wallet/types";
 import type { CosmosKitWalletType } from "./types";
-import { useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useChainWallet, useChain } from "@cosmos-kit/react-lite";
 import { getBalance } from "..";
 import { getIsCosmosNetwork } from "../utils";
 import { getIsCosmosKitWalletType } from "./utils";
 
-export const useCosmosKitWalletSupports = (network: CosmosNetwork) => {
-  const { keplr: keplrContext, leap: leapContext, okx: okxContext } = useCosmosKitWalletContexts(network);
+export const useCosmosKitWalletSupports = () => {
+  const [keplr, setKeplr] = useState(null);
+  const [leap, setLeap] = useState(null);
+  const [okx, setOkx] = useState(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // @ts-ignore
+    setKeplr(!!window.keplr);
+    // @ts-ignore
+    setLeap(!!window.leap);
+    // @ts-ignore
+    setOkx(!!window.okxwallet);
+  }, []);
 
   return {
-    keplr: keplrContext?.isWalletNotExist !== true,
-    leap: leapContext?.isWalletNotExist !== true,
-    okx: okxContext?.isWalletNotExist !== true,
+    keplr: keplr === true,
+    leap: leap === true,
+    okx: okx === true,
   } as Record<CosmosKitWalletType, boolean>;
 };
 
