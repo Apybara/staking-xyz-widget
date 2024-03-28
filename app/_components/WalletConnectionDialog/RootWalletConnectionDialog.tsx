@@ -2,6 +2,7 @@ import type { WalletInfo } from "../../types";
 import { useMemo } from "react";
 import cn from "classnames";
 import Image from "next/image";
+import { Icon } from "../Icon";
 import * as Dialog from "../Dialog";
 import { CTAButton } from "../CTAButton";
 import { MessageTag } from "../MessageTag";
@@ -89,7 +90,7 @@ const WalletCardButton = ({
         <p>{wallet.name}</p>
       </div>
       {connecting && <LoadingSpinner />}
-      {connection.error?.walletId === wallet.id && <MessageTag message="Failed" variant="warning" />}
+      {connection.error?.walletId === wallet.id && <MessageTag variant="warning">Faild</MessageTag>}
     </button>
   );
 };
@@ -97,10 +98,14 @@ const WalletCardButton = ({
 const WalletInstallButton = ({ wallet }: { wallet: Wallet }) => {
   return (
     <a className={cn(S.walletCardButton())} href={wallet.downloadLink} target="_blank" rel="noopener noreferrer">
-      <div className={cn(S.walletCardButtonInfo)}>
-        <Image src={wallet.logo} width={24} height={24} alt={`Logo of ${wallet.name}`} />
-        <p>Install {wallet.name}</p>
+      <div className={cn(S.walletInstallButtonInfo)}>
+        <Image src={wallet.logo} width={24} height={24} alt={`Logo of ${wallet.name}`} style={{ opacity: 0.8 }} />
+        <p>{wallet.name}</p>
       </div>
+      <MessageTag variant="neutral">
+        <span>Install</span>
+        <Icon name="external-link" size={10} />
+      </MessageTag>
     </a>
   );
 };

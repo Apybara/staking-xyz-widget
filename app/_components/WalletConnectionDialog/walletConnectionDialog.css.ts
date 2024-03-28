@@ -28,6 +28,13 @@ const baseWalletCardStyle = style({
 
 export const walletInstallButton = style([baseWalletCardStyle, {}]);
 
+export const walletInstallButtonInfo = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(10),
+  color: colors.black300,
+});
+
 export const walletCardButton = recipe({
   base: [
     baseWalletCardStyle,

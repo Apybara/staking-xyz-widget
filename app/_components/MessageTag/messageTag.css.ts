@@ -4,7 +4,10 @@ import { colors, weights } from "../../../theme/theme.css";
 
 export const tag = recipe({
   base: {
-    textAlign: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: pxToRem(2),
     fontSize: pxToRem(12),
     fontWeight: weights.semibold,
     lineHeight: 1,
