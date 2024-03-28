@@ -80,9 +80,17 @@ export const useCosmosKitDisconnector = ({ network = "celestia" }: { network?: C
 export const useCosmosKitWalletStates = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
   const { status, wallet, address } = useChain(network);
 
+  const walletName = useMemo<WalletStates["activeWallet"]>(() => {
+    if (wallet?.name === "keplr-extension") return "keplr";
+    if (wallet?.name === "leap-extension") return "leap";
+    if (wallet?.name === "okxwallet-extension") return "okx";
+    return null;
+  }, [wallet]);
+
   const connectionStatus = useMemo<WalletStates["connectionStatus"]>(() => {
     switch (status) {
       case "Connected":
+        if (!walletName || !address) return "disconnected";
         return "connected";
       case "Connecting":
         return "connecting";
@@ -93,14 +101,7 @@ export const useCosmosKitWalletStates = ({ network = "celestia" }: { network?: C
         return "disconnected";
     }
     return "disconnected";
-  }, [status]);
-
-  const walletName = useMemo<WalletStates["activeWallet"]>(() => {
-    if (wallet?.name === "keplr-extension") return "keplr";
-    if (wallet?.name === "leap-extension") return "leap";
-    if (wallet?.name === "okxwallet-extension") return "okx";
-    return null;
-  }, [wallet]);
+  }, [status, walletName, address]);
 
   return {
     activeWallet: walletName,
