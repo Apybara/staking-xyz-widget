@@ -1,3 +1,3 @@
-import type { cosmosKitWalletVariants } from "./consts";
+import type { CosmosKitWalletVariants } from "./consts";
 
-export type CosmosKitWalletType = (typeof cosmosKitWalletVariants)[number];
+export type CosmosKitWalletType = (typeof CosmosKitWalletVariants)[number];

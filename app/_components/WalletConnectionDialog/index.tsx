@@ -5,8 +5,8 @@ import { useDialog } from "../../_contexts/UIContext";
 import { useWidget } from "../../_contexts/WidgetContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_services/hooks";
-import { useWalletConnectors } from "../../_services/wallet/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
+import { useWalletConnectors, useIsWalletConnectingEagerly } from "../../_services/wallet/hooks";
 import { networkWalletInfos } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
 
@@ -18,21 +18,31 @@ export const WalletConnectionDialog = () => {
   const { walletsSupport, connectionStatus, activeWallet, setStates } = useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || "celestia");
-  const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open });
+  const isConnectingEagerly = useIsWalletConnectingEagerly();
+  const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open, walletType: connectingWallet });
 
   // Eager connection states
   useEffect(() => {
-    if (!open && connectionStatus === "connecting" && activeWallet) {
+    if (isConnectingEagerly) {
       toggleOpen(true);
       setError(null);
       setConnectingWallet(activeWallet);
     }
-  }, [activeWallet, connectionStatus]);
+  }, [isConnectingEagerly]);
 
   // Close the dialog when connected
   useEffect(() => {
-    if (open && connectionStatus === "connected") toggleOpen(false);
-  }, [open, connectionStatus]);
+    if (open && connectionStatus === "connected") {
+      if (isConnectingEagerly) {
+        toggleOpen(false);
+        return;
+      }
+
+      setTimeout(() => {
+        toggleOpen(false);
+      }, 800);
+    }
+  }, [open, connectionStatus, isConnectingEagerly]);
 
   // This is a hacky handling of the connection error with CosmosKit
   // because CosmosKit doesn't throw an error from the `connect` method.
@@ -63,6 +73,7 @@ export const WalletConnectionDialog = () => {
         ...wallet,
         isSupported: walletsSupport?.[wallet.id] || false,
         isConnecting: connectingWallet === wallet.id && connectionStatus === "connecting",
+        isConnected: activeWallet === wallet.id && connectionStatus === "connected",
       }))}
       connection={{
         isLoading: connectingWallet !== null && connectionStatus === "connecting",

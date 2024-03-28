@@ -41,7 +41,8 @@
     "react-dom": "^18",
     "react-loading-skeleton": "^3.4.0",
     "ua-parser-js": "^1.0.37",
-    "use-clipboard-copy": "^0.2.0"
+    "use-clipboard-copy": "^0.2.0",
+    "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
     "@chain-registry/types": "^0.18.3",

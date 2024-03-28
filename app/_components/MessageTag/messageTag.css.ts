@@ -25,6 +25,10 @@ export const tag = recipe({
         backgroundColor: colors.yellow100,
         color: colors.yellow900,
       },
+      success: {
+        backgroundColor: colors.green100,
+        color: colors.green900,
+      },
     },
   },
   defaultVariants: {

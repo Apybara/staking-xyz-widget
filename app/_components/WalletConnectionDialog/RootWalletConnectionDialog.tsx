@@ -91,6 +91,7 @@ const WalletCardButton = ({
       </div>
       {connecting && <LoadingSpinner />}
       {connection.error?.walletId === wallet.id && <MessageTag variant="warning">Faild</MessageTag>}
+      {wallet.isConnected && <MessageTag variant="success">Connected</MessageTag>}
     </button>
   );
 };
@@ -113,4 +114,5 @@ const WalletInstallButton = ({ wallet }: { wallet: Wallet }) => {
 type Wallet = WalletInfo & {
   isSupported: boolean;
   isConnecting: boolean;
+  isConnected: boolean;
 };

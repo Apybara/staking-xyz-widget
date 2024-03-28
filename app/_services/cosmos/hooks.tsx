@@ -1,6 +1,8 @@
 import type { CosmosNetwork, CosmosWalletType } from "../../types";
+import useLocalStorage from "use-local-storage";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import { useGrazConnectors, useGrazDisconnector, useGrazWalletBalance, useGrazWalletStates } from "./graz/hooks";
+import { cosmosNetworkVariants } from "../../consts";
 import {
   useCosmosKitConnectors,
   useCosmosKitDisconnector,
@@ -9,10 +11,39 @@ import {
   useCosmosKitWalletSupports,
 } from "./cosmosKit/hooks";
 
+export const useCosmosWalletHasStoredConnection = () => {
+  const [cosmosKitStorage] = useLocalStorage<
+    Array<{
+      address: string;
+      chainId: string;
+      namespace: string;
+      username: string;
+    }>
+  >("cosmos-kit@2:core//accounts", []);
+  const [grazStorage] = useLocalStorage<{
+    state: {
+      recentChainIds: Array<string> | null;
+      _reconnect: boolean | null;
+      _reconnectConnector: string | null;
+    };
+  }>("graz-internal", { state: { recentChainIds: null, _reconnect: null, _reconnectConnector: null } });
+
+  const isCosmosKitStored = cosmosKitStorage?.some((s) => cosmosNetworkVariants.some((v) => v === s.chainId));
+  const isGrazStored = grazStorage?.state?._reconnectConnector !== null;
+
+  return isCosmosKitStored || isGrazStored;
+};
+
 export const useCosmosWalletStates = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
   const cosmosKitStates = useCosmosKitWalletStates({ network });
   const grazStates = useGrazWalletStates({ network });
 
+  if (grazStates.activeWallet && grazStates.address) {
+    return grazStates;
+  }
+  if (cosmosKitStates.activeWallet && cosmosKitStates.address) {
+    return cosmosKitStates;
+  }
   return cosmosKitStates.activeWallet ? cosmosKitStates : grazStates;
 };
 

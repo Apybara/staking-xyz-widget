@@ -1,3 +1,2 @@
-import { cosmosWalletVariants } from "../../../consts";
-
-export const cosmosKitWalletVariants = cosmosWalletVariants.filter((variant) => variant !== "walletConnect");
+export const CosmosKitWalletVariants = ["keplr", "leap", "okx"] as const;
+export const cosmosKitWalletVariants = [...CosmosKitWalletVariants];
