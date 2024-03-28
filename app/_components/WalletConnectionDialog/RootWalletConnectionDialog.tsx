@@ -45,20 +45,20 @@ export const RootWalletConnectionDialog = ({
           <Dialog.Title className={cn(S.title)}>Select a wallet</Dialog.Title>
           <ul className={cn(S.list)}>
             {filteredWalletsByDevice.map((wallet) => (
-              <li key={"walletDialog-" + wallet.id}>
+              <li key={"walletDialog-" + wallet.id} className={cn(S.walletItem)}>
                 {wallet.isSupported ? (
-                  <WalletCardButton connection={connection} wallet={wallet} />
+                  <WalletCardButton
+                    connection={connection}
+                    wallet={wallet}
+                    isOnMobileDevice={isOnMobileDevice}
+                    onCancelConnection={onCancelConnection}
+                  />
                 ) : (
                   <WalletInstallButton wallet={wallet} />
                 )}
               </li>
             ))}
           </ul>
-          {isOnMobileDevice && connection.isLoading && (
-            <CTAButton variant="tertiary" onClick={onCancelConnection} className={cn(S.cancelButton)}>
-              Cancel connection
-            </CTAButton>
-          )}
         </Dialog.Content>
       </Dialog.Main>
     </Dialog.Root>
@@ -68,11 +68,14 @@ export const RootWalletConnectionDialog = ({
 const WalletCardButton = ({
   connection,
   wallet,
-}: Pick<RootWalletConnectionDialogProps, "connection"> & {
+  isOnMobileDevice,
+  onCancelConnection,
+}: Pick<RootWalletConnectionDialogProps, "connection" | "isOnMobileDevice" | "onCancelConnection"> & {
   wallet: Wallet;
 }) => {
   const connecting = connection.isLoading && wallet.isConnecting;
   const disabled = connection.isLoading && !wallet.isConnecting;
+  const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
     if (connecting) return "loading";
     if (disabled) return "disabled";
@@ -80,19 +83,26 @@ const WalletCardButton = ({
   }, [connecting, disabled]);
 
   return (
-    <button
-      className={cn(S.walletCardButton({ state }))}
-      onClick={() => connection.onConnect(wallet)}
-      disabled={disabled || connecting}
-    >
-      <div className={cn(S.walletCardButtonInfo)}>
-        <Image src={wallet.logo} width={24} height={24} alt={`Logo of ${wallet.name}`} />
-        <p>{wallet.name}</p>
-      </div>
-      {connecting && <LoadingSpinner />}
-      {connection.error?.walletId === wallet.id && <MessageTag variant="warning">Faild</MessageTag>}
-      {wallet.isConnected && <MessageTag variant="success">Connected</MessageTag>}
-    </button>
+    <>
+      <button
+        className={cn(S.walletCardButton({ state, hasCancelButton: showCancel }))}
+        onClick={() => connection.onConnect(wallet)}
+        disabled={disabled || connecting}
+      >
+        <div className={cn(S.walletCardButtonInfo)}>
+          <Image src={wallet.logo} width={24} height={24} alt={`Logo of ${wallet.name}`} />
+          <p>{wallet.name}</p>
+        </div>
+        {connecting && <LoadingSpinner />}
+        {connection.error?.walletId === wallet.id && <MessageTag variant="warning">Failed</MessageTag>}
+        {wallet.isConnected && <MessageTag variant="success">Connected</MessageTag>}
+      </button>
+      {showCancel && (
+        <button onClick={onCancelConnection} className={cn(S.cancelButton)}>
+          <Icon name="cross" size={14} />
+        </button>
+      )}
+    </>
   );
 };
 

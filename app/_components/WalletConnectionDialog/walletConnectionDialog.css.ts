@@ -56,10 +56,21 @@ export const walletCardButton = recipe({
         opacity: 0.3,
       },
     },
+    hasCancelButton: {
+      true: {
+        paddingInlineEnd: pxToRem(28),
+      },
+      false: {},
+    },
   },
   defaultVariants: {
     state: "default",
+    hasCancelButton: false,
   },
+});
+
+export const walletItem = style({
+  position: "relative",
 });
 
 export const walletCardButtonInfo = style({
@@ -77,5 +88,16 @@ globalStyle(`${list} > * + *`, {
 });
 
 export const cancelButton = style({
-  marginBlockStart: pxToRem(12),
+  position: "absolute",
+  insetInlineEnd: pxToRem(10),
+  insetBlockStart: `calc(50% - ${pxToRem(14 / 2)})`,
+  cursor: "pointer",
+  color: colors.black300,
+  lineHeight: 0,
+
+  selectors: {
+    "&:hover": {
+      color: colors.black000,
+    },
+  },
 });

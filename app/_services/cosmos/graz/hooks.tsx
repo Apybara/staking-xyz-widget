@@ -67,6 +67,8 @@ export const useGrazWalletStates = ({ network = "celestia" }: { network?: Cosmos
     if (!walletType) return null;
 
     if (walletType === WalletType.WALLETCONNECT) return "walletConnect";
+    if (walletType === WalletType.WC_KEPLR_MOBILE) return "keplrMobile";
+    if (walletType === WalletType.WC_LEAP_MOBILE) return "leapMobile";
     return null;
   }, [walletType]);
 
