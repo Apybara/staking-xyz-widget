@@ -60,10 +60,10 @@ const CurrencySelect = ({ activeCurrency, activeNetworkDenom, onCurrencyChange }
       items={
         <>
           <Select.Item className={cn(S.selectOptionText)} value="USD">
-            <Select.ItemText>USD</Select.ItemText>
+            <Select.ItemText>{CurrencyMap.USD}</Select.ItemText>
           </Select.Item>
           <Select.Item className={cn(S.selectOptionText)} value="EUR">
-            <Select.ItemText>EUR</Select.ItemText>
+            <Select.ItemText>{CurrencyMap.EUR}</Select.ItemText>
           </Select.Item>
           {activeNetworkDenom && (
             <Select.Item className={cn(S.selectOptionText)} value={activeNetworkDenom}>
