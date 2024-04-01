@@ -5,6 +5,7 @@ import { UAParser } from "ua-parser-js";
 import { WidgetProviders } from "../_providers/WidgetProviders";
 import { Header } from "../_components/Header";
 import { Footer } from "../_components/Footer";
+import { WidgetShell } from "../_components/WidgetShell";
 import { WalletAccountDialog } from "../_components/WalletAccountDialog";
 import { WalletConnectionDialog } from "../_components/WalletConnectionDialog";
 import { getAllCoinPrices } from "../_services/coinMarketCap";
@@ -14,7 +15,9 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <Base>
       <Header />
-      <main className={cn(S.main)}>{children}</main>
+      <main className={cn(S.main)}>
+        <WidgetShell>{children}</WidgetShell>
+      </main>
       <Footer />
     </Base>
   );
