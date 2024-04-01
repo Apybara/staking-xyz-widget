@@ -1,24 +1,21 @@
 import type * as T from "./types";
 
 import { createContext, useContext, useReducer } from "react";
-import { useActiveCurrency, useActiveNetwork } from "./hooks";
+import { useWidgetRouterGate } from "./hooks";
 
 const WidgetContext = createContext({} as T.WidgetContext);
 
 export const useWidget = () => useContext(WidgetContext);
 
-export const WidgetProvider = ({ initialCoinPrice, isOnMobileDevice, children }: T.WidgetProviderProps) => {
+export const WidgetProvider = ({ children }: T.WidgetProviderProps) => {
   const [states, setStates] = useReducer<T.UseWidgetReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
-  useActiveCurrency({ setStates });
-  useActiveNetwork({ setStates });
+  useWidgetRouterGate({ status: states.status, setStates });
 
   return (
     <WidgetContext.Provider
       value={{
         ...states,
-        coinPrice: initialCoinPrice || states.coinPrice,
-        isOnMobileDevice,
         setStates,
       }}
     >
@@ -28,9 +25,6 @@ export const WidgetProvider = ({ initialCoinPrice, isOnMobileDevice, children }:
 };
 
 const initialStates: T.WidgetContext = {
-  network: null,
-  currency: null,
-  coinPrice: null,
-  isOnMobileDevice: undefined,
+  status: "loading",
   setStates: () => {},
 };

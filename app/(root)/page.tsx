@@ -2,7 +2,7 @@ import type { RouterStruct } from "../types";
 import cn from "classnames";
 import redirectPage from "../_actions/redirectPage";
 import revalidatePageQueries from "../_actions/revalidatePageQueries";
-import { WidgetTop } from "./_components/WidgetTop";
+import { DefaultViewTop } from "./_components/WidgetTop";
 import { WalletConnectionCardButton } from "./_components/WalletConnectionCardButton/index";
 import * as NavCard from "./_components/NavCard";
 import * as S from "./root.css";
@@ -13,8 +13,8 @@ export default async function Home({ searchParams }: RouterStruct) {
   await revalidatePageQueries(network);
 
   return (
-    <div className={cn(S.widgetContainer)}>
-      <WidgetTop />
+    <>
+      <DefaultViewTop />
       <WalletConnectionCardButton />
       <nav className={cn(S.nav)}>
         <NavCard.Stake searchParams={searchParams} />
@@ -29,6 +29,6 @@ export default async function Home({ searchParams }: RouterStruct) {
         />
         <NavCard.Activity searchParams={searchParams} disabled />
       </nav>
-    </div>
+    </>
   );
 }

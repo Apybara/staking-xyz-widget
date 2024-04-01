@@ -1,12 +1,12 @@
 "use client";
 import { useDialog } from "../../_contexts/UIContext";
+import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useWidget } from "../../_contexts/WidgetContext";
 import { walletsInfo } from "../../consts";
 import { RootWalletCapsule } from "./RootWalletCapsule";
 
 export const WalletCapsule = () => {
-  const { network } = useWidget();
+  const { network } = useShell();
   const { connectionStatus, activeWallet, address } = useWallet();
   const { toggleOpen: toggleWalletConnectionDialog } = useDialog("walletConnection");
   const { toggleOpen: toggleWalletAccountDialog } = useDialog("walletAccount");

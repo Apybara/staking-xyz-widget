@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <Base>
       <Header />
       <main className={cn(S.main)}>
-        <WidgetShell>{children}</WidgetShell>
+        <WidgetShell className={cn(S.widgetContainer)}>{children}</WidgetShell>
       </main>
       <Footer />
     </Base>
