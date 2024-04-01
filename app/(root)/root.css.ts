@@ -10,5 +10,17 @@ export const base = style({
 
 export const main = style({
   margin: "auto",
-  paddingInline: pxToRem(20),
+  paddingInline: pxToRem(10),
+});
+
+export const widgetContainer = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: pxToRem(16),
+});
+
+export const nav = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: pxToRem(8),
 });
