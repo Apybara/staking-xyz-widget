@@ -2,11 +2,11 @@
 import type { WalletType } from "../../types";
 import { useEffect, useState } from "react";
 import { useDialog } from "../../_contexts/UIContext";
-import { useWidget } from "../../_contexts/WidgetContext";
+import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useProceduralStates } from "../../_services/hooks";
+import { useProceduralStates } from "../../_utils/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
-import { useWalletConnectors, useIsWalletConnectingEagerly } from "../../_services/wallet/hooks";
+import { useWalletConnectors } from "../../_services/wallet/hooks";
 import { networkWalletInfos } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
 
@@ -14,26 +14,25 @@ export const WalletConnectionDialog = () => {
   const [connectingWallet, setConnectingWallet] = useState<WalletType | null>(null);
   const { error, setError } = useProceduralStates();
 
-  const { network, isOnMobileDevice } = useWidget();
-  const { walletsSupport, connectionStatus, activeWallet, setStates } = useWallet();
+  const { network, isOnMobileDevice } = useShell();
+  const { walletsSupport, connectionStatus, activeWallet, isEagerlyConnecting, setStates } = useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || "celestia");
-  const isConnectingEagerly = useIsWalletConnectingEagerly();
   const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open, walletType: connectingWallet });
 
   // Eager connection states
   useEffect(() => {
-    if (isConnectingEagerly) {
+    if (isEagerlyConnecting) {
       toggleOpen(true);
       setError(null);
       setConnectingWallet(activeWallet);
     }
-  }, [isConnectingEagerly]);
+  }, [isEagerlyConnecting]);
 
   // Close the dialog when connected
   useEffect(() => {
     if (open && connectionStatus === "connected") {
-      if (isConnectingEagerly) {
+      if (isEagerlyConnecting) {
         toggleOpen(false);
         return;
       }
@@ -42,7 +41,7 @@ export const WalletConnectionDialog = () => {
         toggleOpen(false);
       }, 800);
     }
-  }, [open, connectionStatus, isConnectingEagerly]);
+  }, [open, connectionStatus, isEagerlyConnecting]);
 
   // This is a hacky handling of the connection error with CosmosKit
   // because CosmosKit doesn't throw an error from the `connect` method.

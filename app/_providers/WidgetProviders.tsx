@@ -1,11 +1,12 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { WidgetProviderProps } from "../_contexts/WidgetContext/types";
+import type { ShellProviderProps } from "../_contexts/ShellContext/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WidgetProvider } from "../_contexts/WidgetContext";
+import { ShellProvider } from "../_contexts/ShellContext";
 import { WalletProvider } from "../_contexts/WalletContext";
 import { UIContextProvider } from "../_contexts/UIContext";
+import { WidgetProvider } from "../_contexts/WidgetContext";
 import { CosmosProviders } from "./Cosmos";
 
 export const WidgetProviders = ({
@@ -14,20 +15,22 @@ export const WidgetProviders = ({
   walletConnectAPIKey,
   children,
 }: {
-  initialCoinPrice: WidgetProviderProps["initialCoinPrice"];
-  isOnMobileDevice: WidgetProviderProps["isOnMobileDevice"];
+  initialCoinPrice: ShellProviderProps["initialCoinPrice"];
+  isOnMobileDevice: ShellProviderProps["isOnMobileDevice"];
   walletConnectAPIKey: string;
   children: ReactNode;
 }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <WidgetProvider initialCoinPrice={initialCoinPrice} isOnMobileDevice={isOnMobileDevice}>
+      <ShellProvider initialCoinPrice={initialCoinPrice} isOnMobileDevice={isOnMobileDevice}>
         <CosmosProviders walletConnectAPIKey={walletConnectAPIKey}>
           <WalletProvider>
-            <UIContextProvider>{children}</UIContextProvider>
+            <UIContextProvider>
+              <WidgetProvider>{children}</WidgetProvider>
+            </UIContextProvider>
           </WalletProvider>
         </CosmosProviders>
-      </WidgetProvider>
+      </ShellProvider>
     </QueryClientProvider>
   );
 };

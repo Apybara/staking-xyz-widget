@@ -1,12 +1,12 @@
 "use client";
 
 import BigNumber from "bignumber.js";
-import { useWidget } from "../../_contexts/WidgetContext";
+import { useShell } from "../../_contexts/ShellContext";
 import { networkDenom } from "../../consts";
 import { getFormattedTokenValue, getFormattedCoinPrice } from ".";
 
 export const useFormattedTokenPrice = ({ val }: { val?: string | number }) => {
-  const { network, currency, coinPrice } = useWidget();
+  const { network, currency, coinPrice } = useShell();
   const castedNetwork = network || "celestia";
   const castedCurrency = currency || networkDenom[castedNetwork];
   const isFiatCurrency = castedCurrency === "USD" || castedCurrency === "EUR";

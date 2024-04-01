@@ -1,7 +1,7 @@
 "use client";
 
 import { RootHeader } from "./RootHeader";
-import { useNetworkChange, useCurrencyChange } from "../../_contexts/WidgetContext/hooks";
+import { useNetworkChange, useCurrencyChange } from "../../_contexts/ShellContext/hooks";
 
 export const Header = () => {
   const { activeNetwork, onUpdateRouter: onNetworkRouterUpdate } = useNetworkChange();

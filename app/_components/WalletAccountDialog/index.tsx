@@ -1,15 +1,15 @@
 "use client";
 import { useDialog } from "../../_contexts/UIContext";
-import { useWidget } from "../../_contexts/WidgetContext";
+import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useProceduralStates } from "../../_services/hooks";
+import { useProceduralStates } from "../../_utils/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { useFormattedTokenPrice } from "../../_utils/conversions/hooks";
 import { walletsInfo } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
 
 export const WalletAccountDialog = () => {
-  const { network, currency } = useWidget();
+  const { network, currency } = useShell();
   const { activeWallet, address } = useWallet();
   const {
     data: balanceData,
