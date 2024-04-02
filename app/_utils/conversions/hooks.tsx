@@ -1,5 +1,3 @@
-"use client";
-
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { networkDenom } from "../../consts";

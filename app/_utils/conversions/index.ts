@@ -3,7 +3,7 @@ import numbro from "numbro";
 import { BaseCurrency } from "../../types";
 
 export const getFormattedCoinPrice = ({ val, price, currency, options }: GetPriceProps) => {
-  const value = new BigNumber(val).multipliedBy(price).toNumber();
+  const value = getCoinPriceFromToken({ val, price });
   return getCurrencyValue({
     val: value,
     locale: localeMap[currency],
@@ -11,8 +11,7 @@ export const getFormattedCoinPrice = ({ val, price, currency, options }: GetPric
     capAtTrillion: options?.capAtTrillion,
   });
 };
-
-const getCurrencyValue = ({ val, locale, formatOptions, capAtTrillion = true }: CurrencyPriceProps) => {
+export const getCurrencyValue = ({ val, locale, formatOptions, capAtTrillion = true }: CurrencyPriceProps) => {
   numbro.setLanguage(locale || "en-US");
 
   if (capAtTrillion && val >= 1e12) {
@@ -29,6 +28,16 @@ const getCurrencyValue = ({ val, locale, formatOptions, capAtTrillion = true }: 
     .toUpperCase();
 };
 
+export const getCoinPriceFromToken = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
+  const value = new BigNumber(val).multipliedBy(price).toNumber();
+  return value;
+};
+
+export const getTokenValueFromFiat = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
+  const value = new BigNumber(val).dividedBy(price).toNumber();
+  return value;
+};
+
 export const getFormattedTokenValue = ({
   val,
   formatOptions,
@@ -39,7 +48,7 @@ export const getFormattedTokenValue = ({
     return "<0.01";
   }
   if (capAtTrillion && val >= 1e12) {
-    return `>1.0T ${formatOptions?.currencySymbol || "$"}`;
+    return `>1.0T ${formatOptions?.currencySymbol || ""}`;
   }
 
   return numbro(val)

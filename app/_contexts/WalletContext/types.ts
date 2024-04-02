@@ -1,5 +1,5 @@
 import type { Dispatch, Reducer, ReactNode } from "react";
-import type { WalletType } from "../../types";
+import type { WalletType, WalletConnectionStatus } from "../../types";
 
 export type WalletContext = WalletStates & {};
 
@@ -7,7 +7,7 @@ export type WalletStates = {
   walletsSupport: Record<WalletType, boolean | null>;
   activeWallet: WalletType | null;
   address: string | null;
-  connectionStatus: "connecting" | "connected" | "disconnecting" | "disconnected";
+  connectionStatus: WalletConnectionStatus;
   isEagerlyConnecting: boolean;
   connectedAddress: Array<string>;
   setStates: Dispatch<Partial<WalletStates>>;
