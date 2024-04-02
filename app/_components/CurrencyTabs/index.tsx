@@ -1,11 +1,12 @@
-import type { Currency } from "../../types";
+import type { Currency, NetworkDenom } from "../../types";
 import cn from "classnames";
 import * as Select from "../Select";
+import { currencyMap } from "../../consts";
 import * as S from "./currencyTabs.css";
 
 export type CurrencyTabsProps = {
   activeCurrency: Currency;
-  activeNetworkDenom: string | null;
+  activeNetworkDenom: NetworkDenom | null;
   onCurrencyChange: (currency: Currency) => void;
 };
 
@@ -18,7 +19,7 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyCha
             className={cn(S.tabButton({ state: activeCurrency === "EUR" ? "highlighted" : "default" }))}
             onClick={() => onCurrencyChange("EUR")}
           >
-            {CurrencyMap.EUR}
+            {currencyMap.EUR}
           </button>
         </li>
         <li>
@@ -26,7 +27,7 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyCha
             className={cn(S.tabButton({ state: activeCurrency === "USD" ? "highlighted" : "default" }))}
             onClick={() => onCurrencyChange("USD")}
           >
-            {CurrencyMap.USD}
+            {currencyMap.USD}
           </button>
         </li>
         {activeNetworkDenom && (
@@ -60,10 +61,10 @@ const CurrencySelect = ({ activeCurrency, activeNetworkDenom, onCurrencyChange }
       items={
         <>
           <Select.Item className={cn(S.selectOptionText)} value="USD">
-            <Select.ItemText>{CurrencyMap.USD}</Select.ItemText>
+            <Select.ItemText>{currencyMap.USD}</Select.ItemText>
           </Select.Item>
           <Select.Item className={cn(S.selectOptionText)} value="EUR">
-            <Select.ItemText>{CurrencyMap.EUR}</Select.ItemText>
+            <Select.ItemText>{currencyMap.EUR}</Select.ItemText>
           </Select.Item>
           {activeNetworkDenom && (
             <Select.Item className={cn(S.selectOptionText)} value={activeNetworkDenom}>
@@ -74,9 +75,4 @@ const CurrencySelect = ({ activeCurrency, activeNetworkDenom, onCurrencyChange }
       }
     />
   );
-};
-
-const CurrencyMap = {
-  USD: "$",
-  EUR: "€",
 };

@@ -1,8 +1,12 @@
-import type { Network, NetworkInfo, WalletInfo, WalletType } from "./types";
+import type { Network, NetworkInfo, NetworkDenom, WalletInfo, WalletType } from "./types";
 
 export const NetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
-export const networkDenom: Record<Network, string> = {
+
+export const NetworkDenomVariants = ["TIA"] as const;
+export const networkDenomVariants = [...NetworkDenomVariants];
+
+export const networkDenom: Record<Network, NetworkDenom> = {
   celestia: "TIA",
   celestiatestnet3: "TIA",
 };
@@ -38,6 +42,10 @@ export const networkWalletPrefixes: Record<Network, string> = {
 export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
 export const currencyRegex = /\b(usd|eur|tia)\b/i;
+export const currencyMap = {
+  USD: "$",
+  EUR: "€",
+};
 
 export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
@@ -108,6 +116,16 @@ export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
 
 export const ConnectorVariants = ["cosmosKit"] as const;
 export const connectorVariants = [...ConnectorVariants];
+
+export const feeRatioByNetwork: Record<Network, number> = {
+  celestia: 0.15,
+  celestiatestnet3: 0.15,
+};
+
+export const unstakingPeriodByNetwork: Record<Network, string> = {
+  celestia: "21 days",
+  celestiatestnet3: "21 days",
+};
 
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking";
