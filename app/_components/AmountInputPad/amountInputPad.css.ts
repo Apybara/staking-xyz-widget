@@ -59,7 +59,7 @@ export const topBar = style({
 });
 
 export const maxButton = style({
-  fontSize: pxToRem(14),
+  fontSize: pxToRem(12),
   fontWeight: weights.semibold,
   textAlign: "center",
   lineHeight: 1,

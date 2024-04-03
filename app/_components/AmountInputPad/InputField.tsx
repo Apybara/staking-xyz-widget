@@ -34,10 +34,15 @@ const HTMLInputField = forwardRef<HTMLInputElement, HTMLInputFieldProps>(({ clas
       maxLength={79}
       spellCheck={false}
       className={cn(S.htmlInputField, className)}
-      style={{ marginInlineEnd: props.value === "" || props.value === "0" ? -12 : 0 }}
+      style={{ marginInlineEnd: getOffsetInputValue(props.value as string) }}
       {...props}
     />
   );
 });
+
+const getOffsetInputValue = (value: string) => {
+  if (!value || value === "" || value === "0") return -12;
+  return value.includes(".") || value.includes(",") ? -12 : -3;
+};
 
 type HTMLInputFieldProps = InputHTMLAttributes<HTMLInputElement>;

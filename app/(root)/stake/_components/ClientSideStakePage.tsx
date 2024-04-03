@@ -5,6 +5,8 @@ import { StakingProvider } from "../../_contexts/StakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
 import { StakeAmountInputPad } from "./StakeAmountInputPad";
 import { StakeInfoBox } from "./StakeInfoBox";
+import { StakeCTA } from "./StakeCTA";
+import { bottomBox } from "./stake.css";
 
 export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
   return (
@@ -12,6 +14,9 @@ export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStru
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <StakeAmountInputPad />
       <StakeInfoBox />
+      <div className={bottomBox}>
+        <StakeCTA />
+      </div>
     </StakingProvider>
   );
 };

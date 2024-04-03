@@ -24,6 +24,11 @@ export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: Amo
   }, [primaryValue]);
 
   useEffect(() => {
+    if (primaryValue === "") {
+      onDenomValueChange("");
+      return;
+    }
+
     if (primaryCurrency !== "USD" && primaryCurrency !== "EUR") {
       onDenomValueChange(primaryValue);
       return;
@@ -46,7 +51,12 @@ export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: Amo
         },
       });
     }
-    return getFormattedTokenValue({ val: BigNumber(secondaryValue).toNumber() });
+    return getFormattedTokenValue({
+      val: BigNumber(secondaryValue).toNumber(),
+      formatOptions: {
+        average: true,
+      },
+    });
   }, [secondaryValue, secondaryCurrency]);
 
   return (
