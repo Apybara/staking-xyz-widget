@@ -79,21 +79,33 @@ export const useInputStates = () => {
     switch (primaryCurrency) {
       case "USD":
         if (previousPrimaryCurrency === "EUR") {
-          const newPrimaryValue = getFiatValueFromFiat({ fromDenomValue: secondaryValue, targetFiatPrice: usdPrice });
+          const newPrimaryValue = getPrimaryFiatValueFromSecondaryDenom({
+            secondaryDenom: secondaryValue,
+            targetFiatPrice: usdPrice,
+          });
           setPrimaryValue(newPrimaryValue);
           break;
         } else {
-          const newPrimaryValue = getPrimaryFiatValueFromSecondaryFiat({ secondaryFiatValue: secondaryValue });
+          const newPrimaryValue = getPrimaryFiatValueFromPrimaryDenom({
+            primaryDenom: primaryValue,
+            targetFiatPrice: usdPrice,
+          });
           setPrimaryValue(newPrimaryValue);
           break;
         }
       case "EUR":
         if (previousPrimaryCurrency === "USD") {
-          const newPrimaryValue = getFiatValueFromFiat({ fromDenomValue: secondaryValue, targetFiatPrice: eurPrice });
+          const newPrimaryValue = getPrimaryFiatValueFromSecondaryDenom({
+            secondaryDenom: secondaryValue,
+            targetFiatPrice: eurPrice,
+          });
           setPrimaryValue(newPrimaryValue);
           break;
         } else {
-          const newPrimaryValue = getPrimaryFiatValueFromSecondaryFiat({ secondaryFiatValue: secondaryValue });
+          const newPrimaryValue = getPrimaryFiatValueFromPrimaryDenom({
+            primaryDenom: primaryValue,
+            targetFiatPrice: eurPrice,
+          });
           setPrimaryValue(newPrimaryValue);
           break;
         }
@@ -177,41 +189,52 @@ export const useInputStates = () => {
   };
 };
 
-const getFiatValueFromFiat = ({
-  fromDenomValue,
+const getPrimaryFiatValueFromSecondaryDenom = ({
+  secondaryDenom,
   targetFiatPrice,
 }: {
-  fromDenomValue: string;
+  secondaryDenom: string;
   targetFiatPrice: number;
 }) => {
   const newValue = getCoinPriceFromToken({
-    val: fromDenomValue,
+    val: secondaryDenom,
     price: targetFiatPrice,
   });
   return numbro(newValue).format({
-    average: true,
-    mantissa: 4,
+    mantissa: 2,
   });
 };
 
-const getPrimaryFiatValueFromSecondaryFiat = ({ secondaryFiatValue }: { secondaryFiatValue: string }) => {
-  return numbro(BigNumber(secondaryFiatValue).toNumber()).format({
-    average: true,
+const getPrimaryFiatValueFromPrimaryDenom = ({
+  primaryDenom,
+  targetFiatPrice,
+}: {
+  primaryDenom: string;
+  targetFiatPrice: number;
+}) => {
+  const newValue = getCoinPriceFromToken({
+    val: primaryDenom,
+    price: targetFiatPrice,
+  });
+  return numbro(newValue).format({
     mantissa: 2,
   });
 };
 
 const getPrimaryDenomValueFromSecondaryDenom = ({ secondaryDenomValue }: { secondaryDenomValue: string }) => {
   return numbro(BigNumber(secondaryDenomValue).toNumber()).format({
-    average: true,
-    mantissa: 6,
+    mantissa: 2,
   });
 };
 const getSecondaryDenomValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatValue: string; fiatPrice: number }) => {
-  return getTokenValueFromFiat({
-    val: fiatValue,
-    price: fiatPrice,
-  }).toString();
+  return numbro(
+    getTokenValueFromFiat({
+      val: fiatValue,
+      price: fiatPrice,
+    }),
+  ).format({
+    mantissa: 2,
+  });
 };
 const getSecondaryFiatValueFromPrimaryDenom = ({
   denomValue,
@@ -220,10 +243,14 @@ const getSecondaryFiatValueFromPrimaryDenom = ({
   denomValue: string;
   fiatPrice: number;
 }) => {
-  return getCoinPriceFromToken({
-    val: denomValue,
-    price: fiatPrice,
-  }).toString();
+  return numbro(
+    getCoinPriceFromToken({
+      val: denomValue,
+      price: fiatPrice,
+    }),
+  ).format({
+    mantissa: 2,
+  });
 };
 const getMaxFiatValueFromDenom = ({ maxValue, fiatPrice }: { maxValue: string; fiatPrice: number }) => {
   const newMaxValue = getCoinPriceFromToken({
@@ -231,13 +258,11 @@ const getMaxFiatValueFromDenom = ({ maxValue, fiatPrice }: { maxValue: string; f
     price: fiatPrice,
   });
   return numbro(newMaxValue).format({
-    average: true,
-    mantissa: 4,
+    mantissa: 2,
   });
 };
 const getMaxDenomValueFromDenom = ({ maxValue }: { maxValue: string }) => {
   return numbro(BigNumber(maxValue).toNumber()).format({
-    average: true,
-    mantissa: 6,
+    mantissa: 2,
   });
 };

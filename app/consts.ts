@@ -118,8 +118,8 @@ export const ConnectorVariants = ["cosmosKit"] as const;
 export const connectorVariants = [...ConnectorVariants];
 
 export const feeRatioByNetwork: Record<Network, number> = {
-  celestia: 0.15,
-  celestiatestnet3: 0.15,
+  celestia: 0.3,
+  celestiatestnet3: 0.3,
 };
 
 export const unstakingPeriodByNetwork: Record<Network, string> = {

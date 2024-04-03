@@ -19,7 +19,9 @@ export const StakeAmountInputPad = () => {
     <AmountInputPad
       type="stake"
       availableValue={balanceData}
-      onDenomValueChange={(val) => setStates({ denomAmountInput: val })}
+      onDenomValueChange={(val) => {
+        setStates({ denomAmountInput: val });
+      }}
     />
   );
 };

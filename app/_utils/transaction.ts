@@ -13,7 +13,8 @@ export const getBasicAmountValidation = ({
   max?: string;
   buffer?: string;
 }): BasicAmountValidationResult => {
-  if (!amount || amount === "") return "empty";
+  console.log(amount);
+  if (!amount || amount === "" || amount === "0") return "empty";
 
   const parsedAmount = BigNumber(amount);
 
@@ -59,4 +60,12 @@ export type BasicAmountValidationResult =
   | "exceeded"
   | "bufferExceeded";
 
-export type BasicTxCtaValidationResult = BasicAmountValidationResult | "disconnected" | "connecting" | "submittable";
+export type BasicTxCtaValidationResult =
+  | "empty"
+  | "invalid"
+  | "insufficient"
+  | "exceeded"
+  | "bufferExceeded"
+  | "disconnected"
+  | "connecting"
+  | "submittable";

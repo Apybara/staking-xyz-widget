@@ -10,7 +10,7 @@ import { rewardInfoValue } from "./stake.css";
 
 export const StakeInfoBox = () => {
   const { currency, coinPrice, network } = useShell();
-  const { denomAmountInput, denomStakeFees } = useStaking();
+  const { denomStakeFees } = useStaking();
 
   const fees = useMemo(() => {
     if (!denomStakeFees) return undefined;
