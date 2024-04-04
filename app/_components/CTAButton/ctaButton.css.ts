@@ -32,11 +32,9 @@ export const button = recipe({
     state: {
       default: {},
       loading: {
-        pointerEvents: "none",
         cursor: "progress",
       },
       disabled: {
-        pointerEvents: "none",
         cursor: "not-allowed",
         backgroundColor: colors.black700,
         color: colors.black600,
@@ -50,7 +48,8 @@ export const button = recipe({
         state: "loading",
       },
       style: {
-        color: colors.black900,
+        color: colors.black600,
+        backgroundColor: colors.black700,
       },
     },
     {

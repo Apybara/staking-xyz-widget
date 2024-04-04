@@ -1,8 +1,8 @@
 import type { StakingStates } from "./types";
-import { useShell } from "../../../_contexts/ShellContext";
-import { useWallet } from "../../../_contexts/WalletContext";
-import { useWalletBalance } from "../../../_services/wallet/hooks";
-import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeDenomFees } from "../../../_utils/transaction";
+import { useShell } from "../../_contexts/ShellContext";
+import { useWallet } from "../../_contexts/WalletContext";
+import { useWalletBalance } from "../../_services/wallet/hooks";
+import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeDenomFees } from "../../_utils/transaction";
 
 export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["denomAmountInput"] }) => {
   const { network } = useShell();

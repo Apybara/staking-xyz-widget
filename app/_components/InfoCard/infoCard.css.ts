@@ -13,13 +13,14 @@ export const card = style([
 
 export const stack = style({});
 globalStyle(`${stack} > * + *`, {
-  marginBlockStart: pxToRem(16),
+  marginBlockStart: pxToRem(12),
 });
 
 export const stackItem = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+  blockSize: pxToRem(20),
 });
 
 export const title = style({

@@ -1,8 +1,76 @@
 import type { ExtendedHttpEndpoint } from "@cosmos-kit/core";
+import type { CosmosNetwork } from "../../types";
 import type { GetBalanceProps } from "./types";
+import { ceil } from "mathjs";
+import BigNumber from "bignumber.js";
 import { cosmos } from "juno-network";
+import { SigningStargateClient, coin } from "@cosmjs/stargate";
+import { networkDefaultGasPrice, networkEndpoints } from "../../consts";
 import { getDenomUnitValue, getChainAssets } from "./utils";
-import { networkEndpoints } from "../../consts";
+
+export const getSigningClient = async ({
+  network,
+  getSigningStargateClient,
+}: {
+  network?: CosmosNetwork;
+  getSigningStargateClient: () => Promise<SigningStargateClient>;
+}) => {
+  try {
+    return await getSigningStargateClient();
+  } catch (e) {
+    try {
+      if (!network || !window.getOfflineSigner) {
+        throw new Error("Missing parameter: network, networkRpcEndpoint.");
+      }
+      const offlineSigner = window.getOfflineSigner(network);
+      return await SigningStargateClient.connectWithSigner(networkEndpoints[network].rpc, offlineSigner);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+};
+
+export const getEstimatedGas = async ({
+  client,
+  address,
+  msgArray,
+  memo = "",
+}: {
+  client: SigningStargateClient;
+  address: string;
+  msgArray: Array<any>;
+  memo?: string;
+}) => {
+  try {
+    const res = await client.simulate(address, msgArray, memo);
+    return Math.floor(res * 1.5);
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
+
+export const getFee = ({
+  gasLimit,
+  gasPrice,
+  network,
+  networkDenom,
+}: {
+  gasLimit?: number;
+  gasPrice?: number;
+  network: CosmosNetwork;
+  networkDenom: string;
+}) => {
+  if (!gasLimit) gasLimit = 200000;
+  if (!gasPrice) gasPrice = networkDefaultGasPrice[network] || 0.02;
+
+  const amount = ceil(new BigNumber(gasPrice).multipliedBy(gasLimit).toNumber());
+  return {
+    amount: [coin(amount, networkDenom)],
+    gas: gasLimit.toString(),
+  };
+};
 
 export const getBalance = async ({ address, getRpcEndpoint, network }: GetBalanceProps) => {
   if (!getRpcEndpoint || !address) {

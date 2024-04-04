@@ -1,4 +1,5 @@
 import type { RouterStruct } from "../types";
+import { useSearchParams } from "next/navigation";
 
 export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"]) => {
   const { network, currency, device } = searchParams || {};
@@ -15,5 +16,14 @@ export const getLinkWithSearchParams = (searchParams: RouterStruct["searchParams
   const current = getCurrentSearchParams(searchParams);
   const search = current.toString();
   const query = search ? `?${search}` : "";
+  return `/${page}${query}`;
+};
+
+export const useLinkWithSearchParams = (page: string) => {
+  const searchParams = useSearchParams();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const search = current.toString();
+  const query = search ? `?${search}` : "";
+
   return `/${page}${query}`;
 };
