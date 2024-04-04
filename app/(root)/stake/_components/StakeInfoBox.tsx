@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
-import { useStaking } from "../../_contexts/StakingContext";
+import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import { getFormattedCoinPrice, getFormattedTokenValue } from "../../../_utils/conversions";
 import { unstakingPeriodByNetwork } from "../../../consts";

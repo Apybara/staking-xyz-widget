@@ -3,7 +3,7 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useWalletBalance } from "../../../_services/wallet/hooks";
 import { AmountInputPad } from "../../../_components/AmountInputPad";
-import { useStaking } from "../../_contexts/StakingContext";
+import { useStaking } from "../../../_contexts/StakingContext";
 
 export const StakeAmountInputPad = () => {
   const { network } = useShell();

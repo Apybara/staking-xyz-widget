@@ -1,12 +1,13 @@
 "use client";
-import type { StakingStates } from "../../_contexts/StakingContext/types";
+import type { StakingStates } from "../../../_contexts/StakingContext/types";
 import { useDialog } from "../../../_contexts/UIContext";
-import { useStaking } from "../../_contexts/StakingContext";
+import { useStaking } from "../../../_contexts/StakingContext";
 import { type CTAButtonProps, CTAButton } from "../../../_components/CTAButton";
 
 export const StakeCTA = () => {
   const { ctaState } = useStaking();
   const { toggleOpen: toggleWalletConnectionDialog } = useDialog("walletConnection");
+  const { toggleOpen: toggleStakingProcedureDialog } = useDialog("stakingProcedure");
 
   return (
     <CTAButton
@@ -15,6 +16,9 @@ export const StakeCTA = () => {
       onClick={() => {
         if (ctaState === "disconnected") {
           toggleWalletConnectionDialog(true);
+        }
+        if (ctaState === "submittable") {
+          toggleStakingProcedureDialog(true);
         }
       }}
     >

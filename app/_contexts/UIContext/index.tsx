@@ -5,6 +5,7 @@ const initialState: T.UIState = {
   dialogs: {
     walletConnection: false,
     walletAccount: false,
+    stakingProcedure: false,
   },
 };
 

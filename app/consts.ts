@@ -31,6 +31,16 @@ export const networkInfo: Record<Network, NetworkInfo> = {
   },
 };
 
+export const networkDefaultGasPrice: Record<Network, number> = {
+  celestia: 0.02,
+  celestiatestnet3: 0.02,
+};
+
+export const networkExplorer: Record<Network, string> = {
+  celestia: "https://www.mintscan.io/celestia/",
+  celestiatestnet3: "https://www.mintscan.io/celestia-testnet/",
+};
+
 export const CosmosNetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const cosmosNetworkVariants = [...CosmosNetworkVariants];
 
@@ -47,12 +57,12 @@ export const networkEndpoints: Record<
   }
 > = {
   celestia: {
-    rpc: process.env.CELESTIA_RPC_ENDPOINT || "https://rpc.lunaroasis.net/",
-    rest: process.env.CELESTIA_REST_ENDPOINT || "https://api.lunaroasis.net/",
+    rpc: process.env.NEXT_PUBLIC_CELESTIA_RPC_ENDPOINT || "https://rpc.lunaroasis.net/",
+    rest: process.env.NEXT_PUBLIC_CELESTIA_REST_ENDPOINT || "https://api.lunaroasis.net/",
   },
   celestiatestnet3: {
-    rpc: process.env.CELESTIATESTNET3_RPC_ENDPOINT || "https://rpc-mocha.pops.one/",
-    rest: process.env.CELESTIATESTNET3_REST_ENDPOINT || "https://api-mocha.pops.one/",
+    rpc: process.env.NEXT_PUBLIC_CELESTIATESTNET3_RPC_ENDPOINT || "https://rpc-mocha.pops.one/",
+    rest: process.env.NEXT_PUBLIC_CELESTIATESTNET3_REST_ENDPOINT || "https://api-mocha.pops.one/",
   },
 };
 
