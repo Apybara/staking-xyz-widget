@@ -39,6 +39,23 @@ export const networkWalletPrefixes: Record<Network, string> = {
   celestiatestnet3: "celestia1",
 };
 
+export const networkEndpoints: Record<
+  Network,
+  {
+    rpc: string;
+    rest: string;
+  }
+> = {
+  celestia: {
+    rpc: process.env.CELESTIA_RPC_ENDPOINT || "https://rpc.lunaroasis.net/",
+    rest: process.env.CELESTIA_REST_ENDPOINT || "https://api.lunaroasis.net/",
+  },
+  celestiatestnet3: {
+    rpc: process.env.CELESTIATESTNET3_RPC_ENDPOINT || "https://rpc-mocha.pops.one/",
+    rest: process.env.CELESTIATESTNET3_REST_ENDPOINT || "https://api-mocha.pops.one/",
+  },
+};
+
 export const BaseCurrencyVariants = ["USD", "EUR"] as const;
 export const baseCurrencyVariants = [...BaseCurrencyVariants];
 export const currencyRegex = /\b(usd|eur|tia)\b/i;
@@ -118,8 +135,14 @@ export const ConnectorVariants = ["cosmosKit"] as const;
 export const connectorVariants = [...ConnectorVariants];
 
 export const feeRatioByNetwork: Record<Network, number> = {
-  celestia: 0.3,
-  celestiatestnet3: 0.3,
+  celestia:
+    process.env.NEXT_PUBLIC_CELESTIA_FEE_RATE && !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIA_FEE_RATE))
+      ? Number(process.env.NEXT_PUBLIC_CELESTIA_FEE_RATE)
+      : 0.3,
+  celestiatestnet3:
+    process.env.NEXT_PUBLIC_CELESTIA_FEE_RATE && !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIA_FEE_RATE))
+      ? Number(process.env.NEXT_PUBLIC_CELESTIA_FEE_RATE)
+      : 0.3,
 };
 
 export const unstakingPeriodByNetwork: Record<Network, string> = {

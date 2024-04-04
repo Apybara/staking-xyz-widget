@@ -1,6 +1,6 @@
 import type * as T from "./types";
 
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useReducer } from "react";
 import { useWalletsSupport, useActiveWalletStates, useIsWalletConnectingEagerly } from "./hooks";
 
 const WalletContext = createContext({} as T.WalletContext);

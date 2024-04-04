@@ -1,5 +1,6 @@
 import type { ChainInfo } from "@keplr-wallet/types";
 import type { CosmosNetwork } from "../../../types";
+import { networkEndpoints } from "../../../consts";
 
 export const GrazWalletVariants = ["keplrMobile", "leapMobile", "walletConnect"] as const;
 export const grazWalletVariants = [...GrazWalletVariants];
@@ -78,13 +79,13 @@ const celestiatestnet3 = {
 
 export const celestiaChainInfo: ChainInfo = {
   ...celestia,
-  rpc: "https://rpc.lunaroasis.net/",
-  rest: "https://api.lunaroasis.net/",
+  rpc: networkEndpoints.celestia.rpc,
+  rest: networkEndpoints.celestia.rest,
 };
 export const celestiatestnet3ChainInfo: ChainInfo = {
   ...celestiatestnet3,
-  rpc: "https://rpc-mocha.pops.one/",
-  rest: "https://api-mocha.pops.one/",
+  rpc: networkEndpoints.celestiatestnet3.rpc,
+  rest: networkEndpoints.celestiatestnet3.rest,
 };
 
 export const chainInfo: Record<CosmosNetwork, ChainInfo> = {
