@@ -13,7 +13,6 @@ export const getBasicAmountValidation = ({
   max?: string;
   buffer?: string;
 }): BasicAmountValidationResult => {
-  console.log(amount);
   if (!amount || amount === "" || amount === "0") return "empty";
 
   const parsedAmount = BigNumber(amount);

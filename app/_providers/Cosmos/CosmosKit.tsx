@@ -7,6 +7,7 @@ import { wallets as okxwallet } from "@cosmos-kit/okxwallet";
 import { WalletConnectionDialog } from "../../_components/WalletConnectionDialog";
 import celestiatestnet3Chains from "../../_services/cosmos/celestiatestnet3/chain.json";
 import celestiatestnet3AssetList from "../../_services/cosmos/celestiatestnet3/assetlist.json";
+import { networkEndpoints } from "../../consts";
 
 export const CosmosKitProvider = ({ children }: { children: ReactNode }) => {
   return (
@@ -35,13 +36,13 @@ const endpoints = {
   celestia: {
     rpc: [
       {
-        url: "https://rpc.lunaroasis.net/",
+        url: networkEndpoints.celestia.rpc,
         headers: {},
       },
     ],
     rest: [
       {
-        url: "https://api.lunaroasis.net/",
+        url: networkEndpoints.celestia.rest,
         headers: {},
       },
     ],
@@ -49,13 +50,13 @@ const endpoints = {
   celestiatestnet3: {
     rpc: [
       {
-        url: "https://rpc-mocha.pops.one/",
+        url: networkEndpoints.celestiatestnet3.rpc,
         headers: {},
       },
     ],
     rest: [
       {
-        url: "https://api-mocha.pops.one/",
+        url: networkEndpoints.celestiatestnet3.rest,
         headers: {},
       },
     ],

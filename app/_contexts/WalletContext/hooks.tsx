@@ -11,7 +11,7 @@ import {
 
 export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const { network } = useShell();
-  const cosmosWalletsSupport = useCosmosWalletSupports(network || "celestia");
+  const cosmosWalletsSupport = useCosmosWalletSupports();
 
   useEffect(() => {
     setStates({ walletsSupport: { ...cosmosWalletsSupport } });

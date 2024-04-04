@@ -2,6 +2,7 @@ import type { ExtendedHttpEndpoint } from "@cosmos-kit/core";
 import type { GetBalanceProps } from "./types";
 import { cosmos } from "juno-network";
 import { getDenomUnitValue, getChainAssets } from "./utils";
+import { networkEndpoints } from "../../consts";
 
 export const getBalance = async ({ address, getRpcEndpoint, network }: GetBalanceProps) => {
   if (!getRpcEndpoint || !address) {
@@ -34,7 +35,7 @@ const getRPCEndpoint = async ({ getRpcEndpoint, network }: Pick<GetBalanceProps,
   const rpcEndpoint = await getRpcEndpoint();
   if (!rpcEndpoint) {
     console.info("no rpc endpoint — using a fallback");
-    return `https://rpc.cosmos.directory/${network}`;
+    return `${networkEndpoints[network]}${network}` || `https://rpc.cosmos.directory/${network}`;
   }
   return rpcEndpoint;
 };
