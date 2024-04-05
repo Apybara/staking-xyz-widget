@@ -1,11 +1,11 @@
 import type { Network } from "../../types";
 import type { PriceConversionIdVariant } from "./types";
-import { BaseCurrencyVariants } from "../../consts";
+import { FiatCurrencyVariants } from "../../consts";
 
 export const PriceConversionIdVariants = [22861] as const;
 export const priceConversionIdVariants = [...PriceConversionIdVariants];
 
-export const PriceConversionCurrencyVariants = BaseCurrencyVariants;
+export const PriceConversionCurrencyVariants = FiatCurrencyVariants;
 export const priceConversionCurrencyVariants = [...PriceConversionCurrencyVariants];
 
 export const networkPriceConversionId: Record<Network, PriceConversionIdVariant> = {

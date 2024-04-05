@@ -2,7 +2,7 @@ import type { InputHTMLAttributes } from "react";
 import type { Currency } from "../../types";
 import { forwardRef } from "react";
 import cn from "classnames";
-import { currencyMap } from "../../consts";
+import { fiatCurrencyMap } from "../../consts";
 import * as S from "./amountInputPad.css";
 
 export type InputFieldProps = HTMLInputFieldProps & {
@@ -14,7 +14,7 @@ export const InputField = ({ currency, ...props }: InputFieldProps) => {
 
   return (
     <div className={S.inputField}>
-      {isFiatCurrency && <span>{currencyMap[currency]}</span>}
+      {isFiatCurrency && <span>{fiatCurrencyMap[currency]}</span>}
       <HTMLInputField {...props} />
     </div>
   );
@@ -43,6 +43,13 @@ const HTMLInputField = forwardRef<HTMLInputElement, HTMLInputFieldProps>(({ clas
 const getOffsetInputValue = (value: string) => {
   if (!value || value === "" || value === "0") return -12;
   return value.includes(".") || value.includes(",") ? -12 : -3;
+};
+
+export const getStringHasNumbersOnly = (val: string) => {
+  if (val === "") return true;
+
+  const regex = /^\d+\.?\d*$/;
+  return regex.test(val);
 };
 
 type HTMLInputFieldProps = InputHTMLAttributes<HTMLInputElement>;

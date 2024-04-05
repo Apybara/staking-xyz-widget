@@ -3,21 +3,48 @@ import type { Currency } from "../../types";
 import { useEffect, useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
-import { getFormattedCoinPrice, getFormattedTokenValue, getCurrencyValue } from "../../_utils/conversions";
+import {
+  getFormattedUSDPriceFromCoin,
+  getFormattedEURPriceFromCoin,
+  getFormattedCoinValue,
+  getFormattedFiatCurrencyValue,
+} from "../../_utils/conversions";
+import { fiatCurrencyMap } from "../../consts";
 import { RootAmountInputPad } from "./RootAmountInputPad";
 import * as AvailabilityText from "./AvailabilityText";
-import { useInputStates } from "./hooks";
+import { getStringHasNumbersOnly } from "./InputField";
 
-export type AmountInputPadProps = {
-  type: "stake" | "unstake";
-  availableValue?: string;
-  onDenomValueChange: (value: string) => void;
+export type BaseAmountInputPadProps = {
+  primaryValue: string;
+  secondaryValue: string;
+  primaryCurrency: Currency;
+  secondaryCurrency: Currency;
+  setPrimaryValue: (val: string) => void;
+  onSwap: () => void;
+  onMax: (maxVal?: string | undefined) => void;
 };
 
-export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: AmountInputPadProps) => {
+export type AmountInputPadProps = BaseAmountInputPadProps & {
+  type: "stake" | "unstake";
+  availableValue?: string;
+  isAvailableValueLoading?: boolean;
+  onValueChange: (value: string) => void;
+};
+
+export const AmountInputPad = ({
+  type,
+  availableValue,
+  isAvailableValueLoading,
+  onValueChange,
+  primaryValue,
+  secondaryValue,
+  primaryCurrency,
+  secondaryCurrency,
+  setPrimaryValue,
+  onSwap,
+  onMax,
+}: AmountInputPadProps) => {
   const [inputSize, setInputSize] = useState(1);
-  const { primaryValue, secondaryValue, primaryCurrency, secondaryCurrency, setPrimaryValue, onSwap, onMax } =
-    useInputStates();
 
   useEffect(() => {
     setInputSize(primaryValue === "" ? 1 : primaryValue.length);
@@ -25,16 +52,16 @@ export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: Amo
 
   useEffect(() => {
     if (primaryValue === "") {
-      onDenomValueChange("");
+      onValueChange("");
       return;
     }
 
     if (primaryCurrency !== "USD" && primaryCurrency !== "EUR") {
-      onDenomValueChange(primaryValue);
+      onValueChange(primaryValue);
       return;
     }
     if (secondaryCurrency !== "USD" && secondaryCurrency !== "EUR") {
-      onDenomValueChange(secondaryValue);
+      onValueChange(secondaryValue);
       return;
     }
   }, [primaryValue, secondaryValue, primaryCurrency, secondaryCurrency]);
@@ -43,15 +70,15 @@ export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: Amo
     if (secondaryValue === "0") return "0";
 
     if (secondaryCurrency === "USD" || secondaryCurrency === "EUR") {
-      return getCurrencyValue({
+      return getFormattedFiatCurrencyValue({
         val: BigNumber(secondaryValue).toNumber(),
         locale: secondaryCurrency === "USD" ? "en-US" : "de-DE",
         formatOptions: {
-          currencySymbol: secondaryCurrency === "USD" ? "$" : "€",
+          currencySymbol: fiatCurrencyMap[secondaryCurrency],
         },
       });
     }
-    return getFormattedTokenValue({
+    return getFormattedCoinValue({
       val: BigNumber(secondaryValue).toNumber(),
       formatOptions: {
         average: true,
@@ -70,6 +97,7 @@ export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: Amo
           secondaryCurrency={secondaryCurrency}
         />
       }
+      isAvailableValueLoading={isAvailableValueLoading}
       inputField={{
         value: primaryValue,
         currency: primaryCurrency || "USD",
@@ -80,6 +108,8 @@ export const AmountInputPad = ({ type, availableValue, onDenomValueChange }: Amo
             setPrimaryValue("");
             return;
           }
+          if (!getStringHasNumbersOnly(e.target.value)) return;
+
           setPrimaryValue(e.target.value);
         },
       }}
@@ -111,37 +141,38 @@ const AvailabilityElement = ({
   const primaryValue = useMemo(() => {
     if (!availableValue) return "0";
 
-    if (primaryCurrency === "USD" || primaryCurrency === "EUR") {
-      return getFormattedCoinPrice({
+    if (primaryCurrency === "USD") {
+      return getFormattedUSDPriceFromCoin({
         val: availableValue,
-        price: coinPrice?.[network || "celestia"]?.[primaryCurrency] || 0,
-        currency: primaryCurrency,
-        options: {
-          formatOptions: {
-            currencySymbol: primaryCurrency === "USD" ? "$" : "€",
-          },
-        },
+        price: coinPrice?.[network || "celestia"]?.USD || 0,
       });
     }
-    return getFormattedTokenValue({ val: BigNumber(availableValue).toNumber() });
+    if (primaryCurrency === "EUR") {
+      return getFormattedEURPriceFromCoin({
+        val: availableValue,
+        price: coinPrice?.[network || "celestia"]?.EUR || 0,
+      });
+    }
+    return getFormattedCoinValue({ val: BigNumber(availableValue).toNumber() });
   }, [availableValue, primaryCurrency]);
 
   const secondaryValue = useMemo(() => {
     if (!availableValue) return "0";
 
-    if (secondaryCurrency === "USD" || secondaryCurrency === "EUR") {
-      return getFormattedCoinPrice({
+    if (secondaryCurrency === "USD") {
+      return getFormattedUSDPriceFromCoin({
         val: availableValue,
-        price: coinPrice?.[network || "celestia"]?.[secondaryCurrency] || 0,
-        currency: secondaryCurrency,
-        options: {
-          formatOptions: {
-            currencySymbol: primaryCurrency === "USD" ? "$" : "€",
-          },
-        },
+        price: coinPrice?.[network || "celestia"]?.USD || 0,
       });
     }
-    return getFormattedTokenValue({ val: BigNumber(availableValue).toNumber() });
+    if (secondaryCurrency === "EUR") {
+      return getFormattedEURPriceFromCoin({
+        val: availableValue,
+        price: coinPrice?.[network || "celestia"]?.EUR || 0,
+      });
+    }
+
+    return getFormattedCoinValue({ val: BigNumber(availableValue).toNumber() });
   }, [availableValue, secondaryCurrency]);
 
   if (!availableValue?.length) return null;

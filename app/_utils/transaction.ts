@@ -46,7 +46,7 @@ export const getBasicTxCtaValidation = ({
   return "submittable";
 };
 
-export const getStakeDenomFees = ({ amount, network }: { amount: string; network: Network }) => {
+export const getStakeFees = ({ amount, network }: { amount: string; network: Network }) => {
   const ratio = feeRatioByNetwork[network];
   return BigNumber(amount).times(ratio).toString();
 };

@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fromBech32, toBech32 } from "@cosmjs/encoding";
 import { useConnect, useDisconnect, useActiveWalletType, useAccount, WalletType, useStargateClient } from "graz";
 import { useWallet } from "../../../_contexts/WalletContext";
-import { getIsCosmosNetwork, getDenomUnitValue } from "../utils";
+import { getIsCosmosNetwork, getCoinValueFromDenom } from "../utils";
 import { getIsGrazWalletType } from "./utils";
 import { chainInfo } from "./consts";
 
@@ -98,7 +98,7 @@ export const useGrazWalletBalance = ({ address, network, activeWallet }: UseWall
   });
 
   const amount = !isLoading && !error && !data?.[0]?.amount ? "0" : data?.[0]?.amount;
-  const balance = getDenomUnitValue({ network: network || "celestia", amount });
+  const balance = getCoinValueFromDenom({ network: network || "celestia", amount });
   return {
     isLoading,
     error: error as Error,

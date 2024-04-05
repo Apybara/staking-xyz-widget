@@ -5,13 +5,13 @@ import { useNetworkChange, useCurrencyChange } from "../../_contexts/ShellContex
 
 export const Header = () => {
   const { activeNetwork, onUpdateRouter: onNetworkRouterUpdate } = useNetworkChange();
-  const { activeCurrency, activeNetworkDenom, onUpdateRouter: onCurrencyRouterUpdate } = useCurrencyChange();
+  const { activeCurrency, activeNetworkCurrency, onUpdateRouter: onCurrencyRouterUpdate } = useCurrencyChange();
 
   return (
     <RootHeader
       currencyTabs={{
         activeCurrency: activeCurrency,
-        activeNetworkDenom,
+        activeNetworkCurrency,
         onCurrencyChange: (cur) => onCurrencyRouterUpdate(cur),
       }}
       networkSelect={{

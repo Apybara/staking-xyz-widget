@@ -3,16 +3,13 @@ import type { StakeProcedure, StakeProcedureStep, StakeProcedureState } from "..
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
-import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as DelegationDialog from "../../../_components/DelegationDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
-import { networkExplorer } from "../../../consts";
 
 export const StakingProcedureDialog = () => {
   const router = useRouter();
-  const { network } = useShell();
-  const { procedures, resetProceduresStates } = useStaking();
+  const { procedures, amountInputPad, resetProceduresStates } = useStaking();
   const { open, toggleOpen } = useDialog("stakingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
 
@@ -21,6 +18,7 @@ export const StakingProcedureDialog = () => {
   const activeProcedure = getActiveProcedure(procedures || []);
   const allProceduresCompleted = checkedProcedures.length === (procedures || []).length;
   const hasLoadingProcedures = getHasLoadingProcedures(procedures || []);
+
   const ctaText = useMemo(() => {
     if (!uncheckedProcedures?.[0]) return ctaTextMap.auth.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
@@ -46,7 +44,7 @@ export const StakingProcedureDialog = () => {
           <DelegationDialog.StepItem
             key={index}
             state={procedure.state || "idle"}
-            explorerUrl={procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`}
+            // explorerUrl={procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`}
           >
             {procedure.stepName}
           </DelegationDialog.StepItem>
@@ -66,6 +64,7 @@ export const StakingProcedureDialog = () => {
             router.push(activityLink);
           }}
           onDismissButtonClick={() => {
+            amountInputPad.setPrimaryValue("");
             toggleOpen(false);
           }}
         />

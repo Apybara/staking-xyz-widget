@@ -1,10 +1,12 @@
 import type { StakingStates } from "./types";
+import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
-import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeDenomFees } from "../../_utils/transaction";
+import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeFees } from "../../_utils/transaction";
+import { feeRatioByNetwork } from "../../consts";
 
-export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["denomAmountInput"] }) => {
+export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
   const { network } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
@@ -13,6 +15,9 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
     amount: inputAmount,
     min: "0",
     max: balanceData,
+    buffer: BigNumber(inputAmount)
+      .times(feeRatioByNetwork[network || "celestia"])
+      .toString(),
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
@@ -22,9 +27,9 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
   return { amountValidation, ctaValidation };
 };
 
-export const useDenomStakeFees = ({ inputAmount }: { inputAmount: StakingStates["denomAmountInput"] }) => {
+export const useStakeFees = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
   const { network } = useShell();
 
   if (inputAmount === "" || inputAmount === "0") return undefined;
-  return getStakeDenomFees({ amount: inputAmount, network: network || "celestia" });
+  return getStakeFees({ amount: inputAmount, network: network || "celestia" });
 };

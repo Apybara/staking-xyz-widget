@@ -4,15 +4,16 @@ import numbro from "numbro";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useCurrencyChange } from "../../_contexts/ShellContext/hooks";
-import { getTokenValueFromFiat, getCoinPriceFromToken } from "../../_utils/conversions";
-import { networkDenom } from "../../consts";
+import { getCoinValueFromFiatPrice, getFiatPriceFromCoin } from "../../_utils/conversions";
+import { networkCurrency as networkCurrencyMap } from "../../consts";
 
 export const useInputStates = () => {
   const { currency: globalCurrency, network, coinPrice } = useShell();
+  const networkCurrency = networkCurrencyMap[network || "celestia"];
 
   const [primaryCurrency, setPrimaryCurrency] = useState<Currency>(globalCurrency || "USD");
   const [secondaryCurrency, setSecondaryCurrency] = useState<Currency>(
-    globalCurrency === "USD" || globalCurrency === "EUR" ? networkDenom[network || "celestia"] : "USD",
+    globalCurrency === "USD" || globalCurrency === "EUR" ? networkCurrency : "USD",
   );
   const [previousPrimaryCurrency, setPreviousPrimaryCurrency] = useState<Currency | undefined>();
 
@@ -20,7 +21,6 @@ export const useInputStates = () => {
   const [secondaryValue, setSecondaryValue] = useState("0");
 
   const { onUpdateRouter: onUpdateCurrency } = useCurrencyChange();
-  const denom = networkDenom[network || "celestia"];
 
   // Transition state on global currency change
   useEffect(() => {
@@ -34,7 +34,7 @@ export const useInputStates = () => {
           break;
         }
 
-        setPrimaryCurrency(denom);
+        setPrimaryCurrency(networkCurrency);
         setSecondaryCurrency("USD");
         break;
       case "EUR":
@@ -46,21 +46,21 @@ export const useInputStates = () => {
           break;
         }
 
-        setPrimaryCurrency(denom);
+        setPrimaryCurrency(networkCurrency);
         setSecondaryCurrency("EUR");
         break;
       default:
-        if (globalCurrency === denom) break;
-        setPreviousPrimaryCurrency(denom);
+        if (globalCurrency === networkCurrency) break;
+        setPreviousPrimaryCurrency(networkCurrency);
 
         if (globalCurrency === "USD") {
           setPrimaryCurrency("USD");
-          setSecondaryCurrency(denom);
+          setSecondaryCurrency(networkCurrency);
           break;
         }
         if (globalCurrency === "EUR") {
           setPrimaryCurrency("EUR");
-          setSecondaryCurrency(denom);
+          setSecondaryCurrency(networkCurrency);
           break;
         }
     }
@@ -79,15 +79,15 @@ export const useInputStates = () => {
     switch (primaryCurrency) {
       case "USD":
         if (previousPrimaryCurrency === "EUR") {
-          const newPrimaryValue = getPrimaryFiatValueFromSecondaryDenom({
-            secondaryDenom: secondaryValue,
+          const newPrimaryValue = getPrimaryFiatValueFromSecondaryCoin({
+            secondaryCoin: secondaryValue,
             targetFiatPrice: usdPrice,
           });
           setPrimaryValue(newPrimaryValue);
           break;
         } else {
-          const newPrimaryValue = getPrimaryFiatValueFromPrimaryDenom({
-            primaryDenom: primaryValue,
+          const newPrimaryValue = getPrimaryFiatValueFromPrimaryCoin({
+            primaryCoin: primaryValue,
             targetFiatPrice: usdPrice,
           });
           setPrimaryValue(newPrimaryValue);
@@ -95,15 +95,15 @@ export const useInputStates = () => {
         }
       case "EUR":
         if (previousPrimaryCurrency === "USD") {
-          const newPrimaryValue = getPrimaryFiatValueFromSecondaryDenom({
-            secondaryDenom: secondaryValue,
+          const newPrimaryValue = getPrimaryFiatValueFromSecondaryCoin({
+            secondaryCoin: secondaryValue,
             targetFiatPrice: eurPrice,
           });
           setPrimaryValue(newPrimaryValue);
           break;
         } else {
-          const newPrimaryValue = getPrimaryFiatValueFromPrimaryDenom({
-            primaryDenom: primaryValue,
+          const newPrimaryValue = getPrimaryFiatValueFromPrimaryCoin({
+            primaryCoin: primaryValue,
             targetFiatPrice: eurPrice,
           });
           setPrimaryValue(newPrimaryValue);
@@ -111,7 +111,7 @@ export const useInputStates = () => {
         }
       default:
         if (previousPrimaryCurrency === "USD" || previousPrimaryCurrency === "EUR") {
-          const newPrimaryValue = getPrimaryDenomValueFromSecondaryDenom({ secondaryDenomValue: secondaryValue });
+          const newPrimaryValue = getPrimaryCoinValueFromSecondaryCoin({ secondaryCoinValue: secondaryValue });
           setPrimaryValue(newPrimaryValue);
         }
     }
@@ -128,26 +128,26 @@ export const useInputStates = () => {
     const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
 
     if (primaryCurrency === "USD") {
-      const newSecondaryValue = getSecondaryDenomValueFromPrimaryFiat({ fiatValue: primaryValue, fiatPrice: usdPrice });
+      const newSecondaryValue = getSecondaryCoinValueFromPrimaryFiat({ fiatValue: primaryValue, fiatPrice: usdPrice });
       setSecondaryValue(newSecondaryValue);
       return;
     }
-    if (primaryCurrency === denom && secondaryCurrency === "USD") {
-      const newSecondaryValue = getSecondaryFiatValueFromPrimaryDenom({
-        denomValue: primaryValue,
+    if (primaryCurrency === networkCurrency && secondaryCurrency === "USD") {
+      const newSecondaryValue = getSecondaryFiatValueFromPrimaryCoin({
+        coinValue: primaryValue,
         fiatPrice: usdPrice,
       });
       setSecondaryValue(newSecondaryValue);
       return;
     }
     if (primaryCurrency === "EUR") {
-      const newSecondaryValue = getSecondaryDenomValueFromPrimaryFiat({ fiatValue: primaryValue, fiatPrice: eurPrice });
+      const newSecondaryValue = getSecondaryCoinValueFromPrimaryFiat({ fiatValue: primaryValue, fiatPrice: eurPrice });
       setSecondaryValue(newSecondaryValue);
       return;
     }
-    if (primaryCurrency === denom && secondaryCurrency === "EUR") {
-      const newSecondaryValue = getSecondaryFiatValueFromPrimaryDenom({
-        denomValue: primaryValue,
+    if (primaryCurrency === networkCurrency && secondaryCurrency === "EUR") {
+      const newSecondaryValue = getSecondaryFiatValueFromPrimaryCoin({
+        coinValue: primaryValue,
         fiatPrice: eurPrice,
       });
       setSecondaryValue(newSecondaryValue);
@@ -168,7 +168,7 @@ export const useInputStates = () => {
       if (!maxVal) return;
 
       if (primaryCurrency === "USD") {
-        const newMaxValue = getMaxFiatValueFromDenom({
+        const newMaxValue = getMaxFiatValueFromCoin({
           maxValue: maxVal,
           fiatPrice: coinPrice?.[network || "celestia"].USD || 0,
         });
@@ -176,28 +176,28 @@ export const useInputStates = () => {
         return;
       }
       if (primaryCurrency === "EUR") {
-        const newMaxValue = getMaxFiatValueFromDenom({
+        const newMaxValue = getMaxFiatValueFromCoin({
           maxValue: maxVal,
           fiatPrice: coinPrice?.[network || "celestia"].EUR || 0,
         });
         setPrimaryValue(newMaxValue);
         return;
       }
-      const newMaxValue = getMaxDenomValueFromDenom({ maxValue: maxVal });
+      const newMaxValue = getMaxCoinValueFromCoin({ maxValue: maxVal });
       setPrimaryValue(newMaxValue);
     },
   };
 };
 
-const getPrimaryFiatValueFromSecondaryDenom = ({
-  secondaryDenom,
+const getPrimaryFiatValueFromSecondaryCoin = ({
+  secondaryCoin,
   targetFiatPrice,
 }: {
-  secondaryDenom: string;
+  secondaryCoin: string;
   targetFiatPrice: number;
 }) => {
-  const newValue = getCoinPriceFromToken({
-    val: secondaryDenom,
+  const newValue = getFiatPriceFromCoin({
+    val: secondaryCoin,
     price: targetFiatPrice,
   });
   return numbro(newValue).format({
@@ -205,15 +205,15 @@ const getPrimaryFiatValueFromSecondaryDenom = ({
   });
 };
 
-const getPrimaryFiatValueFromPrimaryDenom = ({
-  primaryDenom,
+const getPrimaryFiatValueFromPrimaryCoin = ({
+  primaryCoin,
   targetFiatPrice,
 }: {
-  primaryDenom: string;
+  primaryCoin: string;
   targetFiatPrice: number;
 }) => {
-  const newValue = getCoinPriceFromToken({
-    val: primaryDenom,
+  const newValue = getFiatPriceFromCoin({
+    val: primaryCoin,
     price: targetFiatPrice,
   });
   return numbro(newValue).format({
@@ -221,14 +221,14 @@ const getPrimaryFiatValueFromPrimaryDenom = ({
   });
 };
 
-const getPrimaryDenomValueFromSecondaryDenom = ({ secondaryDenomValue }: { secondaryDenomValue: string }) => {
-  return numbro(BigNumber(secondaryDenomValue).toNumber()).format({
+const getPrimaryCoinValueFromSecondaryCoin = ({ secondaryCoinValue }: { secondaryCoinValue: string }) => {
+  return numbro(BigNumber(secondaryCoinValue).toNumber()).format({
     mantissa: 2,
   });
 };
-const getSecondaryDenomValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatValue: string; fiatPrice: number }) => {
+const getSecondaryCoinValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatValue: string; fiatPrice: number }) => {
   return numbro(
-    getTokenValueFromFiat({
+    getCoinValueFromFiatPrice({
       val: fiatValue,
       price: fiatPrice,
     }),
@@ -236,24 +236,18 @@ const getSecondaryDenomValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatV
     mantissa: 2,
   });
 };
-const getSecondaryFiatValueFromPrimaryDenom = ({
-  denomValue,
-  fiatPrice,
-}: {
-  denomValue: string;
-  fiatPrice: number;
-}) => {
+const getSecondaryFiatValueFromPrimaryCoin = ({ coinValue, fiatPrice }: { coinValue: string; fiatPrice: number }) => {
   return numbro(
-    getCoinPriceFromToken({
-      val: denomValue,
+    getFiatPriceFromCoin({
+      val: coinValue,
       price: fiatPrice,
     }),
   ).format({
     mantissa: 2,
   });
 };
-const getMaxFiatValueFromDenom = ({ maxValue, fiatPrice }: { maxValue: string; fiatPrice: number }) => {
-  const newMaxValue = getCoinPriceFromToken({
+const getMaxFiatValueFromCoin = ({ maxValue, fiatPrice }: { maxValue: string; fiatPrice: number }) => {
+  const newMaxValue = getFiatPriceFromCoin({
     val: maxValue,
     price: fiatPrice,
   });
@@ -261,7 +255,7 @@ const getMaxFiatValueFromDenom = ({ maxValue, fiatPrice }: { maxValue: string; f
     mantissa: 2,
   });
 };
-const getMaxDenomValueFromDenom = ({ maxValue }: { maxValue: string }) => {
+const getMaxCoinValueFromCoin = ({ maxValue }: { maxValue: string }) => {
   return numbro(BigNumber(maxValue).toNumber()).format({
     mantissa: 2,
   });

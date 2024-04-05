@@ -1,15 +1,16 @@
+import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { Network } from "../../types";
 import type { StakeProcedure, StakeProcedureState } from "./types";
 import { useEffect, useState } from "react";
 import { useWallet } from "../../_contexts/WalletContext";
-import { getIsCosmosNetwork } from "../cosmos/utils";
-import { useCosmosBroadcastAuthzTx } from "../cosmos/hooks";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { useCosmosStakingProcedures } from "../cosmos/hooks";
 
 export const useStakingProcedures = ({
-  cosmosSigningClient,
+  amount,
   network,
+  cosmosSigningClient,
 }: {
+  amount: string;
   network: Network;
   cosmosSigningClient?: SigningStargateClient;
 }) => {
@@ -18,61 +19,84 @@ export const useStakingProcedures = ({
   const delegateState = useProcedureStates();
 
   const { address } = useWallet();
-  const isCosmosNetwork = getIsCosmosNetwork(network);
-  const cosmosAuthTx = useCosmosBroadcastAuthzTx({
-    client: cosmosSigningClient || null,
-    network: isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    onLoading: () => {
-      authState.setState("loading");
-      authState.setTxHash(undefined);
-      authState.setError(null);
-    },
-    onSuccess: (txHash) => {
-      authState.setState("success");
-      authState.setTxHash(txHash);
-    },
-    onError: (e) => {
-      console.error(e);
-      authState.setState("error");
-      authState.setError(e);
-    },
-  });
+  const { baseProcedures: cosmosBaseProcedures, firstStep } =
+    useCosmosStakingProcedures({
+      amount,
+      network,
+      address,
+      cosmosSigningClient,
+      authStep: {
+        onLoading: () => {
+          authState.setState("loading");
+          authState.setTxHash(undefined);
+          authState.setError(null);
+        },
+        onSuccess: (txHash) => {
+          authState.setState("success");
+          authState.setTxHash(txHash);
+          delegateState.setState("active");
+        },
+        onError: (e) => {
+          console.error(e);
+          authState.setState("error");
+          authState.setError(e);
+        },
+      },
+      delegateStep: {
+        onLoading: () => {
+          delegateState.setState("loading");
+          delegateState.setTxHash(undefined);
+          delegateState.setError(null);
+        },
+        onSuccess: (txHash) => {
+          delegateState.setState("success");
+          delegateState.setTxHash(txHash);
+        },
+        onError: (e) => {
+          console.error(e);
+          delegateState.setState("error");
+          delegateState.setError(e);
+        },
+      },
+    }) || {};
 
   useEffect(() => {
-    if (isCosmosNetwork) {
-      if (authState.state === null) {
+    if (cosmosBaseProcedures?.length && authState.state === null && delegateState.state === null) {
+      if (firstStep === "auth") {
         authState.setState("active");
-      }
-      if (delegateState.state === null) {
         delegateState.setState("idle");
+      } else if (firstStep === "delegate") {
+        delegateState.setState("active");
       }
     }
-  }, [isCosmosNetwork]);
+  }, [cosmosBaseProcedures?.length]);
 
   useEffect(() => {
-    if (isCosmosNetwork) {
-      setProcedures([
-        {
-          step: "auth",
-          stepName: "Approval in wallet",
-          state: authState.state,
-          txHash: authState.txHash,
-          error: authState.error,
-          send: cosmosAuthTx.send,
-        },
-        {
-          step: "delegate",
-          stepName: "Sign in wallet",
-          state: delegateState.state,
-          txHash: delegateState.txHash,
-          error: delegateState.error,
-          send: () => {},
-        },
-      ]);
+    if (cosmosBaseProcedures?.length) {
+      const proceduresArray = cosmosBaseProcedures
+        .map((procedure) => {
+          if (procedure.step === "auth") {
+            return {
+              ...procedure,
+              state: authState.state,
+              txHash: authState.txHash,
+              error: authState.error,
+            };
+          } else if (procedure.step === "delegate") {
+            return {
+              ...procedure,
+              state: delegateState.state,
+              txHash: delegateState.txHash,
+              error: delegateState.error,
+            };
+          }
+        })
+        .filter((procedure) => procedure !== undefined);
+
+      setProcedures(proceduresArray as Array<StakeProcedure>);
     }
   }, [
-    isCosmosNetwork,
+    cosmosBaseProcedures?.length,
     authState.state,
     authState.txHash,
     authState.error,
@@ -84,11 +108,11 @@ export const useStakingProcedures = ({
   return {
     procedures,
     resetStates: () => {
-      if (isCosmosNetwork) {
-        authState.setState("active");
+      if (cosmosBaseProcedures?.length) {
+        authState.setState(firstStep === "auth" ? "active" : null);
         authState.setTxHash(undefined);
         authState.setError(null);
-        delegateState.setState("idle");
+        delegateState.setState(firstStep === "delegate" ? "active" : "idle");
         delegateState.setTxHash(undefined);
         delegateState.setError(null);
       }

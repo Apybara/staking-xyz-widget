@@ -3,7 +3,7 @@ import type { Asset, AssetList } from "@chain-registry/types";
 import type { CosmosNetwork } from "../../types";
 import BigNumber from "bignumber.js";
 import { assets } from "chain-registry";
-import { networkDenom, cosmosNetworkVariants, cosmosWalletVariants } from "../../consts";
+import { networkCurrency, cosmosNetworkVariants, cosmosWalletVariants } from "../../consts";
 
 export const getIsCosmosNetwork = (network: string): network is Network => {
   return cosmosNetworkVariants.includes(network as Network);
@@ -13,9 +13,14 @@ export const getIsCosmosWalletType = (walletType: string): walletType is WalletT
   return cosmosWalletVariants.includes(walletType as WalletType);
 };
 
-export const getDenomUnitValue = ({ network, amount }: { network: CosmosNetwork; amount?: string | number }) => {
+export const getCoinValueFromDenom = ({ network, amount }: { network: CosmosNetwork; amount?: string | number }) => {
   const exponent = getExponent(network);
   return new BigNumber(amount || 0).multipliedBy(10 ** -exponent).toString();
+};
+
+export const getDenomValueFromCoin = ({ network, amount }: { network: CosmosNetwork; amount?: string | number }) => {
+  const exponent = getExponent(network);
+  return new BigNumber(amount || 0).multipliedBy(10 ** exponent).toString();
 };
 
 export const getChainAssets = (network: CosmosNetwork) => {
@@ -29,6 +34,6 @@ const getExponent = (network: CosmosNetwork) => {
 
 const getCoin = (network: CosmosNetwork) => {
   const chainAssets = getChainAssets(network);
-  const denomDisplayName = networkDenom[network].toLowerCase();
+  const denomDisplayName = networkCurrency[network].toLowerCase();
   return chainAssets.assets.find((asset) => asset.display === denomDisplayName) as Asset;
 };

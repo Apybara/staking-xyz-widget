@@ -3,7 +3,8 @@ import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useStakingProcedures } from "../../_services/stake/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
-import { useStakeAmountInputValidation, useDenomStakeFees } from "./hooks";
+import { useInputStates } from "../../_components/AmountInputPad/hooks";
+import { useStakeAmountInputValidation, useStakeFees } from "./hooks";
 
 const StakingContext = createContext({} as T.StakingContext);
 
@@ -13,10 +14,15 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseStakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
   const { network } = useShell();
-  const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.denomAmountInput });
-  const denomStakeFees = useDenomStakeFees({ inputAmount: states.denomAmountInput });
+  const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.coinAmountInput });
+  const stakeFees = useStakeFees({ inputAmount: states.coinAmountInput });
   const { data: cosmosSigningClient } = useCosmosSigningClient({ network: network || "celestia" });
-  const { procedures, resetStates } = useStakingProcedures({ cosmosSigningClient, network: network || "celestia" });
+  const { procedures, resetStates } = useStakingProcedures({
+    cosmosSigningClient,
+    network: network || "celestia",
+    amount: states.coinAmountInput,
+  });
+  const amountInputPad = useInputStates();
 
   return (
     <StakingContext.Provider
@@ -24,8 +30,9 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
         ...states,
         inputState: amountValidation,
         ctaState: ctaValidation,
-        denomStakeFees,
+        stakeFees,
         procedures,
+        amountInputPad,
         cosmosSigningClient: cosmosSigningClient || null,
         resetProceduresStates: resetStates,
         setStates,
@@ -37,12 +44,21 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
 };
 
 const initialStates: T.StakingContext = {
-  denomAmountInput: "",
-  denomStakeFees: undefined,
+  coinAmountInput: "",
+  stakeFees: undefined,
   inputState: "empty",
   ctaState: "empty",
   procedures: undefined,
   cosmosSigningClient: null,
+  amountInputPad: {
+    primaryValue: "",
+    secondaryValue: "",
+    primaryCurrency: "USD",
+    secondaryCurrency: "TIA",
+    setPrimaryValue: () => {},
+    onSwap: () => {},
+    onMax: () => {},
+  },
   resetProceduresStates: () => {},
   setStates: () => {},
 };

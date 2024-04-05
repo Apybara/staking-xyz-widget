@@ -1,9 +1,12 @@
-export type StakeProcedure = {
-  step: StakeProcedureStep;
-  stepName: string;
+export type StakeProcedure = BaseStakeProcedure & {
   state: StakeProcedureState | null;
   txHash?: string;
   error: Error | null;
+};
+
+export type BaseStakeProcedure = {
+  step: StakeProcedureStep;
+  stepName: string;
   send: () => void;
 };
 

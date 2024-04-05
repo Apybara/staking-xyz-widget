@@ -1,11 +1,12 @@
 import type { SigningStargateClient } from "@cosmjs/stargate";
-import type { CosmosNetwork, CosmosWalletType } from "../../types";
+import type { BaseStakeProcedure } from "../../_services/stake/types";
+import type { CosmosNetwork, Network, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
-import { cosmos } from "juno-network";
 import useLocalStorage from "use-local-storage";
-import { useChain } from "@cosmos-kit/react-lite";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { cosmosNetworkVariants, networkDenom } from "../../consts";
+import { getDelegateMessage } from "../../_services/celestiaStakingAPI";
+import { useCelestiaAddressAuthCheck } from "../../_services/celestiaStakingAPI/hooks";
+import { cosmosNetworkVariants, networkInfo } from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import {
   useCosmosKitConnectors,
@@ -15,12 +16,81 @@ import {
   useCosmosKitWalletSupports,
 } from "./cosmosKit/hooks";
 import { useGrazConnectors, useGrazDisconnector, useGrazWalletBalance, useGrazWalletStates } from "./graz/hooks";
-import { getSigningClient, getEstimatedGas, getFee } from ".";
+import { getDenomValueFromCoin, getIsCosmosNetwork } from "./utils";
+import { getSigningClient, getGrantingMessages, getEstimatedGas, getFee } from ".";
 
-const { StakeAuthorization } = cosmos.staking.v1beta1;
-const { GenericAuthorization } = cosmos.authz.v1beta1;
+export const useCosmosStakingProcedures = ({
+  amount,
+  network,
+  address,
+  authStep,
+  cosmosSigningClient,
+  delegateStep,
+}: {
+  amount: string;
+  network: Network | null;
+  address: string | null;
+  cosmosSigningClient?: SigningStargateClient;
+  authStep: {
+    onLoading: () => void;
+    onSuccess: (txHash?: string) => void;
+    onError: (e: Error) => void;
+  };
+  delegateStep: {
+    onLoading: () => void;
+    onSuccess: (txHash?: string) => void;
+    onError: (e: Error) => void;
+  };
+}) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const { data: isAddressAuthorized, isLoading } = useCelestiaAddressAuthCheck({ address: address || undefined });
 
-export const useCosmosBroadcastAuthzTx = ({
+  const cosmosAuthTx = useCosmosBroadcastAuthzTx({
+    client: cosmosSigningClient || null,
+    network: network && isCosmosNetwork ? network : undefined,
+    address: address || undefined,
+    onLoading: authStep.onLoading,
+    onSuccess: authStep.onSuccess,
+    onError: authStep.onError,
+  });
+  const cosmosDelegateTx = useCosmosBroadcastDelegateTx({
+    client: cosmosSigningClient || null,
+    network: network && isCosmosNetwork ? network : undefined,
+    address: address || undefined,
+    amount,
+    onLoading: delegateStep.onLoading,
+    onSuccess: delegateStep.onSuccess,
+    onError: delegateStep.onError,
+  });
+
+  // TODO: handle error state
+  if (!isCosmosNetwork || !address || isLoading) return null;
+
+  const base = [
+    {
+      step: "delegate",
+      stepName: "Sign in wallet",
+      send: cosmosDelegateTx.send,
+    } as BaseStakeProcedure,
+  ];
+  const baseProcedures: Array<BaseStakeProcedure> = isAddressAuthorized
+    ? base
+    : [
+        {
+          step: "auth",
+          stepName: "Approval in wallet",
+          send: cosmosAuthTx.send,
+        },
+        ...base,
+      ];
+
+  return {
+    baseProcedures,
+    firstStep: baseProcedures[0].step,
+  };
+};
+
+const useCosmosBroadcastAuthzTx = ({
   client,
   network,
   address,
@@ -36,108 +106,97 @@ export const useCosmosBroadcastAuthzTx = ({
   onError?: (e: Error) => void;
 }) => {
   const { isPending, error, mutate, reset } = useMutation({
-    mutationKey: ["broadcastCosmosAuthzTx", address, client],
+    mutationKey: ["broadcastCosmosAuthzTx", address, network],
     mutationFn: async () => {
       if (!client || !address) {
         throw new Error("Missing parameter: client, address");
       }
 
-      // const msgs = await getStakeUnsignedMsg(address);
-      // const parsedMsgs = JSON.parse(msgs).body.messages;
-
-      const tempAuthMsgs = [
-        {
-          typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
-          value: {
-            granter: address,
-            grantee: "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
-            grant: {
-              authorization: {
-                typeUrl: "/cosmos.staking.v1beta1.StakeAuthorization",
-                value: StakeAuthorization.encode(
-                  StakeAuthorization.fromPartial({
-                    allowList: { address: ["celestiavaloper1e2p4u5vqwgum7pm9vhp0yjvl58gvhfc6yfatw4"] },
-                    maxTokens: {
-                      denom: "utia",
-                      amount: "1",
-                    },
-                    authorizationType: 1,
-                  }),
-                ).finish(),
-              },
-            },
-          },
-        },
-        // {
-        //   typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
-        //   value: {
-        //     granter: address,
-        //     grantee: "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
-        //     grant: {
-        //       authorization: {
-        //         typeUrl: "/cosmos.staking.v1beta1.StakeAuthorization",
-        //         value: StakeAuthorization.encode(StakeAuthorization.fromPartial({
-        //           allowList: { address: ['celestiavaloper1e2p4u5vqwgum7pm9vhp0yjvl58gvhfc6yfatw4'] },
-        //           maxTokens: {
-        //             denom: "utia",
-        //             amount: '1',
-        //           },
-        //           authorizationType: 2
-        //         })).finish(),
-        //       },
-        //     },
-        //   },
-        // },
-        // {
-        //   typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
-        //   value: {
-        //     granter: address,
-        //     grantee: "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
-        //     grant: {
-        //       authorization: {
-        //         typeUrl: "/cosmos.staking.v1beta1.StakeAuthorization",
-        //         value: StakeAuthorization.encode(StakeAuthorization.fromPartial({
-        //           allowList: { address: ['celestiavaloper1e2p4u5vqwgum7pm9vhp0yjvl58gvhfc6yfatw4'] },
-        //           maxTokens: {
-        //             denom: "utia",
-        //             amount: '1',
-        //           },
-        //           authorizationType: 3
-        //         })).finish(),
-        //       },
-        //     },
-        //   },
-        // },
-        // {
-        //   typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
-        //   value: {
-        //     granter: address,
-        //     grantee: "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
-        //     grant: {
-        //       authorization: {
-        //         typeUrl: "/cosmos.authz.v1beta1.GenericAuthorization",
-        //         value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
-        //           msg: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
-        //         })).finish(),
-        //       },
-        //     },
-        //   },
-        // },
-      ];
-
-      const estimatedGas = await getEstimatedGas({ client, address, msgArray: tempAuthMsgs });
+      const grantingMsgs = getGrantingMessages({ granter: address, grantee: granteeAddress[network || "celestia"] });
+      const estimatedGas = await getEstimatedGas({ client, address, msgArray: grantingMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
         network: network || "celestia",
-        networkDenom: "u" + networkDenom[network || "celestia"].toLowerCase(),
+        networkDenom: networkInfo[network || "celestia"].denom,
       });
 
-      return await client.signAndBroadcast(address, tempAuthMsgs, fee);
+      return await client.signAndBroadcast(address, grantingMsgs, fee);
     },
-    onSuccess: (res) => {
-      console.log(">>> res", res);
-      onSuccess?.(res.transactionHash);
+    onSuccess: (res) => onSuccess?.(res.transactionHash),
+    onError: (error) => onError?.(error),
+  });
+
+  useEffect(() => {
+    if (isPending) {
+      onLoading?.();
+    }
+  }, [isPending]);
+
+  useEffect(() => {
+    if (error) {
+      onError?.(error);
+    }
+  }, [error]);
+
+  return {
+    reset,
+    send: mutate,
+  };
+};
+
+const useCosmosBroadcastDelegateTx = ({
+  client,
+  amount,
+  network,
+  address,
+  onLoading,
+  onSuccess,
+  onError,
+}: {
+  client: SigningStargateClient | null;
+  amount: string;
+  network?: CosmosNetwork;
+  address?: string;
+  onLoading?: () => void;
+  onSuccess?: (txHash: string) => void;
+  onError?: (e: Error) => void;
+}) => {
+  const { isPending, error, mutate, reset } = useMutation({
+    mutationKey: ["broadcastCosmosDelegateTx", address, amount, network],
+    mutationFn: async () => {
+      if (!client || !address) {
+        throw new Error("Missing parameter: client, address");
+      }
+
+      const denomAmount = getDenomValueFromCoin({ network: network || "celestia", amount });
+      const unsignedResponse = await getDelegateMessage(address, Number(denomAmount));
+      const parsedUnsigned = JSON.parse(atob(unsignedResponse));
+      const validatorAddress = parsedUnsigned?.body?.messages?.[0]?.["validator_address"] || "";
+
+      const delegateMsgs = [
+        {
+          typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+          value: {
+            delegatorAddress: address,
+            validatorAddress,
+            amount: {
+              denom: networkInfo[network || "celestia"].denom,
+              amount: denomAmount,
+            },
+          },
+        },
+        // TODO: add fee collection message
+      ];
+      const estimatedGas = await getEstimatedGas({ client, address, msgArray: delegateMsgs });
+      const fee = getFee({
+        gasLimit: estimatedGas,
+        network: network || "celestia",
+        networkDenom: networkInfo[network || "celestia"].denom,
+      });
+
+      return await client.signAndBroadcast(address, delegateMsgs, fee);
     },
+    onSuccess: (res) => onSuccess?.(res.transactionHash),
     onError: (error) => onError?.(error),
   });
 
@@ -258,17 +317,21 @@ export const useCosmosWalletSupports = () => {
 };
 
 export const useCosmosSigningClient = ({ network }: { network?: CosmosNetwork }) => {
-  const { getSigningStargateClient } = useChain(network || "celestia");
-
   const {
     data: signingClient,
     isLoading,
     error,
   } = useQuery({
     enabled: !!network,
-    queryKey: ["cosmosSigningClient", network, getSigningStargateClient],
-    queryFn: () => getSigningClient({ network, getSigningStargateClient }),
+    queryKey: ["cosmosSigningClient", network],
+    queryFn: () => getSigningClient({ network }),
   });
 
   return { data: signingClient, isLoading, error };
+};
+
+const granteeAddress: Record<CosmosNetwork, string> = {
+  celestia: process.env.NEXT_PUBLIC_CELESTIA_AUTH_GRANTEE || "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
+  celestiatestnet3:
+    process.env.NEXT_PUBLIC_CELESTIATESTNET3_AUTH_GRANTEE || "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
 };

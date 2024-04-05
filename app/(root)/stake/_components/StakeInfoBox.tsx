@@ -4,33 +4,36 @@ import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
-import { getFormattedCoinPrice, getFormattedTokenValue } from "../../../_utils/conversions";
+import {
+  getFormattedUSDPriceFromCoin,
+  getFormattedEURPriceFromCoin,
+  getFormattedCoinValue,
+} from "../../../_utils/conversions";
 import { unstakingPeriodByNetwork } from "../../../consts";
 import { rewardInfoValue } from "./stake.css";
 
 export const StakeInfoBox = () => {
   const { currency, coinPrice, network } = useShell();
-  const { denomStakeFees } = useStaking();
+  const { stakeFees } = useStaking();
 
   const fees = useMemo(() => {
-    if (!denomStakeFees) return undefined;
+    if (!stakeFees) return undefined;
     const castedCurrency = currency || "USD";
 
-    if (castedCurrency === "USD" || castedCurrency === "EUR") {
-      const price = coinPrice?.[network || "celestia"]?.[castedCurrency] || 0;
-      return getFormattedCoinPrice({
-        val: denomStakeFees,
-        price,
-        currency: castedCurrency,
-        options: {
-          formatOptions: {
-            currencySymbol: castedCurrency === "USD" ? "$" : "€",
-          },
-        },
+    if (castedCurrency === "USD") {
+      return getFormattedUSDPriceFromCoin({
+        val: stakeFees,
+        price: coinPrice?.[network || "celestia"]?.USD || 0,
       });
     }
-    return getFormattedTokenValue({ val: BigNumber(denomStakeFees).toNumber() });
-  }, [denomStakeFees]);
+    if (castedCurrency === "EUR") {
+      return getFormattedEURPriceFromCoin({
+        val: stakeFees,
+        price: coinPrice?.[network || "celestia"]?.EUR || 0,
+      });
+    }
+    return getFormattedCoinValue({ val: BigNumber(stakeFees).toNumber() });
+  }, [stakeFees]);
 
   return (
     <InfoCard.Card>
