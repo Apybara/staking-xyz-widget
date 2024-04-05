@@ -1,7 +1,7 @@
 import type { WalletInfo, Network, Currency } from "../../types";
 import cn from "classnames";
 import Image from "next/image";
-import { networkWalletPrefixes, networkDenom } from "../../consts";
+import { networkWalletPrefixes, networkCurrency } from "../../consts";
 import * as Dialog from "../Dialog";
 import { Skeleton } from "../Skeleton";
 import { CopyButton } from "../CopyButton";
@@ -68,7 +68,7 @@ const AccountBox = ({
   network,
   currency,
 }: Pick<RootWalletAccountDialogProps, "address" | "balance" | "network" | "currency">) => {
-  const unit = currency === networkDenom[network] ? networkDenom[network] : currency;
+  const unit = currency === networkCurrency[network] ? networkCurrency[network] : currency;
 
   return (
     <div className={cn(S.accountBox)}>

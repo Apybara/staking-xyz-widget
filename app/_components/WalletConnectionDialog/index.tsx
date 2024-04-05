@@ -91,6 +91,7 @@ export const WalletConnectionDialog = () => {
             if (!connectors?.[wallet.id]) throw new Error("Connector not found");
             // @ts-ignore
             await connectors[wallet.id]();
+            setError(null);
           } catch (e) {
             console.error(e);
             setError(e as Error);

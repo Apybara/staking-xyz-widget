@@ -3,7 +3,7 @@ import cn from "classnames";
 import redirectPage from "../_actions/redirectPage";
 import revalidatePageQueries from "../_actions/revalidatePageQueries";
 import { DefaultViewTop } from "./_components/WidgetTop";
-import { WalletConnectionCardButton } from "./_components/WalletConnectionCardButton/index";
+import { HeroCard } from "./_components/HeroCard";
 import * as NavCard from "./_components/NavCard";
 import * as S from "./root.css";
 
@@ -15,7 +15,7 @@ export default async function Home({ searchParams }: RouterStruct) {
   return (
     <>
       <DefaultViewTop />
-      <WalletConnectionCardButton />
+      <HeroCard />
       <nav className={cn(S.nav)}>
         <NavCard.Stake searchParams={searchParams} />
         <NavCard.Unstake searchParams={searchParams} disabled />

@@ -1,8 +1,8 @@
 import {
   NetworkVariants,
-  NetworkDenomVariants,
+  CoinVariants,
   CosmosNetworkVariants,
-  BaseCurrencyVariants,
+  FiatCurrencyVariants,
   CosmosWalletVariants,
   WalletVariants,
   ConnectorVariants,
@@ -13,15 +13,16 @@ export type NetworkInfo = {
   id: Network;
   name: string;
   logo: string;
+  currency: NetworkCurrency;
   denom: string;
 };
 
 export type CosmosNetwork = (typeof CosmosNetworkVariants)[number];
 
-export type BaseCurrency = (typeof BaseCurrencyVariants)[number];
-export type NetworkDenom = (typeof NetworkDenomVariants)[number];
-export type Currency = BaseCurrency | NetworkDenom;
-export type CoinPrice = Record<Network, Record<BaseCurrency, number>>;
+export type FiatCurrency = (typeof FiatCurrencyVariants)[number];
+export type NetworkCurrency = (typeof CoinVariants)[number];
+export type Currency = FiatCurrency | NetworkCurrency;
+export type CoinPrice = Record<Network, Record<FiatCurrency, number>>;
 
 export type CosmosWalletType = (typeof CosmosWalletVariants)[number];
 export type WalletType = (typeof WalletVariants)[number];

@@ -4,7 +4,7 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_utils/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
-import { useFormattedTokenPrice } from "../../_utils/conversions/hooks";
+import { useFormattedNetworkValue } from "../../_utils/conversions/hooks";
 import { walletsInfo } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
 
@@ -16,7 +16,7 @@ export const WalletAccountDialog = () => {
     isLoading: isBalanceLoading,
     error: balanceError,
   } = useWalletBalance({ address, network, activeWallet }) || {};
-  const formattedBalance = useFormattedTokenPrice({ val: balanceData });
+  const formattedBalance = useFormattedNetworkValue({ val: balanceData });
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
   const disconnectors = useWalletDisconnectors(network || "celestia");

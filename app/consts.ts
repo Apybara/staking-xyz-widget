@@ -1,12 +1,12 @@
-import type { Network, NetworkInfo, NetworkDenom, WalletInfo, WalletType } from "./types";
+import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType } from "./types";
 
 export const NetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
 
-export const NetworkDenomVariants = ["TIA"] as const;
-export const networkDenomVariants = [...NetworkDenomVariants];
+export const CoinVariants = ["TIA"] as const;
+export const coinVariants = [...CoinVariants];
 
-export const networkDenom: Record<Network, NetworkDenom> = {
+export const networkCurrency: Record<Network, NetworkCurrency> = {
   celestia: "TIA",
   celestiatestnet3: "TIA",
 };
@@ -21,13 +21,15 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     id: "celestia",
     name: "Celesita",
     logo: "/networks/celestia-logo.svg",
-    denom: networkDenom.celestia,
+    currency: networkCurrency.celestia,
+    denom: "u" + networkCurrency.celestia.toLowerCase(),
   },
   celestiatestnet3: {
     id: "celestiatestnet3",
     name: "Celestia Testnet",
     logo: "/networks/celestia-logo.svg",
-    denom: networkDenom.celestiatestnet3,
+    currency: networkCurrency.celestiatestnet3,
+    denom: "u" + networkCurrency.celestiatestnet3.toLowerCase(),
   },
 };
 
@@ -66,10 +68,11 @@ export const networkEndpoints: Record<
   },
 };
 
-export const BaseCurrencyVariants = ["USD", "EUR"] as const;
-export const baseCurrencyVariants = [...BaseCurrencyVariants];
+export const FiatCurrencyVariants = ["USD", "EUR"] as const;
+export const fiatCurrencyVariants = [...FiatCurrencyVariants];
+
 export const currencyRegex = /\b(usd|eur|tia)\b/i;
-export const currencyMap = {
+export const fiatCurrencyMap = {
   USD: "$",
   EUR: "€",
 };

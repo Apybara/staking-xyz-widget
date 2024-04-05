@@ -1,16 +1,16 @@
-import type { Currency, NetworkDenom } from "../../types";
+import type { Currency, NetworkCurrency } from "../../types";
 import cn from "classnames";
 import * as Select from "../Select";
-import { currencyMap } from "../../consts";
+import { fiatCurrencyMap } from "../../consts";
 import * as S from "./currencyTabs.css";
 
 export type CurrencyTabsProps = {
   activeCurrency: Currency;
-  activeNetworkDenom: NetworkDenom | null;
+  activeNetworkCurrency: NetworkCurrency | null;
   onCurrencyChange: (currency: Currency) => void;
 };
 
-export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyChange }: CurrencyTabsProps) => {
+export const CurrencyTabs = ({ activeCurrency, activeNetworkCurrency, onCurrencyChange }: CurrencyTabsProps) => {
   return (
     <>
       <ul className={cn(S.tabs)}>
@@ -19,7 +19,7 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyCha
             className={cn(S.tabButton({ state: activeCurrency === "EUR" ? "highlighted" : "default" }))}
             onClick={() => onCurrencyChange("EUR")}
           >
-            {currencyMap.EUR}
+            {fiatCurrencyMap.EUR}
           </button>
         </li>
         <li>
@@ -27,16 +27,18 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyCha
             className={cn(S.tabButton({ state: activeCurrency === "USD" ? "highlighted" : "default" }))}
             onClick={() => onCurrencyChange("USD")}
           >
-            {currencyMap.USD}
+            {fiatCurrencyMap.USD}
           </button>
         </li>
-        {activeNetworkDenom && (
+        {activeNetworkCurrency && (
           <li>
             <button
-              className={cn(S.tabButton({ state: activeCurrency === activeNetworkDenom ? "highlighted" : "default" }))}
-              onClick={() => onCurrencyChange(activeNetworkDenom)}
+              className={cn(
+                S.tabButton({ state: activeCurrency === activeNetworkCurrency ? "highlighted" : "default" }),
+              )}
+              onClick={() => onCurrencyChange(activeNetworkCurrency)}
             >
-              {activeNetworkDenom}
+              {activeNetworkCurrency}
             </button>
           </li>
         )}
@@ -44,7 +46,7 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyCha
       <div className={cn(S.selectTabs)}>
         <CurrencySelect
           activeCurrency={activeCurrency}
-          activeNetworkDenom={activeNetworkDenom}
+          activeNetworkCurrency={activeNetworkCurrency}
           onCurrencyChange={onCurrencyChange}
         />
       </div>
@@ -52,7 +54,7 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkDenom, onCurrencyCha
   );
 };
 
-const CurrencySelect = ({ activeCurrency, activeNetworkDenom, onCurrencyChange }: CurrencyTabsProps) => {
+const CurrencySelect = ({ activeCurrency, activeNetworkCurrency, onCurrencyChange }: CurrencyTabsProps) => {
   return (
     <Select.Main
       defaultValue={activeCurrency}
@@ -61,14 +63,14 @@ const CurrencySelect = ({ activeCurrency, activeNetworkDenom, onCurrencyChange }
       items={
         <>
           <Select.Item className={cn(S.selectOptionText)} value="USD">
-            <Select.ItemText>{currencyMap.USD}</Select.ItemText>
+            <Select.ItemText>{fiatCurrencyMap.USD}</Select.ItemText>
           </Select.Item>
           <Select.Item className={cn(S.selectOptionText)} value="EUR">
-            <Select.ItemText>{currencyMap.EUR}</Select.ItemText>
+            <Select.ItemText>{fiatCurrencyMap.EUR}</Select.ItemText>
           </Select.Item>
-          {activeNetworkDenom && (
-            <Select.Item className={cn(S.selectOptionText)} value={activeNetworkDenom}>
-              <Select.ItemText>{activeNetworkDenom}</Select.ItemText>
+          {activeNetworkCurrency && (
+            <Select.Item className={cn(S.selectOptionText)} value={activeNetworkCurrency}>
+              <Select.ItemText>{activeNetworkCurrency}</Select.ItemText>
             </Select.Item>
           )}
         </>

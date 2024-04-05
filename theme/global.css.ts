@@ -18,3 +18,8 @@ globalStyle("html", {
     },
   },
 });
+
+globalStyle(".skeleton-container", {
+  display: "block",
+  lineHeight: 0,
+});

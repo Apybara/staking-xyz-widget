@@ -4,31 +4,70 @@ import type { GetBalanceProps } from "./types";
 import { ceil } from "mathjs";
 import BigNumber from "bignumber.js";
 import { cosmos } from "juno-network";
-import { SigningStargateClient, coin } from "@cosmjs/stargate";
+import { Registry } from "@cosmjs/proto-signing";
+import {
+  AminoTypes,
+  SigningStargateClient,
+  defaultRegistryTypes,
+  createStakingAminoConverters,
+  createDistributionAminoConverters,
+  coin,
+} from "@cosmjs/stargate";
 import { networkDefaultGasPrice, networkEndpoints } from "../../consts";
-import { getDenomUnitValue, getChainAssets } from "./utils";
+import { createAuthzAminoConverters } from "./amino";
+import { getCoinValueFromDenom, getChainAssets } from "./utils";
 
-export const getSigningClient = async ({
-  network,
-  getSigningStargateClient,
-}: {
-  network?: CosmosNetwork;
-  getSigningStargateClient: () => Promise<SigningStargateClient>;
-}) => {
+const { GenericAuthorization } = cosmos.authz.v1beta1;
+
+export const getSigningClient = async ({ network }: { network?: CosmosNetwork }) => {
   try {
-    return await getSigningStargateClient();
-  } catch (e) {
-    try {
-      if (!network || !window.getOfflineSigner) {
-        throw new Error("Missing parameter: network, networkRpcEndpoint.");
-      }
-      const offlineSigner = window.getOfflineSigner(network);
-      return await SigningStargateClient.connectWithSigner(networkEndpoints[network].rpc, offlineSigner);
-    } catch (e) {
-      console.error(e);
-      throw e;
+    if (!network || !window.getOfflineSigner) {
+      throw new Error("Missing parameter: network, networkRpcEndpoint.");
     }
+    const offlineSigner = window.getOfflineSigner(network);
+    const registry = new Registry(defaultRegistryTypes);
+    const defaultConverters = {
+      ...createAuthzAminoConverters(),
+      ...createDistributionAminoConverters(),
+      ...createStakingAminoConverters(),
+    };
+    const aminoTypes = new AminoTypes(defaultConverters);
+
+    return await SigningStargateClient.connectWithSigner(networkEndpoints[network].rpc, offlineSigner, {
+      registry,
+      aminoTypes,
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
+};
+
+export const getGrantingMessages = ({ granter, grantee }: { granter: string; grantee: string }) => {
+  const msgs = [
+    "/cosmos.staking.v1beta1.MsgDelegate",
+    "/cosmos.staking.v1beta1.MsgUndelegate",
+    "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+    "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+  ];
+
+  return msgs.map((msg) => ({
+    typeUrl: "/cosmos.authz.v1beta1.MsgGrant",
+    value: {
+      granter,
+      grantee,
+      grant: {
+        authorization: {
+          typeUrl: "/cosmos.authz.v1beta1.GenericAuthorization",
+          value: GenericAuthorization.encode(
+            GenericAuthorization.fromPartial({
+              msg,
+            }),
+          ).finish(),
+        },
+      },
+    },
+  }));
 };
 
 export const getEstimatedGas = async ({
@@ -88,7 +127,7 @@ export const getBalance = async ({ address, getRpcEndpoint, network }: GetBalanc
       denom: chainAssets?.assets[0].base || "",
     });
 
-    return getDenomUnitValue({ network, amount: balance.balance?.amount });
+    return getCoinValueFromDenom({ network, amount: balance.balance?.amount });
   } catch (e) {
     throw e;
   }

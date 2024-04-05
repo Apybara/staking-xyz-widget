@@ -7,6 +7,7 @@ export const defaultTop = style({
   justifyContent: "flex-end",
   gap: pxToRem(12),
   marginInlineEnd: pxToRem(2),
+  paddingBlock: pxToRem(4),
 });
 
 export const pageTop = style({

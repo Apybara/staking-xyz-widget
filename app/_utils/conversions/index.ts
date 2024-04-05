@@ -1,17 +1,49 @@
+import type { FiatCurrency } from "../../types";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
-import { BaseCurrency } from "../../types";
+import { fiatCurrencyMap } from "../../consts";
 
-export const getFormattedCoinPrice = ({ val, price, currency, options }: GetPriceProps) => {
-  const value = getCoinPriceFromToken({ val, price });
-  return getCurrencyValue({
+export const getFormattedUSDPriceFromCoin = ({ val, price, options }: Omit<GetPriceProps, "currency">) => {
+  const value = getFiatPriceFromCoin({ val, price });
+  return getFormattedFiatCurrencyValue({
+    val: value,
+    locale: localeMap.USD,
+    formatOptions: {
+      ...options?.formatOptions,
+      currencySymbol: fiatCurrencyMap.USD,
+    },
+    capAtTrillion: options?.capAtTrillion,
+  });
+};
+
+export const getFormattedEURPriceFromCoin = ({ val, price, options }: Omit<GetPriceProps, "currency">) => {
+  const value = getFiatPriceFromCoin({ val, price });
+  return getFormattedFiatCurrencyValue({
+    val: value,
+    locale: localeMap.EUR,
+    formatOptions: {
+      ...options?.formatOptions,
+      currencySymbol: fiatCurrencyMap.EUR,
+    },
+    capAtTrillion: options?.capAtTrillion,
+  });
+};
+
+export const getFormattedFiatPriceFromCoinValue = ({ val, price, currency, options }: GetPriceProps) => {
+  const value = getFiatPriceFromCoin({ val, price });
+  return getFormattedFiatCurrencyValue({
     val: value,
     locale: localeMap[currency],
     formatOptions: options?.formatOptions,
     capAtTrillion: options?.capAtTrillion,
   });
 };
-export const getCurrencyValue = ({ val, locale, formatOptions, capAtTrillion = true }: CurrencyPriceProps) => {
+export const getFormattedFiatCurrencyValue = ({
+  val,
+  locale,
+  formatOptions,
+  capAtTrillion = true,
+}: CurrencyPriceProps) => {
   numbro.setLanguage(locale || "en-US");
 
   if (capAtTrillion && val >= 1e12) {
@@ -28,17 +60,17 @@ export const getCurrencyValue = ({ val, locale, formatOptions, capAtTrillion = t
     .toUpperCase();
 };
 
-export const getCoinPriceFromToken = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
+export const getFiatPriceFromCoin = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
   const value = new BigNumber(val).multipliedBy(price).toNumber();
   return value;
 };
 
-export const getTokenValueFromFiat = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
+export const getCoinValueFromFiatPrice = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
   const value = new BigNumber(val).dividedBy(price).toNumber();
   return value;
 };
 
-export const getFormattedTokenValue = ({
+export const getFormattedCoinValue = ({
   val,
   formatOptions,
   capAtTrillion = true,
@@ -61,7 +93,7 @@ export const getFormattedTokenValue = ({
     .toUpperCase();
 };
 
-const localeMap: Record<BaseCurrency, string> = {
+const localeMap: Record<FiatCurrency, string> = {
   USD: "en-US",
   EUR: "de-DE",
 };
@@ -69,7 +101,7 @@ const localeMap: Record<BaseCurrency, string> = {
 type GetPriceProps = {
   val: number | string;
   price: number;
-  currency: BaseCurrency;
+  currency: FiatCurrency;
   options?: Omit<CurrencyPriceProps, "val" | "locale">;
 };
 type CurrencyPriceProps = {

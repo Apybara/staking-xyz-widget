@@ -3,7 +3,7 @@ import type { ShellContext } from "./types";
 import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useShell } from "../../_contexts/ShellContext";
-import { networkDenom, networkRegex, currencyRegex } from "../../consts";
+import { networkCurrency, networkRegex, currencyRegex } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
   const searchParams = useSearchParams();
@@ -72,7 +72,7 @@ export const useCurrencyChange = () => {
 
   return {
     activeCurrency: currency || "USD",
-    activeNetworkDenom: network && networkDenom[network],
+    activeNetworkCurrency: network && networkCurrency[network],
     onUpdateRouter,
   };
 };

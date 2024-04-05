@@ -2,9 +2,9 @@
 import cn from "classnames";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useWallet } from "../../../_contexts/WalletContext";
-import * as S from "./walletConnectionCardButton.css";
+import * as S from "./heroCard.css";
 
-export const WalletConnectionCardButton = () => {
+export const WalletConnectionCard = () => {
   const { connectionStatus } = useWallet();
   const { toggleOpen: toggleWalletConnectionDialog } = useDialog("walletConnection");
 
