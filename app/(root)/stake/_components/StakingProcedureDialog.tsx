@@ -65,6 +65,7 @@ export const StakingProcedureDialog = () => {
           }}
           onDismissButtonClick={() => {
             amountInputPad.setPrimaryValue("");
+            resetProceduresStates();
             toggleOpen(false);
           }}
         />

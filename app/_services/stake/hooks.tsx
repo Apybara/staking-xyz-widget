@@ -19,46 +19,49 @@ export const useStakingProcedures = ({
   const delegateState = useProcedureStates();
 
   const { address } = useWallet();
-  const { baseProcedures: cosmosBaseProcedures, firstStep } =
-    useCosmosStakingProcedures({
-      amount,
-      network,
-      address,
-      cosmosSigningClient,
-      authStep: {
-        onLoading: () => {
-          authState.setState("loading");
-          authState.setTxHash(undefined);
-          authState.setError(null);
-        },
-        onSuccess: (txHash) => {
-          authState.setState("success");
-          authState.setTxHash(txHash);
-          delegateState.setState("active");
-        },
-        onError: (e) => {
-          console.error(e);
-          authState.setState("error");
-          authState.setError(e);
-        },
+  const {
+    baseProcedures: cosmosBaseProcedures,
+    firstStep,
+    refetchAuthCheck,
+  } = useCosmosStakingProcedures({
+    amount,
+    network,
+    address,
+    cosmosSigningClient,
+    authStep: {
+      onLoading: () => {
+        authState.setState("loading");
+        authState.setTxHash(undefined);
+        authState.setError(null);
       },
-      delegateStep: {
-        onLoading: () => {
-          delegateState.setState("loading");
-          delegateState.setTxHash(undefined);
-          delegateState.setError(null);
-        },
-        onSuccess: (txHash) => {
-          delegateState.setState("success");
-          delegateState.setTxHash(txHash);
-        },
-        onError: (e) => {
-          console.error(e);
-          delegateState.setState("error");
-          delegateState.setError(e);
-        },
+      onSuccess: (txHash) => {
+        authState.setState("success");
+        authState.setTxHash(txHash);
+        delegateState.setState("active");
       },
-    }) || {};
+      onError: (e) => {
+        console.error(e);
+        authState.setState("error");
+        authState.setError(e);
+      },
+    },
+    delegateStep: {
+      onLoading: () => {
+        delegateState.setState("loading");
+        delegateState.setTxHash(undefined);
+        delegateState.setError(null);
+      },
+      onSuccess: (txHash) => {
+        delegateState.setState("success");
+        delegateState.setTxHash(txHash);
+      },
+      onError: (e) => {
+        console.error(e);
+        delegateState.setState("error");
+        delegateState.setError(e);
+      },
+    },
+  }) || {};
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length && authState.state === null && delegateState.state === null) {
@@ -107,7 +110,7 @@ export const useStakingProcedures = ({
 
   return {
     procedures,
-    resetStates: () => {
+    resetStates: async () => {
       if (cosmosBaseProcedures?.length) {
         authState.setState(firstStep === "auth" ? "active" : null);
         authState.setTxHash(undefined);
@@ -115,6 +118,7 @@ export const useStakingProcedures = ({
         delegateState.setState(firstStep === "delegate" ? "active" : "idle");
         delegateState.setTxHash(undefined);
         delegateState.setError(null);
+        await refetchAuthCheck?.();
       }
     },
   };

@@ -43,7 +43,11 @@ export const useCosmosStakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const { data: isAddressAuthorized, isLoading } = useCelestiaAddressAuthCheck({ address: address || undefined });
+  const {
+    data: isAddressAuthorized,
+    isLoading,
+    refetch,
+  } = useCelestiaAddressAuthCheck({ address: address || undefined });
 
   const cosmosAuthTx = useCosmosBroadcastAuthzTx({
     client: cosmosSigningClient || null,
@@ -87,6 +91,7 @@ export const useCosmosStakingProcedures = ({
   return {
     baseProcedures,
     firstStep: baseProcedures[0].step,
+    refetchAuthCheck: refetch,
   };
 };
 
