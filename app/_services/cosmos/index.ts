@@ -22,17 +22,17 @@ const { GenericAuthorization } = cosmos.authz.v1beta1;
 
 export const getSigningClient = async ({
   network,
-  offlineSigner,
+  getOfflineSigner,
 }: {
   network?: CosmosNetwork;
-  offlineSigner?: OfflineSigner;
+  getOfflineSigner?: () => Promise<OfflineSigner>;
 }) => {
   try {
     if (!network) {
       throw new Error("Missing parameter: network.");
     }
 
-    const signer = offlineSigner || window?.getOfflineSigner?.(network);
+    const signer = getOfflineSigner ? await getOfflineSigner() : window?.getOfflineSigner?.(network);
     if (!signer) {
       throw new Error("Missing parameter: offlineSigner.");
     }
