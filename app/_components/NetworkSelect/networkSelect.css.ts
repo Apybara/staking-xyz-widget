@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { pxToRem } from "@/theme/utils";
-import { colors, weights, monospaced } from "@/theme/theme.css";
+import { colors, weights } from "@/theme/theme.css";
 
 export const selectItem = style({
   display: "flex",
@@ -15,6 +15,19 @@ export const selectItem = style({
     },
   },
 });
+
+export const selectItemDisabled = style([
+  selectItem,
+  {
+    cursor: "not-allowed",
+
+    selectors: {
+      "&:hover, &[data-state='checked']": {
+        backgroundColor: colors.black900,
+      },
+    },
+  },
+]);
 
 export const selectItemMain = style({
   display: "flex",
@@ -37,6 +50,12 @@ export const triggerItemTitle = style({
 export const itemTitle = style({
   fontSize: pxToRem(14),
   fontWeight: weights.semibold,
+
+  selectors: {
+    [`${selectItemDisabled} &`]: {
+      color: colors.black300,
+    },
+  },
 });
 
 export const itemSubtitle = style({
@@ -48,5 +67,10 @@ export const itemSubtitle = style({
 export const itemSuffixText = style({
   fontSize: pxToRem(14),
   color: colors.green900,
-  fontFeatureSettings: monospaced,
+
+  selectors: {
+    [`${selectItemDisabled} &`]: {
+      color: colors.black300,
+    },
+  },
 });

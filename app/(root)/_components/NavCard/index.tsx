@@ -35,7 +35,8 @@ const NavCard = ({ disabled = false, searchParams, page, endBox }: NavCardProps)
       <Link href={getLinkWithSearchParams(searchParams, page)} className={cn(S.card)}>
         <div className={cn(S.main)}>
           <span className={cn(S.title)}>{pageTitleMap[page]}</span>
-          <Icon name="chevron" size={12} transform="rotate(-90 0 0)" />
+          <Icon name="chevron" size={12} className={cn(S.icon, S.iconChevron)} />
+          <Icon name="arrow" size={12} className={cn(S.icon, S.iconArrow)} />
         </div>
         <div className={cn(S.endBox)}>
           {endBox?.title}

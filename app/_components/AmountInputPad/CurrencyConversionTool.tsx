@@ -5,7 +5,7 @@ import * as S from "./amountInputPad.css";
 
 export type CurrencyConversionToolProps = {
   value: number | string;
-  currency: Currency;
+  currency?: Currency;
   onConvert: () => void;
 };
 

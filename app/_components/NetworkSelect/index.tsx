@@ -4,6 +4,7 @@ import Image from "next/image";
 import * as Select from "../Select";
 import { networkVariants, networkInfo } from "../../consts";
 import * as S from "./networkSelect.css";
+import CosmosHubLogo from "../../_assets/networks/cosmos-hub-logo.svg";
 
 export type NetworkSelectProps = {
   activeNetwork: Network;
@@ -29,6 +30,20 @@ export const NetworkSelect = ({ activeNetwork, onNetworkChange }: NetworkSelectP
           {networkVariants.map((network) => (
             <NetworkItem network={network} key={"select-" + network} />
           ))}
+          {disabledNetworks.map((network) => (
+            <Select.Item
+              key={"select-" + network}
+              value={network.id as any}
+              className={cn(S.selectItemDisabled)}
+              disabled
+            >
+              <div className={cn(S.selectItemMain)}>
+                <Image src={network.logo} width={18} height={18} alt={`Logo of ${network}`} />
+                <h5 className={cn(S.itemTitle)}>{network.name}</h5>
+              </div>
+              <p className={cn(S.itemSuffixText)}>Coming soon</p>
+            </Select.Item>
+          ))}
         </>
       }
     />
@@ -46,3 +61,11 @@ const NetworkItem = ({ network }: { network: Network }) => {
     </Select.Item>
   );
 };
+
+const disabledNetworks = [
+  {
+    id: "cosmoshub",
+    name: "Cosmos Hub",
+    logo: CosmosHubLogo,
+  },
+];
