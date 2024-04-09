@@ -3,12 +3,14 @@ import type { StakeProcedure, StakeProcedureStep, StakeProcedureState } from "..
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
+import { useWallet } from "../../../_contexts/WalletContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as DelegationDialog from "../../../_components/DelegationDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 
 export const StakingProcedureDialog = () => {
   const router = useRouter();
+  const { activeWallet } = useWallet();
   const { procedures, amountInputPad, resetProceduresStates } = useStaking();
   const { open, toggleOpen } = useDialog("stakingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
@@ -44,6 +46,13 @@ export const StakingProcedureDialog = () => {
           <DelegationDialog.StepItem
             key={index}
             state={procedure.state || "idle"}
+            onCancel={
+              activeWallet === "okx" || activeWallet?.includes("Mobile")
+                ? () => {
+                    activeProcedure?.setState("active");
+                  }
+                : undefined
+            }
             // explorerUrl={procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`}
           >
             {procedure.stepName}

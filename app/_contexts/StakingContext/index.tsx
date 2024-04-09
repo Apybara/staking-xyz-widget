@@ -15,7 +15,7 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseStakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
   const { network } = useShell();
-  const { activeWallet } = useWallet();
+  const { activeWallet, address } = useWallet();
   const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.coinAmountInput });
   const stakeFees = useStakeFees({ inputAmount: states.coinAmountInput });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
@@ -23,6 +23,7 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
     wallet: activeWallet,
   });
   const { procedures, resetStates } = useStakingProcedures({
+    address,
     cosmosSigningClient,
     network: network || "celestia",
     amount: states.coinAmountInput,

@@ -84,3 +84,21 @@ export const resultButtons = style({
   alignItems: "center",
   gap: pxToRem(16),
 });
+
+export const itemEndBox = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(6),
+});
+
+export const cancelButton = style({
+  cursor: "pointer",
+  color: colors.black300,
+  lineHeight: 0,
+
+  selectors: {
+    "&:hover": {
+      color: colors.black000,
+    },
+  },
+});
