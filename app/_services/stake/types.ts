@@ -2,6 +2,7 @@ export type StakeProcedure = BaseStakeProcedure & {
   state: StakeProcedureState | null;
   txHash?: string;
   error: Error | null;
+  setState: (state: StakeProcedureState | null) => void;
 };
 
 export type BaseStakeProcedure = {

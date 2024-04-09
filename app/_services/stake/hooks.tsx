@@ -2,14 +2,15 @@ import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { Network } from "../../types";
 import type { StakeProcedure, StakeProcedureState } from "./types";
 import { useEffect, useState } from "react";
-import { useWallet } from "../../_contexts/WalletContext";
 import { useCosmosStakingProcedures } from "../cosmos/hooks";
 
 export const useStakingProcedures = ({
+  address,
   amount,
   network,
   cosmosSigningClient,
 }: {
+  address: string | null;
   amount: string;
   network: Network;
   cosmosSigningClient?: SigningStargateClient;
@@ -18,7 +19,6 @@ export const useStakingProcedures = ({
   const authState = useProcedureStates();
   const delegateState = useProcedureStates();
 
-  const { address } = useWallet();
   const {
     baseProcedures: cosmosBaseProcedures,
     firstStep,
@@ -64,6 +64,18 @@ export const useStakingProcedures = ({
   }) || {};
 
   useEffect(() => {
+    if (!address) {
+      setProcedures(undefined);
+      authState.setState(null);
+      authState.setTxHash(undefined);
+      authState.setError(null);
+      delegateState.setState(null);
+      delegateState.setTxHash(undefined);
+      delegateState.setError(null);
+    }
+  }, [address]);
+
+  useEffect(() => {
     if (cosmosBaseProcedures?.length && authState.state === null && delegateState.state === null) {
       if (firstStep === "auth") {
         authState.setState("active");
@@ -84,6 +96,7 @@ export const useStakingProcedures = ({
               state: authState.state,
               txHash: authState.txHash,
               error: authState.error,
+              setState: authState.setState,
             };
           } else if (procedure.step === "delegate") {
             return {
@@ -91,6 +104,7 @@ export const useStakingProcedures = ({
               state: delegateState.state,
               txHash: delegateState.txHash,
               error: delegateState.error,
+              setState: delegateState.setState,
             };
           }
         })

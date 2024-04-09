@@ -41,7 +41,7 @@ export const StepsBox = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const StepItem = ({ state, explorerUrl, children }: StepItemProps) => {
+export const StepItem = ({ state, explorerUrl, children, onCancel }: StepItemProps) => {
   return (
     <InfoCard.StackItem>
       <InfoCard.TitleBox>
@@ -50,13 +50,20 @@ export const StepItem = ({ state, explorerUrl, children }: StepItemProps) => {
         </span>
         <p className={cn(S.itemText({ highlighted: state !== "idle" }))}>{children}</p>
       </InfoCard.TitleBox>
-      {state === "loading" && <LoadingSpinner size={14} />}
-      {state === "error" && <MessageTag variant="warning">Failed</MessageTag>}
-      {explorerUrl && state === "success" && (
-        <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-          <Icon name="external-link" size={14} />
-        </a>
-      )}
+      <div className={cn(S.itemEndBox)}>
+        {state === "loading" && <LoadingSpinner size={14} />}
+        {state === "error" && <MessageTag variant="warning">Failed</MessageTag>}
+        {explorerUrl && state === "success" && (
+          <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+            <Icon name="external-link" size={14} />
+          </a>
+        )}
+        {onCancel && state === "loading" && (
+          <button onClick={onCancel} className={cn(S.cancelButton)}>
+            <Icon name="cross" size={14} />
+          </button>
+        )}
+      </div>
     </InfoCard.StackItem>
   );
 };
@@ -107,4 +114,5 @@ export type StepItemProps = {
   state: "idle" | "active" | "loading" | "success" | "error";
   explorerUrl?: string;
   children: ReactNode;
+  onCancel?: () => void;
 };
