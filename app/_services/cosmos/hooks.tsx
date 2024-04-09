@@ -3,6 +3,8 @@ import type { BaseStakeProcedure } from "../../_services/stake/types";
 import type { CosmosNetwork, Network, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
 import useLocalStorage from "use-local-storage";
+import { useChain } from "@cosmos-kit/react-lite";
+import { useOfflineSigners } from "graz";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getDelegateMessage } from "../../_services/celestiaStakingAPI";
 import { useCelestiaAddressAuthCheck } from "../../_services/celestiaStakingAPI/hooks";
@@ -321,15 +323,31 @@ export const useCosmosWalletSupports = () => {
   } as Record<CosmosWalletType, boolean>;
 };
 
-export const useCosmosSigningClient = ({ network }: { network?: CosmosNetwork }) => {
+export const useCosmosSigningClient = ({
+  network,
+  wallet,
+}: {
+  network?: CosmosNetwork;
+  wallet: CosmosWalletType | null;
+}) => {
+  const { wallet: cosmosKitWallet, getOfflineSigner } = useChain(network || "celestia");
+  const { data: grazOfflineSigners } = useOfflineSigners({
+    chainId: cosmosNetworkVariants,
+    multiChain: true,
+  });
+  const offlineSigner =
+    cosmosKitWallet && wallet && getIsCosmosKitWalletType(wallet)
+      ? getOfflineSigner()
+      : grazOfflineSigners?.[network || "celestia"].offlineSigner;
+
   const {
     data: signingClient,
     isLoading,
     error,
   } = useQuery({
     enabled: !!network,
-    queryKey: ["cosmosSigningClient", network],
-    queryFn: () => getSigningClient({ network }),
+    queryKey: ["cosmosSigningClient", network, wallet],
+    queryFn: () => getSigningClient({ network, offlineSigner }),
   });
 
   return { data: signingClient, isLoading, error };
