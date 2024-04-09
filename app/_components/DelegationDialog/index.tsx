@@ -81,7 +81,13 @@ export const ResultButtons = ({
 }) => {
   return (
     <div className={cn(S.resultButtons)}>
-      <CTAButton variant="tertiary" onClick={onActivityButtonClick}>
+      <CTAButton
+        variant="tertiary"
+        onClick={() => {
+          onDismissButtonClick();
+          onActivityButtonClick();
+        }}
+      >
         View activity
       </CTAButton>
       <CTAButton variant="secondary" onClick={onDismissButtonClick}>
