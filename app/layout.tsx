@@ -5,7 +5,23 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, SITE_IMAGE } from "./consts";
 
 const pretendard = localFont({
-  src: "./_assets/PretendardStdVariable.woff2",
+  src: [
+    {
+      path: "./_assets/PretendardStd-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./_assets/PretendardStd-SemiBold.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./_assets/PretendardStd-Bold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
   display: "swap",
 });
 

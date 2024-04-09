@@ -67,7 +67,7 @@ export const AmountInputPad = ({
   }, [primaryValue, secondaryValue, primaryCurrency, secondaryCurrency]);
 
   const formattedSecondaryValue = useMemo(() => {
-    if (secondaryValue === "0") return "0";
+    const mantissa = secondaryValue === "0" ? 0 : 2;
 
     if (secondaryCurrency === "USD" || secondaryCurrency === "EUR") {
       return getFormattedFiatCurrencyValue({
@@ -75,6 +75,7 @@ export const AmountInputPad = ({
         locale: secondaryCurrency === "USD" ? "en-US" : "de-DE",
         formatOptions: {
           currencySymbol: fiatCurrencyMap[secondaryCurrency],
+          mantissa,
         },
       });
     }
@@ -82,6 +83,7 @@ export const AmountInputPad = ({
       val: BigNumber(secondaryValue).toNumber(),
       formatOptions: {
         average: true,
+        mantissa,
       },
     });
   }, [secondaryValue, secondaryCurrency]);
@@ -101,7 +103,7 @@ export const AmountInputPad = ({
       inputField={{
         value: primaryValue,
         currency: primaryCurrency || "USD",
-        maxLength: primaryCurrency === "USD" || primaryCurrency === "EUR" ? 6 : 79,
+        maxLength: primaryCurrency === "USD" || primaryCurrency === "EUR" ? 12 : 79,
         size: inputSize,
         onChange: (e) => {
           if (e.target.value === "") {
@@ -115,7 +117,6 @@ export const AmountInputPad = ({
       }}
       currencyConversionTool={{
         value: formattedSecondaryValue,
-        currency: secondaryCurrency,
         onConvert: onSwap,
       }}
       onClickMax={() => {

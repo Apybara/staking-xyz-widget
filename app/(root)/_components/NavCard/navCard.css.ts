@@ -17,6 +17,15 @@ export const card = style([
     backgroundColor: colors.black700,
     borderColor: colors.black800,
     boxShadow: "0px 0px 12px 0px rgba(0, 0, 0, 0.16)",
+    transition: "background-color 0.3s",
+
+    selectors: {
+      "&:hover": {
+        transition: "background-color 0.3s",
+        backgroundColor: colors.black750,
+        borderColor: colors.black900,
+      },
+    },
   },
 ]);
 
@@ -80,4 +89,24 @@ export const valueTextBox = style({
   display: "flex",
   alignItems: "flex-end",
   gap: pxToRem(4),
+});
+
+export const icon = style({});
+export const iconChevron = style({
+  transform: "rotate(-90deg)",
+  selectors: {
+    [`${card}:hover &`]: {
+      display: "none",
+      visibility: "hidden",
+    },
+  },
+});
+export const iconArrow = style({
+  display: "none",
+  selectors: {
+    [`${card}:hover &`]: {
+      display: "block",
+      visibility: "visible",
+    },
+  },
 });

@@ -1,4 +1,5 @@
 import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType } from "./types";
+import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 
 export const NetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
@@ -20,14 +21,14 @@ export const networkInfo: Record<Network, NetworkInfo> = {
   celestia: {
     id: "celestia",
     name: "Celesita",
-    logo: "/networks/celestia-logo.svg",
+    logo: CelestiaLogo,
     currency: networkCurrency.celestia,
     denom: "u" + networkCurrency.celestia.toLowerCase(),
   },
   celestiatestnet3: {
     id: "celestiatestnet3",
     name: "Celestia Testnet",
-    logo: "/networks/celestia-logo.svg",
+    logo: CelestiaLogo,
     currency: networkCurrency.celestiatestnet3,
     denom: "u" + networkCurrency.celestiatestnet3.toLowerCase(),
   },

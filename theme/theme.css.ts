@@ -8,12 +8,12 @@ export const vars = createGlobalTheme(":root", {
   typography: {
     fonts: {
       primary:
-        '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
+        '"Pretendard Std", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
     },
     weights: {
       regular: "400",
-      semibold: "600",
-      bold: "700",
+      semibold: "500",
+      bold: "600",
     },
     features: {
       monospaced: '"tnum", "zero"',
