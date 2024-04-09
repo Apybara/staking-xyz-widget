@@ -2,9 +2,9 @@ import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { BaseStakeProcedure } from "../../_services/stake/types";
 import type { CosmosNetwork, Network, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
+import { getOfflineSigners } from "graz";
 import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
-import { useOfflineSigners } from "graz";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getDelegateMessage } from "../../_services/celestiaStakingAPI";
 import { useCelestiaAddressAuthCheck } from "../../_services/celestiaStakingAPI/hooks";
@@ -17,6 +17,7 @@ import {
   useCosmosKitWalletStates,
   useCosmosKitWalletSupports,
 } from "./cosmosKit/hooks";
+import { getGrazWalletTypeEnum, getIsGrazWalletType } from "./graz/utils";
 import { useGrazConnectors, useGrazDisconnector, useGrazWalletBalance, useGrazWalletStates } from "./graz/hooks";
 import { getDenomValueFromCoin, getIsCosmosNetwork } from "./utils";
 import { getSigningClient, getGrantingMessages, getEstimatedGas, getFee } from ".";
@@ -330,24 +331,16 @@ export const useCosmosSigningClient = ({
   network?: CosmosNetwork;
   wallet: CosmosWalletType | null;
 }) => {
-  const { wallet: cosmosKitWallet, getOfflineSigner } = useChain(network || "celestia");
-  const { data: grazOfflineSigners } = useOfflineSigners({
-    chainId: cosmosNetworkVariants,
-    multiChain: true,
-  });
-  const offlineSigner =
-    cosmosKitWallet && wallet && getIsCosmosKitWalletType(wallet)
-      ? getOfflineSigner()
-      : grazOfflineSigners?.[network || "celestia"].offlineSigner;
+  const offlineSignerGetter = useOfflineSignerGetter({ network, wallet });
 
   const {
     data: signingClient,
     isLoading,
     error,
   } = useQuery({
-    enabled: !!network,
-    queryKey: ["cosmosSigningClient", network, wallet],
-    queryFn: () => getSigningClient({ network, offlineSigner }),
+    enabled: !!network && !!wallet,
+    queryKey: ["cosmosSigningClient", network, wallet, offlineSignerGetter],
+    queryFn: () => getSigningClient({ network, getOfflineSigner: offlineSignerGetter }),
   });
 
   return { data: signingClient, isLoading, error };
@@ -357,4 +350,18 @@ const granteeAddress: Record<CosmosNetwork, string> = {
   celestia: process.env.NEXT_PUBLIC_CELESTIA_AUTH_GRANTEE || "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
   celestiatestnet3:
     process.env.NEXT_PUBLIC_CELESTIATESTNET3_AUTH_GRANTEE || "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
+};
+
+const useOfflineSignerGetter = ({ network, wallet }: { network?: CosmosNetwork; wallet: CosmosWalletType | null }) => {
+  const { wallet: cosmosKitWallet, getOfflineSigner } = useChain(network || "celestia");
+
+  if (!!cosmosKitWallet && !!wallet && !!getIsCosmosKitWalletType(wallet)) {
+    return async () => await getOfflineSigner();
+  }
+  if (!!wallet && getIsGrazWalletType(wallet)) {
+    return async () =>
+      (await getOfflineSigners({ walletType: getGrazWalletTypeEnum(wallet), chainId: network || "celestia" }))
+        .offlineSigner;
+  }
+  return undefined;
 };

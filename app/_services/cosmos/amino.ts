@@ -19,7 +19,7 @@ export const createAuthzAminoConverters = () => {
               type: converter.aminoType,
               value: converter.toAmino(grant.authorization.value),
             },
-            expiration: dateConverter.toAmino(grant.expiration),
+            expiration: grant.expiration && dateConverter.toAmino(grant.expiration),
           },
         };
       },
@@ -36,7 +36,7 @@ export const createAuthzAminoConverters = () => {
               typeUrl: protoType,
               value: converter.fromAmino(grant.authorization.value),
             },
-            expiration: dateConverter.fromAmino(grant.expiration),
+            expiration: grant.expiration && dateConverter.fromAmino(grant.expiration),
           },
         };
       },
