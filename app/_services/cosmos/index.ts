@@ -1,3 +1,4 @@
+import type { OfflineSigner } from "@cosmjs/proto-signing";
 import type { ExtendedHttpEndpoint } from "@cosmos-kit/core";
 import type { CosmosNetwork } from "../../types";
 import type { GetBalanceProps } from "./types";
@@ -19,12 +20,23 @@ import { getCoinValueFromDenom, getChainAssets } from "./utils";
 
 const { GenericAuthorization } = cosmos.authz.v1beta1;
 
-export const getSigningClient = async ({ network }: { network?: CosmosNetwork }) => {
+export const getSigningClient = async ({
+  network,
+  offlineSigner,
+}: {
+  network?: CosmosNetwork;
+  offlineSigner?: OfflineSigner;
+}) => {
   try {
-    if (!network || !window.getOfflineSigner) {
-      throw new Error("Missing parameter: network, networkRpcEndpoint.");
+    if (!network) {
+      throw new Error("Missing parameter: network.");
     }
-    const offlineSigner = window.getOfflineSigner(network);
+
+    const signer = offlineSigner || window?.getOfflineSigner?.(network);
+    if (!signer) {
+      throw new Error("Missing parameter: offlineSigner.");
+    }
+
     const registry = new Registry(defaultRegistryTypes);
     const defaultConverters = {
       ...createAuthzAminoConverters(),
@@ -32,8 +44,7 @@ export const getSigningClient = async ({ network }: { network?: CosmosNetwork })
       ...createStakingAminoConverters(),
     };
     const aminoTypes = new AminoTypes(defaultConverters);
-
-    return await SigningStargateClient.connectWithSigner(networkEndpoints[network].rpc, offlineSigner, {
+    return await SigningStargateClient.connectWithSigner(networkEndpoints[network].rpc, signer, {
       registry,
       aminoTypes,
     });

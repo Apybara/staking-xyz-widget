@@ -1,6 +1,7 @@
 import * as T from "./types";
 import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../../_contexts/ShellContext";
+import { useWallet } from "../../_contexts/WalletContext";
 import { useStakingProcedures } from "../../_services/stake/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
@@ -14,9 +15,13 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseStakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
   const { network } = useShell();
+  const { activeWallet } = useWallet();
   const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.coinAmountInput });
   const stakeFees = useStakeFees({ inputAmount: states.coinAmountInput });
-  const { data: cosmosSigningClient } = useCosmosSigningClient({ network: network || "celestia" });
+  const { data: cosmosSigningClient } = useCosmosSigningClient({
+    network: network || "celestia",
+    wallet: activeWallet,
+  });
   const { procedures, resetStates } = useStakingProcedures({
     cosmosSigningClient,
     network: network || "celestia",
