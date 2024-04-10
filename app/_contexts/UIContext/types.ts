@@ -3,7 +3,12 @@ import type { ReactNode } from "react";
 export const ActionTypeVariants = ["TOGGLE_DIALOG"] as const;
 export type ActionTypeVariant = (typeof ActionTypeVariants)[number];
 
-export const DialogTypeVariants = ["walletConnection", "walletAccount", "stakingProcedure"] as const;
+export const DialogTypeVariants = [
+  "walletConnection",
+  "walletAccount",
+  "stakingProcedure",
+  "unstakingProcedure",
+] as const;
 export type DialogTypeVariant = (typeof DialogTypeVariants)[number];
 
 export type DialogValueType = boolean;

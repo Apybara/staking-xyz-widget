@@ -34,7 +34,7 @@ export const RootAmountInputPad = ({
       {availabilityElement && !isAvailableValueLoading && (
         <div className={cn(S.topBar)}>
           {availabilityElement}
-          {availableValue && <MaxButton onClick={onClickMax} />}
+          {availableValue && availableValue !== "" && availableValue !== "0" && <MaxButton onClick={onClickMax} />}
         </div>
       )}
       <div className={cn(S.mainControlBox)}>

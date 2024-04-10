@@ -10,7 +10,6 @@ import {
 } from "../../_services/cosmos/hooks";
 
 export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
-  const { network } = useShell();
   const cosmosWalletsSupport = useCosmosWalletSupports();
 
   useEffect(() => {
