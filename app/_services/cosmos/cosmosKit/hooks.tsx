@@ -78,7 +78,7 @@ export const useCosmosKitDisconnector = ({ network = "celestia" }: { network?: C
 };
 
 export const useCosmosKitWalletStates = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
-  const { status, wallet, address, ...props } = useChain(network);
+  const { status, wallet, address } = useChain(network);
 
   const walletName = useMemo<WalletStates["activeWallet"]>(() => {
     if (wallet?.name === "keplr-extension") return "keplr";

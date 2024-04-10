@@ -1,10 +1,15 @@
 import type { ReactNode } from "react";
+import { forwardRef } from "react";
 import cn from "classnames";
 import * as S from "./infoCard.css";
 
-export const Card = ({ className, children }: Props) => {
-  return <div className={cn(S.card, className)}>{children}</div>;
-};
+export const Card = forwardRef<HTMLDivElement, Props>(({ className, children }, ref) => {
+  return (
+    <div ref={ref} className={cn(S.card, className)}>
+      {children}
+    </div>
+  );
+});
 
 export const Stack = ({ className, children }: Props) => {
   return <ul className={cn(S.stack, className)}>{children}</ul>;

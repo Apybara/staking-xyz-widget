@@ -6,17 +6,11 @@ import { Icon } from "../../../_components/Icon";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import * as S from "./navCard.css";
 
-export const Stake = (props: PageNavCardProps) => {
-  return <NavCard {...props} page="stake" />;
-};
-export const Unstake = (props: PageNavCardProps) => {
-  return <NavCard {...props} page="unstake" />;
-};
 export const Rewards = (props: PageNavCardProps) => {
-  return <NavCard {...props} page="rewards" />;
+  return <Card {...props} page="rewards" />;
 };
 export const Activity = (props: PageNavCardProps) => {
-  return <NavCard {...props} page="activity" />;
+  return <Card {...props} page="activity" />;
 };
 
 export const PrimaryText = ({ children }: { children: ReactNode }) => {
@@ -29,7 +23,7 @@ export const ValueTextBox = ({ children }: { children: ReactNode }) => {
   return <div className={cn(S.valueTextBox)}>{children}</div>;
 };
 
-const NavCard = ({ disabled = false, searchParams, page, endBox }: NavCardProps) => {
+export const Card = ({ disabled = false, searchParams, page, endBox }: NavCardProps) => {
   if (!disabled) {
     return (
       <Link href={getLinkWithSearchParams(searchParams, page)} className={cn(S.card)}>
@@ -58,7 +52,7 @@ const NavCard = ({ disabled = false, searchParams, page, endBox }: NavCardProps)
   );
 };
 
-type NavCardProps = {
+export type NavCardProps = {
   disabled?: boolean;
   searchParams: RouterStruct["searchParams"];
   page: "stake" | "unstake" | "rewards" | "activity";
@@ -67,7 +61,7 @@ type NavCardProps = {
     value: ReactNode;
   };
 };
-type PageNavCardProps = Omit<NavCardProps, "page">;
+export type PageNavCardProps = Omit<NavCardProps, "page">;
 
 const pageTitleMap = {
   stake: "Stake",

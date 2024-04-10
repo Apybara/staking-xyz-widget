@@ -5,6 +5,8 @@ import revalidatePageQueries from "../_actions/revalidatePageQueries";
 import { DefaultViewTop } from "./_components/WidgetTop";
 import { HeroCard } from "./_components/HeroCard";
 import * as NavCard from "./_components/NavCard";
+import { StakeNavCard } from "./_components/StakeNavCard";
+import { UnstakeNavCard } from "./_components/UnstakeNavCard";
 import * as S from "./root.css";
 
 export default async function Home({ searchParams }: RouterStruct) {
@@ -17,8 +19,8 @@ export default async function Home({ searchParams }: RouterStruct) {
       <DefaultViewTop />
       <HeroCard />
       <nav className={cn(S.nav)}>
-        <NavCard.Stake searchParams={searchParams} />
-        <NavCard.Unstake searchParams={searchParams} disabled />
+        <StakeNavCard searchParams={searchParams} />
+        <UnstakeNavCard searchParams={searchParams} />
         <NavCard.Rewards
           searchParams={searchParams}
           disabled
