@@ -6,9 +6,10 @@ import { getOfflineSigners } from "graz";
 import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { getFeeCollectingAmount } from "../../_services/stake";
 import { getDelegateMessage } from "../../_services/celestiaStakingAPI";
 import { useCelestiaAddressAuthCheck } from "../../_services/celestiaStakingAPI/hooks";
-import { cosmosNetworkVariants, networkInfo } from "../../consts";
+import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork } from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import {
   useCosmosKitConnectors,
@@ -179,7 +180,13 @@ const useCosmosBroadcastDelegateTx = ({
       const denomAmount = getDenomValueFromCoin({ network: network || "celestia", amount });
       const unsignedResponse = await getDelegateMessage(address, Number(denomAmount));
       const parsedUnsigned = JSON.parse(atob(unsignedResponse));
-      const validatorAddress = parsedUnsigned?.body?.messages?.[0]?.["validator_address"] || "";
+      const validatorAddress = parsedUnsigned?.body?.messages?.[0]?.["validator_address"];
+      const feeReceiver = feeReceiverByNetwork[network || "celestia"];
+      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || "celestia" });
+
+      if (!validatorAddress || feeReceiver === "") {
+        throw new Error("Missing parameter: validatorAddress, feeReceiver");
+      }
 
       const delegateMsgs = [
         {
@@ -193,8 +200,21 @@ const useCosmosBroadcastDelegateTx = ({
             },
           },
         },
-        // TODO: add fee collection message
+        {
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: {
+            fromAddress: address,
+            toAddress: feeReceiver,
+            amount: [
+              {
+                denom: networkInfo[network || "celestia"].denom,
+                amount: feeAmount,
+              },
+            ],
+          },
+        },
       ];
+
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: delegateMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
