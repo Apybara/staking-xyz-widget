@@ -10,6 +10,7 @@ import {
   AminoTypes,
   SigningStargateClient,
   defaultRegistryTypes,
+  createBankAminoConverters,
   createStakingAminoConverters,
   createDistributionAminoConverters,
   coin,
@@ -42,6 +43,7 @@ export const getSigningClient = async ({
       ...createAuthzAminoConverters(),
       ...createDistributionAminoConverters(),
       ...createStakingAminoConverters(),
+      ...createBankAminoConverters(),
     };
     const aminoTypes = new AminoTypes(defaultConverters);
     return await SigningStargateClient.connectWithSigner(networkEndpoints[network].rpc, signer, {
