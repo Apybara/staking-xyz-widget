@@ -3,7 +3,7 @@ import type * as T from "./types";
 const API_URL = process.env.NEXT_PUBLIC_STAKING_API_CELESTIA;
 
 export const getAddressAuthCheck = async (address: string) => {
-  const res: T.AuthCheckResponse = await fetchData(`${API_URL}address/authorization/check/${address}`);
+  const res: T.AuthCheckResponse = await fetchData(`${API_URL}address/check/${address}`);
   return res.granted;
 };
 
@@ -15,7 +15,13 @@ export const getDelegateMessage = async (address: string, amount: number) => {
     },
     body: JSON.stringify({ granter_address: address, amount }),
   });
-  return res.unsigned_txn;
+  return JSON.parse(atob(res.unsigned_txn)) as T.DecodedDelegateMessageResponse;
+};
+
+export const getDelegateValidatorMessages = (operatorMessage: T.DecodedDelegateMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgDelegate")
+    .map((msg: T.CosmosStakingMsgDelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
 };
 
 const fetchData = async (url?: string, options?: RequestInit) => {

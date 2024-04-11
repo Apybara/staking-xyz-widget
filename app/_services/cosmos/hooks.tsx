@@ -7,7 +7,7 @@ import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getFeeCollectingAmount } from "../../_services/stake";
-import { getDelegateMessage } from "../../_services/celestiaStakingAPI";
+import { getDelegateMessage, getDelegateValidatorMessages } from "../../_services/celestiaStakingAPI";
 import { useCelestiaAddressAuthCheck } from "../../_services/celestiaStakingAPI/hooks";
 import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork } from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
@@ -178,28 +178,24 @@ const useCosmosBroadcastDelegateTx = ({
       }
 
       const denomAmount = getDenomValueFromCoin({ network: network || "celestia", amount });
-      const unsignedResponse = await getDelegateMessage(address, Number(denomAmount));
-      const parsedUnsigned = JSON.parse(atob(unsignedResponse));
-      const validatorAddress = parsedUnsigned?.body?.messages?.[0]?.["validator_address"];
+      const operatorMessage = await getDelegateMessage(address, Number(denomAmount));
+      const delegateValues = getDelegateValidatorMessages(operatorMessage);
       const feeReceiver = feeReceiverByNetwork[network || "celestia"];
       const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || "celestia" });
 
-      if (!validatorAddress || feeReceiver === "") {
+      if (!delegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
       }
 
-      const delegateMsgs = [
-        {
-          typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
-          value: {
-            delegatorAddress: address,
-            validatorAddress,
-            amount: {
-              denom: networkInfo[network || "celestia"].denom,
-              amount: denomAmount,
-            },
-          },
+      const delegateMsgs = delegateValues.map((val) => ({
+        typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+        value: {
+          delegatorAddress: address,
+          validatorAddress: val.validator,
+          amount: val.amount,
         },
+      }));
+      const feeCollectMsgs = [
         {
           typeUrl: "/cosmos.bank.v1beta1.MsgSend",
           value: {
@@ -214,15 +210,16 @@ const useCosmosBroadcastDelegateTx = ({
           },
         },
       ];
+      const msgs = [...delegateMsgs, ...feeCollectMsgs];
 
-      const estimatedGas = await getEstimatedGas({ client, address, msgArray: delegateMsgs });
+      const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
         gasLimit: estimatedGas,
         network: network || "celestia",
         networkDenom: networkInfo[network || "celestia"].denom,
       });
 
-      return await client.signAndBroadcast(address, delegateMsgs, fee);
+      return await client.signAndBroadcast(address, msgs, fee);
     },
     onSuccess: (res) => onSuccess?.(res.transactionHash),
     onError: (error) => onError?.(error),
