@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
-import { colors, weights } from "../../../theme/theme.css";
+import { colors, weights, monospaced } from "../../../theme/theme.css";
 
 export const inputField = style({
   display: "flex",
@@ -8,6 +8,7 @@ export const inputField = style({
   gap: "0.2ch",
   fontSize: pxToRem(50),
   color: colors.black000,
+  fontFeatureSettings: monospaced,
 });
 
 export const htmlInputField = style({

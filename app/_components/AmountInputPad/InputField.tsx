@@ -34,22 +34,15 @@ const HTMLInputField = forwardRef<HTMLInputElement, HTMLInputFieldProps>(({ clas
       maxLength={79}
       spellCheck={false}
       className={cn(S.htmlInputField, className)}
-      style={{ ...style, ...getInputStyles(props?.value as string) }}
+      style={{ marginInlineEnd: getOffsetInputValue(props.value as string), ...style }}
       {...props}
     />
   );
 });
 
-const getInputStyles = (value: string) => {
-  return {
-    inlineSize: `${getInputSizeValue(value)}ch`,
-    marginInlineEnd: value.includes(".") || value.includes(",") ? "-1ch" : "0",
-  };
-};
-
-const getInputSizeValue = (value: string) => {
-  if (!value || value === "" || value === "0") return 1;
-  return value.length;
+const getOffsetInputValue = (value: string) => {
+  if (!value || value === "" || value === "0") return -12;
+  return value.includes(".") || value.includes(",") ? -12 : -2;
 };
 
 export const getStringHasNumbersOnly = (val: string) => {
