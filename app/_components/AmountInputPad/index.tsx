@@ -9,6 +9,7 @@ import {
   getFormattedCoinValue,
   getFormattedFiatCurrencyValue,
 } from "../../_utils/conversions";
+import { removeLeadingAndTrailingZeros } from "../../_utils";
 import { fiatCurrencyMap } from "../../consts";
 import { RootAmountInputPad } from "./RootAmountInputPad";
 import * as AvailabilityText from "./AvailabilityText";
@@ -113,6 +114,9 @@ export const AmountInputPad = ({
           if (!getStringHasNumbersOnly(e.target.value)) return;
 
           setPrimaryValue(e.target.value);
+        },
+        onBlur: () => {
+          setPrimaryValue(removeLeadingAndTrailingZeros(primaryValue));
         },
       }}
       currencyConversionTool={{
