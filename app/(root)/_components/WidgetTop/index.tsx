@@ -7,7 +7,7 @@ export const DefaultViewTop = () => {
   return (
     <div className={cn(S.defaultTop)}>
       <button className={cn(S.button)}>
-        <Icon name="refresh" size={20} />
+        <Icon name="rotate" size={20} />
       </button>
       <button className={cn(S.button)}>
         <Icon name="menu" size={20} />

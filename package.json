@@ -34,6 +34,7 @@
     "bignumber.js": "^9.1.2",
     "chain-registry": "1.33.2",
     "classnames": "^2.5.1",
+    "date-fns": "^3.6.0",
     "graz": "^0.1.5",
     "juno-network": "^0.18.1",
     "long": "^5.2.3",

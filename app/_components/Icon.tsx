@@ -2,17 +2,19 @@ import cn from "classnames";
 
 export type IconProps = {
   name:
-    | "chevron"
-    | "copy"
-    | "check"
-    | "external-link"
-    | "cross"
-    | "refresh"
-    | "menu"
-    | "conversion"
-    | "arrow"
-    | "info"
-    | "question";
+  | "chevron"
+  | "copy"
+  | "check"
+  | "external-link"
+  | "cross"
+  | "refresh"
+  | "menu"
+  | "conversion"
+  | "arrow"
+  | "info"
+  | "question"
+  | "rotate"
+  | "forward"
   size?: number;
   className?: string;
 };

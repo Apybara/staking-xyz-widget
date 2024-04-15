@@ -1,10 +1,12 @@
-import type { UnbondingDelegation } from "../unstake/types";
-import type { DelegationResponseItem, UnbondingDelegationResponseItem } from "./types";
+import type { UnbondingDelegation } from "../../unstake/types";
+import type * as T from "../types";
+import { useEffect, useState } from "react";
 import moment from "moment";
 import BigNumber from "bignumber.js";
-import { useQuery } from "@tanstack/react-query";
-import { getCoinValueFromDenom } from "../../_services/cosmos/utils";
-import { getAddressAuthCheck, getDelegations, getUnbondingDelegations } from ".";
+import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import { getCoinValueFromDenom } from "../../cosmos/utils";
+import { getLastOffset } from "../utils";
+import { getAddressAuthCheck, getDelegations, getUnbondingDelegations, getAddressActivity } from ".";
 
 export const useCelestiaAddressAuthCheck = ({ address }: { address?: string }) => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -44,7 +46,7 @@ export const useCelestiaUnbondingDelegations = ({ address }: { address?: string 
   return { data, formatted, isLoading, error, refetch };
 };
 
-const useStakedBalance = ({ delegations }: { delegations?: Array<DelegationResponseItem> }) => {
+const useStakedBalance = ({ delegations }: { delegations?: Array<T.DelegationResponseItem> }) => {
   if (delegations === undefined) return undefined;
   if (!delegations?.length) return "0";
 
@@ -56,7 +58,7 @@ const useStakedBalance = ({ delegations }: { delegations?: Array<DelegationRespo
 };
 
 const useFormattedUnbondingDelegations = (
-  delegations?: Array<UnbondingDelegationResponseItem>,
+  delegations?: Array<T.UnbondingDelegationResponseItem>,
 ): Array<UnbondingDelegation> => {
   const formattedDelegations: Array<UnbondingDelegation> = [];
 
@@ -71,4 +73,55 @@ const useFormattedUnbondingDelegations = (
   });
 
   return formattedDelegations;
+};
+
+export const useAddressActivity = ({
+  address,
+  offset,
+  limit,
+  filterKey,
+}: T.AddressActivityPaginationParams & { address?: string }) => {
+  const queryClient = useQueryClient();
+
+  const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
+    T.AddressActivityResponse | null,
+    T.AddressActivityResponse
+  >({
+    enabled: !!address,
+    queryKey: ["addressActivity", address, offset, limit, filterKey],
+    queryFn: () => {
+      if (!address) return Promise.resolve(null);
+      return getAddressActivity({ address, offset, limit, filterKey });
+    },
+    placeholderData: keepPreviousData,
+    staleTime: 15000,
+  });
+
+  // Prefetch the next page
+  useEffect(() => {
+    if (!isPlaceholderData && data?.hasMore) {
+      const nextOffset = offset + 1;
+      queryClient.prefetchQuery({
+        queryKey: ["addressActivity", address, limit, filterKey, nextOffset],
+        queryFn: () => {
+          if (!address) return Promise.resolve(null);
+          return getAddressActivity({ address, offset: nextOffset, limit, filterKey });
+        },
+      });
+    }
+  }, [queryClient, address, data?.hasMore, isPlaceholderData, limit, offset, filterKey]);
+
+  const totalEntries = data?.totalEntries || 0;
+  const lastOffset = getLastOffset({ totalEntries, limit });
+
+  return {
+    error,
+    isLoading: isLoading || status === "pending",
+    isFetching,
+    disableNextPage: isPlaceholderData || lastOffset === offset,
+    data: data?.data,
+    totalEntries,
+    lastOffset,
+    refetch,
+  };
 };
