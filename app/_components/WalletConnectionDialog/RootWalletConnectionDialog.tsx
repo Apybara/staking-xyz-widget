@@ -1,5 +1,5 @@
 import type { WalletInfo } from "../../types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import cn from "classnames";
 import Image from "next/image";
 import { Icon } from "../Icon";
@@ -8,6 +8,7 @@ import { CTAButton } from "../CTAButton";
 import { MessageTag } from "../MessageTag";
 import { LoadingSpinner } from "../LoadingSpinner";
 import * as S from "./walletConnectionDialog.css";
+import { Checkbox } from "../Checkbox";
 
 export type RootWalletConnectionDialogProps = {
   dialog: {
@@ -27,6 +28,11 @@ export type RootWalletConnectionDialogProps = {
   onCancelConnection?: () => void;
 };
 
+export type WalletCardButtonProps = {
+  wallet: Wallet;
+  isAgreementChecked: boolean;
+};
+
 export const RootWalletConnectionDialog = ({
   dialog,
   wallets,
@@ -34,6 +40,8 @@ export const RootWalletConnectionDialog = ({
   isOnMobileDevice,
   onCancelConnection,
 }: RootWalletConnectionDialogProps) => {
+  const [isAgreementChecked, setIsAgreementChecked] = useState(false);
+
   const filteredWalletsByDevice = wallets.filter((wallet) =>
     wallet.devicesSupport.includes(isOnMobileDevice ? "mobile" : "desktop"),
   );
@@ -43,6 +51,17 @@ export const RootWalletConnectionDialog = ({
       <Dialog.Main>
         <Dialog.Content>
           <Dialog.Title className={cn(S.title)}>Select a wallet</Dialog.Title>
+
+          <Checkbox
+            checked={isAgreementChecked}
+            onChange={({ target }) => setIsAgreementChecked(target.checked)}
+            label={
+              <>
+                Agree to <a href="#">Privacy</a> and <a href="#">Terms</a>
+              </>
+            }
+          />
+
           <ul className={cn(S.list)}>
             {filteredWalletsByDevice.map((wallet) => (
               <li key={"walletDialog-" + wallet.id} className={cn(S.walletItem)}>
@@ -51,10 +70,11 @@ export const RootWalletConnectionDialog = ({
                     connection={connection}
                     wallet={wallet}
                     isOnMobileDevice={isOnMobileDevice}
+                    isAgreementChecked={isAgreementChecked}
                     onCancelConnection={onCancelConnection}
                   />
                 ) : (
-                  <WalletInstallButton wallet={wallet} />
+                  <WalletInstallButton wallet={wallet} isAgreementChecked={isAgreementChecked} />
                 )}
               </li>
             ))}
@@ -69,12 +89,12 @@ const WalletCardButton = ({
   connection,
   wallet,
   isOnMobileDevice,
+  isAgreementChecked,
   onCancelConnection,
-}: Pick<RootWalletConnectionDialogProps, "connection" | "isOnMobileDevice" | "onCancelConnection"> & {
-  wallet: Wallet;
-}) => {
+}: Pick<RootWalletConnectionDialogProps, "connection" | "isOnMobileDevice" | "onCancelConnection"> &
+  WalletCardButtonProps) => {
   const connecting = connection.isLoading && wallet.isConnecting;
-  const disabled = connection.isLoading && !wallet.isConnecting;
+  const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting);
   const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
     if (connecting) return "loading";
@@ -106,9 +126,14 @@ const WalletCardButton = ({
   );
 };
 
-const WalletInstallButton = ({ wallet }: { wallet: Wallet }) => {
+const WalletInstallButton = ({ wallet, isAgreementChecked }: WalletCardButtonProps) => {
   return (
-    <a className={cn(S.walletCardButton())} href={wallet.downloadLink} target="_blank" rel="noopener noreferrer">
+    <a
+      className={cn(S.walletCardButton({ state: isAgreementChecked ? "default" : "disabled" }))}
+      href={wallet.downloadLink}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <div className={cn(S.walletInstallButtonInfo)}>
         <Image src={wallet.logo} width={24} height={24} alt={`Logo of ${wallet.name}`} style={{ opacity: 0.8 }} />
         <p>{wallet.name}</p>
