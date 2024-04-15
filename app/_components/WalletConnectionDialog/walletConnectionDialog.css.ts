@@ -81,7 +81,7 @@ export const walletCardButtonInfo = style({
 
 export const list = style({
   minInlineSize: pxToRem(240),
-  marginTop: pxToRem(16),
+  marginBlockStart: pxToRem(16),
 });
 
 globalStyle(`${list} > * + *`, {

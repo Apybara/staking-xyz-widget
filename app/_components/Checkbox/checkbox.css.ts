@@ -41,7 +41,7 @@ export const input = style({
 });
 
 export const label = style({
-  marginLeft: pxToRem(10),
+  marginInlineStart: pxToRem(10),
 });
 
 globalStyle(`${label} a`, {
