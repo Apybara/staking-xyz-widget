@@ -9,9 +9,6 @@ import * as S from "./navCard.css";
 export const Rewards = (props: PageNavCardProps) => {
   return <Card {...props} page="rewards" />;
 };
-export const Activity = (props: PageNavCardProps) => {
-  return <Card {...props} page="activity" />;
-};
 
 export const PrimaryText = ({ children }: { children: ReactNode }) => {
   return <span className={cn(S.primaryText)}>{children}</span>;

@@ -1,7 +1,8 @@
 import type * as T from "./types";
 
 import { createContext, useContext, useReducer } from "react";
-import { useUnbondingDelegations } from "../../_services/unstake/hooks";
+import { useUnbondingDelegations, useActivity, useLastOffsetActivity } from "../../_services/stakingOperator/hooks";
+
 import { useWidgetRouterGate } from "./hooks";
 
 const WidgetContext = createContext({} as T.WidgetContext);
@@ -15,6 +16,8 @@ export const WidgetProvider = ({ children }: T.WidgetProviderProps) => {
 
   // Prefetch queries
   useUnbondingDelegations();
+  const activity = useActivity();
+  useLastOffsetActivity({ ...activity.params });
 
   return (
     <WidgetContext.Provider

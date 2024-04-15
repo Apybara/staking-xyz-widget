@@ -1,10 +1,59 @@
-import type * as T from "./types";
+import type * as T from "../types";
 
 const API_URL = process.env.NEXT_PUBLIC_STAKING_API_CELESTIA;
 
 export const getAddressAuthCheck = async (address: string) => {
   const res: T.AuthCheckResponse = await fetchData(`${API_URL}address/check/${address}`);
   return res.granted;
+};
+
+export const getAddressActivity = ({
+  address,
+  offset,
+  limit,
+  filterKey,
+}: T.AddressActivityPaginationParams & { address: string }) => {
+  if (filterKey === "stake") {
+    return {
+      status: "OK",
+      statusCode: 200,
+      totalEntries: 100,
+      data: new Array(limit).fill({
+        type: "stake",
+        amount: Math.floor(Math.random() * 100),
+        rewardRate: Math.random() * 0.1,
+        timestamp: Math.floor(Math.random() * 100000),
+        txHash: Math.random().toString(36).substring(7),
+      }),
+    } as T.AddressActivityResponse;
+  }
+  if (filterKey === "unstake") {
+    return {
+      status: "OK",
+      statusCode: 200,
+      totalEntries: 100,
+      data: new Array(limit).fill({
+        type: "unstake",
+        amount: Math.floor(Math.random() * 100),
+        rewardRate: Math.random() * 0.1,
+        timestamp: Math.floor(Math.random() * 100000),
+        txHash: Math.random().toString(36).substring(7),
+      }),
+    } as T.AddressActivityResponse;
+  }
+  return {
+    status: "OK",
+    statusCode: 200,
+    totalEntries: 100,
+    data: new Array(limit).fill(0).map(() => ({
+      type: ["stake", "unstake"][Math.floor(Math.random() * 2)],
+      amount: Math.floor(Math.random() * 100),
+      rewardRate: Math.random() * 0.1,
+      timestamp: Math.floor(Math.random() * 100000),
+      txHash: Math.random().toString(36).substring(7),
+      inProgress: Math.random() > 0.7,
+    })),
+  } as T.AddressActivityResponse;
 };
 
 export const getDelegateMessage = async (address: string, amount: number) => {

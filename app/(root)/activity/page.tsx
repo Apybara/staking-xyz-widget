@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
-import Link from "next/link";
+import { PageViewTop } from "../_components/WidgetTop";
+import { getLinkWithSearchParams } from "../../_utils/routes";
 import redirectPage from "../../_actions/redirectPage";
 import revalidatePageQueries from "../../_actions/revalidatePageQueries";
-import { getLinkWithSearchParams } from "../../_utils/routes";
+import { ActivityTable } from "./_components/ActivityTable";
 
 export default async function Activity({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
@@ -11,13 +12,10 @@ export default async function Activity({ searchParams }: RouterStruct) {
   await revalidatePageQueries(network);
 
   return (
-    <div style={{ marginTop: "5rem" }}>
-      <h1>Activity view</h1>
-
-      <nav style={{ marginTop: "5rem" }}>
-        <Link href={getLinkWithSearchParams(searchParams, "")}>Back to home</Link>
-      </nav>
-    </div>
+    <>
+      <PageViewTop page="Activity" homeURL={getLinkWithSearchParams(searchParams, "")} />
+      <ActivityTable />
+    </>
   );
 }
 

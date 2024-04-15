@@ -128,3 +128,37 @@ export type DelegationResponseItem = {
     amount: string;
   };
 };
+
+export type AddressActivityResponse = CommonEntriesResponse<
+  AddressActivityPaginationParams & { address: string },
+  ActivityItem
+> & {
+  hasMore?: boolean | null;
+  totalEntries?: number | null;
+};
+export type AddressActivityPaginationParams = PaginationParams & {
+  filterKey: "stake" | "unstake" | null;
+};
+export type ActivityItem = {
+  type: "stake" | "unstake";
+  amount: number;
+  rewardRate: number;
+  timestamp: number;
+  txHash: string;
+  inProgress?: boolean;
+};
+
+export type PaginationParams = {
+  offset: number;
+  limit: number;
+};
+type CommonResponse<R, D> = {
+  status: "OK" | "Bad Request" | "Internal Server Error";
+  statusCode: number;
+  requestBody?: R;
+  data: D | null;
+  message?: string;
+};
+type CommonEntriesResponse<R, D> = Omit<CommonResponse<R, D>, "data"> & {
+  data?: Array<D> | null;
+};

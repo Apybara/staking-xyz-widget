@@ -74,6 +74,9 @@ dependencies:
   classnames:
     specifier: ^2.5.1
     version: 2.5.1
+  date-fns:
+    specifier: ^3.6.0
+    version: 3.6.0
   graz:
     specifier: ^0.1.5
     version: 0.1.5(@cosmjs/amino@0.32.3)(@cosmjs/cosmwasm-stargate@0.32.3)(@cosmjs/launchpad@0.27.1)(@cosmjs/proto-signing@0.32.3)(@cosmjs/stargate@0.32.3)(@cosmjs/tendermint-rpc@0.32.3)(@terra-money/feather.js@3.0.0-beta.3)(@types/react@18.2.65)(axios@0.27.2)(long@5.2.3)(react-dom@18.2.0)(react@18.2.0)
@@ -6257,6 +6260,11 @@ packages:
     resolution:
       { integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA== }
     dev: true
+
+  /date-fns@3.6.0:
+    resolution:
+      { integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww== }
+    dev: false
 
   /dateformat@4.6.3:
     resolution:

@@ -7,6 +7,7 @@ import { HeroCard } from "./_components/HeroCard";
 import * as NavCard from "./_components/NavCard";
 import { StakeNavCard } from "./_components/StakeNavCard";
 import { UnstakeNavCard } from "./_components/UnstakeNavCard";
+import { ActivityNavCard } from "./_components/ActivityNavCard";
 import * as S from "./root.css";
 
 export default async function Home({ searchParams }: RouterStruct) {
@@ -29,7 +30,7 @@ export default async function Home({ searchParams }: RouterStruct) {
             value: <NavCard.PrimaryText>00.00 %</NavCard.PrimaryText>,
           }}
         />
-        <NavCard.Activity searchParams={searchParams} disabled />
+        <ActivityNavCard searchParams={searchParams} />
       </nav>
     </>
   );

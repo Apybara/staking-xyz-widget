@@ -1,7 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useUnbondingDelegations, useStakedBalance } from "../../_services/unstake/hooks";
+import { useUnbondingDelegations, useStakedBalance } from "../../_services/stakingOperator/hooks";
 import * as NavCard from "../_components/NavCard";
 import { Skeleton } from "../../_components/Skeleton";
 

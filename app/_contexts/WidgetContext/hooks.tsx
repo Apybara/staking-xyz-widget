@@ -8,11 +8,23 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
   const router = useRouter();
   const pathname = usePathname();
   const { connectionStatus, connectedAddress } = useWallet();
-  const link = useLinkWithSearchParams("stake");
+  const stakePageLink = useLinkWithSearchParams("stake");
+  const homePageLink = useLinkWithSearchParams("");
 
   useEffect(() => {
+    // Redirect to the stake page if the user is not connected and the page is the home page
     if (connectionStatus === "disconnected" && !connectedAddress.length && pathname === "/" && status === "loading") {
-      router.push(link);
+      router.push(stakePageLink);
+      return;
+    }
+
+    // Redirect to the home page if the user is not connected and the page is the activity or rewards page
+    if (
+      connectionStatus === "disconnected" &&
+      status !== "loading" &&
+      (pathname === "/activity" || pathname === "/rewards")
+    ) {
+      router.push(homePageLink);
       return;
     }
     setStates({ status: "loaded" });

@@ -2,42 +2,7 @@ import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { Network } from "../../types";
 import type { UnstakeProcedure, UnstakeProcedureState } from "./types";
 import { useEffect, useState } from "react";
-import { useShell } from "../../_contexts/ShellContext";
-import { useWallet } from "../../_contexts/WalletContext";
 import { useCosmosUnstakingProcedures } from "../cosmos/hooks";
-import { useCelestiaDelegations, useCelestiaUnbondingDelegations } from "../celestiaStakingAPI/hooks";
-
-export const useUnbondingDelegations = () => {
-  const { network } = useShell();
-  const { address } = useWallet();
-  const celestia = useCelestiaUnbondingDelegations({
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
-  });
-
-  switch (network) {
-    case "celestia":
-    case "celestiatestnet3":
-      return celestia;
-    default:
-      return undefined;
-  }
-};
-
-export const useStakedBalance = () => {
-  const { network } = useShell();
-  const { address } = useWallet();
-  const celestia = useCelestiaDelegations({
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
-  });
-
-  switch (network) {
-    case "celestia":
-    case "celestiatestnet3":
-      return celestia;
-    default:
-      return undefined;
-  }
-};
 
 export const useUnstakingProcedures = ({
   address,

@@ -3,7 +3,8 @@ import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
-import { useUnstakingProcedures, useStakedBalance, useUnbondingDelegations } from "../../_services/unstake/hooks";
+import { useUnstakingProcedures } from "../../_services/unstake/hooks";
+import { useStakedBalance, useUnbondingDelegations } from "../../_services/stakingOperator/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { useUnstakeAmountInputValidation } from "./hooks";
 

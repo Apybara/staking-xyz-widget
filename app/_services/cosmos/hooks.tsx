@@ -14,8 +14,8 @@ import {
   getUndelegateMessage,
   getUndelegateValidatorMessages,
   setMonitorTx,
-} from "../../_services/celestiaStakingAPI";
-import { useCelestiaAddressAuthCheck } from "../../_services/celestiaStakingAPI/hooks";
+} from "../stakingOperator/celestia";
+import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
 import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork } from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import {
