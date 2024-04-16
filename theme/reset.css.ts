@@ -36,7 +36,8 @@ globalStyle("*, *::before, *::after", {
 });
 
 /**
- * Fix mobile Safari increase font-size on landscape mode
+ * - Fix mobile Safari increase font-size on landscape mode
+ * - Add font-smoothing to fix font weight appearance
  */
 globalStyle("html", {
   "@layer": {
@@ -44,6 +45,8 @@ globalStyle("html", {
       MozTextSizeAdjust: "none",
       WebkitTextSizeAdjust: "none",
       textSizeAdjust: "none",
+      WebkitFontSmoothing: "antialiased",
+      MozOsxFontSmoothing: "grayscale",
     },
   },
 });
