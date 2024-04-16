@@ -3,7 +3,9 @@ import { style, globalStyle } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
 
-export const title = style({});
+export const title = style({
+  fontWeight: weights.semibold,
+});
 
 globalStyle(title, {
   fontSize: pxToRem(18),
