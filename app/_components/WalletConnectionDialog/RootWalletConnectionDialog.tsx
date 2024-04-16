@@ -47,6 +47,11 @@ export const RootWalletConnectionDialog = ({
     wallet.devicesSupport.includes(isOnMobileDevice ? "mobile" : "desktop"),
   );
 
+  const handleAgreement = (isChecked: boolean) => {
+    setIsAgreementChecked(isChecked);
+    !isChecked && onCancelConnection?.();
+  };
+
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
       <Dialog.Main>
@@ -55,7 +60,7 @@ export const RootWalletConnectionDialog = ({
 
           <Checkbox
             checked={isAgreementChecked}
-            onChange={({ target }) => setIsAgreementChecked(target.checked)}
+            onChange={({ target }) => handleAgreement(target.checked)}
             label={
               <>
                 Agree to <Link href="#">Privacy</Link> and <Link href="#">Terms</Link>
@@ -98,8 +103,8 @@ const WalletCardButton = ({
   const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting);
   const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
-    if (connecting) return "loading";
     if (disabled) return "disabled";
+    if (connecting) return "loading";
     return "default";
   }, [connecting, disabled]);
 
