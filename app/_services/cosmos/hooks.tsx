@@ -22,6 +22,10 @@ import { getGrazWalletTypeEnum, getIsGrazWalletType } from "./graz/utils";
 import { useGrazConnectors, useGrazDisconnector, useGrazWalletBalance, useGrazWalletStates } from "./graz/hooks";
 import { getDenomValueFromCoin, getIsCosmosNetwork } from "./utils";
 import { getSigningClient, getGrantingMessages, getEstimatedGas, getFee } from ".";
+import Tooltip from "@/app/_components/Tooltip";
+import { Icon } from "@/app/_components/Icon";
+
+import * as StakeStyle from "@/app/(root)/stake/_components/stake.css";
 
 export const useCosmosStakingProcedures = ({
   amount,
@@ -88,6 +92,18 @@ export const useCosmosStakingProcedures = ({
           step: "auth",
           stepName: "Approval in wallet",
           send: cosmosAuthTx.send,
+          tooltip: (
+            <Tooltip
+              className={StakeStyle.approvalTooltip}
+              trigger={<Icon name="info" />}
+              content={
+                <>
+                  This approval lets Staking.xyz manage staking operations on your behalf. You will always have full
+                  control of your funds. <a href="#">(more)</a>
+                </>
+              }
+            />
+          ),
         },
         ...base,
       ];

@@ -41,7 +41,7 @@ export const StepsBox = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const StepItem = ({ state, explorerUrl, children, onCancel }: StepItemProps) => {
+export const StepItem = ({ state, explorerUrl, tooltip, children, onCancel }: StepItemProps) => {
   return (
     <InfoCard.StackItem>
       <InfoCard.TitleBox>
@@ -49,6 +49,7 @@ export const StepItem = ({ state, explorerUrl, children, onCancel }: StepItemPro
           <Icon name="check" size={14} />
         </span>
         <p className={cn(S.itemText({ highlighted: state !== "idle" }))}>{children}</p>
+        {!!tooltip && tooltip}
       </InfoCard.TitleBox>
       <div className={cn(S.itemEndBox)}>
         {state === "loading" && <LoadingSpinner size={14} />}
@@ -119,6 +120,7 @@ export type TopBoxProps = {
 export type StepItemProps = {
   state: "idle" | "active" | "loading" | "success" | "error";
   explorerUrl?: string;
+  tooltip?: ReactNode;
   children: ReactNode;
   onCancel?: () => void;
 };

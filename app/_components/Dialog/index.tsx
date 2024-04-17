@@ -22,7 +22,11 @@ export const Main = ({ children }: { children: ReactNode }) => {
 
 export const Content = forwardRef(({ children, className, ...props }: ContentProps, ref: Ref<HTMLDivElement>) => {
   return (
-    <DialogPrimitive.Content className={cn(S.content, className)} {...props}>
+    <DialogPrimitive.Content
+      className={cn(S.content, className)}
+      onOpenAutoFocus={(e) => e.preventDefault()}
+      {...props}
+    >
       {children}
     </DialogPrimitive.Content>
   );
