@@ -144,7 +144,7 @@ const AvailabilityElement = ({
   const prefix = type === "stake" ? "Available" : "Staked";
 
   const primaryValue = useMemo(() => {
-    if (!availableValue) return "0";
+    if (!availableValue || availableValue === "0") return "0";
 
     if (primaryCurrency === "USD") {
       return getFormattedUSDPriceFromCoin({
@@ -162,7 +162,7 @@ const AvailabilityElement = ({
   }, [availableValue, primaryCurrency]);
 
   const secondaryValue = useMemo(() => {
-    if (!availableValue) return "0";
+    if (!availableValue || availableValue === "0") return "0";
 
     if (secondaryCurrency === "USD") {
       return getFormattedUSDPriceFromCoin({

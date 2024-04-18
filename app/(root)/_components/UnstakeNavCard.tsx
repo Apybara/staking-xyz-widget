@@ -1,13 +1,16 @@
 "use client";
 import { useMemo } from "react";
 import { useWallet } from "../../_contexts/WalletContext";
-import { Skeleton } from "../../_components/Skeleton";
-import { useUnbondingDelegations } from "../../_services/unstake/hooks";
+import { useUnbondingDelegations, useStakedBalance } from "../../_services/unstake/hooks";
 import * as NavCard from "../_components/NavCard";
+import { Skeleton } from "../../_components/Skeleton";
 
 export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
   const { connectionStatus } = useWallet();
+  const { stakedBalance } = useStakedBalance() || {};
   const unbondingDelegations = useUnbondingDelegations();
+
+  const isDisabled = connectionStatus !== "connected" || !stakedBalance || stakedBalance === "0";
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
@@ -39,5 +42,5 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     }
   }, [connectionStatus, unbondingDelegations]);
 
-  return <NavCard.Card {...props} page="unstake" disabled={connectionStatus !== "connected"} endBox={endBoxValue} />;
+  return <NavCard.Card {...props} page="unstake" disabled={isDisabled} endBox={endBoxValue} />;
 };

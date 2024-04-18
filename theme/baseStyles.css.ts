@@ -5,7 +5,7 @@ import { pxToRem } from "./utils";
 export const borderedCard = style({
   border: `1px solid ${colors.black700}`,
   borderRadius: pxToRem(16),
-  paddingBlock: pxToRem(16),
+  paddingBlock: pxToRem(19),
   paddingInline: pxToRem(20),
 });
 

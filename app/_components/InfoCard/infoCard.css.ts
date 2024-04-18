@@ -20,7 +20,6 @@ export const stackItem = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  blockSize: pxToRem(20),
 });
 
 export const title = style({
@@ -43,5 +42,6 @@ export const titleIcon = style({
 
 export const content = style({
   fontSize: pxToRem(14),
+  lineHeight: 1,
   color: colors.black000,
 });
