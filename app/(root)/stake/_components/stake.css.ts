@@ -15,19 +15,20 @@ export const rewardInfoValue = style({
 });
 
 export const rewardsTooltip = style({
-  width: pxToRem(200),
+  inlineSize: pxToRem(200),
 });
 
 export const rewardsList = style({});
 
 globalStyle(`${rewardsList} > * + *`, {
-  marginBlockStart: pxToRem(16),
+  marginBlockStart: pxToRem(12),
 });
 
 export const rewardsItem = style({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  lineHeight: 1,
 });
 
 export const rewardsInterval = style({
@@ -38,8 +39,8 @@ export const rewardsInterval = style({
   selectors: {
     "&::before": {
       content: "",
-      width: "4px",
-      height: "4px",
+      inlineSize: "4px",
+      blockSize: "4px",
       borderRadius: "50%",
       backgroundColor: colors.black600,
       marginInlineEnd: pxToRem(8),
