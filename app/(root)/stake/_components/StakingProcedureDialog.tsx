@@ -53,6 +53,7 @@ export const StakingProcedureDialog = () => {
                   }
                 : undefined
             }
+            tooltip={procedure.tooltip}
             // explorerUrl={procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`}
           >
             {procedure.stepName}

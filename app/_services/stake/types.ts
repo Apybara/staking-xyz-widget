@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type StakeProcedure = BaseStakeProcedure & {
   state: StakeProcedureState | null;
   txHash?: string;
@@ -9,6 +11,7 @@ export type BaseStakeProcedure = {
   step: StakeProcedureStep;
   stepName: string;
   send: () => void;
+  tooltip?: ReactNode;
 };
 
 export type StakeProcedureStep = "auth" | "delegate";
