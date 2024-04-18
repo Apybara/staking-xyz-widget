@@ -9,13 +9,21 @@ export type InputFieldProps = HTMLInputFieldProps & {
   currency: Currency;
 };
 
-export const InputField = ({ currency, ...props }: InputFieldProps) => {
+export const InputField = ({ currency, value, ...props }: InputFieldProps) => {
   const isFiatCurrency = currency === "USD" || currency === "EUR";
 
   return (
     <div className={S.inputField}>
       {isFiatCurrency && <span>{fiatCurrencyMap[currency]}</span>}
-      <HTMLInputField {...props} />
+
+      <div className={S.htmlInputFieldContainer}>
+        <div className={S.htmlInputFieldWidth}>
+          {/* Mirrors the input's value, hence the container's dynamic width */}
+          {value || 0}
+        </div>
+
+        <HTMLInputField value={value} {...props} />
+      </div>
     </div>
   );
 };

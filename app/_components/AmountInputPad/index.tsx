@@ -1,6 +1,6 @@
 "use client";
 import type { Currency } from "../../types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import {
@@ -45,12 +45,6 @@ export const AmountInputPad = ({
   onSwap,
   onMax,
 }: AmountInputPadProps) => {
-  const [inputSize, setInputSize] = useState(1);
-
-  useEffect(() => {
-    setInputSize(primaryValue === "" ? 1 : primaryValue.length);
-  }, [primaryValue]);
-
   useEffect(() => {
     if (primaryValue === "") {
       onValueChange("");
@@ -105,7 +99,6 @@ export const AmountInputPad = ({
         value: primaryValue,
         currency: primaryCurrency || "USD",
         maxLength: primaryCurrency === "USD" || primaryCurrency === "EUR" ? 12 : 79,
-        size: inputSize,
         onChange: (e) => {
           if (e.target.value === "") {
             setPrimaryValue("");
