@@ -13,10 +13,29 @@ export const inputField = style({
   fontFeatureSettings: monospaced,
 });
 
+export const htmlInputFieldContainer = style({
+  display: "flex",
+  position: "relative",
+});
+
+export const htmlInputFieldWidth = style({
+  /**
+   * "visibility: hidden" and "pointer-events: none" removes user interaction from
+   * this element so that it goes directly to the input
+   */
+  visibility: "hidden",
+  pointerEvents: "none",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  maxInlineSize: pxToRem(268),
+});
+
 export const htmlInputField = style({
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   maxInlineSize: "100%",
+  position: "absolute", // input fits into the container and dynamically resizes accordingly
 });
 
 export const conversionTool = style({
