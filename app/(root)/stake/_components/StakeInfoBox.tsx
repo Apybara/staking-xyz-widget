@@ -39,6 +39,7 @@ export const StakeInfoBox = () => {
   };
 
   const unstakingPeriod = unstakingPeriodByNetwork[network || "celestia"];
+  const platformFee = feeRatioByNetwork[network || "celestia"] * 100;
 
   return (
     <InfoCard.Card>
@@ -81,8 +82,7 @@ export const StakeInfoBox = () => {
                 trigger={<Icon name="question" />}
                 content={
                   <>
-                    Network fee <span className={S.plusSign}>+</span> Platform fee (
-                    {feeRatioByNetwork[network || "celestia"]}%)
+                    Network fee <span className={S.plusSign}>+</span> Platform fee ({platformFee}%)
                   </>
                 }
               />
