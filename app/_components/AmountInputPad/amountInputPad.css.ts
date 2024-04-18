@@ -4,9 +4,11 @@ import { colors, weights, monospaced } from "../../../theme/theme.css";
 
 export const inputField = style({
   display: "flex",
+  alignItems: "center",
   justifyContent: "center",
   gap: "0.2ch",
   fontSize: pxToRem(50),
+  blockSize: pxToRem(50),
   color: colors.black000,
   fontFeatureSettings: monospaced,
 });
@@ -42,13 +44,13 @@ export const amountInputPad = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: pxToRem(24),
+  gap: pxToRem(20),
   backgroundColor: colors.black700,
   border: `1px solid ${colors.black800}`,
   borderRadius: pxToRem(8),
   paddingInline: pxToRem(20),
-  paddingBlockStart: pxToRem(16),
-  paddingBlockEnd: pxToRem(40),
+  paddingBlockStart: pxToRem(30),
+  paddingBlockEnd: pxToRem(30),
 });
 
 export const topBar = style({
@@ -56,6 +58,7 @@ export const topBar = style({
   justifyContent: "space-between",
   alignItems: "center",
   inlineSize: "100%",
+  marginBlockStart: pxToRem(-16),
 });
 
 export const maxButton = style({

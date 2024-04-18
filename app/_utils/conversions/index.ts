@@ -3,6 +3,11 @@ import BigNumber from "bignumber.js";
 import numbro from "numbro";
 import { fiatCurrencyMap } from "../../consts";
 
+const numbroDefaultOptions: numbro.Format = {
+  mantissa: 2,
+};
+numbroDefaultOptions.roundingFunction = Math.floor;
+
 export const getFormattedUSDPriceFromCoin = ({ val, price, options }: Omit<GetPriceProps, "currency">) => {
   const value = getFiatPriceFromCoin({ val, price });
   return getFormattedFiatCurrencyValue({
@@ -46,15 +51,19 @@ export const getFormattedFiatCurrencyValue = ({
 }: CurrencyPriceProps) => {
   numbro.setLanguage(locale || "en-US");
 
+  const defaultSymbol = formatOptions?.currencySymbol || "$";
+  if ((formatOptions?.mantissa || 2) <= 2 && val > 0 && val < 0.01) {
+    return `<${defaultSymbol}0.01`;
+  }
   if (capAtTrillion && val >= 1e12) {
-    return `>${formatOptions?.currencySymbol || "$"}1.0T`;
+    return `>${defaultSymbol}1.0T`;
   }
 
   return numbro(val)
     .formatCurrency({
+      ...numbroDefaultOptions,
       average: true,
       currencySymbol: "$",
-      mantissa: 2,
       ...formatOptions,
     })
     .toUpperCase();
@@ -70,13 +79,8 @@ export const getCoinValueFromFiatPrice = ({ val, price }: Omit<GetPriceProps, "o
   return value;
 };
 
-export const getFormattedCoinValue = ({
-  val,
-  formatOptions,
-  capAtTrillion = true,
-  capAtTwoDecimals,
-}: TokenNumberProps) => {
-  if (capAtTwoDecimals && val < 0.01) {
+export const getFormattedCoinValue = ({ val, formatOptions, capAtTrillion = true }: TokenNumberProps) => {
+  if ((formatOptions?.mantissa || 2) <= 2 && val > 0 && val < 0.01) {
     return "<0.01";
   }
   if (capAtTrillion && val >= 1e12) {
@@ -85,8 +89,8 @@ export const getFormattedCoinValue = ({
 
   return numbro(val)
     .format({
+      ...numbroDefaultOptions,
       thousandSeparated: true,
-      mantissa: 2,
       currencySymbol: "",
       ...formatOptions,
     })
