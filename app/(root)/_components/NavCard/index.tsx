@@ -6,10 +6,6 @@ import { Icon } from "../../../_components/Icon";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import * as S from "./navCard.css";
 
-export const Rewards = (props: PageNavCardProps) => {
-  return <Card {...props} page="rewards" />;
-};
-
 export const PrimaryText = ({ children }: { children: ReactNode }) => {
   return <span className={cn(S.primaryText)}>{children}</span>;
 };

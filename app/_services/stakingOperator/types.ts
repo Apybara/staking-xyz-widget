@@ -148,6 +148,24 @@ export type ActivityItem = {
   inProgress?: boolean;
 };
 
+export type AddressRewardsHistoryResponse = CommonEntriesResponse<
+  AddressRewardsHistoryPaginationParams & { address: string },
+  RewardsHistoryItem
+> & {
+  hasMore?: boolean | null;
+  totalEntries?: number | null;
+};
+export type AddressRewardsHistoryPaginationParams = PaginationParams;
+
+export type RewardsHistoryItem = {
+  type: "compound";
+  amount: number;
+  rewardRate: number;
+  timestamp: number;
+  txHash: string;
+  inProgress?: boolean;
+};
+
 export type PaginationParams = {
   offset: number;
   limit: number;

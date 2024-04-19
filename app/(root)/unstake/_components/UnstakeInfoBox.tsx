@@ -1,5 +1,4 @@
 "use client";
-import type { Currency, CoinPrice, Network } from "../../../types";
 import { useMemo } from "react";
 import cn from "classnames";
 import BigNumber from "bignumber.js";
@@ -7,11 +6,8 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
-import {
-  getFormattedUSDPriceFromCoin,
-  getFormattedEURPriceFromCoin,
-  getFormattedCoinValue,
-} from "../../../_utils/conversions";
+import { getTimeUnitStrings } from "../../../_utils/time";
+import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
@@ -29,7 +25,7 @@ export const UnstakeInfoBox = () => {
         }, BigNumber(0))
         .toString() || "0";
 
-    return getFormattedCurrency({ currency, coinPrice, network, amount: sumDenom });
+    return getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: sumDenom });
   }, [count, currency]);
 
   if (!count) return null;
@@ -48,13 +44,17 @@ export const UnstakeInfoBox = () => {
         <AccordionInfoCard.Content>
           <AccordionInfoCard.Stack>
             {unbondingDelegations.data?.map((item, index) => {
+              const times = item.remainingTime && getTimeUnitStrings(item.remainingTime);
+
               return (
                 <AccordionInfoCard.StackItem key={"unbonding-delegations" + network + index}>
                   <InfoCard.TitleBox>
-                    <p className={cn(S.remainingDays)}>{item.remainingDays} days left</p>
+                    <p className={cn(S.remainingDays)}>
+                      {times?.time} {times?.unit} left
+                    </p>
                   </InfoCard.TitleBox>
                   <InfoCard.Content>
-                    {getFormattedCurrency({ currency, coinPrice, network, amount: item.amount })}
+                    {getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: item.amount })}
                   </InfoCard.Content>
                 </AccordionInfoCard.StackItem>
               );
@@ -64,32 +64,4 @@ export const UnstakeInfoBox = () => {
       </AccordionInfoCard.Item>
     </AccordionInfoCard.Root>
   );
-};
-
-const getFormattedCurrency = ({
-  currency,
-  coinPrice,
-  network,
-  amount,
-}: {
-  currency: Currency | null;
-  coinPrice: CoinPrice | null;
-  network: Network | null;
-  amount: string;
-}) => {
-  const castedCurrency = currency || "USD";
-
-  if (castedCurrency === "USD") {
-    return getFormattedUSDPriceFromCoin({
-      val: amount,
-      price: coinPrice?.[network || "celestia"]?.USD || 0,
-    });
-  }
-  if (castedCurrency === "EUR") {
-    return getFormattedEURPriceFromCoin({
-      val: amount,
-      price: coinPrice?.[network || "celestia"]?.EUR || 0,
-    });
-  }
-  return getFormattedCoinValue({ val: BigNumber(amount).toNumber() });
 };

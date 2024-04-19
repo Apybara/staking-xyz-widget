@@ -1,4 +1,4 @@
-import type { FiatCurrency } from "../../types";
+import type { FiatCurrency, CoinPrice, Currency, Network } from "../../types";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
 import { fiatCurrencyMap } from "../../consts";
@@ -7,6 +7,38 @@ const numbroDefaultOptions: numbro.Format = {
   mantissa: 2,
 };
 numbroDefaultOptions.roundingFunction = Math.floor;
+
+export const getDynamicAssetValueFromCoin = ({
+  network,
+  coinVal,
+  coinPrice,
+  currency,
+}: {
+  network: Network | null;
+  coinVal?: string | number;
+  coinPrice: CoinPrice | null;
+  currency: Currency | null;
+}) => {
+  const castedCurrency = currency || "USD";
+
+  if (!coinVal) return undefined;
+
+  if (castedCurrency === "USD") {
+    return getFormattedUSDPriceFromCoin({
+      val: coinVal,
+      price: coinPrice?.[network || "celestia"]?.USD || 0,
+    });
+  }
+
+  if (castedCurrency === "EUR") {
+    return getFormattedEURPriceFromCoin({
+      val: coinVal,
+      price: coinPrice?.[network || "celestia"]?.EUR || 0,
+    });
+  }
+
+  return getFormattedCoinValue({ val: BigNumber(coinVal).toNumber() });
+};
 
 export const getFormattedUSDPriceFromCoin = ({ val, price, options }: Omit<GetPriceProps, "currency">) => {
   const value = getFiatPriceFromCoin({ val, price });

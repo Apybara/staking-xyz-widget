@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
-import Link from "next/link";
+import { PageViewTop } from "../_components/WidgetTop";
 import redirectPage from "../../_actions/redirectPage";
 import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { getLinkWithSearchParams } from "../../_utils/routes";
+import { RewardsSummary } from "./_components/RewardsSummary";
 
 export default async function Rewards({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
@@ -12,13 +13,10 @@ export default async function Rewards({ searchParams }: RouterStruct) {
   await revalidatePageQueries(network);
 
   return (
-    <div style={{ marginTop: "5rem" }}>
-      <h1>Rewards view</h1>
-
-      <nav style={{ marginTop: "5rem" }}>
-        <Link href={getLinkWithSearchParams(searchParams, "")}>Back to home</Link>
-      </nav>
-    </div>
+    <>
+      <PageViewTop page="Rewards" homeURL={getLinkWithSearchParams(searchParams, "")} />
+      <RewardsSummary />
+    </>
   );
 }
 

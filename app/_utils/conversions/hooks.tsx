@@ -1,7 +1,17 @@
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { networkCurrency } from "../../consts";
-import { getFormattedCoinValue, getFormattedUSDPriceFromCoin, getFormattedEURPriceFromCoin } from ".";
+import {
+  getFormattedCoinValue,
+  getFormattedUSDPriceFromCoin,
+  getFormattedEURPriceFromCoin,
+  getDynamicAssetValueFromCoin,
+} from ".";
+
+export const useDynamicAssetValueFromCoin = ({ coinVal }: { coinVal?: string | number }) => {
+  const { currency, coinPrice, network } = useShell();
+  return getDynamicAssetValueFromCoin({ coinVal, currency, coinPrice, network });
+};
 
 export const useFormattedNetworkValue = ({ val }: { val?: string | number }) => {
   const { network, currency, coinPrice } = useShell();

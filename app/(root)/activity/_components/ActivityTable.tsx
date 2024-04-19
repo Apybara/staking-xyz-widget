@@ -1,25 +1,19 @@
 "use client";
-import type { Network, Currency, CoinPrice } from "../../../types";
+import type { Network } from "../../../types";
 import type { ActivityItem } from "../../../_services/stakingOperator/types";
-import { useMemo } from "react";
-import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { Skeleton } from "../../../_components/Skeleton";
 import * as ListTable from "../../../_components/ListTable";
 import { ErrorRetryModule } from "../../../_components/ErrorRetryModule";
 import { getPercentagedNumber } from "../../../_utils/number";
 import { getUTCStringFromUnixTimestamp } from "../../../_utils/time";
-import {
-  getFormattedUSDPriceFromCoin,
-  getFormattedEURPriceFromCoin,
-  getFormattedCoinValue,
-} from "../../../_utils/conversions";
+import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 import { useActivity } from "../../../_services/stakingOperator/hooks";
 import { networkExplorer } from "../../../consts";
 import * as S from "./activity.css";
 
 export const ActivityTable = () => {
-  const { network, currency, coinPrice } = useShell();
+  const { network } = useShell();
   const { params, query } = useActivity() || {};
   const { offset, setOffset, limit, filterKey, setFilterKey } = params;
   const { data, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
@@ -70,13 +64,7 @@ export const ActivityTable = () => {
       <ListTable.Pad>
         <ListTable.List>
           {data?.map((activity, index) => (
-            <ListItem
-              key={index + activity.txHash}
-              activity={activity}
-              network={network}
-              currency={currency}
-              coinPrice={coinPrice}
-            />
+            <ListItem key={index + activity.txHash} activity={activity} network={network} />
           ))}
         </ListTable.List>
         <ListTable.Pagination
@@ -92,34 +80,8 @@ export const ActivityTable = () => {
   );
 };
 
-const ListItem = ({
-  activity,
-  network,
-  currency,
-  coinPrice,
-}: {
-  activity: ActivityItem;
-  network: Network | null;
-  currency: Currency | null;
-  coinPrice: CoinPrice | null;
-}) => {
-  const amount = useMemo(() => {
-    const castedCurrency = currency || "USD";
-
-    if (castedCurrency === "USD") {
-      return getFormattedUSDPriceFromCoin({
-        val: activity.amount,
-        price: coinPrice?.[network || "celestia"]?.USD || 0,
-      });
-    }
-    if (castedCurrency === "EUR") {
-      return getFormattedEURPriceFromCoin({
-        val: activity.amount,
-        price: coinPrice?.[network || "celestia"]?.EUR || 0,
-      });
-    }
-    return getFormattedCoinValue({ val: BigNumber(activity.amount).toNumber() });
-  }, [activity.amount, currency, coinPrice, network]);
+const ListItem = ({ activity, network }: { activity: ActivityItem; network: Network | null }) => {
+  const amount = useDynamicAssetValueFromCoin({ coinVal: activity.amount });
 
   return (
     <ListTable.Item>
@@ -127,7 +89,7 @@ const ListItem = ({
         <ListTable.TxInfoPrimary
           title={titleKey[activity.type]}
           externalLink={!!activity.txHash}
-          amount={amount}
+          amount={amount || "－"}
           isProcessing={activity.inProgress}
         />
         <ListTable.TxInfoSecondary

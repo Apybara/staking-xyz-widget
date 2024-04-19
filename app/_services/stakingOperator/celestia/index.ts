@@ -56,6 +56,25 @@ export const getAddressActivity = ({
   } as T.AddressActivityResponse;
 };
 
+export const getAddressRewardsHistory = ({
+  address,
+  offset,
+  limit,
+}: T.AddressRewardsHistoryPaginationParams & { address: string }) => {
+  return {
+    status: "OK",
+    statusCode: 200,
+    totalEntries: 100,
+    data: new Array(limit).fill(0).map(() => ({
+      type: "compound",
+      amount: Math.floor(Math.random() * 100),
+      rewardRate: Math.random() * 0.1,
+      timestamp: Math.floor(Math.random() * 100000),
+      txHash: Math.random().toString(36).substring(7),
+    })),
+  } as T.AddressRewardsHistoryResponse;
+};
+
 export const getDelegateMessage = async (address: string, amount: number) => {
   const res: T.DelegateMessageResponse = await fetchData(`${API_URL}stake/user/delegate`, {
     method: "POST",
