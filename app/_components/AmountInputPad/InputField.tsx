@@ -42,16 +42,10 @@ const HTMLInputField = forwardRef<HTMLInputElement, HTMLInputFieldProps>(({ clas
       maxLength={79}
       spellCheck={false}
       className={cn(S.htmlInputField, className)}
-      style={{ marginInlineEnd: getOffsetInputValue(props.value as string), ...style }}
       {...props}
     />
   );
 });
-
-const getOffsetInputValue = (value: string) => {
-  if (!value || value === "" || value === "0") return -12;
-  return value.includes(".") || value.includes(",") ? -12 : -2;
-};
 
 export const getStringHasNumbersOnly = (val: string) => {
   if (val === "") return true;
