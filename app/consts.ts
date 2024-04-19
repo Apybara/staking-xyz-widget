@@ -171,6 +171,6 @@ export const unstakingPeriodByNetwork: Record<Network, string> = {
 };
 
 export const SITE_TITLE = "Staking.xyz";
-export const SITE_DESCRIPTION = "Your portal to staking";
+export const SITE_DESCRIPTION = "Your portal to staking.";
 export const SITE_URL = "https://staking.xyz";
-export const SITE_IMAGE = "/og-image.png";
+export const SITE_IMAGE = "/og-image.jpg";

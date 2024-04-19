@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import type { RouterStruct } from "../types";
 import cn from "classnames";
 import redirectPage from "../_actions/redirectPage";
+import { getDynamicPageMetadata } from "../_utils/site";
 import revalidatePageQueries from "../_actions/revalidatePageQueries";
 import { DefaultViewTop } from "./_components/WidgetTop";
 import { HeroCard } from "./_components/HeroCard";
@@ -34,4 +36,8 @@ export default async function Home({ searchParams }: RouterStruct) {
       </nav>
     </>
   );
+}
+
+export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "", networkParam: searchParams?.network });
 }

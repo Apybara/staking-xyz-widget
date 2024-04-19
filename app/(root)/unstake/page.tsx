@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
 import redirectPage from "../../_actions/redirectPage";
 import revalidatePageQueries from "../../_actions/revalidatePageQueries";
+import { getDynamicPageMetadata } from "../../_utils/site";
 import { ClientSideUnstakePage } from "./_components/ClientSideUnstakePage";
 
 export default async function Unstake({ searchParams }: RouterStruct) {
@@ -12,7 +13,6 @@ export default async function Unstake({ searchParams }: RouterStruct) {
   return <ClientSideUnstakePage searchParams={searchParams} />;
 }
 
-export const metadata: Metadata = {
-  title: "Unstake | Staking.xyz",
-  description: "Your portal to staking",
-};
+export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "Unstake", networkParam: searchParams?.network });
+}

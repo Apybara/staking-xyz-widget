@@ -3,6 +3,7 @@ import type { RouterStruct } from "../../types";
 import Link from "next/link";
 import redirectPage from "../../_actions/redirectPage";
 import revalidatePageQueries from "../../_actions/revalidatePageQueries";
+import { getDynamicPageMetadata } from "../../_utils/site";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 
 export default async function Rewards({ searchParams }: RouterStruct) {
@@ -21,7 +22,6 @@ export default async function Rewards({ searchParams }: RouterStruct) {
   );
 }
 
-export const metadata: Metadata = {
-  title: "Rewards | Staking.xyz",
-  description: "Your portal to staking",
-};
+export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "Rewards", networkParam: searchParams?.network });
+}
