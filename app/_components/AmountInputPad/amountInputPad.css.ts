@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
-import { colors, weights, monospaced } from "../../../theme/theme.css";
+import { colors, weights } from "../../../theme/theme.css";
 
 export const inputField = style({
   display: "flex",
@@ -9,7 +9,6 @@ export const inputField = style({
   fontSize: pxToRem(50),
   blockSize: pxToRem(50),
   color: colors.black000,
-  fontFeatureSettings: monospaced,
 });
 
 export const htmlInputFieldContainer = style({
@@ -27,7 +26,7 @@ export const htmlInputFieldWidth = style({
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  maxInlineSize: pxToRem(223),
+  maxInlineSize: pxToRem(247),
 });
 
 export const htmlInputField = style({
