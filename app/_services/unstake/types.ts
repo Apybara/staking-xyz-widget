@@ -17,6 +17,11 @@ export type UnstakeProcedureState = "idle" | "active" | "loading" | "success" | 
 
 export type UnbondingDelegation = {
   validatorAddress: string;
-  remainingDays: number;
+  remainingTime?: {
+    d: number | undefined;
+    h: number | undefined;
+    m: number | undefined;
+    s: number | undefined;
+  };
   amount: string;
 };

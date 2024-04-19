@@ -170,6 +170,11 @@ export const unstakingPeriodByNetwork: Record<Network, string> = {
   celestiatestnet3: "21 days",
 };
 
+export const rewardsFrequencyByNetwork: Record<Network, string> = {
+  celestia: "15s",
+  celestiatestnet3: "15s",
+};
+
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking.";
 export const SITE_URL = "https://staking.xyz";

@@ -6,6 +6,7 @@ import {
   useCelestiaDelegations,
   useCelestiaUnbondingDelegations,
   useAddressActivity,
+  useAddressRewardsHistory,
 } from "../stakingOperator/celestia/hooks";
 
 export const useUnbondingDelegations = () => {
@@ -87,4 +88,49 @@ export const useLastOffsetActivity = ({ offset, limit, filterKey }: T.AddressAct
   const { lastOffset } = useAddressActivity({ address: address || undefined, offset, limit, filterKey });
 
   return useAddressActivity({ address: address || undefined, offset: lastOffset, limit, filterKey });
+};
+
+export const useAddressRewardsHistoryQueryParams = () => {
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(6);
+
+  return {
+    offset,
+    setOffset,
+    limit,
+    setLimit,
+  };
+};
+
+export const useRewardsHistory = () => {
+  const { network } = useShell();
+  const { address } = useWallet();
+
+  const { offset, setOffset, limit } = useAddressRewardsHistoryQueryParams();
+  const celestia = useAddressRewardsHistory({
+    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    offset,
+    limit,
+  });
+
+  switch (network) {
+    case "celestia":
+    case "celestiatestnet3":
+      return {
+        params: { offset, setOffset, limit },
+        query: celestia,
+      };
+    default:
+      return {
+        params: { offset, setOffset, limit },
+        query: undefined,
+      };
+  }
+};
+
+export const useLastOffsetRewardsHistory = ({ offset, limit }: T.AddressRewardsHistoryPaginationParams) => {
+  const { address } = useWallet();
+  const { lastOffset } = useAddressRewardsHistory({ address: address || undefined, offset, limit });
+
+  return useAddressRewardsHistory({ address: address || undefined, offset: lastOffset, limit });
 };

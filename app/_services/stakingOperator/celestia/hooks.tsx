@@ -1,12 +1,18 @@
 import type { UnbondingDelegation } from "../../unstake/types";
 import type * as T from "../types";
-import { useEffect, useState } from "react";
-import moment from "moment";
+import { useEffect } from "react";
 import BigNumber from "bignumber.js";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import { getTimeDiffInSingleUnits } from "../../../_utils/time";
 import { getCoinValueFromDenom } from "../../cosmos/utils";
 import { getLastOffset } from "../utils";
-import { getAddressAuthCheck, getDelegations, getUnbondingDelegations, getAddressActivity } from ".";
+import {
+  getAddressAuthCheck,
+  getDelegations,
+  getUnbondingDelegations,
+  getAddressActivity,
+  getAddressRewardsHistory,
+} from ".";
 
 export const useCelestiaAddressAuthCheck = ({ address }: { address?: string }) => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -66,7 +72,7 @@ const useFormattedUnbondingDelegations = (
     delegation.entries.forEach((entry) => {
       formattedDelegations.push({
         validatorAddress: delegation.validator_address,
-        remainingDays: moment(entry.completion_time).diff(moment.now(), "days"),
+        remainingTime: getTimeDiffInSingleUnits(entry.completion_time),
         amount: getCoinValueFromDenom({ network: "celestia", amount: entry.balance }),
       });
     });
@@ -110,6 +116,56 @@ export const useAddressActivity = ({
       });
     }
   }, [queryClient, address, data?.hasMore, isPlaceholderData, limit, offset, filterKey]);
+
+  const totalEntries = data?.totalEntries || 0;
+  const lastOffset = getLastOffset({ totalEntries, limit });
+
+  return {
+    error,
+    isLoading: isLoading || status === "pending",
+    isFetching,
+    disableNextPage: isPlaceholderData || lastOffset === offset,
+    data: data?.data,
+    totalEntries,
+    lastOffset,
+    refetch,
+  };
+};
+
+export const useAddressRewardsHistory = ({
+  address,
+  offset,
+  limit,
+}: T.AddressRewardsHistoryPaginationParams & { address?: string }) => {
+  const queryClient = useQueryClient();
+
+  const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
+    T.AddressRewardsHistoryResponse | null,
+    T.AddressRewardsHistoryResponse
+  >({
+    enabled: !!address,
+    queryKey: ["addressRewardsHistory", address, offset, limit],
+    queryFn: () => {
+      if (!address) return Promise.resolve(null);
+      return getAddressRewardsHistory({ address, offset, limit });
+    },
+    placeholderData: keepPreviousData,
+    staleTime: 15000,
+  });
+
+  // Prefetch the next page
+  useEffect(() => {
+    if (!isPlaceholderData && data?.hasMore) {
+      const nextOffset = offset + 1;
+      queryClient.prefetchQuery({
+        queryKey: ["addressRewardsHistory", address, limit, nextOffset],
+        queryFn: () => {
+          if (!address) return Promise.resolve(null);
+          return getAddressRewardsHistory({ address, offset: nextOffset, limit });
+        },
+      });
+    }
+  }, [queryClient, address, data?.hasMore, isPlaceholderData, limit, offset]);
 
   const totalEntries = data?.totalEntries || 0;
   const lastOffset = getLastOffset({ totalEntries, limit });

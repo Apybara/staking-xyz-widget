@@ -6,9 +6,9 @@ import { getDynamicPageMetadata } from "../_utils/site";
 import revalidatePageQueries from "../_actions/revalidatePageQueries";
 import { DefaultViewTop } from "./_components/WidgetTop";
 import { HeroCard } from "./_components/HeroCard";
-import * as NavCard from "./_components/NavCard";
 import { StakeNavCard } from "./_components/StakeNavCard";
 import { UnstakeNavCard } from "./_components/UnstakeNavCard";
+import { RewardsNavCard } from "./_components/RewardsNavCard";
 import { ActivityNavCard } from "./_components/ActivityNavCard";
 import * as S from "./root.css";
 
@@ -24,14 +24,7 @@ export default async function Home({ searchParams }: RouterStruct) {
       <nav className={cn(S.nav)}>
         <StakeNavCard searchParams={searchParams} />
         <UnstakeNavCard searchParams={searchParams} />
-        <NavCard.Rewards
-          searchParams={searchParams}
-          disabled
-          endBox={{
-            title: <NavCard.SecondaryText>Rewards</NavCard.SecondaryText>,
-            value: <NavCard.PrimaryText>00.00 %</NavCard.PrimaryText>,
-          }}
-        />
+        <RewardsNavCard searchParams={searchParams} />
         <ActivityNavCard searchParams={searchParams} />
       </nav>
     </>
