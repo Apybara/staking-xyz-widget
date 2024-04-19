@@ -6,7 +6,6 @@ export const inputField = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "0.2ch",
   fontSize: pxToRem(50),
   blockSize: pxToRem(50),
   color: colors.black000,
@@ -28,7 +27,7 @@ export const htmlInputFieldWidth = style({
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  maxInlineSize: pxToRem(268),
+  maxInlineSize: pxToRem(223),
 });
 
 export const htmlInputField = style({
