@@ -90,7 +90,7 @@ export const getFormattedCoinValue = ({ val, formatOptions, capAtTrillion = true
   return numbro(val)
     .format({
       ...numbroDefaultOptions,
-      thousandSeparated: true,
+      average: true,
       currencySymbol: "",
       ...formatOptions,
     })
