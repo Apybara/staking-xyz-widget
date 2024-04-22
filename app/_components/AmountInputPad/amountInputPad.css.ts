@@ -78,6 +78,16 @@ export const topBar = style({
   marginBlockStart: pxToRem(-16),
 });
 
+export const topBarInfo = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(4),
+});
+
+export const topBarTooltip = style({
+  maxInlineSize: pxToRem(300),
+});
+
 export const maxButton = style({
   fontSize: pxToRem(12),
   fontWeight: weights.semibold,

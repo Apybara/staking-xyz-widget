@@ -1,5 +1,6 @@
 "use client";
 import type { Currency } from "../../types";
+import type { ReactNode } from "react";
 import { useEffect, useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
@@ -14,6 +15,10 @@ import { fiatCurrencyMap } from "../../consts";
 import { RootAmountInputPad } from "./RootAmountInputPad";
 import * as AvailabilityText from "./AvailabilityText";
 import { getStringHasNumbersOnly } from "./InputField";
+import Tooltip from "../Tooltip";
+import { Icon } from "../Icon";
+
+import * as S from "./amountInputPad.css";
 
 export type BaseAmountInputPadProps = {
   primaryValue: string;
@@ -92,6 +97,15 @@ export const AmountInputPad = ({
           availableValue={availableValue}
           primaryCurrency={primaryCurrency}
           secondaryCurrency={secondaryCurrency}
+          tooltip={
+            type === "unstake" && (
+              <Tooltip
+                className={S.topBarTooltip}
+                trigger={<Icon name="info" />}
+                content="You can only unstake positions that have been staked through Staking.xyz."
+              />
+            )
+          }
         />
       }
       isAvailableValueLoading={isAvailableValueLoading}
@@ -128,7 +142,8 @@ const AvailabilityElement = ({
   secondaryCurrency,
   availableValue,
   type,
-}: { primaryCurrency: Currency; secondaryCurrency: Currency } & Pick<
+  tooltip,
+}: { primaryCurrency: Currency; secondaryCurrency: Currency; tooltip: ReactNode } & Pick<
   AmountInputPadProps,
   "availableValue" | "type"
 >) => {
@@ -176,14 +191,17 @@ const AvailabilityElement = ({
   if (!availableValue?.length) return null;
 
   return (
-    <p style={{ lineHeight: 0 }}>
-      <AvailabilityText.Primary>
-        {prefix}: {primaryValue}
-      </AvailabilityText.Primary>{" "}
-      <AvailabilityText.Secondary>
-        ({secondaryValue}
-        {secondaryCurrency !== "USD" && secondaryCurrency !== "EUR" ? ` ${secondaryCurrency}` : ""})
-      </AvailabilityText.Secondary>
-    </p>
+    <div className={S.topBarInfo}>
+      <p style={{ lineHeight: 0 }}>
+        <AvailabilityText.Primary>
+          {prefix}: {primaryValue}
+        </AvailabilityText.Primary>{" "}
+        <AvailabilityText.Secondary>
+          ({secondaryValue}
+          {secondaryCurrency !== "USD" && secondaryCurrency !== "EUR" ? ` ${secondaryCurrency}` : ""})
+        </AvailabilityText.Secondary>
+      </p>
+      {!!tooltip && tooltip}
+    </div>
   );
 };
