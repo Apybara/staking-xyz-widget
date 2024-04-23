@@ -8,8 +8,8 @@ import { DefaultViewTop } from "./_components/WidgetTop";
 import { HeroCard } from "./_components/HeroCard";
 import { StakeNavCard } from "./_components/StakeNavCard";
 import { UnstakeNavCard } from "./_components/UnstakeNavCard";
-import { RewardsNavCard } from "./_components/RewardsNavCard";
 import { ActivityNavCard } from "./_components/ActivityNavCard";
+import { RewardsNavCard } from "./_components/RewardsNavCard";
 import * as S from "./root.css";
 
 export default async function Home({ searchParams }: RouterStruct) {

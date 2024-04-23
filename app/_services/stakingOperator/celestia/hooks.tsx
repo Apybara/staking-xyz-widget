@@ -12,7 +12,10 @@ import {
   getUnbondingDelegations,
   getAddressActivity,
   getAddressRewardsHistory,
+  getNetworkReward,
+  calculateRewards,
 } from ".";
+import { useStaking } from "@/app/_contexts/StakingContext";
 
 export const useCelestiaAddressAuthCheck = ({ address }: { address?: string }) => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -181,3 +184,17 @@ export const useAddressRewardsHistory = ({
     refetch,
   };
 };
+
+export const useNetworkReward = () => {
+  const { coinAmountInput } = useStaking();
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["networkReward"],
+    queryFn: () => getNetworkReward(),
+    refetchInterval: 90000,
+    refetchOnWindowFocus: true,
+  });
+
+  const rewards = calculateRewards(coinAmountInput || "0", data || 0);
+
+  return { data, rewards, isLoading, error, refetch };
+}
