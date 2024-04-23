@@ -7,6 +7,7 @@ import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_utils/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
 import { useWalletConnectors } from "../../_services/wallet/hooks";
+import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { networkWalletInfos } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
 
@@ -19,6 +20,9 @@ export const WalletConnectionDialog = () => {
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || "celestia");
   const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open, walletType: connectingWallet });
+
+  // Success connection event is tracked in WalletContext
+  const captureWalletConnectFailed = usePostHogEvent("wallet_connect_failed");
 
   // Eager connection states
   useEffect(() => {
@@ -49,6 +53,7 @@ export const WalletConnectionDialog = () => {
     if (connectionStatus === "connecting") return;
     if (open && cosmosKitConnectionError && connectingWallet) {
       setError(new Error(`Failed to connect to ${connectingWallet}`));
+      captureWalletConnectFailed({ wallet: connectingWallet, address: "" });
     }
   }, [open, cosmosKitConnectionError, connectingWallet, connectionStatus]);
 
@@ -95,6 +100,7 @@ export const WalletConnectionDialog = () => {
           } catch (e) {
             console.error(e);
             setError(e as Error);
+            captureWalletConnectFailed({ wallet: wallet.id, address: "" });
           }
         },
       }}

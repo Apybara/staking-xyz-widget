@@ -54,6 +54,9 @@ export const item = style({
   borderRadius: pxToRem(8),
   backgroundColor: "transparent",
   selectors: {
+    "&[data-state='checked']": {
+      pointerEvents: "none",
+    },
     "&:hover, &[data-state='checked']": {
       backgroundColor: colors.black700,
     },

@@ -3,6 +3,7 @@ import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_utils/hooks";
+import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { useFormattedNetworkValue } from "../../_utils/conversions/hooks";
 import { walletsInfo } from "../../consts";
@@ -20,6 +21,8 @@ export const WalletAccountDialog = () => {
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
   const disconnectors = useWalletDisconnectors(network || "celestia");
+
+  const captureDisconnectSuccess = usePostHogEvent("wallet_disconnect_succeeded");
 
   if (!address || !activeWallet) {
     // TODO: HANDLE ERROR UI
@@ -51,6 +54,7 @@ export const WalletAccountDialog = () => {
 
           try {
             await disconnectors[activeWallet]();
+            captureDisconnectSuccess({ wallet: activeWallet, address });
           } catch (e) {
             console.error(e);
             setError(e as Error);
