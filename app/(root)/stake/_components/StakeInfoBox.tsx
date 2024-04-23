@@ -7,8 +7,8 @@ import { feeRatioByNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
-import * as S from "./stake.css";
 import { useNetworkReward } from "@/app/_services/stakingOperator/celestia/hooks";
+import * as S from "./stake.css";
 
 export const StakeInfoBox = () => {
   const { network } = useShell();
