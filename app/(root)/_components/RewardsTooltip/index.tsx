@@ -2,15 +2,15 @@
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
-import { useNetworkReward } from "@/app/_services/stakingOperator/celestia/hooks";
+import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import * as S from "./rewardsTooltip.css";
 
 export const RewardsTooltip = () => {
-  const { rewards } = useNetworkReward();
+  const networkReward = useNetworkReward();
 
-  const formattedDailyReward = useDynamicAssetValueFromCoin({ coinVal: rewards.daily });
-  const formattedMonthlyReward = useDynamicAssetValueFromCoin({ coinVal: rewards.monthly });
-  const formattedYearlyReward = useDynamicAssetValueFromCoin({ coinVal: rewards.yearly });
+  const formattedDailyReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.daily });
+  const formattedMonthlyReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.monthly });
+  const formattedYearlyReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.yearly });
 
   return (
     <Tooltip

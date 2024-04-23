@@ -7,7 +7,9 @@ import {
   useCelestiaUnbondingDelegations,
   useAddressActivity,
   useAddressRewardsHistory,
+  useCelestiaReward,
 } from "../stakingOperator/celestia/hooks";
+import { useStaking } from "@/app/_contexts/StakingContext";
 
 export const useUnbondingDelegations = () => {
   const { network } = useShell();
@@ -133,4 +135,19 @@ export const useLastOffsetRewardsHistory = ({ offset, limit }: T.AddressRewardsH
   const { lastOffset } = useAddressRewardsHistory({ address: address || undefined, offset, limit });
 
   return useAddressRewardsHistory({ address: address || undefined, offset: lastOffset, limit });
+};
+
+export const useNetworkReward = (defaultNetwork?: string) => {
+  const { network } = useShell();
+  const { coinAmountInput } = useStaking();
+
+  const celestiaRewards = useCelestiaReward(coinAmountInput || "0");
+
+  switch (defaultNetwork || network) {
+    case "celestia":
+    case "celestiatestnet3":
+      return celestiaRewards;
+    default:
+      return undefined;
+  }
 };

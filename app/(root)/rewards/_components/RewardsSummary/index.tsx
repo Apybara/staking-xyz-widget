@@ -10,14 +10,14 @@ import { rewardsFrequencyByNetwork } from "../../../../consts";
 import { getTimeDiffInSingleString } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
-import { useNetworkReward } from "@/app/_services/stakingOperator/celestia/hooks";
 import { useStaking } from "@/app/_contexts/StakingContext";
 import * as S from "./rewardsSummary.css";
+import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 
 export const RewardsSummary = () => {
   const { network } = useShell();
   const { stakeFees } = useStaking();
-  const { rewards } = useNetworkReward();
+  const networkReward = useNetworkReward();
   const historyLink = useLinkWithSearchParams("rewards/history");
   const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: 205.72 });
   const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: 0.015041 });
@@ -46,7 +46,7 @@ export const RewardsSummary = () => {
               <InfoCard.Title>Reward</InfoCard.Title>
               {stakeFees && <RewardsTooltip />}
             </InfoCard.TitleBox>
-            <InfoCard.Content className={S.rewardInfoValue}>{rewards.percentage}%</InfoCard.Content>
+            <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
           </InfoCard.StackItem>
           <InfoCard.StackItem>
             <InfoCard.TitleBox>

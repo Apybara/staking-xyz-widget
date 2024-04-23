@@ -3,10 +3,9 @@ import type * as T from "../types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
-import { useStaking } from "@/app/_contexts/StakingContext";
 import { getTimeDiffInSingleUnits } from "../../../_utils/time";
 import { getCoinValueFromDenom } from "../../cosmos/utils";
-import { getLastOffset } from "../utils";
+import { getCalculatedRewards, getLastOffset } from "../utils";
 import {
   getAddressAuthCheck,
   getDelegations,
@@ -14,7 +13,6 @@ import {
   getAddressActivity,
   getAddressRewardsHistory,
   getNetworkReward,
-  calculateRewards,
 } from ".";
 
 export const useCelestiaAddressAuthCheck = ({ address }: { address?: string }) => {
@@ -185,16 +183,14 @@ export const useAddressRewardsHistory = ({
   };
 };
 
-export const useNetworkReward = () => {
-  const { coinAmountInput } = useStaking();
+export const useCelestiaReward = (amount: string) => {
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["networkReward"],
+    queryKey: ["celestiaReward"],
     queryFn: () => getNetworkReward(),
-    refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
 
-  const rewards = calculateRewards(coinAmountInput || "0", data || 0);
+  const rewards = getCalculatedRewards(amount, data || 0);
 
   return { data, rewards, isLoading, error, refetch };
 };

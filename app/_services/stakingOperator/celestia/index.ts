@@ -136,20 +136,6 @@ export const getDelegations = async (address: string) => {
 };
 
 export const getNetworkReward = async () => {
-  const res: T.NetworkReward = await fetchData(`${API_URL}network/reward`);
+  const res: T.NetworkRewardResponse = await fetchData(`${API_URL}network/reward`);
   return res;
-};
-
-export const calculateRewards = (amountStaked: string, rewardRate: number) => {
-  const formattedAmountStaked = BigNumber(amountStaked).toNumber();
-  const base = (formattedAmountStaked * rewardRate) / 100;
-
-  return {
-    percentage: numbro(rewardRate * 100).format({
-      mantissa: 2,
-    }),
-    daily: base / 365,
-    monthly: base / 12,
-    yearly: base,
-  };
 };

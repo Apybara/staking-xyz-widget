@@ -5,6 +5,7 @@ import * as Select from "../Select";
 import { networkVariants, networkInfo } from "../../consts";
 import * as S from "./networkSelect.css";
 import CosmosHubLogo from "../../_assets/networks/cosmos-hub-logo.svg";
+import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 
 export type NetworkSelectProps = {
   activeNetwork: Network;
@@ -51,13 +52,15 @@ export const NetworkSelect = ({ activeNetwork, onNetworkChange }: NetworkSelectP
 };
 
 const NetworkItem = ({ network }: { network: Network }) => {
+  const networkReward = useNetworkReward(network);
+
   return (
     <Select.Item value={network} className={cn(S.selectItem)}>
       <div className={cn(S.selectItemMain)}>
         <Image src={networkInfo[network].logo} width={18} height={18} alt={`Logo of ${network}`} />
         <h5 className={cn(S.itemTitle)}>{networkInfo[network].name}</h5>
       </div>
-      <p className={cn(S.itemSuffixText)}>00.00 %</p>
+      <p className={cn(S.itemSuffixText)}>{networkReward?.rewards.percentage} %</p>
     </Select.Item>
   );
 };
