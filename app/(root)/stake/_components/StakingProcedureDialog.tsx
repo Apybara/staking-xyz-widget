@@ -1,12 +1,13 @@
 "use client";
 import type { StakeProcedure, StakeProcedureStep, StakeProcedureState } from "../../../_services/stake/types";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as DelegationDialog from "../../../_components/DelegationDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
+import { usePostHogEvent } from "../../../_services/postHog/hooks";
 
 export const StakingProcedureDialog = () => {
   const router = useRouter();
@@ -25,6 +26,8 @@ export const StakingProcedureDialog = () => {
     if (!uncheckedProcedures?.[0]) return ctaTextMap.auth.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
+
+  usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
 
   return (
     <DelegationDialog.Shell
@@ -82,6 +85,53 @@ export const StakingProcedureDialog = () => {
       )}
     </DelegationDialog.Shell>
   );
+};
+
+const usePostHogEvents = ({
+  open,
+  amount,
+  procedures,
+  uncheckedProcedures,
+}: {
+  open: boolean;
+  amount: string;
+  procedures?: Array<StakeProcedure>;
+  uncheckedProcedures: Array<StakeProcedure>;
+}) => {
+  const hasAuthApproval = uncheckedProcedures?.[0]?.step === "delegate";
+  const captureFlowStart = usePostHogEvent("stake_tx_flow_started");
+  const captureAuthSuccess = usePostHogEvent("stake_tx_flow_auth_succeeded");
+  const captureAuthFailed = usePostHogEvent("stake_tx_flow_auth_failed");
+  const captureDelegateSuccess = usePostHogEvent("stake_tx_flow_delegate_succeeded");
+  const captureDelegateFailed = usePostHogEvent("stake_tx_flow_delegate_failed");
+
+  const authProcedure = procedures?.find((procedure) => procedure.step === "auth");
+  const delegateProcedure = procedures?.find((procedure) => procedure.step === "delegate");
+
+  useEffect(() => {
+    if (open) {
+      captureFlowStart({ amount, hasAuthApproval });
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!hasAuthApproval && authProcedure?.state === "success") {
+      captureAuthSuccess();
+      return;
+    }
+    if (!hasAuthApproval && authProcedure?.state === "error") {
+      captureAuthFailed();
+      return;
+    }
+    if (delegateProcedure?.state === "success") {
+      captureDelegateSuccess();
+      return;
+    }
+    if (delegateProcedure?.state === "error") {
+      captureDelegateFailed();
+      return;
+    }
+  }, [hasAuthApproval, authProcedure?.step, delegateProcedure?.state]);
 };
 
 const getUncheckedProcedures = (procedures: Array<StakeProcedure>) => {

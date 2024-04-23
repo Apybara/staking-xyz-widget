@@ -1,12 +1,13 @@
 "use client";
 import type { UnstakeProcedure, UnstakeProcedureStep, UnstakeProcedureState } from "../../../_services/unstake/types";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as DelegationDialog from "../../../_components/DelegationDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
+import { usePostHogEvent } from "../../../_services/postHog/hooks";
 
 export const UnstakingProcedureDialog = () => {
   const router = useRouter();
@@ -25,6 +26,8 @@ export const UnstakingProcedureDialog = () => {
     if (!uncheckedProcedures?.[0]) return ctaTextMap.undelegate.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
+
+  usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
 
   return (
     <DelegationDialog.Shell
@@ -81,6 +84,42 @@ export const UnstakingProcedureDialog = () => {
       )}
     </DelegationDialog.Shell>
   );
+};
+
+const usePostHogEvents = ({
+  open,
+  amount,
+  procedures,
+  uncheckedProcedures,
+}: {
+  open: boolean;
+  amount: string;
+  procedures?: Array<UnstakeProcedure>;
+  uncheckedProcedures: Array<UnstakeProcedure>;
+}) => {
+  const hasAuthApproval = uncheckedProcedures?.[0]?.step === "undelegate";
+  const captureFlowStart = usePostHogEvent("unstake_tx_flow_started");
+  const captureUndelegateSuccess = usePostHogEvent("unstake_tx_flow_undelegate_succeeded");
+  const captureUndelegateFailed = usePostHogEvent("unstake_tx_flow_undelegate_failed");
+
+  const undelegateProcedure = procedures?.find((procedure) => procedure.step === "undelegate");
+
+  useEffect(() => {
+    if (open) {
+      captureFlowStart({ amount });
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (undelegateProcedure?.state === "success") {
+      captureUndelegateSuccess();
+      return;
+    }
+    if (undelegateProcedure?.state === "error") {
+      captureUndelegateFailed();
+      return;
+    }
+  }, [hasAuthApproval, undelegateProcedure?.state]);
 };
 
 const getUncheckedProcedures = (procedures: Array<UnstakeProcedure>) => {

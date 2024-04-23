@@ -1,6 +1,7 @@
 import type * as T from "./types";
 
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletsSupport, useActiveWalletStates, useIsWalletConnectingEagerly } from "./hooks";
 
 const WalletContext = createContext({} as T.WalletContext);
@@ -13,6 +14,14 @@ export const WalletProvider = ({ children }: T.WalletProviderProps) => {
   useWalletsSupport({ setStates });
   useActiveWalletStates({ connectedAddress: states.connectedAddress, setStates });
   useIsWalletConnectingEagerly(states);
+
+  // Failed connection event is tracked in WalletConnectionDialog
+  const captureWalletConnectSuccess = usePostHogEvent("wallet_connect_succeeded");
+  useEffect(() => {
+    if (states.connectionStatus === "connected" && states.activeWallet && states.address) {
+      captureWalletConnectSuccess({ wallet: states.activeWallet, address: states.address });
+    }
+  }, [states.activeWallet, states.connectionStatus, states.address]);
 
   return (
     <WalletContext.Provider
