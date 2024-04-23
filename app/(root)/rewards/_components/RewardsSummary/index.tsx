@@ -10,9 +10,9 @@ import { rewardsFrequencyByNetwork } from "../../../../consts";
 import { getTimeDiffInSingleString } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
-import * as S from "./rewardsSummary.css";
 import { useNetworkReward } from "@/app/_services/stakingOperator/celestia/hooks";
 import { useStaking } from "@/app/_contexts/StakingContext";
+import * as S from "./rewardsSummary.css";
 
 export const RewardsSummary = () => {
   const { network } = useShell();

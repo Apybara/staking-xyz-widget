@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
-import type * as T from "../types";
-import { fetchData } from "@/app/_utils/fetch";
 import numbro from "numbro";
+import { fetchData } from "@/app/_utils/fetch";
+import type * as T from "../types";
 
 const API_URL = process.env.NEXT_PUBLIC_STAKING_API_CELESTIA;
 
