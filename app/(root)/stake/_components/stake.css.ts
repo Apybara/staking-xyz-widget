@@ -10,7 +10,10 @@ export const bottomBox = style({
   alignItems: "center",
 });
 
-export const rewardInfoValue = style({
+export const rewardInfo = style({});
+export const rewardInfoValue = style({});
+
+globalStyle(`${rewardInfo} ${rewardInfoValue}`, {
   color: colors.green900,
 });
 

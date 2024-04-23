@@ -8,7 +8,7 @@ export const getLastOffset = ({ totalEntries, limit }: { totalEntries: number; l
 
 export const getCalculatedRewards = (amountStaked: string, rewardRate: number) => {
   const formattedAmountStaked = BigNumber(amountStaked).toNumber();
-  const base = (formattedAmountStaked * rewardRate) / 100;
+  const base = formattedAmountStaked * rewardRate;
 
   return {
     percentage: numbro(rewardRate * 100).format({

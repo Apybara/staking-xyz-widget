@@ -22,7 +22,7 @@ export const StakeInfoBox = () => {
   return (
     <InfoCard.Card>
       <InfoCard.Stack>
-        <InfoCard.StackItem>
+        <InfoCard.StackItem className={S.rewardInfo}>
           <InfoCard.TitleBox>
             <InfoCard.Title>Reward</InfoCard.Title>
             {stakeFees && <RewardsTooltip />}
