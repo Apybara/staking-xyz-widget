@@ -8,10 +8,12 @@ import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import * as S from "./stake.css";
+import { useNetworkReward } from "@/app/_services/stakingOperator/celestia/hooks";
 
 export const StakeInfoBox = () => {
   const { network } = useShell();
   const { stakeFees } = useStaking();
+  const { rewards } = useNetworkReward();
   const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
 
   const unstakingPeriod = unstakingPeriodByNetwork[network || "celestia"];
@@ -23,9 +25,9 @@ export const StakeInfoBox = () => {
         <InfoCard.StackItem>
           <InfoCard.TitleBox>
             <InfoCard.Title>Reward</InfoCard.Title>
-            <RewardsTooltip />
+            {stakeFees && <RewardsTooltip />}
           </InfoCard.TitleBox>
-          <InfoCard.Content className={S.rewardInfoValue}>00.00%</InfoCard.Content>
+          <InfoCard.Content className={S.rewardInfoValue}>{rewards.percentage}%</InfoCard.Content>
         </InfoCard.StackItem>
         {stakeFees && (
           <InfoCard.StackItem>

@@ -180,3 +180,5 @@ type CommonResponse<R, D> = {
 type CommonEntriesResponse<R, D> = Omit<CommonResponse<R, D>, "data"> & {
   data?: Array<D> | null;
 };
+
+export type NetworkReward = number;

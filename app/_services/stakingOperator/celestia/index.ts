@@ -1,4 +1,7 @@
+import BigNumber from "bignumber.js";
 import type * as T from "../types";
+import { fetchData } from "@/app/_utils/fetch";
+import numbro from "numbro";
 
 const API_URL = process.env.NEXT_PUBLIC_STAKING_API_CELESTIA;
 
@@ -132,14 +135,21 @@ export const getDelegations = async (address: string) => {
   return res.response.delegation_responses;
 };
 
-const fetchData = async (url?: string, options?: RequestInit) => {
-  if (!url) throw new Error(`No URL provided for request: ${url}`);
+export const getNetworkReward = async () => {
+  const res: T.NetworkReward = await fetchData(`${API_URL}network/reward`);
+  return res;
+};
 
-  const response = await fetch(url, options);
-  const data = await response.json();
+export const calculateRewards = (amountStaked: string, rewardRate: number) => {
+  const formattedAmountStaked = BigNumber(amountStaked).toNumber();
+  const base = (formattedAmountStaked * rewardRate) / 100;
 
-  if (!response.ok) {
-    throw data;
-  }
-  return data;
+  return {
+    percentage: numbro(rewardRate * 100).format({
+      mantissa: 2,
+    }),
+    daily: base / 365,
+    monthly: base / 12,
+    yearly: base,
+  };
 };

@@ -1,6 +1,7 @@
 import type { GetCoinPriceProps, PriceConversionResponse } from "./types";
 import { networkCoinPriceSymbol } from "../../consts";
 import { networkPriceConversionId } from "./consts";
+import { fetchData } from "@/app/_utils/fetch";
 
 export const getAllCoinPrices = async ({
   amount = 1,
@@ -42,16 +43,4 @@ const getCoinPriceFromCoinMarketCap = async ({ network, amount = 1, currency = [
       },
     },
   );
-};
-
-const fetchData = async (url?: string, options?: RequestInit) => {
-  if (!url) throw new Error(`No URL provided for request: ${url}`);
-
-  const response = await fetch(url, options);
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw data;
-  }
-  return data;
 };
