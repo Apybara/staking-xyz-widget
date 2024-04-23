@@ -7,6 +7,11 @@ import { useCurrencyChange } from "../../_contexts/ShellContext/hooks";
 import { getCoinValueFromFiatPrice, getFiatPriceFromCoin } from "../../_utils/conversions";
 import { networkCurrency as networkCurrencyMap } from "../../consts";
 
+const numbroDefaultOptions: numbro.Format = {
+  mantissa: 2,
+};
+numbroDefaultOptions.roundingFunction = Math.floor;
+
 export const useInputStates = () => {
   const { currency: globalCurrency, network, coinPrice } = useShell();
   const networkCurrency = networkCurrencyMap[network || "celestia"];
@@ -200,9 +205,7 @@ const getPrimaryFiatValueFromSecondaryCoin = ({
     val: secondaryCoin,
     price: targetFiatPrice,
   });
-  return numbro(newValue).format({
-    mantissa: 2,
-  });
+  return numbro(newValue).format(numbroDefaultOptions);
 };
 
 const getPrimaryFiatValueFromPrimaryCoin = ({
@@ -216,15 +219,11 @@ const getPrimaryFiatValueFromPrimaryCoin = ({
     val: primaryCoin,
     price: targetFiatPrice,
   });
-  return numbro(newValue).format({
-    mantissa: 2,
-  });
+  return numbro(newValue).format(numbroDefaultOptions);
 };
 
 const getPrimaryCoinValueFromSecondaryCoin = ({ secondaryCoinValue }: { secondaryCoinValue: string }) => {
-  return numbro(BigNumber(secondaryCoinValue).toNumber()).format({
-    mantissa: 2,
-  });
+  return numbro(BigNumber(secondaryCoinValue).toNumber()).format(numbroDefaultOptions);
 };
 const getSecondaryCoinValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatValue: string; fiatPrice: number }) => {
   return numbro(
@@ -232,9 +231,7 @@ const getSecondaryCoinValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatVa
       val: fiatValue,
       price: fiatPrice,
     }),
-  ).format({
-    mantissa: 2,
-  });
+  ).format(numbroDefaultOptions);
 };
 const getSecondaryFiatValueFromPrimaryCoin = ({ coinValue, fiatPrice }: { coinValue: string; fiatPrice: number }) => {
   return numbro(
@@ -242,21 +239,15 @@ const getSecondaryFiatValueFromPrimaryCoin = ({ coinValue, fiatPrice }: { coinVa
       val: coinValue,
       price: fiatPrice,
     }),
-  ).format({
-    mantissa: 2,
-  });
+  ).format(numbroDefaultOptions);
 };
 const getMaxFiatValueFromCoin = ({ maxValue, fiatPrice }: { maxValue: string; fiatPrice: number }) => {
   const newMaxValue = getFiatPriceFromCoin({
     val: maxValue,
     price: fiatPrice,
   });
-  return numbro(newMaxValue).format({
-    mantissa: 2,
-  });
+  return numbro(newMaxValue).format(numbroDefaultOptions);
 };
 const getMaxCoinValueFromCoin = ({ maxValue }: { maxValue: string }) => {
-  return numbro(BigNumber(maxValue).toNumber()).format({
-    mantissa: 2,
-  });
+  return numbro(BigNumber(maxValue).toNumber()).format(numbroDefaultOptions);
 };
