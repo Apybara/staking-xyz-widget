@@ -40,7 +40,7 @@ export const UnstakingProcedureDialog = () => {
         },
       }}
     >
-      <DelegationDialog.TopBox type="stake" />
+      <DelegationDialog.TopBox type="unstake" />
       <DelegationDialog.StepsBox>
         {procedures?.map((procedure, index) => (
           <DelegationDialog.StepItem

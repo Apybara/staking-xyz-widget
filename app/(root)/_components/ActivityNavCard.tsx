@@ -1,10 +1,12 @@
 "use client";
 import { useMemo } from "react";
-import moment from "moment";
+import numbro from "numbro";
+import { fromUnixTime } from "date-fns";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useActivity, useLastOffsetActivity } from "../../_services/stakingOperator/hooks";
 import * as NavCard from "../_components/NavCard";
 import { Skeleton } from "../../_components/Skeleton";
+import { getTimeUnitStrings, getTimeDiffInSingleUnits } from "../../_utils/time";
 
 export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
   const { connectionStatus } = useWallet();
@@ -32,10 +34,12 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
       };
     }
     if (lastData) {
+      const timeUnits = getTimeDiffInSingleUnits(fromUnixTime(lastData.timestamp));
+      const times = timeUnits && getTimeUnitStrings(timeUnits);
       return {
         title: (
           <NavCard.SecondaryText>
-            For {moment(moment.now()).diff(lastData.timestamp, "days")} days
+            For {numbro(times?.time).format({ thousandSeparated: true })} {times?.unit}
           </NavCard.SecondaryText>
         ),
         value: (

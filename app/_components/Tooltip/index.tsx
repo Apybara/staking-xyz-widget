@@ -18,7 +18,7 @@ const Tooltip = ({ className, variant = "paragraph", trigger, title, content }: 
   const { rootProps, triggerProps } = useTooltipMobile();
 
   return (
-    <T.Provider delayDuration={300}>
+    <T.Provider delayDuration={100}>
       <T.Root {...rootProps}>
         <T.Trigger asChild {...triggerProps}>
           <button className={S.trigger}>{trigger}</button>

@@ -31,14 +31,14 @@ export const getTimeDiffInSingleUnits = (time?: string | Date) => {
     s: undefined,
   };
 
-  if (diff.asMinutes() <= 1) {
+  if (Math.abs(diff.asMinutes()) <= 1) {
     units.s = Math.floor(diff.seconds());
-  } else if (diff.asHours() <= 1) {
-    units.m = Math.floor(diff.minutes());
-  } else if (diff.asHours() <= 24) {
-    units.h = Math.floor(diff.hours());
+  } else if (Math.abs(diff.asHours()) <= 1) {
+    units.m = Math.floor(Math.abs(diff.minutes()));
+  } else if (Math.abs(diff.asHours()) <= 24) {
+    units.h = Math.floor(Math.abs(diff.asHours()));
   } else {
-    units.d = Math.floor(diff.asDays());
+    units.d = Math.floor(Math.abs(diff.asDays()));
   }
 
   return units;

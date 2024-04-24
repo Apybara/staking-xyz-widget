@@ -1,5 +1,3 @@
-import BigNumber from "bignumber.js";
-import numbro from "numbro";
 import { fetchData } from "@/app/_utils/fetch";
 import type * as T from "../types";
 
@@ -25,7 +23,7 @@ export const getAddressActivity = ({
         type: "stake",
         amount: Math.floor(Math.random() * 100),
         rewardRate: Math.random() * 0.1,
-        timestamp: Math.floor(Math.random() * 100000),
+        timestamp: 733018042,
         txHash: Math.random().toString(36).substring(7),
       }),
     } as T.AddressActivityResponse;
@@ -39,7 +37,7 @@ export const getAddressActivity = ({
         type: "unstake",
         amount: Math.floor(Math.random() * 100),
         rewardRate: Math.random() * 0.1,
-        timestamp: Math.floor(Math.random() * 100000),
+        timestamp: 733018042,
         txHash: Math.random().toString(36).substring(7),
       }),
     } as T.AddressActivityResponse;
@@ -52,7 +50,7 @@ export const getAddressActivity = ({
       type: ["stake", "unstake"][Math.floor(Math.random() * 2)],
       amount: Math.floor(Math.random() * 100),
       rewardRate: Math.random() * 0.1,
-      timestamp: Math.floor(Math.random() * 100000),
+      timestamp: 733018042,
       txHash: Math.random().toString(36).substring(7),
       inProgress: Math.random() > 0.7,
     })),
@@ -72,7 +70,7 @@ export const getAddressRewardsHistory = ({
       type: "compound",
       amount: Math.floor(Math.random() * 100),
       rewardRate: Math.random() * 0.1,
-      timestamp: Math.floor(Math.random() * 100000),
+      timestamp: 733018042,
       txHash: Math.random().toString(36).substring(7),
     })),
   } as T.AddressRewardsHistoryResponse;
