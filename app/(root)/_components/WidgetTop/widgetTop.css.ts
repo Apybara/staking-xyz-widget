@@ -13,6 +13,7 @@ export const defaultTop = style({
 export const pageTop = style({
   display: "flex",
   alignItems: "center",
+  blockSize: pxToRem(28),
 });
 
 export const title = style({
@@ -33,4 +34,8 @@ export const button = style({
       color: colors.black000,
     },
   },
+});
+
+export const link = style({
+  display: "flex",
 });

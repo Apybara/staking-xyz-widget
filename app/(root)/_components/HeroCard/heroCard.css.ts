@@ -12,29 +12,38 @@ export const card = style([
 ]);
 
 export const title = style({
-  display: "block",
   fontSize: pxToRem(20),
   fontWeight: weights.bold,
   lineHeight: 1,
-  marginBlockEnd: pxToRem(3),
 });
 
 export const subtitle = style({
+  display: "block",
   fontSize: pxToRem(12),
   lineHeight: 1,
   color: colors.black600,
+  marginBlockStart: pxToRem(6),
 });
 
 export const ctaCard = style([
   borderedCard,
   {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     textAlign: "center",
+    inlineSize: "100%",
+    blockSize: pxToRem(98),
   },
 ]);
+
 export const ctaCardTopSubtitle = style([
   subtitle,
   {
     display: "block",
-    marginBlockEnd: pxToRem(6),
+    fontWeight: weights.semibold,
+    marginBlockStart: 0,
+    marginBlockEnd: pxToRem(8),
   },
 ]);

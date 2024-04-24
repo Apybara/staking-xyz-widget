@@ -43,6 +43,12 @@ export const main = style({
   gap: pxToRem(8),
 });
 
+export const mainContent = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: pxToRem(8),
+});
+
 export const title = style({
   fontSize: pxToRem(16),
   fontWeight: weights.bold,
@@ -53,6 +59,11 @@ export const title = style({
       color: colors.black600,
     },
   },
+});
+
+export const description = style({
+  fontSize: pxToRem(12),
+  color: colors.black300,
 });
 
 export const endBox = style({

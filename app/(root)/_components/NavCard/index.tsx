@@ -16,39 +16,77 @@ export const ValueTextBox = ({ children }: { children: ReactNode }) => {
   return <div className={cn(S.valueTextBox)}>{children}</div>;
 };
 
-export const Card = ({ disabled = false, searchParams, page, endBox }: NavCardProps) => {
-  if (!disabled) {
+const CardWrapper = ({
+  disabled,
+  searchParams,
+  page,
+  externalUrl,
+  children,
+}: NavCardProps & { children: ReactNode }) => {
+  if (disabled) {
     return (
-      <Link href={getLinkWithSearchParams(searchParams, page)} className={cn(S.card)}>
-        <div className={cn(S.main)}>
-          <span className={cn(S.title)}>{pageTitleMap[page]}</span>
-          <Icon name="chevron" size={12} className={cn(S.icon, S.iconChevron)} />
-          <Icon name="arrow" size={12} className={cn(S.icon, S.iconArrow)} />
-        </div>
-        <div className={cn(S.endBox)}>
-          {endBox?.title}
-          {endBox?.value}
-        </div>
-      </Link>
+      <button className={S.disabledCard} disabled>
+        {children}
+      </button>
     );
   }
+
+  if (externalUrl) {
+    return (
+      <a href={externalUrl} target="_blank" rel="noreferrer" className={S.card}>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <button className={cn(S.disabledCard)} disabled>
-      <div className={cn(S.main)}>
-        <span className={cn(S.title)}>{pageTitleMap[page]}</span>
+    <Link href={getLinkWithSearchParams(searchParams, page || "#")} className={S.card}>
+      {children}
+    </Link>
+  );
+};
+
+const CardLinkArrow = () => (
+  <>
+    <Icon name="chevron" size={12} className={cn(S.icon, S.iconChevron)} />
+    <Icon name="arrow" size={12} className={cn(S.icon, S.iconArrow)} />
+  </>
+);
+
+export const Card = (props: NavCardProps) => {
+  const { disabled = false, page, title, description, arrowPosition = "left", endBox } = props;
+
+  return (
+    <CardWrapper {...props}>
+      <div className={S.main}>
+        <div className={S.mainContent}>
+          <span className={S.title}>{page ? pageTitleMap[page] : title}</span>
+          {description && <span className={S.description}>{description}</span>}
+        </div>
+        {!disabled && arrowPosition === "left" && <CardLinkArrow />}
       </div>
-      <div className={cn(S.endBox)}>
-        {endBox?.title}
-        {endBox?.value}
+      <div className={S.endBox}>
+        {!disabled && arrowPosition === "right" ? (
+          <CardLinkArrow />
+        ) : (
+          <>
+            {endBox?.title}
+            {endBox?.value}
+          </>
+        )}
       </div>
-    </button>
+    </CardWrapper>
   );
 };
 
 export type NavCardProps = {
   disabled?: boolean;
   searchParams: RouterStruct["searchParams"];
-  page: "stake" | "unstake" | "rewards" | "activity";
+  page?: "stake" | "unstake" | "rewards" | "activity";
+  title?: ReactNode;
+  description?: ReactNode;
+  externalUrl?: string;
+  arrowPosition?: "left" | "right";
   endBox?: {
     title: ReactNode;
     value: ReactNode;

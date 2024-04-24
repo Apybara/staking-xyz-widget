@@ -32,11 +32,3 @@ export const remainingDays = style({
 export const rewardInfoValue = style({
   color: colors.green900,
 });
-
-export const bottomBox = style({
-  flexGrow: 1,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-  alignItems: "center",
-});
