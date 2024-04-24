@@ -95,7 +95,7 @@ export const maxButton = style({
   lineHeight: 1,
   color: colors.green900,
   paddingBlock: pxToRem(6),
-  paddingInline: pxToRem(12),
+  paddingInline: pxToRem(8),
   borderRadius: pxToRem(8),
   backgroundColor: colors.green100,
 });
