@@ -81,6 +81,7 @@ export const useStakingProcedures = ({
         authState.setState("active");
         delegateState.setState("idle");
       } else if (firstStep === "delegate") {
+        authState.setState("success");
         delegateState.setState("active");
       }
     }

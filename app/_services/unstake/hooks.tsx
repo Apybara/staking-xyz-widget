@@ -16,35 +16,59 @@ export const useUnstakingProcedures = ({
   cosmosSigningClient?: SigningStargateClient;
 }) => {
   const [procedures, setProcedures] = useState<Array<UnstakeProcedure> | undefined>(undefined);
+  const authState = useProcedureStates();
   const undelegateState = useProcedureStates();
 
-  const { baseProcedures: cosmosBaseProcedures } =
-    useCosmosUnstakingProcedures({
-      amount,
-      network,
-      address,
-      cosmosSigningClient,
-      undelegateStep: {
-        onLoading: () => {
-          undelegateState.setState("loading");
-          undelegateState.setTxHash(undefined);
-          undelegateState.setError(null);
-        },
-        onSuccess: (txHash) => {
-          undelegateState.setState("success");
-          undelegateState.setTxHash(txHash);
-        },
-        onError: (e) => {
-          console.error(e);
-          undelegateState.setState("error");
-          undelegateState.setError(e);
-        },
+  const {
+    baseProcedures: cosmosBaseProcedures,
+    firstStep,
+    refetchAuthCheck,
+  } = useCosmosUnstakingProcedures({
+    amount,
+    network,
+    address,
+    cosmosSigningClient,
+    authStep: {
+      onLoading: () => {
+        authState.setState("loading");
+        authState.setTxHash(undefined);
+        authState.setError(null);
       },
-    }) || {};
+      onSuccess: (txHash) => {
+        authState.setState("success");
+        authState.setTxHash(txHash);
+        undelegateState.setState("active");
+      },
+      onError: (e) => {
+        console.error(e);
+        authState.setState("error");
+        authState.setError(e);
+      },
+    },
+    undelegateStep: {
+      onLoading: () => {
+        undelegateState.setState("loading");
+        undelegateState.setTxHash(undefined);
+        undelegateState.setError(null);
+      },
+      onSuccess: (txHash) => {
+        undelegateState.setState("success");
+        undelegateState.setTxHash(txHash);
+      },
+      onError: (e) => {
+        console.error(e);
+        undelegateState.setState("error");
+        undelegateState.setError(e);
+      },
+    },
+  }) || {};
 
   useEffect(() => {
     if (!address) {
       setProcedures(undefined);
+      authState.setState(null);
+      authState.setTxHash(undefined);
+      authState.setError(null);
       undelegateState.setState(null);
       undelegateState.setTxHash(undefined);
       undelegateState.setError(null);
@@ -52,8 +76,14 @@ export const useUnstakingProcedures = ({
   }, [address]);
 
   useEffect(() => {
-    if (cosmosBaseProcedures?.length && undelegateState.state === null) {
-      undelegateState.setState("active");
+    if (cosmosBaseProcedures?.length && authState.state === null && undelegateState.state === null) {
+      if (firstStep === "auth") {
+        authState.setState("active");
+        undelegateState.setState("idle");
+      } else if (firstStep === "undelegate") {
+        authState.setState("success");
+        undelegateState.setState("active");
+      }
     }
   }, [cosmosBaseProcedures?.length]);
 
@@ -61,7 +91,15 @@ export const useUnstakingProcedures = ({
     if (cosmosBaseProcedures?.length) {
       const proceduresArray = cosmosBaseProcedures
         .map((procedure) => {
-          if (procedure.step === "undelegate") {
+          if (procedure.step === "auth") {
+            return {
+              ...procedure,
+              state: authState.state,
+              txHash: authState.txHash,
+              error: authState.error,
+              setState: authState.setState,
+            };
+          } else if (procedure.step === "undelegate") {
             return {
               ...procedure,
               state: undelegateState.state,
@@ -75,15 +113,27 @@ export const useUnstakingProcedures = ({
 
       setProcedures(proceduresArray as Array<UnstakeProcedure>);
     }
-  }, [cosmosBaseProcedures?.length, undelegateState.state, undelegateState.txHash, undelegateState.error]);
+  }, [
+    cosmosBaseProcedures?.length,
+    authState.state,
+    authState.txHash,
+    authState.error,
+    undelegateState.state,
+    undelegateState.txHash,
+    undelegateState.error,
+  ]);
 
   return {
     procedures,
     resetStates: async () => {
       if (cosmosBaseProcedures?.length) {
-        undelegateState.setState("active");
+        authState.setState(firstStep === "auth" ? "active" : null);
+        authState.setTxHash(undefined);
+        authState.setError(null);
+        undelegateState.setState(firstStep === "undelegate" ? "active" : "idle");
         undelegateState.setTxHash(undefined);
         undelegateState.setError(null);
+        await refetchAuthCheck?.();
       }
     },
   };
