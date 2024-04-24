@@ -56,6 +56,7 @@ export const UnstakingProcedureDialog = () => {
                   }
                 : undefined
             }
+            tooltip={procedure.tooltip}
             // explorerUrl={procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`}
           >
             {procedure.stepName}
@@ -136,6 +137,13 @@ const getActiveProcedure = (procedures: Array<UnstakeProcedure>) => {
 };
 
 const ctaTextMap: Record<UnstakeProcedureStep, Record<UnstakeProcedureState, string>> = {
+  auth: {
+    idle: "Approve",
+    active: "Approve",
+    loading: "Approving",
+    success: "Approved",
+    error: "Try again",
+  },
   undelegate: {
     idle: "Confirm",
     active: "Confirm",

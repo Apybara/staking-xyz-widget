@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type UnstakeProcedure = BaseUnstakeProcedure & {
   state: UnstakeProcedureState | null;
   txHash?: string;
@@ -9,9 +11,10 @@ export type BaseUnstakeProcedure = {
   step: UnstakeProcedureStep;
   stepName: string;
   send: () => void;
+  tooltip?: ReactNode;
 };
 
-export type UnstakeProcedureStep = "undelegate";
+export type UnstakeProcedureStep = "auth" | "undelegate";
 
 export type UnstakeProcedureState = "idle" | "active" | "loading" | "success" | "error";
 

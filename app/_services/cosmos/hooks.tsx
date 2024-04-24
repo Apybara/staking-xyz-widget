@@ -39,12 +39,18 @@ export const useCosmosUnstakingProcedures = ({
   network,
   address,
   cosmosSigningClient,
+  authStep,
   undelegateStep,
 }: {
   amount: string;
   network: Network | null;
   address: string | null;
   cosmosSigningClient?: SigningStargateClient;
+  authStep: {
+    onLoading: () => void;
+    onSuccess: (txHash?: string) => void;
+    onError: (e: Error) => void;
+  };
   undelegateStep: {
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
@@ -52,6 +58,20 @@ export const useCosmosUnstakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const {
+    data: isAddressAuthorized,
+    isLoading,
+    refetch,
+  } = useCelestiaAddressAuthCheck({ address: address || undefined });
+
+  const authTx = useCosmosBroadcastAuthzTx({
+    client: cosmosSigningClient || null,
+    network: network && isCosmosNetwork ? network : undefined,
+    address: address || undefined,
+    onLoading: authStep.onLoading,
+    onSuccess: authStep.onSuccess,
+    onError: authStep.onError,
+  });
 
   const undelegateTx = useCosmosUndelegate({
     client: cosmosSigningClient || null,
@@ -64,9 +84,26 @@ export const useCosmosUnstakingProcedures = ({
   });
 
   // TODO: handle error state
-  if (!isCosmosNetwork || !address) return null;
+  if (!isCosmosNetwork || !address || isLoading) return null;
 
   const procedures = [
+    {
+      step: "auth",
+      stepName: "Approval in wallet",
+      send: authTx.send,
+      tooltip: (
+        <Tooltip
+          className={StakeStyle.approvalTooltip}
+          trigger={<Icon name="info" />}
+          content={
+            <>
+              This approval lets Staking.xyz manage staking operations on your behalf. You will always have full control
+              of your funds. <a href="#">(more)</a>
+            </>
+          }
+        />
+      ),
+    },
     {
       step: "undelegate",
       stepName: "Sign in wallet",
@@ -76,7 +113,8 @@ export const useCosmosUnstakingProcedures = ({
 
   return {
     baseProcedures: procedures,
-    firstStep: procedures[0].step,
+    firstStep: isAddressAuthorized ? procedures[1].step : procedures[0].step,
+    refetchAuthCheck: refetch,
   };
 };
 
@@ -210,39 +248,34 @@ export const useCosmosStakingProcedures = ({
   // TODO: handle error state
   if (!isCosmosNetwork || !address || isLoading) return null;
 
-  const base = [
+  const baseProcedures: Array<BaseStakeProcedure> = [
+    {
+      step: "auth",
+      stepName: "Approval in wallet",
+      send: cosmosAuthTx.send,
+      tooltip: (
+        <Tooltip
+          className={StakeStyle.approvalTooltip}
+          trigger={<Icon name="info" />}
+          content={
+            <>
+              This approval lets Staking.xyz manage staking operations on your behalf. You will always have full control
+              of your funds. <a href="#">(more)</a>
+            </>
+          }
+        />
+      ),
+    },
     {
       step: "delegate",
       stepName: "Sign in wallet",
       send: cosmosDelegateTx.send,
     } as BaseStakeProcedure,
   ];
-  const baseProcedures: Array<BaseStakeProcedure> = isAddressAuthorized
-    ? base
-    : [
-        {
-          step: "auth",
-          stepName: "Approval in wallet",
-          send: cosmosAuthTx.send,
-          tooltip: (
-            <Tooltip
-              className={StakeStyle.approvalTooltip}
-              trigger={<Icon name="info" />}
-              content={
-                <>
-                  This approval lets Staking.xyz manage staking operations on your behalf. You will always have full
-                  control of your funds. <a href="#">(more)</a>
-                </>
-              }
-            />
-          ),
-        },
-        ...base,
-      ];
 
   return {
     baseProcedures,
-    firstStep: baseProcedures[0].step,
+    firstStep: isAddressAuthorized ? baseProcedures[1].step : baseProcedures[0].step,
     refetchAuthCheck: refetch,
   };
 };
