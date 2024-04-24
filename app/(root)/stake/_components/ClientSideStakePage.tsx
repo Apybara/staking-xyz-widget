@@ -3,7 +3,7 @@ import type { RouterStruct } from "../../../types";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { StakingProvider } from "../../../_contexts/StakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
-import { BottomBox } from "@/app/_components/BottomBox";
+import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { StakeAmountInputPad } from "./StakeAmountInputPad";
 import { StakeInfoBox } from "./StakeInfoBox";
 import { StakingProcedureDialog } from "./StakingProcedureDialog";
@@ -15,9 +15,9 @@ export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStru
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <StakeAmountInputPad />
       <StakeInfoBox />
-      <BottomBox>
+      <WidgetBottomBox>
         <StakeCTA />
-      </BottomBox>
+      </WidgetBottomBox>
       <StakingProcedureDialog />
     </StakingProvider>
   );

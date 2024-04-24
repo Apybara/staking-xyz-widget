@@ -1,16 +1,29 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
-import redirectPage from "../../_actions/redirectPage";
-import revalidatePageQueries from "../../_actions/revalidatePageQueries";
+import { getLinkWithSearchParams } from "../../_utils/routes";
+import { PageViewTop } from "../_components/WidgetTop";
+import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
+import { CTACard } from "../_components/HeroCard/CTACard";
+import { MoreNavCard } from "./_components/MoreNavCard";
 import { getDynamicPageMetadata } from "../../_utils/site";
-import { ClientSideMorePage } from "./_components/ClientSideMorePage";
+
+import * as S from "./_components/more.css";
 
 export default async function More({ searchParams }: RouterStruct) {
-  const { network } = searchParams || {};
-  await redirectPage(searchParams, "more");
-  await revalidatePageQueries(network);
+  return (
+    <>
+      <PageViewTop page="More" homeURL={getLinkWithSearchParams(searchParams, "")} />
+      <div className={S.main}>
+        <MoreNavCard title="About us" description="Making staking easy for everyone" url="#" />
+        <MoreNavCard title="How it works" description="Staking optimizer, compounder, and more" url="#" />
+        <MoreNavCard title="FAQ" description="Frequent questions" url="#" />
+      </div>
 
-  return <ClientSideMorePage searchParams={searchParams} />;
+      <WidgetBottomBox>
+        <CTACard topSubtitle="App version" title="v0.0.1" />
+      </WidgetBottomBox>
+    </>
+  );
 }
 
 export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
