@@ -57,10 +57,6 @@ export const title = style({
 
 export const endBox = style({
   display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-end",
-  gap: pxToRem(4),
-  marginInlineEnd: pxToRem(-4),
 });
 
 export const primaryText = style({
@@ -94,7 +90,6 @@ export const valueTextBox = style({
 export const icon = style({});
 export const iconChevron = style({
   transform: "rotate(-90deg)",
-  color: colors.black600,
   selectors: {
     [`${card}:hover &`]: {
       display: "none",
