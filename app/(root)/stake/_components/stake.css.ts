@@ -2,14 +2,6 @@ import { globalStyle, style } from "@vanilla-extract/css";
 import { colors, weights } from "../../../../theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 
-export const bottomBox = style({
-  flexGrow: 1,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-  alignItems: "center",
-});
-
 export const rewardInfo = style({});
 export const rewardInfoValue = style({});
 
