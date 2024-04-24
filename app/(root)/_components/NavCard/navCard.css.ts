@@ -43,12 +43,6 @@ export const main = style({
   gap: pxToRem(8),
 });
 
-export const mainContent = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: pxToRem(8),
-});
-
 export const title = style({
   fontSize: pxToRem(16),
   fontWeight: weights.bold,
@@ -59,11 +53,6 @@ export const title = style({
       color: colors.black600,
     },
   },
-});
-
-export const description = style({
-  fontSize: pxToRem(12),
-  color: colors.black300,
 });
 
 export const endBox = style({
@@ -105,6 +94,7 @@ export const valueTextBox = style({
 export const icon = style({});
 export const iconChevron = style({
   transform: "rotate(-90deg)",
+  color: colors.black600,
   selectors: {
     [`${card}:hover &`]: {
       display: "none",

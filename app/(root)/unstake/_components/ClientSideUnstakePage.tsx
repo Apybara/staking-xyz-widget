@@ -3,7 +3,7 @@ import type { RouterStruct } from "../../../types";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { UnstakingProvider } from "../../../_contexts/UnstakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
-import { BottomBox } from "@/app/_components/BottomBox";
+import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { UnstakeAmountInputPad } from "./UnstakeAmountInputPad";
 import { UnstakeInfoBox } from "./UnstakeInfoBox";
 import { UnstakeSecondaryInfoBox } from "./UnstakeSecondaryInfoBox";
@@ -17,9 +17,9 @@ export const ClientSideUnstakePage = ({ searchParams }: { searchParams: RouterSt
       <UnstakeAmountInputPad />
       <UnstakeInfoBox />
       <UnstakeSecondaryInfoBox />
-      <BottomBox>
+      <WidgetBottomBox>
         <UnstakeCTA />
-      </BottomBox>
+      </WidgetBottomBox>
       <UnstakingProcedureDialog />
     </UnstakingProvider>
   );

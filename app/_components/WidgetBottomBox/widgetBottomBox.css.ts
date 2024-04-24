@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 
-export const bottomBox = style({
+export const widgetBottomBox = style({
   flexGrow: 1,
   display: "flex",
   flexDirection: "column",
