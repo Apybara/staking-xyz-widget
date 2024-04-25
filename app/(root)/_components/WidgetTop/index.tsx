@@ -13,10 +13,8 @@ export const DefaultViewTop = () => {
       <button className={cn(S.button)}>
         <Icon name="rotate" size={20} />
       </button>
-      <Link href={moreLink} className={S.link}>
-        <button className={cn(S.button)}>
-          <Icon name="menu" size={20} />
-        </button>
+      <Link href={moreLink} className={S.button}>
+        <Icon name="menu" size={20} />
       </Link>
     </div>
   );
