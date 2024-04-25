@@ -102,12 +102,12 @@ export const getFormattedFiatCurrencyValue = ({
 };
 
 export const getFiatPriceFromCoin = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
-  const value = new BigNumber(val).multipliedBy(price).toNumber();
+  const value = Number(new BigNumber(val).multipliedBy(price).toNumber().toPrecision(6));
   return value;
 };
 
 export const getCoinValueFromFiatPrice = ({ val, price }: Omit<GetPriceProps, "options" | "currency">) => {
-  const value = new BigNumber(val).dividedBy(price).toNumber();
+  const value = Number(new BigNumber(val).dividedBy(price).toNumber().toPrecision(6));
   return value;
 };
 

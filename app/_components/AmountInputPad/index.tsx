@@ -5,11 +5,11 @@ import { useEffect, useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import {
-  getFormattedUSDPriceFromCoin,
-  getFormattedEURPriceFromCoin,
   getFormattedCoinValue,
+  getDynamicAssetValueFromCoin,
   getFormattedFiatCurrencyValue,
 } from "../../_utils/conversions";
+import { getFormattedMantissa } from "../../_utils/number";
 import { removeLeadingAndTrailingZeros } from "../../_utils";
 import { fiatCurrencyMap } from "../../consts";
 import { RootAmountInputPad } from "./RootAmountInputPad";
@@ -67,7 +67,7 @@ export const AmountInputPad = ({
   }, [primaryValue, secondaryValue, primaryCurrency, secondaryCurrency]);
 
   const formattedSecondaryValue = useMemo(() => {
-    const mantissa = secondaryValue === "0" ? 0 : 2;
+    const mantissa = getFormattedMantissa({ val: secondaryValue, maxMantissa: 2 });
 
     if (secondaryCurrency === "USD" || secondaryCurrency === "EUR") {
       return getFormattedFiatCurrencyValue({
@@ -151,42 +151,18 @@ const AvailabilityElement = ({
 
   const prefix = type === "stake" ? "Available" : "Staked";
 
-  const primaryValue = useMemo(() => {
-    if (!availableValue || availableValue === "0") return "0";
-
-    if (primaryCurrency === "USD") {
-      return getFormattedUSDPriceFromCoin({
-        val: availableValue,
-        price: coinPrice?.[network || "celestia"]?.USD || 0,
-      });
-    }
-    if (primaryCurrency === "EUR") {
-      return getFormattedEURPriceFromCoin({
-        val: availableValue,
-        price: coinPrice?.[network || "celestia"]?.EUR || 0,
-      });
-    }
-    return getFormattedCoinValue({ val: BigNumber(availableValue).toNumber() });
-  }, [availableValue, primaryCurrency]);
-
-  const secondaryValue = useMemo(() => {
-    if (!availableValue || availableValue === "0") return "0";
-
-    if (secondaryCurrency === "USD") {
-      return getFormattedUSDPriceFromCoin({
-        val: availableValue,
-        price: coinPrice?.[network || "celestia"]?.USD || 0,
-      });
-    }
-    if (secondaryCurrency === "EUR") {
-      return getFormattedEURPriceFromCoin({
-        val: availableValue,
-        price: coinPrice?.[network || "celestia"]?.EUR || 0,
-      });
-    }
-
-    return getFormattedCoinValue({ val: BigNumber(availableValue).toNumber() });
-  }, [availableValue, secondaryCurrency]);
+  const primaryValue = getDynamicAssetValueFromCoin({
+    network,
+    coinVal: availableValue,
+    coinPrice,
+    currency: primaryCurrency,
+  });
+  const secondaryValue = getDynamicAssetValueFromCoin({
+    network,
+    coinVal: availableValue,
+    coinPrice,
+    currency: secondaryCurrency,
+  });
 
   if (!availableValue?.length) return null;
 

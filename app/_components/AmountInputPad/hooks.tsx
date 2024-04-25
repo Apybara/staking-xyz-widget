@@ -1,16 +1,15 @@
 import type { Currency } from "../../types";
 import { useEffect, useState } from "react";
-import numbro from "numbro";
-import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useCurrencyChange } from "../../_contexts/ShellContext/hooks";
-import { getCoinValueFromFiatPrice, getFiatPriceFromCoin } from "../../_utils/conversions";
 import { networkCurrency as networkCurrencyMap } from "../../consts";
-
-const numbroDefaultOptions: numbro.Format = {
-  mantissa: 2,
-};
-numbroDefaultOptions.roundingFunction = Math.floor;
+import {
+  getNewPrimaryValueByCurrency,
+  getNewSecondaryValueByCurrency,
+  getNewSecondaryValueByPrimaryValue,
+  getFormattedFiatValueFromCoin,
+  getMaxCoinValueFromCoin,
+} from "./utils";
 
 export const useInputStates = () => {
   const { currency: globalCurrency, network, coinPrice } = useShell();
@@ -23,6 +22,7 @@ export const useInputStates = () => {
   const [previousPrimaryCurrency, setPreviousPrimaryCurrency] = useState<Currency | undefined>();
 
   const [primaryValue, setPrimaryValue] = useState("");
+  const [previousPrimaryValue, setPreviousPrimaryValue] = useState("");
   const [secondaryValue, setSecondaryValue] = useState("0");
 
   const { onUpdateRouter: onUpdateCurrency } = useCurrencyChange();
@@ -71,8 +71,10 @@ export const useInputStates = () => {
     }
   }, [globalCurrency]);
 
-  // Update primary values on state change
+  // Update primary values on currency change
   useEffect(() => {
+    setPreviousPrimaryValue(primaryValue);
+
     if (primaryValue === "" || primaryValue === "0") {
       setPrimaryValue("");
       return;
@@ -80,47 +82,40 @@ export const useInputStates = () => {
 
     const usdPrice = coinPrice?.[network || "celestia"].USD || 0;
     const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
+    const newPrimaryValue = getNewPrimaryValueByCurrency({
+      primaryCurrency,
+      previousPrimaryCurrency: previousPrimaryCurrency || primaryCurrency,
+      primaryValue,
+      secondaryValue,
+      usdPrice,
+      eurPrice,
+    });
 
-    switch (primaryCurrency) {
-      case "USD":
-        if (previousPrimaryCurrency === "EUR") {
-          const newPrimaryValue = getPrimaryFiatValueFromSecondaryCoin({
-            secondaryCoin: secondaryValue,
-            targetFiatPrice: usdPrice,
-          });
-          setPrimaryValue(newPrimaryValue);
-          break;
-        } else {
-          const newPrimaryValue = getPrimaryFiatValueFromPrimaryCoin({
-            primaryCoin: primaryValue,
-            targetFiatPrice: usdPrice,
-          });
-          setPrimaryValue(newPrimaryValue);
-          break;
-        }
-      case "EUR":
-        if (previousPrimaryCurrency === "USD") {
-          const newPrimaryValue = getPrimaryFiatValueFromSecondaryCoin({
-            secondaryCoin: secondaryValue,
-            targetFiatPrice: eurPrice,
-          });
-          setPrimaryValue(newPrimaryValue);
-          break;
-        } else {
-          const newPrimaryValue = getPrimaryFiatValueFromPrimaryCoin({
-            primaryCoin: primaryValue,
-            targetFiatPrice: eurPrice,
-          });
-          setPrimaryValue(newPrimaryValue);
-          break;
-        }
-      default:
-        if (previousPrimaryCurrency === "USD" || previousPrimaryCurrency === "EUR") {
-          const newPrimaryValue = getPrimaryCoinValueFromSecondaryCoin({ secondaryCoinValue: secondaryValue });
-          setPrimaryValue(newPrimaryValue);
-        }
+    if (newPrimaryValue) setPrimaryValue(newPrimaryValue);
+  }, [primaryCurrency]);
+
+  // Update secondary value on currency change
+  useEffect(() => {
+    if (primaryValue === "" || primaryValue === "0") {
+      setSecondaryValue("0");
+      return;
     }
-  }, [primaryCurrency, previousPrimaryCurrency]);
+
+    const usdPrice = coinPrice?.[network || "celestia"].USD || 0;
+    const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
+    const newSecondaryValue = getNewSecondaryValueByCurrency({
+      primaryCurrency,
+      secondaryCurrency,
+      previousPrimaryCurrency: previousPrimaryCurrency || primaryCurrency,
+      previousPrimaryValue,
+      primaryValue,
+      networkCurrency,
+      usdPrice,
+      eurPrice,
+    });
+
+    if (newSecondaryValue) setSecondaryValue(newSecondaryValue);
+  }, [primaryCurrency]);
 
   // Update secondary value on primary value change
   useEffect(() => {
@@ -131,33 +126,15 @@ export const useInputStates = () => {
 
     const usdPrice = coinPrice?.[network || "celestia"].USD || 0;
     const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
+    const newSecondaryValue = getNewSecondaryValueByPrimaryValue({
+      primaryCurrency,
+      secondaryCurrency,
+      primaryValue,
+      usdPrice,
+      eurPrice,
+    });
 
-    if (primaryCurrency === "USD") {
-      const newSecondaryValue = getSecondaryCoinValueFromPrimaryFiat({ fiatValue: primaryValue, fiatPrice: usdPrice });
-      setSecondaryValue(newSecondaryValue);
-      return;
-    }
-    if (primaryCurrency === networkCurrency && secondaryCurrency === "USD") {
-      const newSecondaryValue = getSecondaryFiatValueFromPrimaryCoin({
-        coinValue: primaryValue,
-        fiatPrice: usdPrice,
-      });
-      setSecondaryValue(newSecondaryValue);
-      return;
-    }
-    if (primaryCurrency === "EUR") {
-      const newSecondaryValue = getSecondaryCoinValueFromPrimaryFiat({ fiatValue: primaryValue, fiatPrice: eurPrice });
-      setSecondaryValue(newSecondaryValue);
-      return;
-    }
-    if (primaryCurrency === networkCurrency && secondaryCurrency === "EUR") {
-      const newSecondaryValue = getSecondaryFiatValueFromPrimaryCoin({
-        coinValue: primaryValue,
-        fiatPrice: eurPrice,
-      });
-      setSecondaryValue(newSecondaryValue);
-      return;
-    }
+    if (newSecondaryValue) setSecondaryValue(newSecondaryValue);
   }, [primaryValue]);
 
   return {
@@ -173,81 +150,25 @@ export const useInputStates = () => {
       if (!maxVal) return;
 
       if (primaryCurrency === "USD") {
-        const newMaxValue = getMaxFiatValueFromCoin({
-          maxValue: maxVal,
-          fiatPrice: coinPrice?.[network || "celestia"].USD || 0,
+        const newMaxValue = getFormattedFiatValueFromCoin({
+          coinValue: maxVal,
+          targetFiatPrice: coinPrice?.[network || "celestia"].USD || 0,
         });
         setPrimaryValue(newMaxValue);
+        setSecondaryValue(maxVal);
         return;
       }
       if (primaryCurrency === "EUR") {
-        const newMaxValue = getMaxFiatValueFromCoin({
-          maxValue: maxVal,
-          fiatPrice: coinPrice?.[network || "celestia"].EUR || 0,
+        const newMaxValue = getFormattedFiatValueFromCoin({
+          coinValue: maxVal,
+          targetFiatPrice: coinPrice?.[network || "celestia"].EUR || 0,
         });
         setPrimaryValue(newMaxValue);
+        setSecondaryValue(maxVal);
         return;
       }
       const newMaxValue = getMaxCoinValueFromCoin({ maxValue: maxVal });
       setPrimaryValue(newMaxValue);
     },
   };
-};
-
-const getPrimaryFiatValueFromSecondaryCoin = ({
-  secondaryCoin,
-  targetFiatPrice,
-}: {
-  secondaryCoin: string;
-  targetFiatPrice: number;
-}) => {
-  const newValue = getFiatPriceFromCoin({
-    val: secondaryCoin,
-    price: targetFiatPrice,
-  });
-  return numbro(newValue).format(numbroDefaultOptions);
-};
-
-const getPrimaryFiatValueFromPrimaryCoin = ({
-  primaryCoin,
-  targetFiatPrice,
-}: {
-  primaryCoin: string;
-  targetFiatPrice: number;
-}) => {
-  const newValue = getFiatPriceFromCoin({
-    val: primaryCoin,
-    price: targetFiatPrice,
-  });
-  return numbro(newValue).format(numbroDefaultOptions);
-};
-
-const getPrimaryCoinValueFromSecondaryCoin = ({ secondaryCoinValue }: { secondaryCoinValue: string }) => {
-  return numbro(BigNumber(secondaryCoinValue).toNumber()).format(numbroDefaultOptions);
-};
-const getSecondaryCoinValueFromPrimaryFiat = ({ fiatValue, fiatPrice }: { fiatValue: string; fiatPrice: number }) => {
-  return numbro(
-    getCoinValueFromFiatPrice({
-      val: fiatValue,
-      price: fiatPrice,
-    }),
-  ).format(numbroDefaultOptions);
-};
-const getSecondaryFiatValueFromPrimaryCoin = ({ coinValue, fiatPrice }: { coinValue: string; fiatPrice: number }) => {
-  return numbro(
-    getFiatPriceFromCoin({
-      val: coinValue,
-      price: fiatPrice,
-    }),
-  ).format(numbroDefaultOptions);
-};
-const getMaxFiatValueFromCoin = ({ maxValue, fiatPrice }: { maxValue: string; fiatPrice: number }) => {
-  const newMaxValue = getFiatPriceFromCoin({
-    val: maxValue,
-    price: fiatPrice,
-  });
-  return numbro(newMaxValue).format(numbroDefaultOptions);
-};
-const getMaxCoinValueFromCoin = ({ maxValue }: { maxValue: string }) => {
-  return numbro(BigNumber(maxValue).toNumber()).format(numbroDefaultOptions);
 };
