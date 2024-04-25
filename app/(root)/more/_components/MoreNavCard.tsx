@@ -13,7 +13,7 @@ export type MoreNavCardProps = {
 export const MoreNavCard = ({ title, description, url }: MoreNavCardProps) => (
   <a href={url} className={S.card} target="_blank" rel="noreferrer">
     <div className={S.main}>
-      <span className={S.title}>{title}</span>
+      <h3 className={S.title}>{title}</h3>
       <span className={S.description}>{description}</span>
     </div>
     <div className={S.endBox}>

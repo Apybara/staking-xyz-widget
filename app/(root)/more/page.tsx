@@ -13,11 +13,17 @@ export default async function More({ searchParams }: RouterStruct) {
   return (
     <>
       <PageViewTop page="More" homeURL={getLinkWithSearchParams(searchParams, "")} />
-      <div className={S.main}>
-        <MoreNavCard title="About us" description="Making staking easy for everyone" url="#" />
-        <MoreNavCard title="How it works" description="Staking optimizer, compounder, and more" url="#" />
-        <MoreNavCard title="FAQ" description="Frequent questions" url="#" />
-      </div>
+      <ul className={S.main}>
+        <li>
+          <MoreNavCard title="About us" description="Making staking easy for everyone" url="#" />
+        </li>
+        <li>
+          <MoreNavCard title="How it works" description="Staking optimizer, compounder, and more" url="#" />
+        </li>
+        <li>
+          <MoreNavCard title="FAQ" description="Frequent questions" url="#" />
+        </li>
+      </ul>
 
       <WidgetBottomBox>
         <CTACard topSubtitle="App version" title="v0.0.1" />
