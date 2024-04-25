@@ -10,8 +10,7 @@ export const card = style({
   alignItems: "center",
   justifyContent: "space-between",
   blockSize: pxToRem(76),
-  paddingInlineStart: pxToRem(20),
-  paddingInlineEnd: pxToRem(16),
+  paddingInline: pxToRem(20),
   boxShadow: "0px 0px 12px 0px rgba(0, 0, 0, 0.16)",
   transition: "background-color 0.3s",
 
@@ -44,10 +43,6 @@ export const description = style({
 
 export const endBox = style({
   display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-end",
-  gap: pxToRem(4),
-  marginInlineEnd: pxToRem(-4),
 });
 
 export const icon = style({});
