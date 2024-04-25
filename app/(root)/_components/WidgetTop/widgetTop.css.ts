@@ -5,10 +5,7 @@ import { recipe } from "@vanilla-extract/recipes";
 
 export const defaultTop = style({
   display: "flex",
-  justifyContent: "flex-end",
-  gap: pxToRem(12),
-  marginInlineEnd: pxToRem(2),
-  paddingBlock: pxToRem(4),
+  justifyContent: "space-between",
 });
 
 export const pageTop = style({
@@ -29,6 +26,25 @@ export const title = style({
 export const rotate = keyframes({
   "0%": { transform: "rotate(0deg)" },
   "100%": { transform: "rotate(360deg)" },
+});
+export const importButton = style({
+  borderRadius: pxToRem(4),
+  paddingInline: pxToRem(8),
+  blockSize: pxToRem(26),
+  backgroundColor: colors.green100,
+  color: colors.green900,
+  fontSize: pxToRem(14),
+  fontWeight: weights.bold,
+  lineHeight: 1,
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(5),
+});
+
+export const buttonContainer = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(12),
 });
 
 export const button = recipe({
