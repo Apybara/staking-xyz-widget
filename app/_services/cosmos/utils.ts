@@ -20,7 +20,7 @@ export const getCoinValueFromDenom = ({ network, amount }: { network: CosmosNetw
 
 export const getDenomValueFromCoin = ({ network, amount }: { network: CosmosNetwork; amount?: string | number }) => {
   const exponent = getExponent(network);
-  return new BigNumber(amount || 0).multipliedBy(10 ** exponent).toString();
+  return Math.floor(new BigNumber(amount || 0).multipliedBy(10 ** exponent).toNumber()).toString();
 };
 
 export const getChainAssets = (network: CosmosNetwork) => {
