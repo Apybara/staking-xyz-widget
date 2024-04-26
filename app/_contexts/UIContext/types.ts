@@ -8,6 +8,7 @@ export const DialogTypeVariants = [
   "walletAccount",
   "stakingProcedure",
   "unstakingProcedure",
+  "importHelp",
 ] as const;
 export type DialogTypeVariant = (typeof DialogTypeVariants)[number];
 

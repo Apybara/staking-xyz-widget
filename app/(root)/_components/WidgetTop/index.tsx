@@ -31,7 +31,7 @@ export const DefaultViewTop = () => {
         <button className={cn(S.button({ state: isRefetching ? "fetching" : "default" }))} onClick={refetch}>
           <Icon name="rotate" size={20} />
         </button>
-        <Link href={moreLink} className={S.button()}>
+        <Link href={moreLink} className={cn(S.button())}>
           <Icon name="menu" size={20} />
         </Link>
       </div>
@@ -39,10 +39,20 @@ export const DefaultViewTop = () => {
   );
 };
 
-export const PageViewTop = ({ page, homeURL, endBox }: { page: string; homeURL: string; endBox?: ReactNode }) => {
+export const PageViewTop = ({
+  className,
+  page,
+  homeURL,
+  endBox,
+}: {
+  className?: string;
+  page: string;
+  homeURL: string;
+  endBox?: ReactNode;
+}) => {
   return (
-    <div className={cn(S.pageTop)}>
-      <Link href={homeURL} className={S.button()}>
+    <div className={cn(S.pageTop, className)}>
+      <Link href={homeURL} className={cn(S.button())}>
         <Icon name="cross" size={20} />
       </Link>
       <h1 className={cn(S.title)}>{page}</h1>

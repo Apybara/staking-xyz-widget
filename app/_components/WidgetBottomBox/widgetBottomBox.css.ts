@@ -1,3 +1,4 @@
+import { pxToRem } from "@/theme/utils";
 import { style } from "@vanilla-extract/css";
 
 export const widgetBottomBox = style({
@@ -6,4 +7,5 @@ export const widgetBottomBox = style({
   flexDirection: "column",
   justifyContent: "flex-end",
   alignItems: "center",
+  gap: pxToRem(16),
 });
