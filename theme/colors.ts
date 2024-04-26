@@ -1,5 +1,6 @@
 export const tonalPalette = {
   black000: "#FFFFFF",
+  black100: "#F4F4F4",
   black300: "#999999",
   black600: "#666666",
   black700: "#333333",

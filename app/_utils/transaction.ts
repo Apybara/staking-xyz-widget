@@ -68,3 +68,5 @@ export type BasicTxCtaValidationResult =
   | "disconnected"
   | "connecting"
   | "submittable";
+
+export type BasicImportValidationResult = "notAgreed" | "bufferExceeded" | "submittable";
