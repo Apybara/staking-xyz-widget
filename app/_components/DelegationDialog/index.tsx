@@ -41,7 +41,7 @@ export const StepsBox = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const StepItem = ({ state, explorerUrl, tooltip, children, onCancel }: StepItemProps) => {
+export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: StepItemProps) => {
   return (
     <InfoCard.StackItem>
       <InfoCard.TitleBox>
@@ -54,9 +54,11 @@ export const StepItem = ({ state, explorerUrl, tooltip, children, onCancel }: St
       <div className={cn(S.itemEndBox)}>
         {state === "loading" && <LoadingSpinner size={14} />}
         {state === "error" && <MessageTag variant="warning">Failed</MessageTag>}
-        {explorerUrl && state === "success" && (
-          <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-            <Icon name="external-link" size={14} />
+        {explorerLink && state === "success" && (
+          <a href={explorerLink.url} target="_blank" rel="noopener noreferrer">
+            <MessageTag className={S.successTag} variant="success">
+              {explorerLink.label} <Icon className={S.successTagIcon} name="external-link" size={10} />
+            </MessageTag>
           </a>
         )}
         {onCancel && state === "loading" && (
@@ -119,7 +121,10 @@ export type TopBoxProps = {
 };
 export type StepItemProps = {
   state: "idle" | "active" | "loading" | "success" | "error";
-  explorerUrl?: string;
+  explorerLink?: {
+    url: string;
+    label: string;
+  };
   tooltip?: ReactNode;
   children: ReactNode;
   onCancel?: () => void;

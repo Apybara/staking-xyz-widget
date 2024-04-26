@@ -102,3 +102,15 @@ export const cancelButton = style({
     },
   },
 });
+
+export const successTag = style({
+  paddingInlineEnd: pxToRem(4),
+});
+export const successTagIcon = style({
+  selectors: {
+    [`${successTag}:hover &`]: {
+      transition: "transform 0.2s",
+      transform: "translate3d(1px, -1px, 0)",
+    },
+  },
+});

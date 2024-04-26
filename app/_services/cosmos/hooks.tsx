@@ -113,7 +113,7 @@ export const useCosmosUnstakingProcedures = ({
 
   return {
     baseProcedures: procedures,
-    firstStep: isAddressAuthorized ? procedures[1].step : procedures[0].step,
+    isAuthApproved: isAddressAuthorized,
     refetchAuthCheck: refetch,
   };
 };
@@ -275,7 +275,7 @@ export const useCosmosStakingProcedures = ({
 
   return {
     baseProcedures,
-    firstStep: isAddressAuthorized ? baseProcedures[1].step : baseProcedures[0].step,
+    isAuthApproved: isAddressAuthorized,
     refetchAuthCheck: refetch,
   };
 };

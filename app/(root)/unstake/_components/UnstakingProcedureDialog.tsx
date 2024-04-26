@@ -3,14 +3,17 @@ import type { UnstakeProcedure, UnstakeProcedureStep, UnstakeProcedureState } fr
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
+import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as DelegationDialog from "../../../_components/DelegationDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 import { usePostHogEvent } from "../../../_services/postHog/hooks";
+import { networkExplorer } from "../../../consts";
 
 export const UnstakingProcedureDialog = () => {
   const router = useRouter();
+  const { network } = useShell();
   const { activeWallet } = useWallet();
   const { procedures, amountInputPad, resetProceduresStates } = useUnstaking();
   const { open, toggleOpen } = useDialog("unstakingProcedure");
@@ -57,7 +60,14 @@ export const UnstakingProcedureDialog = () => {
                 : undefined
             }
             tooltip={procedure.tooltip}
-            // explorerUrl={procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`}
+            explorerLink={
+              procedure?.txHash
+                ? {
+                    label: explorerLabelMap[procedure.step],
+                    url: procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`,
+                  }
+                : undefined
+            }
           >
             {procedure.stepName}
           </DelegationDialog.StepItem>
@@ -151,4 +161,9 @@ const ctaTextMap: Record<UnstakeProcedureStep, Record<UnstakeProcedureState, str
     success: "Confirmed",
     error: "Try again",
   },
+};
+
+const explorerLabelMap: Record<UnstakeProcedureStep, string> = {
+  auth: "Approved",
+  undelegate: "Signed",
 };
