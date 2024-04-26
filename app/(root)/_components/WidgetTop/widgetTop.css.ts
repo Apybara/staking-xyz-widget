@@ -48,11 +48,7 @@ export const button = recipe({
       fetching: {
         color: colors.black000,
         transformOrigin: "center",
-        "@media": {
-          "(prefers-reduced-motion: no-preference)": {
-            animation: `${rotate} 1s cubic-bezier(0, 0, 0, 1) infinite`,
-          },
-        },
+        animation: `${rotate} 1s cubic-bezier(0, 0, 0, 1) infinite`,
       },
     },
   },
