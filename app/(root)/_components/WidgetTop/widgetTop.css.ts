@@ -1,6 +1,7 @@
-import { style } from "@vanilla-extract/css";
+import { keyframes, style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../../theme/utils";
 import { colors, weights } from "../../../../theme/theme.css";
+import { recipe } from "@vanilla-extract/recipes";
 
 export const defaultTop = style({
   display: "flex",
@@ -25,13 +26,34 @@ export const title = style({
   marginInlineEnd: 20,
 });
 
-export const button = style({
-  lineHeight: 0,
-  color: colors.black600,
+export const rotate = keyframes({
+  "0%": { transform: "rotate(0deg)" },
+  "100%": { transform: "rotate(360deg)" },
+});
 
-  selectors: {
-    "&:hover": {
-      color: colors.black000,
+export const button = recipe({
+  base: {
+    lineHeight: 0,
+    color: colors.black600,
+
+    selectors: {
+      "&:hover": {
+        color: colors.black000,
+      },
+    },
+  },
+  variants: {
+    state: {
+      default: {},
+      fetching: {
+        color: colors.black000,
+        transformOrigin: "center",
+        "@media": {
+          "(prefers-reduced-motion: no-preference)": {
+            animation: `${rotate} 1s cubic-bezier(0, 0, 0, 1) infinite`,
+          },
+        },
+      },
     },
   },
 });
