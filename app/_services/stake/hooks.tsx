@@ -21,7 +21,7 @@ export const useStakingProcedures = ({
 
   const {
     baseProcedures: cosmosBaseProcedures,
-    firstStep,
+    isAuthApproved,
     refetchAuthCheck,
   } = useCosmosStakingProcedures({
     amount,
@@ -77,15 +77,15 @@ export const useStakingProcedures = ({
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length && authState.state === null && delegateState.state === null) {
-      if (firstStep === "auth") {
+      if (!isAuthApproved) {
         authState.setState("active");
         delegateState.setState("idle");
-      } else if (firstStep === "delegate") {
+      } else {
         authState.setState("success");
         delegateState.setState("active");
       }
     }
-  }, [cosmosBaseProcedures?.length]);
+  }, [cosmosBaseProcedures?.length, isAuthApproved]);
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length) {
@@ -127,10 +127,10 @@ export const useStakingProcedures = ({
     procedures,
     resetStates: async () => {
       if (cosmosBaseProcedures?.length) {
-        authState.setState(firstStep === "auth" ? "active" : null);
+        authState.setState(isAuthApproved ? "success" : "active");
         authState.setTxHash(undefined);
         authState.setError(null);
-        delegateState.setState(firstStep === "delegate" ? "active" : "idle");
+        delegateState.setState(!isAuthApproved ? "idle" : "active");
         delegateState.setTxHash(undefined);
         delegateState.setError(null);
         await refetchAuthCheck?.();
