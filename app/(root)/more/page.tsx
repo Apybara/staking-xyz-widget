@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
 import { getLinkWithSearchParams } from "../../_utils/routes";
+import { getLatestReleaseTag } from "../../_services/gitHub";
 import { PageViewTop } from "../_components/WidgetTop";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { CTACard } from "../_components/HeroCard/CTACard";
 import { MoreNavCard } from "./_components/MoreNavCard";
 import { getDynamicPageMetadata } from "../../_utils/site";
-
 import * as S from "./_components/more.css";
 
 export default async function More({ searchParams }: RouterStruct) {
+  const latestReleaseTag = await getLatestReleaseTag();
+
   return (
     <>
       <PageViewTop page="More" homeURL={getLinkWithSearchParams(searchParams, "")} />
@@ -26,7 +28,7 @@ export default async function More({ searchParams }: RouterStruct) {
       </ul>
 
       <WidgetBottomBox>
-        <CTACard topSubtitle="App version" title="v0.0.1" />
+        <CTACard topSubtitle="App version" title={latestReleaseTag} />
       </WidgetBottomBox>
     </>
   );
