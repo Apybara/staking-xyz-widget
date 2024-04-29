@@ -14,7 +14,7 @@ import { networkExplorer } from "../../../consts";
 export const UnstakingProcedureDialog = () => {
   const router = useRouter();
   const { network } = useShell();
-  const { activeWallet } = useWallet();
+  const { connectionStatus, activeWallet } = useWallet();
   const { procedures, amountInputPad, resetProceduresStates } = useUnstaking();
   const { open, toggleOpen } = useDialog("unstakingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
@@ -29,6 +29,12 @@ export const UnstakingProcedureDialog = () => {
     if (!uncheckedProcedures?.[0]) return ctaTextMap.undelegate.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
+
+  useEffect(() => {
+    if (connectionStatus === "disconnected" && open) {
+      toggleOpen(false);
+    }
+  }, [connectionStatus, open]);
 
   usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
 
