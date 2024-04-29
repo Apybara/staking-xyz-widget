@@ -146,6 +146,7 @@ export type AddressActivityPaginationParams = PaginationParams & {
   filterKey: "stake" | "unstake" | null;
 };
 export type ActivityItem = {
+  id: string;
   type: "stake" | "unstake";
   amount: number;
   rewardRate: number;
@@ -193,7 +194,7 @@ type CommonResponse<R, D> = {
   message?: string;
 };
 type CommonEntriesResponse<R, D> = Omit<CommonResponse<R, D>, "data"> & {
-  data?: { entries: Array<D> } | null;
+  data?: { entries?: Array<D> } | null;
 };
 
 export type NetworkRewardResponse = number;
