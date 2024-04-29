@@ -3,7 +3,7 @@ import numbro from "numbro";
 
 export const getLastOffset = ({ totalEntries, limit }: { totalEntries: number; limit: number }) => {
   const numberOfPages = Math.ceil(totalEntries / limit);
-  return numberOfPages - 1;
+  return numberOfPages ? numberOfPages - 1 : 0;
 };
 
 export const getCalculatedRewards = (amountStaked: string, rewardRate: number) => {

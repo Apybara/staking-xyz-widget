@@ -6,60 +6,20 @@ export const getAddressAuthCheck = async ({ apiUrl, address }: T.BaseParams) => 
   return res;
 };
 
-export const getAddressActivity = ({
+export const getAddressActivity = async ({
   apiUrl,
   address,
   offset,
   limit,
   filterKey,
 }: T.AddressActivityPaginationParams & T.BaseParams) => {
-  if (filterKey === "stake") {
-    return {
-      status: "OK",
-      statusCode: 200,
-      totalEntries: 100,
-      data: {
-        entries: new Array(limit).fill({
-          type: "stake",
-          amount: Math.floor(Math.random() * 100),
-          rewardRate: Math.random() * 0.1,
-          timestamp: 733018042,
-          txHash: Math.random().toString(36).substring(7),
-        }),
-      },
-    } as T.AddressActivityResponse;
-  }
-  if (filterKey === "unstake") {
-    return {
-      status: "OK",
-      statusCode: 200,
-      totalEntries: 100,
-      data: {
-        entries: new Array(limit).fill({
-          type: "unstake",
-          amount: Math.floor(Math.random() * 100),
-          rewardRate: Math.random() * 0.1,
-          timestamp: 733018042,
-          txHash: Math.random().toString(36).substring(7),
-        }),
-      },
-    } as T.AddressActivityResponse;
-  }
-  return {
-    status: "OK",
-    statusCode: 200,
-    totalEntries: 100,
-    data: {
-      entries: new Array(limit).fill(0).map(() => ({
-        type: ["stake", "unstake"][Math.floor(Math.random() * 2)],
-        amount: Math.floor(Math.random() * 100),
-        rewardRate: Math.random() * 0.1,
-        timestamp: 733018042,
-        txHash: Math.random().toString(36).substring(7),
-        inProgress: Math.random() > 0.7,
-      })),
-    },
-  } as T.AddressActivityResponse;
+  const filterQuery = !!filterKey ? `&filterBy=type&filterKey=${filterKey}` : "";
+
+  const res: T.AddressActivityResponse = await fetchData(
+    `${apiUrl}address/${address}/activity?offset=${offset}&limit=${limit}${filterQuery}`,
+  );
+
+  return res;
 };
 
 export const getAddressRewards = async ({ apiUrl, address }: T.BaseParams) => {

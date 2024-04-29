@@ -64,7 +64,7 @@ export const ActivityTable = () => {
       <ListTable.Pad>
         <ListTable.List>
           {data?.entries?.map((activity, index) => (
-            <ListItem key={index + activity.txHash} activity={activity} network={network} />
+            <ListItem key={index + activity.id} activity={activity} network={network} />
           ))}
         </ListTable.List>
         <ListTable.Pagination
@@ -85,10 +85,10 @@ const ListItem = ({ activity, network }: { activity: ActivityItem; network: Netw
 
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={`${networkExplorer[network || defaultNetwork]}tx/${activity.txHash}`}>
+      <ListTable.ExternalLinkItemWrapper href={`${networkExplorer[network || defaultNetwork]}tx/${activity.id}`}>
         <ListTable.TxInfoPrimary
           title={titleKey[activity.type]}
-          externalLink={!!activity.txHash}
+          externalLink={!!activity.id}
           amount={amount || "－"}
           isProcessing={activity.inProgress}
         />
