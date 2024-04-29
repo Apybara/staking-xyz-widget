@@ -48,7 +48,7 @@ export const button = recipe({
       fetching: {
         color: colors.black000,
         transformOrigin: "center",
-        animation: `${rotate} 1s cubic-bezier(0, 0, 0, 1) infinite`,
+        animation: `${rotate} 1.5s linear infinite`,
       },
     },
   },
