@@ -10,7 +10,7 @@ import { walletsInfo } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
 
 export const WalletAccountDialog = () => {
-  const { network, currency } = useShell();
+  const { network } = useShell();
   const { activeWallet, address } = useWallet();
   const {
     data: balanceData,
@@ -40,7 +40,6 @@ export const WalletAccountDialog = () => {
       wallet={walletsInfo[activeWallet]}
       address={address}
       network={network || "celestia"}
-      currency={currency || "USD"}
       balance={{
         isLoading: isBalanceLoading || false,
         error: balanceError || null,

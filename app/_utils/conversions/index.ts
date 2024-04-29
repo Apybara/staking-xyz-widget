@@ -1,7 +1,7 @@
 import type { FiatCurrency, CoinPrice, Currency, Network } from "../../types";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
-import { fiatCurrencyMap } from "../../consts";
+import { fiatCurrencyMap, networkCurrency } from "../../consts";
 
 const numbroDefaultOptions: numbro.Format = {
   mantissa: 2,
@@ -37,7 +37,10 @@ export const getDynamicAssetValueFromCoin = ({
     });
   }
 
-  return getFormattedCoinValue({ val: BigNumber(coinVal).toNumber() });
+  return getFormattedCoinValue({
+    val: BigNumber(coinVal).toNumber(),
+    formatOptions: { currencySymbol: networkCurrency[network || "celestia"] },
+  });
 };
 
 export const getFormattedUSDPriceFromCoin = ({ val, price, options }: Omit<GetPriceProps, "currency">) => {
@@ -112,21 +115,24 @@ export const getCoinValueFromFiatPrice = ({ val, price }: Omit<GetPriceProps, "o
 };
 
 export const getFormattedCoinValue = ({ val, formatOptions, capAtTrillion = true }: TokenNumberProps) => {
+  const defaultSymbol = formatOptions?.currencySymbol ? `${" "}${formatOptions?.currencySymbol}` : "";
+
   if ((formatOptions?.mantissa || 2) <= 2 && val > 0 && val < 0.01) {
-    return "<0.01";
+    return `<0.01${defaultSymbol}`;
   }
   if (capAtTrillion && val >= 1e12) {
-    return `>1.0T ${formatOptions?.currencySymbol || ""}`;
+    return `>1.0T${defaultSymbol}`;
   }
 
-  return numbro(val)
+  const value = numbro(val)
     .format({
       ...numbroDefaultOptions,
       average: true,
-      currencySymbol: "",
       ...formatOptions,
     })
     .toUpperCase();
+
+  return `${value}${defaultSymbol}`;
 };
 
 const localeMap: Record<FiatCurrency, string> = {

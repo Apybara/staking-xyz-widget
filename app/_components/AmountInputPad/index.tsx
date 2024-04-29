@@ -84,6 +84,7 @@ export const AmountInputPad = ({
       formatOptions: {
         average: true,
         mantissa,
+        currencySymbol: secondaryCurrency,
       },
     });
   }, [secondaryValue, secondaryCurrency]);
@@ -172,10 +173,7 @@ const AvailabilityElement = ({
         <AvailabilityText.Primary>
           {prefix}: {primaryValue}
         </AvailabilityText.Primary>{" "}
-        <AvailabilityText.Secondary>
-          ({secondaryValue}
-          {secondaryCurrency !== "USD" && secondaryCurrency !== "EUR" ? ` ${secondaryCurrency}` : ""})
-        </AvailabilityText.Secondary>
+        <AvailabilityText.Secondary>({secondaryValue})</AvailabilityText.Secondary>
       </p>
       {!!tooltip && tooltip}
     </div>
