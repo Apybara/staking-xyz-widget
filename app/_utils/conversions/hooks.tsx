@@ -22,7 +22,12 @@ export const useFormattedNetworkValue = ({ val }: { val?: string | number }) => 
   if (!val) return undefined;
 
   if (!isFiatCurrency) {
-    return getFormattedCoinValue({ val: BigNumber(val).toNumber() });
+    return getFormattedCoinValue({
+      val: BigNumber(val).toNumber(),
+      formatOptions: {
+        currencySymbol: networkCurrency[castedNetwork],
+      },
+    });
   }
 
   const price = coinPrice?.[castedNetwork]?.[castedCurrency] || 0;

@@ -17,7 +17,6 @@ export type RootWalletAccountDialogProps = {
   wallet: WalletInfo;
   address: string;
   network: Network;
-  currency: Currency;
   balance: {
     isLoading: boolean;
     error: Error | null;
@@ -35,7 +34,6 @@ export const RootWalletAccountDialog = ({
   wallet,
   address,
   balance,
-  currency,
   network,
   disconnection,
 }: RootWalletAccountDialogProps) => {
@@ -46,7 +44,7 @@ export const RootWalletAccountDialog = ({
           <div className={cn(S.logoWrapper)}>
             <Image src={wallet.logo} width={56} height={56} alt={`Logo of ${wallet.name}`} />
           </div>
-          <AccountBox address={address} balance={balance} network={network} currency={currency} />
+          <AccountBox address={address} balance={balance} network={network} />
           <CTAButton
             variant="tertiary"
             state={disconnection.isLoading ? "loading" : "default"}
@@ -66,10 +64,7 @@ const AccountBox = ({
   address,
   balance,
   network,
-  currency,
-}: Pick<RootWalletAccountDialogProps, "address" | "balance" | "network" | "currency">) => {
-  const unit = currency === networkCurrency[network] ? networkCurrency[network] : currency;
-
+}: Pick<RootWalletAccountDialogProps, "address" | "balance" | "network">) => {
   return (
     <div className={cn(S.accountBox)}>
       <div className={cn(S.addressBox)}>
@@ -81,7 +76,7 @@ const AccountBox = ({
           <Skeleton width={64} />
         ) : (
           <>
-            <span>{balance.error ? "N/A" : balance.balance}</span> <span>{unit}</span>
+            <span>{balance.error ? "N/A" : balance.balance}</span>
           </>
         )}
       </p>
