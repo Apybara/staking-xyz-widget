@@ -21,24 +21,38 @@ export const HeroCard = () => {
   const isLoading = networkReward?.isLoading;
 
   if (connectionStatus === "connected") {
-    return stakedBalance ? (
+    if (isLoadingStakedBalance) {
+      return (
+        <CTACard
+          topSubtitle={<Skeleton width={95} height={14} />}
+          title={<Skeleton width={180} height={20} />}
+          subtitle={<Skeleton width={95} height={14} />}
+        />
+      );
+    }
+
+    if (stakedBalance) {
+      return (
+        <CTACard
+          topSubtitle={
+            <>
+              <span>Total balance</span>
+              <Tooltip
+                className={S.balanceTooltip}
+                trigger={<Icon name="info" />}
+                content="This balance only tracks stake that has been done through Staking.xyz."
+              />
+            </>
+          }
+          title={formattedStakedBalance}
+          subtitle={<span className={S.dailyEarned}>+Daily earned {formattedDailyEarned}</span>}
+        />
+      );
+    }
+
+    return (
       <CTACard
-        topSubtitle={
-          <>
-            <span>Total balance</span>
-            <Tooltip
-              className={S.balanceTooltip}
-              trigger={<Icon name="info" />}
-              content="This balance only tracks stake that has been done through Staking.xyz."
-            />
-          </>
-        }
-        title={isLoadingStakedBalance ? <Skeleton width={180} height={20} /> : formattedStakedBalance}
-        subtitle={<span className={S.dailyEarned}>+Daily earned {formattedDailyEarned}</span>}
-      />
-    ) : (
-      <CTACard
-        topSubtitle="You’re missing"
+        topSubtitle="You're missing"
         title={isLoading ? <Skeleton width={180} height={20} /> : `${networkReward?.rewards.percentage}% rewards`}
         subtitle="Also time to manage your staking"
       />
