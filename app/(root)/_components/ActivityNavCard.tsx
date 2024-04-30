@@ -13,8 +13,8 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
   const activity = useActivity();
   const { data, totalEntries, isLoading } = useLastOffsetActivity({ ...activity.params });
 
-  const isDisabled = connectionStatus !== "connected" || data?.length === 0;
-  const lastData = data?.[data.length - 1];
+  const isDisabled = connectionStatus !== "connected" || data?.entries?.length === 0;
+  const lastData = data?.entries?.[data?.entries.length - 1];
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;

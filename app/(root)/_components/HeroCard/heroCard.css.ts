@@ -21,7 +21,7 @@ export const subtitle = style({
   display: "block",
   fontSize: pxToRem(12),
   lineHeight: 1,
-  color: colors.black600,
+  color: colors.black300,
   marginBlockStart: pxToRem(6),
 });
 
@@ -41,9 +41,19 @@ export const ctaCard = style([
 export const ctaCardTopSubtitle = style([
   subtitle,
   {
-    display: "block",
+    display: "flex",
+    alignItems: "center",
+    gap: pxToRem(4),
     fontWeight: weights.semibold,
     marginBlockStart: 0,
     marginBlockEnd: pxToRem(8),
   },
 ]);
+
+export const balanceTooltip = style({
+  maxInlineSize: pxToRem(300),
+});
+
+export const dailyEarned = style({
+  color: colors.green900,
+});

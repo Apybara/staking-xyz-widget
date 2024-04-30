@@ -14,7 +14,7 @@ export const pad = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "space-between",
   gap: pxToRem(18),
   paddingInline: pxToRem(20),
   paddingBlockStart: pxToRem(20),
@@ -22,6 +22,7 @@ export const pad = style({
   borderRadius: pxToRem(8),
   backgroundColor: colors.black700,
   border: `1px solid ${colors.black800}`,
+  blockSize: "100%",
 });
 globalStyle(`${pad} .skeleton-container:not(:last-of-type)`, {
   inlineSize: "100%",
