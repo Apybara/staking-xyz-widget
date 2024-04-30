@@ -5,6 +5,7 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { Skeleton } from "../../../_components/Skeleton";
 import * as ListTable from "../../../_components/ListTable";
 import { ErrorRetryModule } from "../../../_components/ErrorRetryModule";
+import { EmptyState } from "@/app/_components/EmptyState";
 import { getPercentagedNumber } from "../../../_utils/number";
 import { getUTCStringFromUnixTimestamp } from "../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
@@ -61,31 +62,38 @@ export const ActivityTable = () => {
           },
         ]}
       />
-      <ListTable.Pad>
-        <ListTable.List>
-          {data?.entries?.map((activity, index) => (
-            <ListItem key={index + activity.id} activity={activity} network={network} />
-          ))}
-        </ListTable.List>
-        <ListTable.Pagination
-          currentPage={offset + 1}
-          hasNextPage={!disableNextPage}
-          onNextClick={() => setOffset(offset + 1)}
-          onPrevClick={() => setOffset(offset - 1)}
-          onFirstClick={() => setOffset(0)}
-          onLastClick={() => lastOffset && setOffset(lastOffset)}
-        />
-      </ListTable.Pad>
+      {data?.entries?.length ? (
+        <ListTable.Pad>
+          <ListTable.List>
+            {data?.entries?.map((activity, index) => (
+              <ListItem key={index + activity.id} activity={activity} network={network} />
+            ))}
+          </ListTable.List>
+          <ListTable.Pagination
+            currentPage={offset + 1}
+            hasNextPage={!disableNextPage}
+            onNextClick={() => setOffset(offset + 1)}
+            onPrevClick={() => setOffset(offset - 1)}
+            onFirstClick={() => setOffset(0)}
+            onLastClick={() => lastOffset && setOffset(lastOffset)}
+          />
+        </ListTable.Pad>
+      ) : (
+        <ListTable.Pad className={S.errorPad}>
+          <EmptyState />
+        </ListTable.Pad>
+      )}
     </>
   );
 };
 
 const ListItem = ({ activity, network }: { activity: ActivityItem; network: Network | null }) => {
   const amount = useDynamicAssetValueFromCoin({ coinVal: activity.amount });
+  const href = `${networkExplorer[network || defaultNetwork]}tx/${activity.id}`;
 
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={`${networkExplorer[network || defaultNetwork]}tx/${activity.id}`}>
+      <ListTable.ExternalLinkItemWrapper href={activity.id ? href : undefined}>
         <ListTable.TxInfoPrimary
           title={titleKey[activity.type]}
           externalLink={!!activity.id}
