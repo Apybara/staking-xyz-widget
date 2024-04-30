@@ -63,7 +63,7 @@ export const ActivityTable = () => {
       />
       <ListTable.Pad>
         <ListTable.List>
-          {data?.map((activity, index) => (
+          {data?.entries?.map((activity, index) => (
             <ListItem key={index + activity.txHash} activity={activity} network={network} />
           ))}
         </ListTable.List>

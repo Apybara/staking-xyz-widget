@@ -8,6 +8,7 @@ import {
   useAddressActivity,
   useAddressRewardsHistory,
   useCelestiaReward,
+  useAddressRewards,
 } from "../stakingOperator/celestia/hooks";
 import { useStaking } from "@/app/_contexts/StakingContext";
 
@@ -102,6 +103,27 @@ export const useAddressRewardsHistoryQueryParams = () => {
     limit,
     setLimit,
   };
+};
+
+export const useRewards = () => {
+  const { network } = useShell();
+  const { address } = useWallet();
+
+  const celestia = useAddressRewards({
+    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+  });
+
+  switch (network) {
+    case "celestia":
+    case "celestiatestnet3":
+      return {
+        query: celestia,
+      };
+    default:
+      return {
+        query: undefined,
+      };
+  }
 };
 
 export const useRewardsHistory = () => {

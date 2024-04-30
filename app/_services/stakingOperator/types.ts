@@ -149,6 +149,14 @@ export type ActivityItem = {
   inProgress?: boolean;
 };
 
+export type AddressRewardsResponse = CommonResponse<
+  { address: string },
+  {
+    total_rewards: number;
+    last_cycle_rewards: number;
+  }
+>;
+
 export type AddressRewardsHistoryResponse = CommonEntriesResponse<
   AddressRewardsHistoryPaginationParams & { address: string },
   RewardsHistoryItem
@@ -159,7 +167,8 @@ export type AddressRewardsHistoryResponse = CommonEntriesResponse<
 export type AddressRewardsHistoryPaginationParams = PaginationParams;
 
 export type RewardsHistoryItem = {
-  type: "compound";
+  type: "compound" | "rewards";
+  id: string;
   amount: number;
   rewardRate: number;
   timestamp: number;
@@ -179,7 +188,7 @@ type CommonResponse<R, D> = {
   message?: string;
 };
 type CommonEntriesResponse<R, D> = Omit<CommonResponse<R, D>, "data"> & {
-  data?: Array<D> | null;
+  data?: { entries: Array<D> } | null;
 };
 
 export type NetworkRewardResponse = number;

@@ -13,6 +13,7 @@ import {
   getAddressActivity,
   getAddressRewardsHistory,
   getNetworkReward,
+  getAddressRewards,
 } from ".";
 
 export const useCelestiaAddressAuthCheck = ({ address }: { address?: string }) => {
@@ -129,6 +130,30 @@ export const useAddressActivity = ({
     data: data?.data,
     totalEntries,
     lastOffset,
+    refetch,
+  };
+};
+
+export const useAddressRewards = ({ address }: { address?: string }) => {
+  const { data, error, status, isLoading, isFetching, refetch } = useQuery<
+    T.AddressRewardsResponse | null,
+    T.AddressRewardsResponse
+  >({
+    enabled: !!address,
+    queryKey: ["addressRewards", address],
+    queryFn: () => {
+      if (!address) return Promise.resolve(null);
+      return getAddressRewards({ address });
+    },
+    placeholderData: keepPreviousData,
+    staleTime: 15000,
+  });
+
+  return {
+    error,
+    isLoading: isLoading || status === "pending",
+    isFetching,
+    data: data?.data,
     refetch,
   };
 };

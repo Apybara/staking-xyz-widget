@@ -44,8 +44,8 @@ export const RewardsHistoryTable = () => {
     <>
       <ListTable.Pad>
         <ListTable.List>
-          {data?.map((rewardsHistory, index) => (
-            <ListItem key={index + rewardsHistory.txHash} rewardsHistory={rewardsHistory} network={network} />
+          {data?.entries?.map((rewardsHistory, index) => (
+            <ListItem key={index + rewardsHistory.id} rewardsHistory={rewardsHistory} network={network} />
           ))}
         </ListTable.List>
         <ListTable.Pagination
@@ -63,15 +63,14 @@ export const RewardsHistoryTable = () => {
 
 const ListItem = ({ rewardsHistory, network }: { rewardsHistory: RewardsHistoryItem; network: Network | null }) => {
   const amount = useDynamicAssetValueFromCoin({ coinVal: rewardsHistory.amount });
+  const href = `${networkExplorer[network || defaultNetwork]}tx/${rewardsHistory.id}`;
 
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper
-        href={`${networkExplorer[network || defaultNetwork]}tx/${rewardsHistory.txHash}`}
-      >
+      <ListTable.ExternalLinkItemWrapper href={rewardsHistory.id ? href : undefined}>
         <ListTable.TxInfoPrimary
           title={titleKey[rewardsHistory.type]}
-          externalLink={!!rewardsHistory.txHash}
+          externalLink={!!rewardsHistory.id}
           amount={amount || "－"}
           isProcessing={rewardsHistory.inProgress}
         />
@@ -87,4 +86,5 @@ const ListItem = ({ rewardsHistory, network }: { rewardsHistory: RewardsHistoryI
 
 const titleKey = {
   compound: "Compound",
+  rewards: "Rewards",
 };
