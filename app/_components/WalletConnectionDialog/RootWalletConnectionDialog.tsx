@@ -1,11 +1,9 @@
 import type { WalletInfo } from "../../types";
 import { useMemo, useState } from "react";
 import cn from "classnames";
-import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "../Icon";
 import * as Dialog from "../Dialog";
-import { CTAButton } from "../CTAButton";
 import { MessageTag } from "../MessageTag";
 import { LoadingSpinner } from "../LoadingSpinner";
 import * as S from "./walletConnectionDialog.css";
@@ -63,7 +61,14 @@ export const RootWalletConnectionDialog = ({
             onChange={({ target }) => handleAgreement(target.checked)}
             label={
               <>
-                Agree to <Link href="#">Privacy</Link> and <Link href="#">Terms</Link>
+                Agree to{" "}
+                <a href={process.env.NEXT_PUBLIC_PRIVACY_LINK} target="_blank" rel="noreferrer">
+                  Privacy
+                </a>{" "}
+                and{" "}
+                <a href={process.env.NEXT_PUBLIC_TERMS_LINK} target="_blank" rel="noreferrer">
+                  Terms
+                </a>
               </>
             }
           />
