@@ -7,7 +7,7 @@ import * as S from "./more.css";
 export type MoreNavCardProps = {
   title: ReactNode;
   description: ReactNode;
-  url: string;
+  url?: string;
 };
 
 export const MoreNavCard = ({ title, description, url }: MoreNavCardProps) => (
