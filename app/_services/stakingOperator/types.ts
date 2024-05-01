@@ -1,5 +1,6 @@
 export type AuthCheckResponse = {
   granted: boolean;
+  txnHash?: string;
 };
 
 export type DelegateMessageResponse = {

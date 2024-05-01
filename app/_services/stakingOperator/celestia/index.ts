@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_STAKING_API_CELESTIA;
 
 export const getAddressAuthCheck = async (address: string) => {
   const res: T.AuthCheckResponse = await fetchData(`${API_URL}address/check/${address}`);
-  return res.granted;
+  return res;
 };
 
 export const getAddressActivity = ({
@@ -92,6 +92,13 @@ export const getDelegateMessage = async (address: string, amount: number) => {
 
 export const setMonitorTx = async ({ txHash, uuid }: { txHash: string; uuid: string }) => {
   const res = await fetchData(`${API_URL}monitor/hash/${uuid}/${txHash}`, {
+    method: "PUT",
+  });
+  return res;
+};
+
+export const setMonitorGrantTx = async ({ txHash }: { txHash: string }) => {
+  const res = await fetchData(`${API_URL}monitor/grant/${txHash}`, {
     method: "PUT",
   });
   return res;
