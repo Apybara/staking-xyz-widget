@@ -4,6 +4,7 @@ import { useWallet } from "../../_contexts/WalletContext";
 import { getFeeCollectingAmount } from "../../_services/stake";
 import { useWalletBalance } from "../../_services/wallet/hooks";
 import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeFees } from "../../_utils/transaction";
+import { defaultNetwork } from "../../consts";
 
 export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
   const { network } = useShell();
@@ -14,7 +15,7 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
     amount: inputAmount,
     min: "0",
     max: balanceData,
-    buffer: getFeeCollectingAmount({ amount: inputAmount, network: network || "celestia" }),
+    buffer: getFeeCollectingAmount({ amount: inputAmount, network: network || defaultNetwork }),
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
@@ -28,5 +29,5 @@ export const useStakeFees = ({ inputAmount }: { inputAmount: StakingStates["coin
   const { network } = useShell();
 
   if (inputAmount === "" || inputAmount === "0") return undefined;
-  return getStakeFees({ amount: inputAmount, network: network || "celestia" });
+  return getStakeFees({ amount: inputAmount, network: network || defaultNetwork });
 };

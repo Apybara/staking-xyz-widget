@@ -5,6 +5,7 @@ import { useWallet } from "../../_contexts/WalletContext";
 import { useStakingProcedures } from "../../_services/stake/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
+import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useStakeAmountInputValidation, useStakeFees } from "./hooks";
 
 const StakingContext = createContext({} as T.StakingContext);
@@ -19,13 +20,13 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.coinAmountInput });
   const stakeFees = useStakeFees({ inputAmount: states.coinAmountInput });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
-    network: network || "celestia",
+    network: network || defaultNetwork,
     wallet: activeWallet,
   });
   const { procedures, resetStates } = useStakingProcedures({
     address,
     cosmosSigningClient,
-    network: network || "celestia",
+    network: network || defaultNetwork,
     amount: states.coinAmountInput,
   });
   const amountInputPad = useInputStates();
@@ -59,8 +60,8 @@ const initialStates: T.StakingContext = {
   amountInputPad: {
     primaryValue: "",
     secondaryValue: "",
-    primaryCurrency: "USD",
-    secondaryCurrency: "TIA",
+    primaryCurrency: defaultGlobalCurrency,
+    secondaryCurrency: "USD",
     setPrimaryValue: () => {},
     onSwap: () => {},
     onMax: () => {},

@@ -5,6 +5,7 @@ import posthog from "posthog-js";
 import { usePostHog } from "posthog-js/react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
+import { defaultNetwork, defaultGlobalCurrency } from "../consts";
 
 if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -35,8 +36,8 @@ export const PostHogPageView = () => {
       }
       posthog.capture("$pageview", {
         $current_url: url,
-        active_network: network || "celestia",
-        active_currency: currency || "usd",
+        active_network: network || defaultNetwork,
+        active_currency: currency || defaultGlobalCurrency,
       });
     }
   }, [pathname, searchParams, posthog]);

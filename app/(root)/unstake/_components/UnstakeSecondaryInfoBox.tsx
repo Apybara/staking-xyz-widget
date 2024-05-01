@@ -2,7 +2,7 @@
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
-import { unstakingPeriodByNetwork } from "../../../consts";
+import { unstakingPeriodByNetwork, defaultNetwork } from "../../../consts";
 
 export const UnstakeSecondaryInfoBox = () => {
   const { network } = useShell();
@@ -19,7 +19,7 @@ export const UnstakeSecondaryInfoBox = () => {
           <InfoCard.TitleBox>
             <InfoCard.Title>Unstaking period</InfoCard.Title>
           </InfoCard.TitleBox>
-          <InfoCard.Content>{unstakingPeriodByNetwork[network || "celestia"]}</InfoCard.Content>
+          <InfoCard.Content>{unstakingPeriodByNetwork[network || defaultNetwork]}</InfoCard.Content>
         </InfoCard.StackItem>
       </InfoCard.Stack>
     </InfoCard.Card>

@@ -6,6 +6,7 @@ import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useUnstakingProcedures } from "../../_services/unstake/hooks";
 import { useStakedBalance, useUnbondingDelegations } from "../../_services/stakingOperator/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
+import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useUnstakeAmountInputValidation } from "./hooks";
 
 const UnstakingContext = createContext({} as T.UnstakingContext);
@@ -20,7 +21,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   const stakedBalance = useStakedBalance();
   const unbondingDelegations = useUnbondingDelegations();
   const { data: cosmosSigningClient } = useCosmosSigningClient({
-    network: network || "celestia",
+    network: network || defaultNetwork,
     wallet: activeWallet,
   });
   const { amountValidation, ctaValidation } = useUnstakeAmountInputValidation({
@@ -30,7 +31,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   const { procedures, resetStates } = useUnstakingProcedures({
     address,
     cosmosSigningClient,
-    network: network || "celestia",
+    network: network || defaultNetwork,
     amount: states.coinAmountInput,
   });
   const amountInputPad = useInputStates();
@@ -82,8 +83,8 @@ const initialStates: T.UnstakingContext = {
   amountInputPad: {
     primaryValue: "",
     secondaryValue: "",
-    primaryCurrency: "USD",
-    secondaryCurrency: "TIA",
+    primaryCurrency: defaultGlobalCurrency,
+    secondaryCurrency: "USD",
     setPrimaryValue: () => {},
     onSwap: () => {},
     onMax: () => {},

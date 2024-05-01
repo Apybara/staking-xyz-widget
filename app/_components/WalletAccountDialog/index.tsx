@@ -6,7 +6,7 @@ import { useProceduralStates } from "../../_utils/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { useFormattedNetworkValue } from "../../_utils/conversions/hooks";
-import { walletsInfo } from "../../consts";
+import { walletsInfo, defaultNetwork } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
 
 export const WalletAccountDialog = () => {
@@ -20,7 +20,7 @@ export const WalletAccountDialog = () => {
   const formattedBalance = useFormattedNetworkValue({ val: balanceData });
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
-  const disconnectors = useWalletDisconnectors(network || "celestia");
+  const disconnectors = useWalletDisconnectors(network || defaultNetwork);
 
   const captureDisconnectSuccess = usePostHogEvent("wallet_disconnect_succeeded");
 
@@ -39,7 +39,7 @@ export const WalletAccountDialog = () => {
       }}
       wallet={walletsInfo[activeWallet]}
       address={address}
-      network={network || "celestia"}
+      network={network || defaultNetwork}
       balance={{
         isLoading: isBalanceLoading || false,
         error: balanceError || null,

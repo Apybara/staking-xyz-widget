@@ -9,7 +9,7 @@ import { getPercentagedNumber } from "../../../../_utils/number";
 import { getUTCStringFromUnixTimestamp } from "../../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useRewardsHistory } from "../../../../_services/stakingOperator/hooks";
-import { networkExplorer } from "../../../../consts";
+import { networkExplorer, defaultNetwork } from "../../../../consts";
 import * as S from "./historyTable.css";
 
 export const RewardsHistoryTable = () => {
@@ -66,7 +66,9 @@ const ListItem = ({ rewardsHistory, network }: { rewardsHistory: RewardsHistoryI
 
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={`${networkExplorer[network || "celestia"]}tx/${rewardsHistory.txHash}`}>
+      <ListTable.ExternalLinkItemWrapper
+        href={`${networkExplorer[network || defaultNetwork]}tx/${rewardsHistory.txHash}`}
+      >
         <ListTable.TxInfoPrimary
           title={titleKey[rewardsHistory.type]}
           externalLink={!!rewardsHistory.txHash}

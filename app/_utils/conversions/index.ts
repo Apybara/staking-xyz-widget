@@ -1,7 +1,7 @@
 import type { FiatCurrency, CoinPrice, Currency, Network } from "../../types";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
-import { fiatCurrencyMap, networkCurrency } from "../../consts";
+import { fiatCurrencyMap, networkCurrency, defaultGlobalCurrency, defaultNetwork } from "../../consts";
 
 const numbroDefaultOptions: numbro.Format = {
   mantissa: 2,
@@ -19,27 +19,27 @@ export const getDynamicAssetValueFromCoin = ({
   coinPrice: CoinPrice | null;
   currency: Currency | null;
 }) => {
-  const castedCurrency = currency || "USD";
+  const castedCurrency = currency || defaultGlobalCurrency;
 
   if (!coinVal) return undefined;
 
   if (castedCurrency === "USD") {
     return getFormattedUSDPriceFromCoin({
       val: coinVal,
-      price: coinPrice?.[network || "celestia"]?.USD || 0,
+      price: coinPrice?.[network || defaultNetwork]?.USD || 0,
     });
   }
 
   if (castedCurrency === "EUR") {
     return getFormattedEURPriceFromCoin({
       val: coinVal,
-      price: coinPrice?.[network || "celestia"]?.EUR || 0,
+      price: coinPrice?.[network || defaultNetwork]?.EUR || 0,
     });
   }
 
   return getFormattedCoinValue({
     val: BigNumber(coinVal).toNumber(),
-    formatOptions: { currencySymbol: networkCurrency[network || "celestia"] },
+    formatOptions: { currencySymbol: networkCurrency[network || defaultNetwork] },
   });
 };
 
