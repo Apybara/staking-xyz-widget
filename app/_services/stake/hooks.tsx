@@ -22,6 +22,7 @@ export const useStakingProcedures = ({
   const {
     baseProcedures: cosmosBaseProcedures,
     isAuthApproved,
+    authTxHash,
     refetchAuthCheck,
   } = useCosmosStakingProcedures({
     amount,
@@ -82,10 +83,11 @@ export const useStakingProcedures = ({
         delegateState.setState("idle");
       } else {
         authState.setState("success");
+        authState.setTxHash(authTxHash);
         delegateState.setState("active");
       }
     }
-  }, [cosmosBaseProcedures?.length, isAuthApproved]);
+  }, [cosmosBaseProcedures?.length, isAuthApproved, authTxHash]);
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length) {
@@ -128,7 +130,7 @@ export const useStakingProcedures = ({
     resetStates: async () => {
       if (cosmosBaseProcedures?.length) {
         authState.setState(isAuthApproved ? "success" : "active");
-        authState.setTxHash(undefined);
+        authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
         authState.setError(null);
         delegateState.setState(!isAuthApproved ? "idle" : "active");
         delegateState.setTxHash(undefined);

@@ -14,6 +14,7 @@ import {
   getUndelegateMessage,
   getUndelegateValidatorMessages,
   setMonitorTx,
+  setMonitorGrantTx,
 } from "../stakingOperator/celestia";
 import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
 import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork, defaultNetwork } from "../../consts";
@@ -58,11 +59,7 @@ export const useCosmosUnstakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const {
-    data: isAddressAuthorized,
-    isLoading,
-    refetch,
-  } = useCelestiaAddressAuthCheck({ address: address || undefined });
+  const { data: authCheck, isLoading, refetch } = useCelestiaAddressAuthCheck({ address: address || undefined });
 
   const authTx = useCosmosBroadcastAuthzTx({
     client: cosmosSigningClient || null,
@@ -113,7 +110,8 @@ export const useCosmosUnstakingProcedures = ({
 
   return {
     baseProcedures: procedures,
-    isAuthApproved: isAddressAuthorized,
+    isAuthApproved: authCheck?.granted,
+    authTxHash: authCheck?.txnHash,
     refetchAuthCheck: refetch,
   };
 };
@@ -221,11 +219,7 @@ export const useCosmosStakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const {
-    data: isAddressAuthorized,
-    isLoading,
-    refetch,
-  } = useCelestiaAddressAuthCheck({ address: address || undefined });
+  const { data: authCheck, isLoading, refetch } = useCelestiaAddressAuthCheck({ address: address || undefined });
 
   const cosmosAuthTx = useCosmosBroadcastAuthzTx({
     client: cosmosSigningClient || null,
@@ -275,7 +269,8 @@ export const useCosmosStakingProcedures = ({
 
   return {
     baseProcedures,
-    isAuthApproved: isAddressAuthorized,
+    isAuthApproved: authCheck?.granted,
+    authTxHash: authCheck?.txnHash,
     refetchAuthCheck: refetch,
   };
 };
@@ -315,7 +310,10 @@ const useCosmosBroadcastAuthzTx = ({
 
       return await client.signAndBroadcast(address, grantingMsgs, fee);
     },
-    onSuccess: (res) => onSuccess?.(res.transactionHash),
+    onSuccess: (res) => {
+      onSuccess?.(res.transactionHash);
+      setMonitorGrantTx({ txHash: res.transactionHash });
+    },
     onError: (error) => onError?.(error),
   });
 
