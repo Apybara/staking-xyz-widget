@@ -18,7 +18,9 @@ export const RewardsNavCard = (props: NavCard.PageNavCardProps) => {
       disabled={isDisabled}
       endBox={{
         title: (
-          <NavCard.SecondaryText>{isLoading ? <Skeleton width={68} height={12} /> : "Rewards"}</NavCard.SecondaryText>
+          <NavCard.SecondaryText>
+            {isLoading ? <Skeleton width={68} height={12} /> : "Est. reward rate"}
+          </NavCard.SecondaryText>
         ),
         value: (
           <NavCard.PrimaryText>

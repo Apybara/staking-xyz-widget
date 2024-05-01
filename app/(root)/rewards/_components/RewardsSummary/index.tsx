@@ -43,7 +43,7 @@ export const RewardsSummary = () => {
           </InfoCard.StackItem>
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
-              <InfoCard.Title>Reward</InfoCard.Title>
+              <InfoCard.Title>Est. reward rate</InfoCard.Title>
               {stakeFees && <RewardsTooltip />}
             </InfoCard.TitleBox>
             <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
