@@ -6,7 +6,7 @@ import { Icon } from "../../../../_components/Icon";
 import * as InfoCard from "../../../../_components/InfoCard";
 import { LinkCTAButton } from "../../../../_components/CTAButton";
 import { RewardsTooltip } from "../../../_components/RewardsTooltip";
-import { rewardsFrequencyByNetwork } from "../../../../consts";
+import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
 import { getTimeDiffInSingleString } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
@@ -52,7 +52,7 @@ export const RewardsSummary = () => {
             <InfoCard.TitleBox>
               <InfoCard.Title>Reward frequency</InfoCard.Title>
             </InfoCard.TitleBox>
-            <InfoCard.Content>{rewardsFrequencyByNetwork[network || "celestia"]}</InfoCard.Content>
+            <InfoCard.Content>{rewardsFrequencyByNetwork[network || defaultNetwork]}</InfoCard.Content>
           </InfoCard.StackItem>
         </InfoCard.Stack>
       </InfoCard.Card>

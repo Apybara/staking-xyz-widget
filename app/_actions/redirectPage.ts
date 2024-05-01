@@ -2,21 +2,23 @@
 
 import type { RouterStruct } from "../types";
 import { redirect } from "next/navigation";
-import { networkRegex, currencyRegex } from "../consts";
+import { defaultNetwork, networkRegex, currencyRegex, networkCurrency } from "../consts";
 import { getCurrentSearchParams } from "../_utils/routes";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
   const { network, currency } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
 
-  if (!network || !networkRegex.test(network)) {
-    current.set("network", "celestia");
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    redirect(`/${page}${query}`);
+  const isNetworkInvalid = !network || !networkRegex.test(network);
+  const isCurrencyInvalid = !currencyRegex.test(currency || "");
+
+  if (isNetworkInvalid) {
+    current.set("network", defaultNetwork);
   }
-  if (!currencyRegex.test(currency || "")) {
-    current.set("currency", "usd");
+  if (isCurrencyInvalid) {
+    current.set("currency", networkCurrency[defaultNetwork]);
+  }
+  if (isNetworkInvalid || isCurrencyInvalid) {
     const search = current.toString();
     const query = search ? `?${search}` : "";
     redirect(`/${page}${query}`);

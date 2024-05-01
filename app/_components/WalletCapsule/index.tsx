@@ -2,7 +2,7 @@
 import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { walletsInfo } from "../../consts";
+import { walletsInfo, defaultNetwork } from "../../consts";
 import { RootWalletCapsule } from "./RootWalletCapsule";
 
 export const WalletCapsule = () => {
@@ -22,7 +22,7 @@ export const WalletCapsule = () => {
             }
           : undefined
       }
-      network={network || "celestia"}
+      network={network || defaultNetwork}
       onButtonClick={() => {
         if (connectionStatus === "connected") {
           toggleWalletAccountDialog(true);

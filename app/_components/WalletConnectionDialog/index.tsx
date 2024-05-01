@@ -8,7 +8,7 @@ import { useProceduralStates } from "../../_utils/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
 import { useWalletConnectors } from "../../_services/wallet/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
-import { networkWalletInfos } from "../../consts";
+import { networkWalletInfos, defaultNetwork } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
 
 export const WalletConnectionDialog = () => {
@@ -18,7 +18,7 @@ export const WalletConnectionDialog = () => {
   const { network, isOnMobileDevice } = useShell();
   const { walletsSupport, connectionStatus, activeWallet, isEagerlyConnecting, setStates } = useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
-  const connectors = useWalletConnectors(network || "celestia");
+  const connectors = useWalletConnectors(network || defaultNetwork);
   const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open, walletType: connectingWallet });
 
   // Success connection event is tracked in WalletContext
@@ -73,7 +73,7 @@ export const WalletConnectionDialog = () => {
           toggleOpen(!open);
         },
       }}
-      wallets={networkWalletInfos[network || "celestia"].map((wallet) => ({
+      wallets={networkWalletInfos[network || defaultNetwork].map((wallet) => ({
         ...wallet,
         isSupported: walletsSupport?.[wallet.id] || false,
         isConnecting: connectingWallet === wallet.id && connectionStatus === "connecting",

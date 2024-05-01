@@ -9,7 +9,7 @@ import { getPercentagedNumber } from "../../../_utils/number";
 import { getUTCStringFromUnixTimestamp } from "../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 import { useActivity } from "../../../_services/stakingOperator/hooks";
-import { networkExplorer } from "../../../consts";
+import { networkExplorer, defaultNetwork } from "../../../consts";
 import * as S from "./activity.css";
 
 export const ActivityTable = () => {
@@ -85,7 +85,7 @@ const ListItem = ({ activity, network }: { activity: ActivityItem; network: Netw
 
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={`${networkExplorer[network || "celestia"]}tx/${activity.txHash}`}>
+      <ListTable.ExternalLinkItemWrapper href={`${networkExplorer[network || defaultNetwork]}tx/${activity.txHash}`}>
         <ListTable.TxInfoPrimary
           title={titleKey[activity.type]}
           externalLink={!!activity.txHash}

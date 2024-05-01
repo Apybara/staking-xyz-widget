@@ -3,6 +3,7 @@ import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 
 export const NetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
+export const defaultNetwork = "celestia" as Network;
 
 export const CoinVariants = ["TIA"] as const;
 export const coinVariants = [...CoinVariants];
@@ -77,6 +78,7 @@ export const fiatCurrencyMap = {
   USD: "$",
   EUR: "€",
 };
+export const defaultGlobalCurrency = networkCurrency[defaultNetwork];
 
 export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];

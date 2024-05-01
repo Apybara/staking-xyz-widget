@@ -3,7 +3,7 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
-import { feeRatioByNetwork, unstakingPeriodByNetwork } from "../../../consts";
+import { feeRatioByNetwork, unstakingPeriodByNetwork, defaultNetwork } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
@@ -16,8 +16,8 @@ export const StakeInfoBox = () => {
   const networkReward = useNetworkReward();
   const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
 
-  const unstakingPeriod = unstakingPeriodByNetwork[network || "celestia"];
-  const platformFee = feeRatioByNetwork[network || "celestia"] * 100;
+  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
+  const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
 
   return (
     <InfoCard.Card>

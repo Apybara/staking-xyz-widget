@@ -2,7 +2,7 @@ import type { Currency } from "../../types";
 import { useEffect, useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useCurrencyChange } from "../../_contexts/ShellContext/hooks";
-import { networkCurrency as networkCurrencyMap } from "../../consts";
+import { networkCurrency as networkCurrencyMap, defaultNetwork, defaultGlobalCurrency } from "../../consts";
 import {
   getNewPrimaryValueByCurrency,
   getNewSecondaryValueByCurrency,
@@ -13,9 +13,9 @@ import {
 
 export const useInputStates = () => {
   const { currency: globalCurrency, network, coinPrice } = useShell();
-  const networkCurrency = networkCurrencyMap[network || "celestia"];
+  const networkCurrency = networkCurrencyMap[network || defaultNetwork];
 
-  const [primaryCurrency, setPrimaryCurrency] = useState<Currency>(globalCurrency || "USD");
+  const [primaryCurrency, setPrimaryCurrency] = useState<Currency>(globalCurrency || defaultGlobalCurrency);
   const [secondaryCurrency, setSecondaryCurrency] = useState<Currency>(
     globalCurrency === "USD" || globalCurrency === "EUR" ? networkCurrency : "USD",
   );
@@ -80,8 +80,8 @@ export const useInputStates = () => {
       return;
     }
 
-    const usdPrice = coinPrice?.[network || "celestia"].USD || 0;
-    const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
+    const usdPrice = coinPrice?.[network || defaultNetwork].USD || 0;
+    const eurPrice = coinPrice?.[network || defaultNetwork].EUR || 0;
     const newPrimaryValue = getNewPrimaryValueByCurrency({
       primaryCurrency,
       previousPrimaryCurrency: previousPrimaryCurrency || primaryCurrency,
@@ -101,8 +101,8 @@ export const useInputStates = () => {
       return;
     }
 
-    const usdPrice = coinPrice?.[network || "celestia"].USD || 0;
-    const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
+    const usdPrice = coinPrice?.[network || defaultNetwork].USD || 0;
+    const eurPrice = coinPrice?.[network || defaultNetwork].EUR || 0;
     const newSecondaryValue = getNewSecondaryValueByCurrency({
       primaryCurrency,
       secondaryCurrency,
@@ -124,8 +124,8 @@ export const useInputStates = () => {
       return;
     }
 
-    const usdPrice = coinPrice?.[network || "celestia"].USD || 0;
-    const eurPrice = coinPrice?.[network || "celestia"].EUR || 0;
+    const usdPrice = coinPrice?.[network || defaultNetwork].USD || 0;
+    const eurPrice = coinPrice?.[network || defaultNetwork].EUR || 0;
     const newSecondaryValue = getNewSecondaryValueByPrimaryValue({
       primaryCurrency,
       secondaryCurrency,
@@ -152,7 +152,7 @@ export const useInputStates = () => {
       if (primaryCurrency === "USD") {
         const newMaxValue = getFormattedFiatValueFromCoin({
           coinValue: maxVal,
-          targetFiatPrice: coinPrice?.[network || "celestia"].USD || 0,
+          targetFiatPrice: coinPrice?.[network || defaultNetwork].USD || 0,
         });
         setPrimaryValue(newMaxValue);
         setSecondaryValue(maxVal);
@@ -161,7 +161,7 @@ export const useInputStates = () => {
       if (primaryCurrency === "EUR") {
         const newMaxValue = getFormattedFiatValueFromCoin({
           coinValue: maxVal,
-          targetFiatPrice: coinPrice?.[network || "celestia"].EUR || 0,
+          targetFiatPrice: coinPrice?.[network || defaultNetwork].EUR || 0,
         });
         setPrimaryValue(newMaxValue);
         setSecondaryValue(maxVal);

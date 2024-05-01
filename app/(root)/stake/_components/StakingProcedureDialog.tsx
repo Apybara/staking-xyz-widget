@@ -9,7 +9,7 @@ import { useStaking } from "../../../_contexts/StakingContext";
 import * as DelegationDialog from "../../../_components/DelegationDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 import { usePostHogEvent } from "../../../_services/postHog/hooks";
-import { networkExplorer } from "../../../consts";
+import { networkExplorer, defaultNetwork } from "../../../consts";
 
 export const StakingProcedureDialog = () => {
   const router = useRouter();
@@ -70,7 +70,7 @@ export const StakingProcedureDialog = () => {
               procedure?.txHash
                 ? {
                     label: explorerLabelMap[procedure.step],
-                    url: procedure?.txHash && `${networkExplorer[network || "celestia"]}tx/${procedure?.txHash}`,
+                    url: procedure?.txHash && `${networkExplorer[network || defaultNetwork]}tx/${procedure?.txHash}`,
                   }
                 : undefined
             }

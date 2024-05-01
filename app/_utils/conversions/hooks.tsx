@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
-import { networkCurrency } from "../../consts";
+import { networkCurrency, defaultNetwork } from "../../consts";
 import {
   getFormattedCoinValue,
   getFormattedUSDPriceFromCoin,
@@ -15,7 +15,7 @@ export const useDynamicAssetValueFromCoin = ({ coinVal }: { coinVal?: string | n
 
 export const useFormattedNetworkValue = ({ val }: { val?: string | number }) => {
   const { network, currency, coinPrice } = useShell();
-  const castedNetwork = network || "celestia";
+  const castedNetwork = network || defaultNetwork;
   const castedCurrency = currency || networkCurrency[castedNetwork];
   const isFiatCurrency = castedCurrency === "USD" || castedCurrency === "EUR";
 

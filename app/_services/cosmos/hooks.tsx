@@ -16,7 +16,7 @@ import {
   setMonitorTx,
 } from "../stakingOperator/celestia";
 import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
-import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork } from "../../consts";
+import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork, defaultNetwork } from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import {
   useCosmosKitConnectors,
@@ -142,7 +142,7 @@ export const useCosmosUndelegate = ({
         throw new Error("Missing parameter: client, address");
       }
 
-      const denomAmount = getDenomValueFromCoin({ network: network || "celestia", amount });
+      const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
       const { unsignedMessage, uuid } = await getUndelegateMessage(address, Number(denomAmount));
       const undelegateValues = getUndelegateValidatorMessages(unsignedMessage);
 
@@ -162,8 +162,8 @@ export const useCosmosUndelegate = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: undelegateMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || "celestia",
-        networkDenom: networkInfo[network || "celestia"].denom,
+        network: network || defaultNetwork,
+        networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
       const res = await client.signAndBroadcast(address, undelegateMsgs, fee);
@@ -302,12 +302,15 @@ const useCosmosBroadcastAuthzTx = ({
         throw new Error("Missing parameter: client, address");
       }
 
-      const grantingMsgs = getGrantingMessages({ granter: address, grantee: granteeAddress[network || "celestia"] });
+      const grantingMsgs = getGrantingMessages({
+        granter: address,
+        grantee: granteeAddress[network || defaultNetwork],
+      });
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: grantingMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || "celestia",
-        networkDenom: networkInfo[network || "celestia"].denom,
+        network: network || defaultNetwork,
+        networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
       return await client.signAndBroadcast(address, grantingMsgs, fee);
@@ -358,11 +361,11 @@ const useCosmosBroadcastDelegateTx = ({
         throw new Error("Missing parameter: client, address");
       }
 
-      const denomAmount = getDenomValueFromCoin({ network: network || "celestia", amount });
+      const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
       const { unsignedMessage, uuid } = await getDelegateMessage(address, Number(denomAmount));
       const delegateValues = getDelegateValidatorMessages(unsignedMessage);
-      const feeReceiver = feeReceiverByNetwork[network || "celestia"];
-      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || "celestia" });
+      const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
+      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
 
       if (!delegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
@@ -384,7 +387,7 @@ const useCosmosBroadcastDelegateTx = ({
             toAddress: feeReceiver,
             amount: [
               {
-                denom: networkInfo[network || "celestia"].denom,
+                denom: networkInfo[network || defaultNetwork].denom,
                 amount: feeAmount,
               },
             ],
@@ -396,8 +399,8 @@ const useCosmosBroadcastDelegateTx = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || "celestia",
-        networkDenom: networkInfo[network || "celestia"].denom,
+        network: network || defaultNetwork,
+        networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
       const res = await client.signAndBroadcast(address, msgs, fee);
@@ -558,14 +561,14 @@ const granteeAddress: Record<CosmosNetwork, string> = {
 };
 
 const useOfflineSignerGetter = ({ network, wallet }: { network?: CosmosNetwork; wallet: CosmosWalletType | null }) => {
-  const { wallet: cosmosKitWallet, getOfflineSigner } = useChain(network || "celestia");
+  const { wallet: cosmosKitWallet, getOfflineSigner } = useChain(network || defaultNetwork);
 
   if (!!cosmosKitWallet && !!wallet && !!getIsCosmosKitWalletType(wallet)) {
     return async () => await getOfflineSigner();
   }
   if (!!wallet && getIsGrazWalletType(wallet)) {
     return async () =>
-      (await getOfflineSigners({ walletType: getGrazWalletTypeEnum(wallet), chainId: network || "celestia" }))
+      (await getOfflineSigners({ walletType: getGrazWalletTypeEnum(wallet), chainId: network || defaultNetwork }))
         .offlineSigner;
   }
   return undefined;
