@@ -24,7 +24,7 @@ export const StakeInfoBox = () => {
       <InfoCard.Stack>
         <InfoCard.StackItem className={S.rewardInfo}>
           <InfoCard.TitleBox>
-            <InfoCard.Title>Reward</InfoCard.Title>
+            <InfoCard.Title>Est. reward rate</InfoCard.Title>
             {stakeFees && <RewardsTooltip />}
           </InfoCard.TitleBox>
           <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
