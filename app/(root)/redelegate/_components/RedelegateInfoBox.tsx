@@ -6,9 +6,9 @@ import { feeRatioByNetwork } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
-import * as S from "./import.css";
+import * as S from "./redelegate.css";
 
-export const ImportInfoBox = () => {
+export const RedelegateInfoBox = () => {
   const { network } = useShell();
   const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: 1.2 });
 

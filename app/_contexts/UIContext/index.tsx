@@ -7,6 +7,7 @@ const initialState: T.UIState = {
     walletAccount: false,
     stakingProcedure: false,
     unstakingProcedure: false,
+    redelegatingProcedure: false,
     importHelp: false,
   },
 };

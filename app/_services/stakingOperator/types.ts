@@ -60,6 +60,32 @@ export type DecodedUndelegateMessageResponse = {
   signatures: any[];
 };
 
+export type RedelegateMessageResponse = {
+  unsigned_txn: string;
+  uuid: string;
+};
+
+export type DecodedRedelegateMessageResponse = {
+  body: {
+    messages: Array<CosmosStakingMsgRedelegate | CosmosStakingMsgRedelegate>;
+    memo: string;
+    timeout_height: string;
+    extension_options: any[];
+    non_critical_extension_options: any[];
+  };
+  auth_info: {
+    signer_infos: any[];
+    fee: {
+      amount: any[];
+      gas_limit: string;
+      payer: string;
+      granter: string;
+    };
+    tip: null;
+  };
+  signatures: any[];
+};
+
 export type CosmosStakingMsgDelegate = {
   "@type": "/cosmos.staking.v1beta1.MsgDelegate";
   delegator_address: string;
@@ -72,6 +98,16 @@ export type CosmosStakingMsgDelegate = {
 
 export type CosmosStakingMsgUndelegate = {
   "@type": "/cosmos.staking.v1beta1.MsgUndelegate";
+  delegator_address: string;
+  validator_address: string;
+  amount: {
+    denom: string;
+    amount: string;
+  };
+};
+
+export type CosmosStakingMsgRedelegate = {
+  "@type": "/cosmos.staking.v1beta1.MsgRedelegate";
   delegator_address: string;
   validator_address: string;
   amount: {

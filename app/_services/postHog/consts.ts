@@ -10,6 +10,11 @@ export const EventVariants = [
   "unstake_tx_flow_started",
   "unstake_tx_flow_undelegate_succeeded",
   "unstake_tx_flow_undelegate_failed",
+  "redelegate_tx_flow_started",
+  "redelegate_tx_flow_auth_succeeded",
+  "redelegate_tx_flow_auth_failed",
+  "redelegate_tx_flow_redelegate_succeeded",
+  "redelegate_tx_flow_redelegate_failed",
 ] as const;
 
 export const eventVariants = [...EventVariants];

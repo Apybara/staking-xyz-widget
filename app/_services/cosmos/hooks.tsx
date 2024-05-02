@@ -1,6 +1,7 @@
 import type { SigningStargateClient } from "@cosmjs/stargate";
-import type { BaseStakeProcedure } from "../../_services/stake/types";
-import type { BaseUnstakeProcedure } from "../../_services/unstake/types";
+import type { BaseStakeProcedure } from "../stake/types";
+import type { BaseUnstakeProcedure } from "../unstake/types";
+import type { BaseRedelegateProcedure } from "../redelegate/types";
 import type { CosmosNetwork, Network, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
 import useLocalStorage from "use-local-storage";
@@ -15,6 +16,8 @@ import {
   getUndelegateValidatorMessages,
   setMonitorTx,
   setMonitorGrantTx,
+  getRedelegateMessage,
+  getRedelegateValidatorMessages,
 } from "../stakingOperator/celestia";
 import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
 import {
@@ -422,6 +425,195 @@ const useCosmosBroadcastDelegateTx = ({
         },
       ];
       const msgs = [...delegateMsgs, ...feeCollectMsgs];
+
+      const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
+      const fee = getFee({
+        gasLimit: estimatedGas,
+        network: network || defaultNetwork,
+        networkDenom: networkInfo[network || defaultNetwork].denom,
+      });
+
+      const res = await client.signAndBroadcast(address, msgs, fee);
+      return {
+        tx: res,
+        uuid,
+      };
+    },
+    onSuccess: ({ tx, uuid }) => {
+      onSuccess?.(tx.transactionHash);
+      setMonitorTx({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        txHash: tx.transactionHash,
+        uuid,
+      });
+    },
+    onError: (error) => onError?.(error),
+  });
+
+  useEffect(() => {
+    if (isPending) {
+      onLoading?.();
+    }
+  }, [isPending]);
+
+  useEffect(() => {
+    if (error) {
+      onError?.(error);
+    }
+  }, [error]);
+
+  return {
+    reset,
+    send: mutate,
+  };
+};
+
+export const useCosmosRedelegatingProcedures = ({
+  amount,
+  network,
+  address,
+  cosmosSigningClient,
+  authStep,
+  redelegateStep,
+}: {
+  amount: string;
+  network: Network | null;
+  address: string | null;
+  cosmosSigningClient?: SigningStargateClient;
+  authStep: {
+    onLoading: () => void;
+    onSuccess: (txHash?: string) => void;
+    onError: (e: Error) => void;
+  };
+  redelegateStep: {
+    onLoading: () => void;
+    onSuccess: (txHash?: string) => void;
+    onError: (e: Error) => void;
+  };
+}) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const {
+    data: authCheck,
+    isLoading,
+    refetch,
+  } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+
+  const cosmosAuthTx = useCosmosBroadcastAuthzTx({
+    client: cosmosSigningClient || null,
+    network: network && isCosmosNetwork ? network : undefined,
+    address: address || undefined,
+    onLoading: authStep.onLoading,
+    onSuccess: authStep.onSuccess,
+    onError: authStep.onError,
+  });
+  const cosmosRedelegateTx = useCosmosBroadcastRedelegateTx({
+    client: cosmosSigningClient || null,
+    network: network && isCosmosNetwork ? network : undefined,
+    address: address || undefined,
+    amount,
+    onLoading: redelegateStep.onLoading,
+    onSuccess: redelegateStep.onSuccess,
+    onError: redelegateStep.onError,
+  });
+
+  // TODO: handle error state
+  if (!isCosmosNetwork || !address || isLoading) return null;
+
+  const baseProcedures: Array<BaseRedelegateProcedure> = [
+    {
+      step: "auth",
+      stepName: "Approval in wallet",
+      send: cosmosAuthTx.send,
+      tooltip: (
+        <Tooltip
+          className={StakeStyle.approvalTooltip}
+          trigger={<Icon name="info" />}
+          content={
+            <>
+              This approval lets Staking.xyz manage staking operations on your behalf. You always have full control of
+              your funds. <a href="#">(more)</a>
+            </>
+          }
+        />
+      ),
+    },
+    {
+      step: "redelegate",
+      stepName: "Sign in wallet",
+      send: cosmosRedelegateTx.send,
+    } as BaseRedelegateProcedure,
+  ];
+
+  return {
+    baseProcedures,
+    isAuthApproved: authCheck?.granted,
+    authTxHash: authCheck?.txnHash,
+    refetchAuthCheck: refetch,
+  };
+};
+
+const useCosmosBroadcastRedelegateTx = ({
+  client,
+  amount,
+  network,
+  address,
+  onLoading,
+  onSuccess,
+  onError,
+}: {
+  client: SigningStargateClient | null;
+  amount: string;
+  network?: CosmosNetwork;
+  address?: string;
+  onLoading?: () => void;
+  onSuccess?: (txHash: string) => void;
+  onError?: (e: Error) => void;
+}) => {
+  const { isPending, error, mutate, reset } = useMutation({
+    mutationKey: ["broadcastCosmosRedelegateTx", address, amount, network],
+    mutationFn: async () => {
+      if (!client || !address) {
+        throw new Error("Missing parameter: client, address");
+      }
+
+      const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
+      const { unsignedMessage, uuid } = await getRedelegateMessage({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address,
+        amount: Number(denomAmount),
+      });
+      const reDelegateValues = getRedelegateValidatorMessages(unsignedMessage);
+      const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
+      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
+
+      if (!reDelegateValues.length || feeReceiver === "") {
+        throw new Error("Missing parameter: validatorAddress, feeReceiver");
+      }
+
+      const redelegateMsgs = reDelegateValues.map((val) => ({
+        typeUrl: "/cosmos.staking.v1beta1.MsgRedelegate",
+        value: {
+          delegatorAddress: address,
+          validatorAddress: val.validator,
+          amount: val.amount,
+        },
+      }));
+      const feeCollectMsgs = [
+        {
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: {
+            fromAddress: address,
+            toAddress: feeReceiver,
+            amount: [
+              {
+                denom: networkInfo[network || defaultNetwork].denom,
+                amount: feeAmount,
+              },
+            ],
+          },
+        },
+      ];
+      const msgs = [...redelegateMsgs, ...feeCollectMsgs];
 
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
