@@ -169,5 +169,6 @@ export const getPrimaryCoinValueFromSecondaryCoin = ({ secondaryCoinValue }: { s
 };
 
 export const getMaxCoinValueFromCoin = ({ maxValue }: { maxValue: string }) => {
-  return numbro(maxValue).format({ ...numbroDefaultOptions, mantissa: 6 });
+  const mantissa = getFormattedMantissa({ val: maxValue });
+  return numbro(maxValue).format({ ...numbroDefaultOptions, mantissa });
 };
