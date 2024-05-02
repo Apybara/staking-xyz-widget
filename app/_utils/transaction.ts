@@ -46,6 +46,22 @@ export const getBasicTxCtaValidation = ({
   return "submittable";
 };
 
+export const getBasicRedelegateCtaValidation = ({
+  isAgreementChecked,
+  amountValidation,
+  walletConnectionStatus,
+}: {
+  isAgreementChecked: boolean;
+  amountValidation: BasicAmountValidationResult;
+  walletConnectionStatus: WalletConnectionStatus;
+}): BasicTxCtaValidationResult => {
+  if (amountValidation !== "valid") return amountValidation;
+  if (!isAgreementChecked) return "invalid";
+  if (walletConnectionStatus === "disconnected") return "disconnected";
+  if (walletConnectionStatus === "connecting") return "connecting";
+  return "submittable";
+};
+
 export const getStakeFees = ({ amount, network }: { amount: string; network: Network }) => {
   const ratio = feeRatioByNetwork[network];
   return BigNumber(amount).times(ratio).toString();
@@ -68,5 +84,3 @@ export type BasicTxCtaValidationResult =
   | "disconnected"
   | "connecting"
   | "submittable";
-
-export type BasicImportValidationResult = "notAgreed" | "bufferExceeded" | "submittable";

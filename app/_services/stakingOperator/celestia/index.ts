@@ -118,4 +118,23 @@ export const getNetworkStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">
 export const getServerStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
   const res: T.ServerStatusResponse = await fetchData(`${apiUrl}status`);
   return res;
+}
+export const getRedelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.RedelegateMessageResponse = await fetchData(`${apiUrl}stake/user/redelegate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address, amount }),
+  });
+  return {
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedRedelegateMessageResponse,
+    uuid: res.uuid,
+  };
+};
+
+export const getRedelegateValidatorMessages = (operatorMessage: T.DecodedRedelegateMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgRedelegate")
+    .map((msg: T.CosmosStakingMsgRedelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
 };

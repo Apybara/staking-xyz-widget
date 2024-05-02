@@ -13,7 +13,7 @@ export const DefaultViewTop = () => {
   const [isRefetching, setIsRefetching] = useState(false);
 
   const moreLink = useLinkWithSearchParams("more");
-  const importLink = useLinkWithSearchParams("import");
+  const redelegateLink = useLinkWithSearchParams("redelegate");
 
   const refetch = async () => {
     setIsRefetching(true);
@@ -23,10 +23,11 @@ export const DefaultViewTop = () => {
 
   return (
     <div className={cn(S.defaultTop)}>
-      <Link href={importLink} className={S.importButton}>
+      <div></div>
+      {/* <Link href={redelegateLink} className={S.redelegateButton}>
         <Icon name="download" />
         <span>Import my stake</span>
-      </Link>
+      </Link> */}
       <div className={S.buttonContainer}>
         <button className={cn(S.button({ state: isRefetching ? "fetching" : "default" }))} onClick={refetch}>
           <Icon name="rotate" size={20} />

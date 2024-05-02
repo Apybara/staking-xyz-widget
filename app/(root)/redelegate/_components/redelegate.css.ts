@@ -3,9 +3,9 @@ import { colors, weights } from "../../../../theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 import { recipe } from "@vanilla-extract/recipes";
 
-export const importTop = style({});
+export const redelegateTop = style({});
 
-globalStyle(`${importTop} h1`, {
+globalStyle(`${redelegateTop} h1`, {
   marginInlineEnd: 0,
 });
 

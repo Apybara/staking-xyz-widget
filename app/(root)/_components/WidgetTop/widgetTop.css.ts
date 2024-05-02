@@ -27,7 +27,7 @@ export const rotate = keyframes({
   "0%": { transform: "rotate(0deg)" },
   "100%": { transform: "rotate(360deg)" },
 });
-export const importButton = style({
+export const redelegateButton = style({
   borderRadius: pxToRem(4),
   paddingInline: pxToRem(8),
   blockSize: pxToRem(26),

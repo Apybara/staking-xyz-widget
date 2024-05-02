@@ -15,6 +15,11 @@ export type EventFunctionTypes = {
   unstake_tx_flow_started: ({ amount }: UnstakeTxFlowStartProps) => void;
   unstake_tx_flow_undelegate_succeeded: () => void;
   unstake_tx_flow_undelegate_failed: () => void;
+  redelegate_tx_flow_started: ({ amount, hasAuthApproval }: RedelegateTxFlowStartProps) => void;
+  redelegate_tx_flow_auth_succeeded: () => void;
+  redelegate_tx_flow_auth_failed: () => void;
+  redelegate_tx_flow_redelegate_succeeded: () => void;
+  redelegate_tx_flow_redelegate_failed: () => void;
 };
 
 export type WalletConnectivityProps = {
@@ -29,4 +34,9 @@ export type StakeTxFlowStartProps = {
 
 export type UnstakeTxFlowStartProps = {
   amount: string;
+};
+
+export type RedelegateTxFlowStartProps = {
+  amount: string;
+  hasAuthApproval?: boolean;
 };
