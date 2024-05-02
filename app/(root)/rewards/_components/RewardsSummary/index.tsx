@@ -60,8 +60,12 @@ export const RewardsSummary = () => {
           </InfoCard.StackItem>
         </InfoCard.Stack>
       </InfoCard.Card>
-      {/* TODO: update URL */}
-      <a className={S.link} href="#" target="_blank" rel="noopener noreferrer">
+      <a
+        className={S.link}
+        href={process.env.NEXT_PUBLIC_COMPOUNDING_INFO_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <span>More info about compounding</span>
         <Icon name="arrow" size={12} />
       </a>
