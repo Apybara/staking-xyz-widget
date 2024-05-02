@@ -167,14 +167,14 @@ const ctaTextMap: Record<StakeProcedureStep, Record<StakeProcedureState, string>
   auth: {
     idle: "Approve",
     active: "Approve",
-    loading: "Approving",
+    loading: "Proceed in the wallet",
     success: "Approved",
     error: "Try again",
   },
   delegate: {
     idle: "Confirm",
     active: "Confirm",
-    loading: "Confirming",
+    loading: "Proceed in the wallet",
     success: "Confirmed",
     error: "Try again",
   },

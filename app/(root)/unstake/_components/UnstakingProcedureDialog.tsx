@@ -156,14 +156,14 @@ const ctaTextMap: Record<UnstakeProcedureStep, Record<UnstakeProcedureState, str
   auth: {
     idle: "Approve",
     active: "Approve",
-    loading: "Approving",
+    loading: "Proceed in the wallet",
     success: "Approved",
     error: "Try again",
   },
   undelegate: {
     idle: "Confirm",
     active: "Confirm",
-    loading: "Confirming",
+    loading: "Proceed in the wallet",
     success: "Confirmed",
     error: "Try again",
   },
