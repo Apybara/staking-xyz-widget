@@ -12,13 +12,11 @@ import * as S from "./heroCard.css";
 
 export const HeroCard = () => {
   const { connectionStatus } = useWallet();
-  const { stakedBalance, isLoading: isLoadingStakedBalance } = useStakedBalance() || {};
-  const networkReward = useNetworkReward();
+  const { stakedBalance, isLoading: isLoadingStakedBalance, error: stakedBalanceError } = useStakedBalance() || {};
+  const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward() || {};
 
   const formattedStakedBalance = useDynamicAssetValueFromCoin({ coinVal: stakedBalance });
   const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: 0.2 });
-
-  const isLoading = networkReward?.isLoading;
 
   if (connectionStatus === "connected") {
     if (isLoadingStakedBalance) {
@@ -31,7 +29,26 @@ export const HeroCard = () => {
       );
     }
 
-    if (stakedBalance) {
+    if (stakedBalanceError) {
+      return (
+        <CTACard
+          topSubtitle={
+            <>
+              <span>Total balance</span>
+              <Tooltip
+                className={S.balanceTooltip}
+                trigger={<Icon name="info" />}
+                content="This balance only tracks stake that has been done through Staking.xyz."
+              />
+            </>
+          }
+          title="Error"
+          subtitle="Please try to refresh"
+        />
+      );
+    }
+
+    if (stakedBalance && stakedBalance !== "0") {
       return (
         <CTACard
           topSubtitle={
@@ -50,10 +67,14 @@ export const HeroCard = () => {
       );
     }
 
+    if (rewardError) {
+      return <CTACard topSubtitle="You're missing" title="Error" subtitle="Please try to refresh" />;
+    }
+
     return (
       <CTACard
         topSubtitle="You're missing"
-        title={isLoading ? <Skeleton width={180} height={20} /> : `${networkReward?.rewards.percentage}% rewards`}
+        title={isLoadingReward ? <Skeleton width={180} height={20} /> : `${rewards?.percentage}% rewards`}
         subtitle="Also time to manage your staking"
       />
     );
