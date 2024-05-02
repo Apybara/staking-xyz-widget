@@ -22,6 +22,10 @@ export const getFormattedMantissa = ({ val, maxMantissa }: { val?: number | stri
   if (!val || val === "0" || isNaN(Number(val))) return 0;
 
   const count = getDecimalCounts(Number(val));
+
   if (!maxMantissa) return count;
-  return count > maxMantissa ? maxMantissa : count;
+  if (count <= maxMantissa) return count;
+
+  const trimmedCount = getDecimalCounts(Number(Number(val).toFixed(maxMantissa)));
+  return trimmedCount;
 };

@@ -15,7 +15,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     connectionStatus !== "connected" ||
     !!unbondingDelegations?.error ||
     unbondingDelegations?.isLoading ||
-    stakedBalance === "0";
+    (stakedBalance === "0" && !unbondingDelegations?.formatted?.length);
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;

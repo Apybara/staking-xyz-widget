@@ -94,12 +94,14 @@ export const getFormattedFiatCurrencyValue = ({
     return `>${defaultSymbol}1.0T`;
   }
 
+  const mantissa = formatOptions?.mantissa || (val === 0 ? 0 : numbroDefaultOptions.mantissa);
   return numbro(val)
     .formatCurrency({
       ...numbroDefaultOptions,
       average: true,
       currencySymbol: "$",
       ...formatOptions,
+      mantissa,
     })
     .toUpperCase();
 };
@@ -124,11 +126,13 @@ export const getFormattedCoinValue = ({ val, formatOptions, capAtTrillion = true
     return `>1.0T${defaultSymbol}`;
   }
 
+  const mantissa = formatOptions?.mantissa || (val === 0 ? 0 : numbroDefaultOptions.mantissa);
   const value = numbro(val)
     .format({
       ...numbroDefaultOptions,
       average: true,
       ...formatOptions,
+      mantissa,
     })
     .toUpperCase();
 
