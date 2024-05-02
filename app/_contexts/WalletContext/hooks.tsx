@@ -53,6 +53,10 @@ export const useActiveWalletStates = ({
     cosmosWalletStates.connectionStatus,
     cosmosWalletStates.address,
   ]);
+
+  if (isCosmosNetwork) {
+    return cosmosWalletStates;
+  }
 };
 
 export const useIsWalletConnectingEagerly = ({
@@ -60,15 +64,21 @@ export const useIsWalletConnectingEagerly = ({
   activeWallet,
   setStates,
 }: Pick<WalletStates, "connectionStatus" | "activeWallet" | "setStates">) => {
+  const { network } = useShell();
   const { open } = useDialog("walletConnection");
+  const isCosmosNetwork = network && getIsCosmosNetwork(network);
   const isCosmosWalletStored = useCosmosWalletHasStoredConnection();
-  const [isConnectingEagerly, setIsConnectingEagerly] = useState(false);
+  const [isConnectingEagerly, setIsConnectingEagerly] = useState<WalletStates["isEagerlyConnecting"]>(undefined);
 
   useEffect(() => {
-    if (isCosmosWalletStored && !open && connectionStatus === "connecting" && activeWallet && !isConnectingEagerly) {
-      setIsConnectingEagerly(true);
+    if (!open && connectionStatus === "connecting" && activeWallet && !isConnectingEagerly) {
+      if (isCosmosNetwork && isCosmosWalletStored) {
+        setIsConnectingEagerly(true);
+      }
+    } else {
+      setIsConnectingEagerly(false);
     }
-  }, [activeWallet, connectionStatus, open, isCosmosWalletStored]);
+  }, [activeWallet, connectionStatus, open, isCosmosWalletStored, isCosmosNetwork]);
 
   useEffect(() => {
     if (connectionStatus === "connected" && isConnectingEagerly) {
