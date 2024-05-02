@@ -8,7 +8,7 @@ export type WalletStates = {
   activeWallet: WalletType | null;
   address: string | null;
   connectionStatus: WalletConnectionStatus;
-  isEagerlyConnecting: boolean;
+  isEagerlyConnecting?: boolean;
   connectedAddress: Array<string>;
   setStates: Dispatch<Partial<WalletStates>>;
 };

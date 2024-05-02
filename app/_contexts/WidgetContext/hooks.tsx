@@ -12,7 +12,7 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
   const homePageLink = useLinkWithSearchParams("");
 
   useEffect(() => {
-    // Redirect to the stake page if the user is not connected and the page is the home page
+    // Redirect to the stake page on initial visit
     if (connectionStatus === "disconnected" && !connectedAddress.length && pathname === "/" && status === "loading") {
       router.push(stakePageLink);
       return;
@@ -27,6 +27,7 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
       router.push(homePageLink);
       return;
     }
+
     setStates({ status: "loaded" });
   }, [pathname, connectedAddress, connectionStatus]);
 };

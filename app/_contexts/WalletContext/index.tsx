@@ -12,8 +12,13 @@ export const WalletProvider = ({ children }: T.WalletProviderProps) => {
   const [states, setStates] = useReducer<T.UseWalletReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
   useWalletsSupport({ setStates });
-  useActiveWalletStates({ connectedAddress: states.connectedAddress, setStates });
-  useIsWalletConnectingEagerly(states);
+  const { connectionStatus, activeWallet } =
+    useActiveWalletStates({ connectedAddress: states.connectedAddress, setStates }) || {};
+  useIsWalletConnectingEagerly({
+    connectionStatus: connectionStatus || "disconnected",
+    activeWallet: activeWallet || null,
+    setStates,
+  });
 
   // Failed connection event is tracked in WalletConnectionDialog
   const captureWalletConnectSuccess = usePostHogEvent("wallet_connect_succeeded");
@@ -47,7 +52,7 @@ const initialStates: T.WalletContext = {
   activeWallet: null,
   address: null,
   connectionStatus: "disconnected",
-  isEagerlyConnecting: false,
+  isEagerlyConnecting: undefined,
   connectedAddress: [],
   setStates: () => {},
 };
