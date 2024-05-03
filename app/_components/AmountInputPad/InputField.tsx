@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes } from "react";
 import type { Currency } from "../../types";
-import { forwardRef } from "react";
+import { forwardRef, useRef } from "react";
 import cn from "classnames";
 import { fiatCurrencyMap } from "../../consts";
 import * as S from "./amountInputPad.css";
@@ -10,10 +10,12 @@ export type InputFieldProps = HTMLInputFieldProps & {
 };
 
 export const InputField = ({ currency, value, ...props }: InputFieldProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const isFiatCurrency = currency === "USD" || currency === "EUR";
 
   return (
-    <div className={S.inputField}>
+    <div className={S.inputField} onClick={() => inputRef.current?.focus()}>
       {isFiatCurrency && <span>{fiatCurrencyMap[currency]}</span>}
 
       <div className={S.htmlInputFieldContainer}>
@@ -22,7 +24,7 @@ export const InputField = ({ currency, value, ...props }: InputFieldProps) => {
           {value || 0}
         </div>
 
-        <HTMLInputField value={value} {...props} />
+        <HTMLInputField ref={inputRef} value={value} {...props} />
       </div>
     </div>
   );
