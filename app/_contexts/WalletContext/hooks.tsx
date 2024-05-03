@@ -26,25 +26,14 @@ export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setS
   return null;
 };
 
-export const useActiveWalletStates = ({
-  connectedAddress,
-  setStates,
-}: {
-  connectedAddress: WalletStates["connectedAddress"];
-  setStates: WalletStates["setStates"];
-}) => {
+export const useActiveWalletStates = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const { network } = useShell();
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
   const cosmosWalletStates = useCosmosWalletStates({ network: isCosmosNetwork ? network : undefined });
 
   useEffect(() => {
     if (isCosmosNetwork) {
-      setStates({
-        ...cosmosWalletStates,
-        connectedAddress: cosmosWalletStates.address
-          ? [...connectedAddress, cosmosWalletStates.address]
-          : connectedAddress,
-      });
+      setStates(cosmosWalletStates);
       return;
     }
   }, [

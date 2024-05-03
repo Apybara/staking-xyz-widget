@@ -2,6 +2,7 @@
 import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
+import { useActiveWalletStates } from "../../_contexts/WalletContext/hooks";
 import { useProceduralStates } from "../../_utils/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
@@ -11,7 +12,7 @@ import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
 
 export const WalletAccountDialog = () => {
   const { network } = useShell();
-  const { activeWallet, address } = useWallet();
+  const { activeWallet, address, setStates } = useWallet();
   const {
     data: balanceData,
     isLoading: isBalanceLoading,
@@ -21,6 +22,10 @@ export const WalletAccountDialog = () => {
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
   const disconnectors = useWalletDisconnectors(network || defaultNetwork);
+
+  // NOTE: triggering this hook here to ensure CosmosKit wallet status are updated.
+  // The `useCosmosWalletStates` hook triggered in WalletContext doesn't update the status for unknown reasons.
+  useActiveWalletStates({ setStates });
 
   const captureDisconnectSuccess = usePostHogEvent("wallet_disconnect_succeeded");
 
