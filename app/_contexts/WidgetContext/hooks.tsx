@@ -7,13 +7,13 @@ import { useWallet } from "../WalletContext";
 export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { connectionStatus, connectedAddress } = useWallet();
+  const { connectionStatus } = useWallet();
   const stakePageLink = useLinkWithSearchParams("stake");
   const homePageLink = useLinkWithSearchParams("");
 
   useEffect(() => {
     // Redirect to the stake page on initial visit
-    if (connectionStatus === "disconnected" && !connectedAddress.length && pathname === "/" && status === "loading") {
+    if (connectionStatus === "disconnected" && pathname === "/" && status === "loading") {
       router.push(stakePageLink);
       return;
     }
@@ -29,5 +29,5 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
     }
 
     setStates({ status: "loaded" });
-  }, [pathname, connectedAddress, connectionStatus]);
+  }, [pathname, connectionStatus]);
 };

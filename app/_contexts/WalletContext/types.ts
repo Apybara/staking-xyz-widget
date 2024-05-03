@@ -9,7 +9,6 @@ export type WalletStates = {
   address: string | null;
   connectionStatus: WalletConnectionStatus;
   isEagerlyConnecting?: boolean;
-  connectedAddress: Array<string>;
   setStates: Dispatch<Partial<WalletStates>>;
 };
 
