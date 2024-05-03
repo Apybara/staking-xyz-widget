@@ -1,18 +1,17 @@
 "use client";
 import cn from "classnames";
-import { fromUnixTime } from "date-fns";
 import { useShell } from "../../../../_contexts/ShellContext";
 import { Icon } from "../../../../_components/Icon";
 import * as InfoCard from "../../../../_components/InfoCard";
 import { LinkCTAButton } from "../../../../_components/CTAButton";
 import { RewardsTooltip } from "../../../_components/RewardsTooltip";
 import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
-import { getTimeDiffInSingleString } from "../../../../_utils/time";
+import { getTimeTillMidnight } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
+import { useNetworkReward, useRewards } from "@/app/_services/stakingOperator/hooks";
 import { useStaking } from "@/app/_contexts/StakingContext";
 import * as S from "./rewardsSummary.css";
-import { useNetworkReward, useRewards } from "@/app/_services/stakingOperator/hooks";
 
 export const RewardsSummary = () => {
   const { network } = useShell();
@@ -25,7 +24,7 @@ export const RewardsSummary = () => {
 
   const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: total_rewards });
   const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: last_cycle_rewards });
-  const formattedNextCompounding = getTimeDiffInSingleString(fromUnixTime(1745099829));
+  const formattedNextCompounding = getTimeTillMidnight();
 
   return (
     <>

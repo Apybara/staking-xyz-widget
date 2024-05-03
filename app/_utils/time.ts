@@ -79,6 +79,12 @@ const getTimeDiffFromNow = (time: string | Date) => {
   return diff;
 };
 
+export const getTimeTillMidnight = () => {
+  const midnightUTC = moment.utc().endOf("day").toDate();
+
+  return getTimeDiffInSingleString(midnightUTC);
+};
+
 export const getFormattedUTCString = (date: Date) => {
   const year = date.getUTCFullYear();
   const month = monthNames[date.getUTCMonth()];
