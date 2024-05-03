@@ -1,8 +1,10 @@
+import type { Network } from "../../../types";
 import type { UnbondingDelegation } from "../../unstake/types";
 import type * as T from "../types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import { defaultNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getTimeDiffInSingleUnits } from "../../../_utils/time";
 import { getCoinValueFromDenom } from "../../cosmos/utils";
 import { getCalculatedRewards, getLastOffset } from "../utils";
@@ -16,22 +18,24 @@ import {
   getAddressRewards,
 } from ".";
 
-export const useCelestiaAddressAuthCheck = ({ address }: { address?: string }) => {
+export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
     enabled: !!address,
-    queryKey: ["celestiaAddressAuthCheck", address],
-    queryFn: () => getAddressAuthCheck(address || ""),
+    queryKey: ["celestiaAddressAuthCheck", address, network],
+    queryFn: () =>
+      getAddressAuthCheck({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork], address: address || "" }),
     refetchOnWindowFocus: true,
   });
 
   return { data, isLoading, error, refetch };
 };
 
-export const useCelestiaDelegations = ({ address }: { address?: string }) => {
+export const useCelestiaDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
     enabled: !!address,
-    queryKey: ["celestiaDelegations", address],
-    queryFn: () => getDelegations(address || ""),
+    queryKey: ["celestiaDelegations", address, network],
+    queryFn: () =>
+      getDelegations({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork], address: address || "" }),
     refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
@@ -40,11 +44,21 @@ export const useCelestiaDelegations = ({ address }: { address?: string }) => {
   return { data, stakedBalance: !isLoading && !error ? stakedBalance : undefined, isLoading, error, refetch };
 };
 
-export const useCelestiaUnbondingDelegations = ({ address }: { address?: string }) => {
+export const useCelestiaUnbondingDelegations = ({
+  address,
+  network,
+}: {
+  address?: string;
+  network: Network | null;
+}) => {
   const { data, isLoading, error, refetch } = useQuery({
     enabled: !!address,
-    queryKey: ["celestiaUnbondingDelegations", address],
-    queryFn: () => getUnbondingDelegations(address || ""),
+    queryKey: ["celestiaUnbondingDelegations", address, network],
+    queryFn: () =>
+      getUnbondingDelegations({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address: address || "",
+      }),
     refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
@@ -84,11 +98,12 @@ const useFormattedUnbondingDelegations = (
 };
 
 export const useAddressActivity = ({
+  network,
   address,
   offset,
   limit,
   filterKey,
-}: T.AddressActivityPaginationParams & { address?: string }) => {
+}: T.AddressActivityPaginationParams & { network: Network | null; address?: string }) => {
   const queryClient = useQueryClient();
 
   const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
@@ -96,10 +111,16 @@ export const useAddressActivity = ({
     T.AddressActivityResponse
   >({
     enabled: !!address,
-    queryKey: ["addressActivity", address, offset, limit, filterKey],
+    queryKey: ["addressActivity", address, offset, limit, filterKey, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
-      return getAddressActivity({ address, offset, limit, filterKey });
+      return getAddressActivity({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address,
+        offset,
+        limit,
+        filterKey,
+      });
     },
     placeholderData: keepPreviousData,
     staleTime: 15000,
@@ -110,10 +131,16 @@ export const useAddressActivity = ({
     if (!isPlaceholderData && data?.hasMore) {
       const nextOffset = offset + 1;
       queryClient.prefetchQuery({
-        queryKey: ["addressActivity", address, limit, filterKey, nextOffset],
+        queryKey: ["addressActivity", address, limit, filterKey, nextOffset, network],
         queryFn: () => {
           if (!address) return Promise.resolve(null);
-          return getAddressActivity({ address, offset: nextOffset, limit, filterKey });
+          return getAddressActivity({
+            apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+            address,
+            offset: nextOffset,
+            limit,
+            filterKey,
+          });
         },
       });
     }
@@ -134,16 +161,16 @@ export const useAddressActivity = ({
   };
 };
 
-export const useAddressRewards = ({ address }: { address?: string }) => {
+export const useAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, error, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressRewardsResponse | null,
     T.AddressRewardsResponse
   >({
     enabled: !!address,
-    queryKey: ["addressRewards", address],
+    queryKey: ["addressRewards", address, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
-      return getAddressRewards({ address });
+      return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork], address });
     },
     placeholderData: keepPreviousData,
     staleTime: 15000,
@@ -159,10 +186,11 @@ export const useAddressRewards = ({ address }: { address?: string }) => {
 };
 
 export const useAddressRewardsHistory = ({
+  network,
   address,
   offset,
   limit,
-}: T.AddressRewardsHistoryPaginationParams & { address?: string }) => {
+}: T.AddressRewardsHistoryPaginationParams & { network: Network | null; address?: string }) => {
   const queryClient = useQueryClient();
 
   const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
@@ -170,10 +198,15 @@ export const useAddressRewardsHistory = ({
     T.AddressRewardsHistoryResponse
   >({
     enabled: !!address,
-    queryKey: ["addressRewardsHistory", address, offset, limit],
+    queryKey: ["addressRewardsHistory", address, offset, limit, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
-      return getAddressRewardsHistory({ address, offset, limit });
+      return getAddressRewardsHistory({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address,
+        offset,
+        limit,
+      });
     },
     placeholderData: keepPreviousData,
     staleTime: 15000,
@@ -184,10 +217,15 @@ export const useAddressRewardsHistory = ({
     if (!isPlaceholderData && data?.hasMore) {
       const nextOffset = offset + 1;
       queryClient.prefetchQuery({
-        queryKey: ["addressRewardsHistory", address, limit, nextOffset],
+        queryKey: ["addressRewardsHistory", address, limit, nextOffset, network],
         queryFn: () => {
           if (!address) return Promise.resolve(null);
-          return getAddressRewardsHistory({ address, offset: nextOffset, limit });
+          return getAddressRewardsHistory({
+            apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+            address,
+            offset: nextOffset,
+            limit,
+          });
         },
       });
     }
@@ -208,10 +246,10 @@ export const useAddressRewardsHistory = ({
   };
 };
 
-export const useCelestiaReward = (amount: string) => {
+export const useCelestiaReward = ({ network, amount }: { network: Network | null; amount: string }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["celestiaReward"],
-    queryFn: () => getNetworkReward(),
+    queryKey: ["celestiaReward", network],
+    queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork] }),
     refetchOnWindowFocus: true,
   });
 

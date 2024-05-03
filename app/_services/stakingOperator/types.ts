@@ -1,3 +1,8 @@
+export type BaseParams = {
+  address: string;
+  apiUrl: string;
+};
+
 export type AuthCheckResponse = {
   granted: boolean;
   txnHash?: string;
