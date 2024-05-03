@@ -1,19 +1,18 @@
 import { fetchData } from "@/app/_utils/fetch";
 import type * as T from "../types";
 
-const API_URL = process.env.NEXT_PUBLIC_STAKING_API_CELESTIA;
-
-export const getAddressAuthCheck = async (address: string) => {
-  const res: T.AuthCheckResponse = await fetchData(`${API_URL}address/check/${address}`);
+export const getAddressAuthCheck = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.AuthCheckResponse = await fetchData(`${apiUrl}address/check/${address}`);
   return res;
 };
 
 export const getAddressActivity = ({
+  apiUrl,
   address,
   offset,
   limit,
   filterKey,
-}: T.AddressActivityPaginationParams & { address: string }) => {
+}: T.AddressActivityPaginationParams & T.BaseParams) => {
   if (filterKey === "stake") {
     return {
       status: "OK",
@@ -63,26 +62,27 @@ export const getAddressActivity = ({
   } as T.AddressActivityResponse;
 };
 
-export const getAddressRewards = async ({ address }: { address: string }) => {
-  const res: T.AddressRewardsResponse = await fetchData(`${API_URL}address/${address}/rewards`);
+export const getAddressRewards = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.AddressRewardsResponse = await fetchData(`${apiUrl}address/${address}/rewards`);
 
   return res;
 };
 
 export const getAddressRewardsHistory = async ({
+  apiUrl,
   address,
   offset,
   limit,
-}: T.AddressRewardsHistoryPaginationParams & { address: string }) => {
+}: T.AddressRewardsHistoryPaginationParams & T.BaseParams) => {
   const res: T.AddressRewardsHistoryResponse = await fetchData(
-    `${API_URL}address/${address}/rewards/activity?offset=${offset}&limit=${limit}`,
+    `${apiUrl}address/${address}/rewards/activity?offset=${offset}&limit=${limit}`,
   );
 
   return res;
 };
 
-export const getDelegateMessage = async (address: string, amount: number) => {
-  const res: T.DelegateMessageResponse = await fetchData(`${API_URL}stake/user/delegate`, {
+export const getDelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.DelegateMessageResponse = await fetchData(`${apiUrl}stake/user/delegate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -95,15 +95,15 @@ export const getDelegateMessage = async (address: string, amount: number) => {
   };
 };
 
-export const setMonitorTx = async ({ txHash, uuid }: { txHash: string; uuid: string }) => {
-  const res = await fetchData(`${API_URL}monitor/hash/${uuid}/${txHash}`, {
+export const setMonitorTx = async ({ apiUrl, txHash, uuid }: { apiUrl: string; txHash: string; uuid: string }) => {
+  const res = await fetchData(`${apiUrl}monitor/hash/${uuid}/${txHash}`, {
     method: "PUT",
   });
   return res;
 };
 
-export const setMonitorGrantTx = async ({ txHash }: { txHash: string }) => {
-  const res = await fetchData(`${API_URL}monitor/grant/${txHash}`, {
+export const setMonitorGrantTx = async ({ apiUrl, txHash }: { apiUrl: string; txHash: string }) => {
+  const res = await fetchData(`${apiUrl}monitor/grant/${txHash}`, {
     method: "PUT",
   });
   return res;
@@ -115,8 +115,8 @@ export const getDelegateValidatorMessages = (operatorMessage: T.DecodedDelegateM
     .map((msg: T.CosmosStakingMsgDelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
 };
 
-export const getUndelegateMessage = async (address: string, amount: number) => {
-  const res: T.UndelegateMessageResponse = await fetchData(`${API_URL}stake/user/undelegate`, {
+export const getUndelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.UndelegateMessageResponse = await fetchData(`${apiUrl}stake/user/undelegate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -135,17 +135,17 @@ export const getUndelegateValidatorMessages = (operatorMessage: T.DecodedUndeleg
     .map((msg: T.CosmosStakingMsgUndelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
 };
 
-export const getUnbondingDelegations = async (address: string) => {
-  const res: T.UnbondingDelegationsResponse = await fetchData(`${API_URL}address/fetch/undelegate/${address}`);
+export const getUnbondingDelegations = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.UnbondingDelegationsResponse = await fetchData(`${apiUrl}address/fetch/undelegate/${address}`);
   return res.response.unbonding_responses;
 };
 
-export const getDelegations = async (address: string) => {
-  const res: T.DelegationsResponse = await fetchData(`${API_URL}address/fetch/delegate/${address}`);
+export const getDelegations = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.DelegationsResponse = await fetchData(`${apiUrl}address/fetch/delegate/${address}`);
   return res.response.delegation_responses;
 };
 
-export const getNetworkReward = async () => {
-  const res: T.NetworkRewardResponse = await fetchData(`${API_URL}network/reward`);
+export const getNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
+  const res: T.NetworkRewardResponse = await fetchData(`${apiUrl}network/reward`);
   return res;
 };

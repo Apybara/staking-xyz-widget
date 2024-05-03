@@ -177,6 +177,11 @@ export const rewardsFrequencyByNetwork: Record<Network, string> = {
   celestiatestnet3: "15s",
 };
 
+export const stakingOperatorUrlByNetwork: Record<Network, string> = {
+  celestia: process.env.NEXT_PUBLIC_STAKING_API_CELESTIA || "",
+  celestiatestnet3: process.env.NEXT_PUBLIC_STAKING_API_CELESTIA_TESTNET || "",
+};
+
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking.";
 export const SITE_URL = "https://staking.xyz";

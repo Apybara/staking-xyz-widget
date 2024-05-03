@@ -17,7 +17,13 @@ import {
   setMonitorGrantTx,
 } from "../stakingOperator/celestia";
 import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
-import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork, defaultNetwork } from "../../consts";
+import {
+  cosmosNetworkVariants,
+  networkInfo,
+  feeReceiverByNetwork,
+  defaultNetwork,
+  stakingOperatorUrlByNetwork,
+} from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import {
   useCosmosKitConnectors,
@@ -59,7 +65,11 @@ export const useCosmosUnstakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const { data: authCheck, isLoading, refetch } = useCelestiaAddressAuthCheck({ address: address || undefined });
+  const {
+    data: authCheck,
+    isLoading,
+    refetch,
+  } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
 
   const authTx = useCosmosBroadcastAuthzTx({
     client: cosmosSigningClient || null,
@@ -141,7 +151,11 @@ export const useCosmosUndelegate = ({
       }
 
       const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
-      const { unsignedMessage, uuid } = await getUndelegateMessage(address, Number(denomAmount));
+      const { unsignedMessage, uuid } = await getUndelegateMessage({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address,
+        amount: Number(denomAmount),
+      });
       const undelegateValues = getUndelegateValidatorMessages(unsignedMessage);
 
       if (!undelegateValues.length) {
@@ -172,7 +186,11 @@ export const useCosmosUndelegate = ({
     },
     onSuccess: ({ tx, uuid }) => {
       onSuccess?.(tx.transactionHash);
-      setMonitorTx({ txHash: tx.transactionHash, uuid });
+      setMonitorTx({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        txHash: tx.transactionHash,
+        uuid,
+      });
     },
     onError: (error) => onError?.(error),
   });
@@ -219,7 +237,11 @@ export const useCosmosStakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const { data: authCheck, isLoading, refetch } = useCelestiaAddressAuthCheck({ address: address || undefined });
+  const {
+    data: authCheck,
+    isLoading,
+    refetch,
+  } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
 
   const cosmosAuthTx = useCosmosBroadcastAuthzTx({
     client: cosmosSigningClient || null,
@@ -312,7 +334,10 @@ const useCosmosBroadcastAuthzTx = ({
     },
     onSuccess: (res) => {
       onSuccess?.(res.transactionHash);
-      setMonitorGrantTx({ txHash: res.transactionHash });
+      setMonitorGrantTx({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        txHash: res.transactionHash,
+      });
     },
     onError: (error) => onError?.(error),
   });
@@ -360,7 +385,11 @@ const useCosmosBroadcastDelegateTx = ({
       }
 
       const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
-      const { unsignedMessage, uuid } = await getDelegateMessage(address, Number(denomAmount));
+      const { unsignedMessage, uuid } = await getDelegateMessage({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address,
+        amount: Number(denomAmount),
+      });
       const delegateValues = getDelegateValidatorMessages(unsignedMessage);
       const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
       const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
@@ -409,7 +438,11 @@ const useCosmosBroadcastDelegateTx = ({
     },
     onSuccess: ({ tx, uuid }) => {
       onSuccess?.(tx.transactionHash);
-      setMonitorTx({ txHash: tx.transactionHash, uuid });
+      setMonitorTx({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        txHash: tx.transactionHash,
+        uuid,
+      });
     },
     onError: (error) => onError?.(error),
   });

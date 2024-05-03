@@ -16,6 +16,7 @@ export const useUnbondingDelegations = () => {
   const { network } = useShell();
   const { address } = useWallet();
   const celestia = useCelestiaUnbondingDelegations({
+    network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
 
@@ -32,6 +33,7 @@ export const useStakedBalance = () => {
   const { network } = useShell();
   const { address } = useWallet();
   const celestia = useCelestiaDelegations({
+    network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
 
@@ -65,6 +67,7 @@ export const useActivity = () => {
 
   const { offset, setOffset, limit, filterKey, setFilterKey } = useAddressActivityQueryParams();
   const celestia = useAddressActivity({
+    network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
     offset,
     limit,
@@ -87,10 +90,11 @@ export const useActivity = () => {
 };
 
 export const useLastOffsetActivity = ({ offset, limit, filterKey }: T.AddressActivityPaginationParams) => {
+  const { network } = useShell();
   const { address } = useWallet();
-  const { lastOffset } = useAddressActivity({ address: address || undefined, offset, limit, filterKey });
+  const { lastOffset } = useAddressActivity({ network, address: address || undefined, offset, limit, filterKey });
 
-  return useAddressActivity({ address: address || undefined, offset: lastOffset, limit, filterKey });
+  return useAddressActivity({ network, address: address || undefined, offset: lastOffset, limit, filterKey });
 };
 
 export const useAddressRewardsHistoryQueryParams = () => {
@@ -110,6 +114,7 @@ export const useRewards = () => {
   const { address } = useWallet();
 
   const celestia = useAddressRewards({
+    network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
 
@@ -132,6 +137,7 @@ export const useRewardsHistory = () => {
 
   const { offset, setOffset, limit } = useAddressRewardsHistoryQueryParams();
   const celestia = useAddressRewardsHistory({
+    network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
     offset,
     limit,
@@ -153,17 +159,18 @@ export const useRewardsHistory = () => {
 };
 
 export const useLastOffsetRewardsHistory = ({ offset, limit }: T.AddressRewardsHistoryPaginationParams) => {
+  const { network } = useShell();
   const { address } = useWallet();
-  const { lastOffset } = useAddressRewardsHistory({ address: address || undefined, offset, limit });
+  const { lastOffset } = useAddressRewardsHistory({ network, address: address || undefined, offset, limit });
 
-  return useAddressRewardsHistory({ address: address || undefined, offset: lastOffset, limit });
+  return useAddressRewardsHistory({ network, address: address || undefined, offset: lastOffset, limit });
 };
 
 export const useNetworkReward = (defaultNetwork?: string) => {
   const { network } = useShell();
   const { coinAmountInput } = useStaking();
 
-  const celestiaRewards = useCelestiaReward(coinAmountInput || "0");
+  const celestiaRewards = useCelestiaReward({ network, amount: coinAmountInput || "0" });
 
   switch (defaultNetwork || network) {
     case "celestia":
