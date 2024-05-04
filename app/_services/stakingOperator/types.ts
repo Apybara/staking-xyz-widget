@@ -199,3 +199,8 @@ type CommonEntriesResponse<R, D> = Omit<CommonResponse<R, D>, "data"> & {
 };
 
 export type NetworkRewardResponse = number;
+export type NetworkStatusResponse = {
+  blockHeight: number;
+  blockTime: string;
+  networkOffline: boolean;
+};

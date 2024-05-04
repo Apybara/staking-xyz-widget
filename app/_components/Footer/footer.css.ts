@@ -28,25 +28,34 @@ export const blockHeight = recipe({
     position: "relative",
     fontSize: pxToRem(12),
     lineHeight: 1,
+    selectors: {
+      "&:before": {
+        content: '""',
+        position: "absolute",
+        insetBlockStart: `calc(50% - ${pxToRem(4)})`,
+        insetInlineEnd: pxToRem(-14),
+        blockSize: pxToRem(8),
+        inlineSize: pxToRem(8),
+        borderRadius: "100%",
+      },
+    },
   },
   variants: {
     state: {
       loading: {
         color: colors.black600,
+        selectors: {
+          "&:before": {
+            backgroundColor: colors.black600,
+          },
+        },
       },
       error: {
-        color: colors.red900,
+        color: colors.yellow900,
         marginInlineEnd: pxToRem(8),
         selectors: {
           "&:before": {
-            content: '""',
-            position: "absolute",
-            insetBlockStart: `calc(50% - ${pxToRem(4)})`,
-            insetInlineEnd: pxToRem(-14),
-            blockSize: pxToRem(8),
-            inlineSize: pxToRem(8),
-            borderRadius: "100%",
-            backgroundColor: colors.red900,
+            backgroundColor: colors.yellow900,
           },
         },
       },
@@ -55,13 +64,6 @@ export const blockHeight = recipe({
         marginInlineEnd: pxToRem(8),
         selectors: {
           "&:before": {
-            content: '""',
-            position: "absolute",
-            insetBlockStart: `calc(50% - ${pxToRem(4)})`,
-            insetInlineEnd: pxToRem(-14),
-            blockSize: pxToRem(8),
-            inlineSize: pxToRem(8),
-            borderRadius: "100%",
             backgroundColor: colors.green900,
           },
         },

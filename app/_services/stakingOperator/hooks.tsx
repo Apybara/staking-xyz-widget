@@ -9,6 +9,7 @@ import {
   useAddressRewardsHistory,
   useCelestiaReward,
   useAddressRewards,
+  useCelestiaStatus,
 } from "../stakingOperator/celestia/hooks";
 import { useStaking } from "@/app/_contexts/StakingContext";
 
@@ -176,6 +177,19 @@ export const useNetworkReward = (defaultNetwork?: string) => {
     case "celestia":
     case "celestiatestnet3":
       return celestiaRewards;
+    default:
+      return undefined;
+  }
+};
+
+export const useNetworkStatus = (defaultNetwork?: string) => {
+  const { network } = useShell();
+  const celestiaStatus = useCelestiaStatus({ network });
+
+  switch (defaultNetwork || network) {
+    case "celestia":
+    case "celestiatestnet3":
+      return celestiaStatus;
     default:
       return undefined;
   }
