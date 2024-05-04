@@ -16,6 +16,7 @@ import {
   getAddressRewardsHistory,
   getNetworkReward,
   getAddressRewards,
+  getNetworkStatus,
 } from ".";
 
 export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
@@ -271,4 +272,14 @@ export const useCelestiaReward = ({ network, amount }: { network: Network | null
   const rewards = getCalculatedRewards(amount, data || 0);
 
   return { data, rewards, isLoading, error, refetch };
+};
+
+export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["celestiaStatus", network],
+    queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork] }),
+    refetchOnWindowFocus: true,
+  });
+
+  return { data, isLoading, error, refetch };
 };
