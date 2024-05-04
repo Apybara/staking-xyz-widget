@@ -180,7 +180,14 @@ export const useAddressRewards = ({ network, address }: { network: Network | nul
     error,
     isLoading: isLoading || status === "pending",
     isFetching,
-    data: data?.data,
+    data: {
+      total_rewards: getCoinValueFromDenom({ network: network || defaultNetwork, amount: data?.data?.total_rewards }),
+      last_cycle_rewards: getCoinValueFromDenom({
+        network: network || defaultNetwork,
+        amount: data?.data?.last_cycle_rewards,
+      }),
+      daily_rewards: getCoinValueFromDenom({ network: network || defaultNetwork, amount: data?.data?.daily_rewards }),
+    },
     refetch,
   };
 };

@@ -30,11 +30,11 @@ export const RewardsSummary = () => {
     <>
       <section className={cn(S.card)}>
         <h3 className={cn(S.cardTitle)}>Cumulative</h3>
-        <p className={cn(S.cardValue)}>{formattedCumulative || "-"}</p>
+        <p className={cn(S.cardValue)}>{formattedCumulative}</p>
       </section>
       <section className={cn(S.card)}>
         <h3 className={cn(S.cardTitle)}>Rewards from this cycle</h3>
-        <p className={cn(S.cardValue)}>{formattedCycleReward || "-"}</p>
+        <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
       </section>
       <InfoCard.Card>
         <InfoCard.Stack>
