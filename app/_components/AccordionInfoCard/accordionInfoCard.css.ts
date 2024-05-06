@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { card as infoCardStyle } from "../InfoCard/infoCard.css";
 import { colors } from "../../../theme/theme.css";
@@ -18,7 +18,6 @@ export const itemHeader = style({
 export const trigger = style([
   infoCardStyle,
   {
-    border: "none",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -40,6 +39,10 @@ export const trigger = style([
     },
   },
 ]);
+
+globalStyle(`${itemHeader} ${trigger}`, {
+  border: "none",
+});
 
 export const triggerIcon = style({
   selectors: {
