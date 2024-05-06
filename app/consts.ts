@@ -48,6 +48,9 @@ export const networkExplorer: Record<Network, string> = {
 export const CosmosNetworkVariants = ["celestia", "celestiatestnet3"] as const;
 export const cosmosNetworkVariants = [...CosmosNetworkVariants];
 
+export const CosmosTestnetVariants = ["celestiatestnet3"] as const;
+export const cosmosTestnetVariants = [...CosmosTestnetVariants];
+
 export const networkWalletPrefixes: Record<Network, string> = {
   celestia: "celestia1",
   celestiatestnet3: "celestia1",

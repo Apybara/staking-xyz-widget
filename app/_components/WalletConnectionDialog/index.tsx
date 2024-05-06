@@ -16,10 +16,16 @@ export const WalletConnectionDialog = () => {
   const { error, setError } = useProceduralStates();
 
   const { network, isOnMobileDevice } = useShell();
-  const { walletsSupport, connectionStatus, activeWallet, isEagerlyConnecting, setStates } = useWallet();
+  const { walletsSupport, connectionStatus, activeWallet, isEagerlyConnecting, keplrSuggestConnectError, setStates } =
+    useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || defaultNetwork);
-  const cosmosKitConnectionError = useCosmosKitError({ network, modalOpen: open, walletType: connectingWallet });
+  const cosmosKitConnectionError = useCosmosKitError({
+    network,
+    modalOpen: open,
+    walletType: connectingWallet,
+    keplrSuggestConnectError,
+  });
 
   // Success connection event is tracked in WalletContext
   const captureWalletConnectFailed = usePostHogEvent("wallet_connect_failed");
