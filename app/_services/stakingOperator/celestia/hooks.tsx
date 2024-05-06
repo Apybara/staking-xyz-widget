@@ -4,7 +4,7 @@ import type * as T from "../types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
-import { defaultNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
+import { defaultNetwork, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getTimeDiffInSingleUnits } from "../../../_utils/time";
 import { getCoinValueFromDenom } from "../../cosmos/utils";
 import { getCalculatedRewards, getLastOffset } from "../utils";
@@ -17,6 +17,7 @@ import {
   getNetworkReward,
   getAddressRewards,
   getNetworkStatus,
+  getServerStatus,
 } from ".";
 
 export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
@@ -278,6 +279,17 @@ export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
     queryKey: ["celestiaStatus", network],
     queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork] }),
+    refetchOnWindowFocus: true,
+    refetchInterval: 180000,
+  });
+
+  return { data, isLoading, isRefetching, error, refetch };
+};
+
+export const useCelestiaServerStatus = ({ network }: { network: Network | null }) => {
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    queryKey: ["celestiaServerStatus", network],
+    queryFn: () => getServerStatus({ apiUrl: serverUrlByNetwork[network || defaultNetwork] }),
     refetchOnWindowFocus: true,
     refetchInterval: 180000,
   });
