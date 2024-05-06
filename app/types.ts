@@ -2,6 +2,7 @@ import {
   NetworkVariants,
   CoinVariants,
   CosmosNetworkVariants,
+  cosmosTestnetVariants,
   FiatCurrencyVariants,
   CosmosWalletVariants,
   WalletVariants,
@@ -18,6 +19,7 @@ export type NetworkInfo = {
 };
 
 export type CosmosNetwork = (typeof CosmosNetworkVariants)[number];
+export type CosmosTestnet = (typeof cosmosTestnetVariants)[number];
 
 export type FiatCurrency = (typeof FiatCurrencyVariants)[number];
 export type NetworkCurrency = (typeof CoinVariants)[number];

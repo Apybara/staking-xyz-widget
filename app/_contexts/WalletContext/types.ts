@@ -9,6 +9,7 @@ export type WalletStates = {
   address: string | null;
   connectionStatus: WalletConnectionStatus;
   isEagerlyConnecting?: boolean;
+  keplrSuggestConnectError?: boolean;
   setStates: Dispatch<Partial<WalletStates>>;
 };
 

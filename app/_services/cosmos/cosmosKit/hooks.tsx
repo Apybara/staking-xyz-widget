@@ -7,8 +7,11 @@ import type { CosmosKitWalletType } from "./types";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useChainWallet, useChain } from "@cosmos-kit/react-lite";
+import { useDialog } from "../../../_contexts/UIContext";
+import { useWallet } from "../../../_contexts/WalletContext";
 import { getBalance } from "..";
-import { getIsCosmosNetwork } from "../utils";
+import { cosmosTestnetChainInfo } from "../consts";
+import { getIsCosmosNetwork, getIsCosmosTestnet } from "../utils";
 import { getIsCosmosKitWalletType } from "./utils";
 
 export const useCosmosKitWalletSupports = () => {
@@ -38,13 +41,15 @@ export const useCosmosKitError = ({
   network,
   walletType,
   modalOpen,
+  keplrSuggestConnectError,
 }: {
   network?: Network | null;
   walletType: CosmosWalletType | null;
   modalOpen: boolean;
+  keplrSuggestConnectError?: boolean;
 }) => {
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
-  const { status, openView, closeView } = useChain(isCosmosNetwork ? network : "celestia");
+  const { status, wallet, openView, closeView } = useChain(isCosmosNetwork ? network : "celestia");
 
   // Need to trigger modal open/close to reset CosmosKit status
   useEffect(() => {
@@ -56,12 +61,16 @@ export const useCosmosKitError = ({
   }, [modalOpen]);
 
   if (!isCosmosNetwork || !getIsCosmosKitWalletType(walletType || "")) return null;
-  return status === "Error" || status === "Rejected";
+  if (wallet?.name === "keplr-extension" && getIsCosmosTestnet(network)) {
+    return keplrSuggestConnectError === true;
+  } else {
+    return status === "Error" || status === "Rejected";
+  }
 };
 
 export const useCosmosKitConnectors = (network: CosmosNetwork) => {
   const walletContexts = useCosmosKitWalletContexts(network);
-  const keplrConnect = walletContexts?.keplr?.connect || null;
+  const keplrConnect = useKeplrSuggestAndConnect({ network, keplrConnect: walletContexts?.keplr?.connect || null });
   const leapConnect = walletContexts?.leap?.connect || null;
   const okxConnect = walletContexts?.okx?.connect || null;
 
@@ -153,6 +162,41 @@ const useCosmosKitBalanceProps = ({
     getRpcEndpoint: getRpcEndpoint || null,
     address: address || null,
     network,
+  };
+};
+
+const useKeplrSuggestAndConnect = ({
+  network,
+  keplrConnect,
+}: {
+  network: CosmosNetwork;
+  keplrConnect: (() => Promise<void>) | null;
+}) => {
+  const { setStates } = useWallet();
+  const { open } = useDialog("walletConnection");
+
+  useEffect(() => {
+    if (getIsCosmosTestnet(network) === false || !open) {
+      setStates?.({ keplrSuggestConnectError: undefined });
+      return;
+    }
+  }, [network, open, setStates]);
+
+  if (!getIsCosmosTestnet(network)) return keplrConnect;
+
+  return async () => {
+    if (!window?.keplr) throw new Error("Keplr not found");
+
+    try {
+      setStates({ activeWallet: "keplr", connectionStatus: "connecting", keplrSuggestConnectError: undefined });
+
+      await window?.keplr?.experimentalSuggestChain(cosmosTestnetChainInfo[network]);
+      await keplrConnect?.();
+
+      setStates({ activeWallet: "keplr", connectionStatus: "connected", keplrSuggestConnectError: undefined });
+    } catch (error) {
+      setStates({ activeWallet: "keplr", connectionStatus: "disconnected", keplrSuggestConnectError: true });
+    }
   };
 };
 

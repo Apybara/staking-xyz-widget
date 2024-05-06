@@ -48,5 +48,6 @@ const initialStates: T.WalletContext = {
   address: null,
   connectionStatus: "disconnected",
   isEagerlyConnecting: false,
-  setStates: () => { },
+  keplrSuggestConnectError: false,
+  setStates: () => {},
 };

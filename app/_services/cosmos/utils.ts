@@ -1,12 +1,16 @@
-import type { Network, WalletType } from "../../types";
+import type { WalletType } from "../../types";
 import type { Asset, AssetList } from "@chain-registry/types";
-import type { CosmosNetwork } from "../../types";
+import type { CosmosNetwork, CosmosTestnet } from "../../types";
 import BigNumber from "bignumber.js";
 import { assets } from "chain-registry";
-import { networkCurrency, cosmosNetworkVariants, cosmosWalletVariants } from "../../consts";
+import { networkCurrency, cosmosNetworkVariants, cosmosTestnetVariants, cosmosWalletVariants } from "../../consts";
 
-export const getIsCosmosNetwork = (network: string): network is Network => {
-  return cosmosNetworkVariants.includes(network as Network);
+export const getIsCosmosNetwork = (network: string): network is CosmosNetwork => {
+  return cosmosNetworkVariants.includes(network as CosmosNetwork);
+};
+
+export const getIsCosmosTestnet = (network: string): network is CosmosTestnet => {
+  return cosmosTestnetVariants.includes(network as CosmosTestnet);
 };
 
 export const getIsCosmosWalletType = (walletType: string): walletType is WalletType => {
