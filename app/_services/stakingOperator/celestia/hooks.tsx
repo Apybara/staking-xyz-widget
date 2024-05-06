@@ -275,11 +275,12 @@ export const useCelestiaReward = ({ network, amount }: { network: Network | null
 };
 
 export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
     queryKey: ["celestiaStatus", network],
     queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork] }),
     refetchOnWindowFocus: true,
+    refetchInterval: 180000,
   });
 
-  return { data, isLoading, error, refetch };
+  return { data, isLoading, isRefetching, error, refetch };
 };
