@@ -204,3 +204,4 @@ export type NetworkStatusResponse = {
   blockTime: string;
   networkOffline: boolean;
 };
+export type ServerStatusResponse = Omit<CommonResponse<{}, {}>, "data">;
