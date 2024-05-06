@@ -3,14 +3,16 @@
 import numbro from "numbro";
 import { RootFooter } from "./RootFooter";
 import { useNetworkStatus } from "@/app/_services/stakingOperator/hooks";
+import { useShell } from "@/app/_contexts/ShellContext";
 
 export const Footer = () => {
-  const { data, isLoading, error } = useNetworkStatus() || {};
+  const { network } = useShell();
+  const { data, isLoading, isRefetching, error } = useNetworkStatus() || {};
 
   const isNetworkOffline = data?.networkOffline;
   const isError = error || isNetworkOffline;
 
-  const errorMessage = isNetworkOffline ? "Celestia has problem" : "Connection problem";
+  const errorMessage = isNetworkOffline ? `${network} has a problem` : "Our server has a problem";
 
   const formattedBlockHeight = numbro(data?.blockHeight).format({
     thousandSeparated: true,
@@ -19,8 +21,9 @@ export const Footer = () => {
 
   return (
     <RootFooter
-      networkStatus={isLoading ? "loading" : isError ? "error" : "default"}
-      blockHeight={isLoading ? "Checking.." : isError ? errorMessage : formattedBlockHeight}
+      isRefetching={isLoading || isRefetching}
+      networkStatus={isLoading ? "idle" : isError ? "error" : "default"}
+      blockHeight={isLoading ? "Loading.." : isError ? errorMessage : formattedBlockHeight}
     />
   );
 };
