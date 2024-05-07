@@ -4,6 +4,7 @@ import type { RewardsHistoryItem } from "../../../../_services/stakingOperator/t
 import { useShell } from "../../../../_contexts/ShellContext";
 import { Skeleton } from "../../../../_components/Skeleton";
 import * as ListTable from "../../../../_components/ListTable";
+import { EmptyState } from "../../../../_components/EmptyState";
 import { ErrorRetryModule } from "../../../../_components/ErrorRetryModule";
 import { getPercentagedNumber } from "../../../../_utils/number";
 import { getUTCStringFromUnixTimestamp } from "../../../../_utils/time";
@@ -16,7 +17,7 @@ export const RewardsHistoryTable = () => {
   const { network } = useShell();
   const { params, query } = useRewardsHistory() || {};
   const { offset, setOffset, limit } = params;
-  const { data, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
+  const { formattedEntries, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
 
   if (isFetching) {
     return (
@@ -42,26 +43,38 @@ export const RewardsHistoryTable = () => {
 
   return (
     <>
-      <ListTable.Pad>
-        <ListTable.List>
-          {data?.entries?.map((rewardsHistory, index) => (
-            <ListItem key={index + rewardsHistory.id} rewardsHistory={rewardsHistory} network={network} />
-          ))}
-        </ListTable.List>
-        <ListTable.Pagination
-          currentPage={offset + 1}
-          hasNextPage={!disableNextPage}
-          onNextClick={() => setOffset(offset + 1)}
-          onPrevClick={() => setOffset(offset - 1)}
-          onFirstClick={() => setOffset(0)}
-          onLastClick={() => lastOffset && setOffset(lastOffset)}
-        />
-      </ListTable.Pad>
+      {formattedEntries?.length ? (
+        <ListTable.Pad>
+          <ListTable.List>
+            {formattedEntries?.map((rewardsHistory, index) => (
+              <ListItem key={index + rewardsHistory.id} rewardsHistory={rewardsHistory} network={network} />
+            ))}
+          </ListTable.List>
+          <ListTable.Pagination
+            currentPage={offset + 1}
+            hasNextPage={!disableNextPage}
+            onNextClick={() => setOffset(offset + 1)}
+            onPrevClick={() => setOffset(offset - 1)}
+            onFirstClick={() => setOffset(0)}
+            onLastClick={() => lastOffset && setOffset(lastOffset)}
+          />
+        </ListTable.Pad>
+      ) : (
+        <ListTable.Pad className={S.errorPad}>
+          <EmptyState />
+        </ListTable.Pad>
+      )}
     </>
   );
 };
 
-const ListItem = ({ rewardsHistory, network }: { rewardsHistory: RewardsHistoryItem; network: Network | null }) => {
+const ListItem = ({
+  rewardsHistory,
+  network,
+}: {
+  rewardsHistory: Omit<RewardsHistoryItem, "amount"> & { amount: string };
+  network: Network | null;
+}) => {
   const amount = useDynamicAssetValueFromCoin({ coinVal: rewardsHistory.amount });
   const href = `${networkExplorer[network || defaultNetwork]}tx/${rewardsHistory.id}`;
 

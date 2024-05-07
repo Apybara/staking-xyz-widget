@@ -155,6 +155,10 @@ export const useAddressActivity = ({
     isFetching,
     disableNextPage: isPlaceholderData || lastOffset === offset,
     data: data?.data,
+    formattedEntries: data?.data?.entries?.map((entry) => ({
+      ...entry,
+      amount: getCoinValueFromDenom({ network: network || defaultNetwork, amount: entry.amount }),
+    })),
     totalEntries,
     lastOffset,
     refetch,
@@ -247,6 +251,10 @@ export const useAddressRewardsHistory = ({
     isFetching,
     disableNextPage: isPlaceholderData || lastOffset === offset,
     data: data?.data,
+    formattedEntries: data?.data?.entries?.map((entry) => ({
+      ...entry,
+      amount: getCoinValueFromDenom({ network: network || defaultNetwork, amount: entry.amount }),
+    })),
     totalEntries,
     lastOffset,
     refetch,
