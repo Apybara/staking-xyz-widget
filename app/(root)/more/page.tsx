@@ -26,12 +26,12 @@ export default async function More({ searchParams }: RouterStruct) {
         <li>
           <MoreNavCard
             title="How it works"
-            description="Staking optimizer, compounder, and more"
+            description="Optimization, auto-compounder, and more"
             url={process.env.NEXT_PUBLIC_HOW_IT_WORKS_LINK}
           />
         </li>
         <li>
-          <MoreNavCard title="FAQ" description="Frequent questions" url={process.env.NEXT_PUBLIC_FAQ_LINK} />
+          <MoreNavCard title="FAQ" description="Frequently asked questions" url={process.env.NEXT_PUBLIC_FAQ_LINK} />
         </li>
       </ul>
 

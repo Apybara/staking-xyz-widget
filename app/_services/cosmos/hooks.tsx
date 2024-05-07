@@ -104,8 +104,8 @@ export const useCosmosUnstakingProcedures = ({
           trigger={<Icon name="info" />}
           content={
             <>
-              This approval lets Staking.xyz manage staking operations on your behalf. You always have full control of
-              your funds. <a href="#">(more)</a>
+              This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
+              control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
             </>
           }
         />
@@ -275,8 +275,8 @@ export const useCosmosStakingProcedures = ({
           trigger={<Icon name="info" />}
           content={
             <>
-              This approval lets Staking.xyz manage staking operations on your behalf. You always have full control of
-              your funds. <a href="#">(more)</a>
+              This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
+              control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
             </>
           }
         />

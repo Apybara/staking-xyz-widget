@@ -70,14 +70,14 @@ export const HeroCard = () => {
     }
 
     if (rewardError) {
-      return <CTACard topSubtitle="You're missing" title="Error" subtitle="Please try to refresh" />;
+      return <CTACard topSubtitle="Begin earning" title="Error" subtitle="Please try to refresh" />;
     }
 
     return (
       <CTACard
-        topSubtitle="You're missing"
+        topSubtitle="Begin earning"
         title={isLoadingReward ? <Skeleton width={180} height={20} /> : `${rewards?.percentage}% rewards`}
-        subtitle="Also time to manage your staking"
+        subtitle="Making staking easier to manage"
       />
     );
   }
