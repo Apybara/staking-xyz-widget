@@ -27,6 +27,7 @@ export type BaseAmountInputPadProps = {
   secondaryCurrency: Currency;
   setPrimaryValue: (val: string) => void;
   onSwap: () => void;
+  maxAmountBuffer?: string;
   onMax: (maxVal?: string | undefined) => void;
 };
 
@@ -48,6 +49,7 @@ export const AmountInputPad = ({
   secondaryCurrency,
   setPrimaryValue,
   onSwap,
+  maxAmountBuffer,
   onMax,
 }: AmountInputPadProps) => {
   useEffect(() => {
@@ -132,7 +134,12 @@ export const AmountInputPad = ({
         onConvert: onSwap,
       }}
       onClickMax={() => {
-        onMax(availableValue);
+        if (!availableValue) return;
+        onMax(
+          BigNumber(availableValue)
+            .minus(maxAmountBuffer || "0")
+            .toString(),
+        );
       }}
     />
   );
