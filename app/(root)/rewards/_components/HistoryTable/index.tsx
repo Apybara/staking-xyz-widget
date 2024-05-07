@@ -12,6 +12,7 @@ import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hoo
 import { useRewardsHistory } from "../../../../_services/stakingOperator/hooks";
 import { networkExplorer, defaultNetwork } from "../../../../consts";
 import * as S from "./historyTable.css";
+import { WidgetContent } from "@/app/_components/WidgetContent";
 
 export const RewardsHistoryTable = () => {
   const { network } = useShell();
@@ -21,7 +22,7 @@ export const RewardsHistoryTable = () => {
 
   if (isFetching) {
     return (
-      <>
+      <WidgetContent variant="full">
         <Skeleton width="100%" height={26} />
         <ListTable.Pad>
           {[...Array(limit)].map((_, index) => (
@@ -29,20 +30,22 @@ export const RewardsHistoryTable = () => {
           ))}
           <Skeleton width={100} height={18} />
         </ListTable.Pad>
-      </>
+      </WidgetContent>
     );
   }
 
   if (error) {
     return (
-      <ListTable.Pad className={S.errorPad}>
-        <ErrorRetryModule onRetry={refetch} isLoading={isFetching} />
-      </ListTable.Pad>
+      <WidgetContent variant="full">
+        <ListTable.Pad className={S.errorPad}>
+          <ErrorRetryModule onRetry={refetch} isLoading={isFetching} />
+        </ListTable.Pad>
+      </WidgetContent>
     );
   }
 
   return (
-    <>
+    <WidgetContent variant="full">
       {formattedEntries?.length ? (
         <ListTable.Pad>
           <ListTable.List>
@@ -64,7 +67,7 @@ export const RewardsHistoryTable = () => {
           <EmptyState />
         </ListTable.Pad>
       )}
-    </>
+    </WidgetContent>
   );
 };
 

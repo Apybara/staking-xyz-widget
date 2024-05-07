@@ -32,5 +32,6 @@ const initialStates: T.ShellContext = {
   currency: null,
   coinPrice: null,
   isOnMobileDevice: undefined,
+  isScrollActive: false,
   setStates: () => {},
 };

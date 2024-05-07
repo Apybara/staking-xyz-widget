@@ -26,7 +26,15 @@ export const main = style({
   display: "flex",
   flexDirection: "column",
   gap: pxToRem(8),
+  paddingInline: pxToRem(16),
 });
+
+export const cardContent = style([
+  main,
+  {
+    paddingInline: 0,
+  },
+]);
 
 export const title = style({
   fontSize: pxToRem(16),

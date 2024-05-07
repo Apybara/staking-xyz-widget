@@ -13,12 +13,6 @@ export const main = style({
   paddingInline: pxToRem(10),
 });
 
-export const widgetContainer = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: pxToRem(16),
-});
-
 export const nav = style({
   display: "flex",
   flexDirection: "column",

@@ -8,4 +8,5 @@ export const widgetBottomBox = style({
   justifyContent: "flex-end",
   alignItems: "center",
   gap: pxToRem(16),
+  paddingInline: pxToRem(16),
 });

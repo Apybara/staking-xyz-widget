@@ -3,6 +3,7 @@ import type { RouterStruct } from "../../../types";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { UnstakingProvider } from "../../../_contexts/UnstakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
+import { WidgetContent } from "@/app/_components/WidgetContent";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { UnstakeAmountInputPad } from "./UnstakeAmountInputPad";
 import { UnstakeInfoBox } from "./UnstakeInfoBox";
@@ -14,9 +15,11 @@ export const ClientSideUnstakePage = ({ searchParams }: { searchParams: RouterSt
   return (
     <UnstakingProvider>
       <PageViewTop page="Unstake" homeURL={getLinkWithSearchParams(searchParams, "")} />
-      <UnstakeAmountInputPad />
-      <UnstakeInfoBox />
-      <UnstakeSecondaryInfoBox />
+      <WidgetContent>
+        <UnstakeAmountInputPad />
+        <UnstakeInfoBox />
+        <UnstakeSecondaryInfoBox />
+      </WidgetContent>
       <WidgetBottomBox>
         <UnstakeCTA />
       </WidgetBottomBox>
