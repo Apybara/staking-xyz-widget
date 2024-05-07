@@ -12,6 +12,8 @@ import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hoo
 import { useNetworkReward, useRewards } from "@/app/_services/stakingOperator/hooks";
 import { useStaking } from "@/app/_contexts/StakingContext";
 import * as S from "./rewardsSummary.css";
+import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
+import { WidgetContent } from "@/app/_components/WidgetContent";
 
 export const RewardsSummary = () => {
   const { network } = useShell();
@@ -28,49 +30,54 @@ export const RewardsSummary = () => {
 
   return (
     <>
-      <section className={cn(S.card)}>
-        <h3 className={cn(S.cardTitle)}>Cumulative</h3>
-        <p className={cn(S.cardValue)}>{formattedCumulative}</p>
-      </section>
-      <section className={cn(S.card)}>
-        <h3 className={cn(S.cardTitle)}>Rewards from this cycle</h3>
-        <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
-      </section>
-      <InfoCard.Card>
-        <InfoCard.Stack>
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Next compounding</InfoCard.Title>
-            </InfoCard.TitleBox>
-            <InfoCard.Content>{formattedNextCompounding} left</InfoCard.Content>
-          </InfoCard.StackItem>
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Est. reward rate</InfoCard.Title>
-              {stakeFees && <RewardsTooltip />}
-            </InfoCard.TitleBox>
-            <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
-          </InfoCard.StackItem>
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Reward frequency</InfoCard.Title>
-            </InfoCard.TitleBox>
-            <InfoCard.Content>{rewardsFrequencyByNetwork[network || defaultNetwork]}</InfoCard.Content>
-          </InfoCard.StackItem>
-        </InfoCard.Stack>
-      </InfoCard.Card>
-      <a
-        className={S.link}
-        href={process.env.NEXT_PUBLIC_COMPOUNDING_INFO_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span>More info about compounding</span>
-        <Icon name="arrow" size={12} />
-      </a>
-      <LinkCTAButton className={S.ctaButton} variant="secondary" href={historyLink}>
-        View history
-      </LinkCTAButton>
+      <WidgetContent>
+        <section className={cn(S.card)}>
+          <h3 className={cn(S.cardTitle)}>Cumulative</h3>
+          <p className={cn(S.cardValue)}>{formattedCumulative}</p>
+        </section>
+        <section className={cn(S.card)}>
+          <h3 className={cn(S.cardTitle)}>Rewards from this cycle</h3>
+          <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
+        </section>
+        <InfoCard.Card>
+          <InfoCard.Stack>
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Next compounding</InfoCard.Title>
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{formattedNextCompounding} left</InfoCard.Content>
+            </InfoCard.StackItem>
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Est. reward rate</InfoCard.Title>
+                {stakeFees && <RewardsTooltip />}
+              </InfoCard.TitleBox>
+              <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
+            </InfoCard.StackItem>
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Reward frequency</InfoCard.Title>
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{rewardsFrequencyByNetwork[network || defaultNetwork]}</InfoCard.Content>
+            </InfoCard.StackItem>
+          </InfoCard.Stack>
+        </InfoCard.Card>
+        <a
+          className={S.link}
+          href={process.env.NEXT_PUBLIC_COMPOUNDING_INFO_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>More info about compounding</span>
+          <Icon name="arrow" size={12} />
+        </a>
+      </WidgetContent>
+
+      <WidgetBottomBox>
+        <LinkCTAButton className={S.ctaButton} variant="secondary" href={historyLink}>
+          View history
+        </LinkCTAButton>
+      </WidgetBottomBox>
     </>
   );
 };

@@ -8,13 +8,16 @@ import { StakeAmountInputPad } from "./StakeAmountInputPad";
 import { StakeInfoBox } from "./StakeInfoBox";
 import { StakingProcedureDialog } from "./StakingProcedureDialog";
 import { StakeCTA } from "./StakeCTA";
+import { WidgetContent } from "@/app/_components/WidgetContent";
 
 export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
   return (
     <StakingProvider>
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />
-      <StakeAmountInputPad />
-      <StakeInfoBox />
+      <WidgetContent>
+        <StakeAmountInputPad />
+        <StakeInfoBox />
+      </WidgetContent>
       <WidgetBottomBox>
         <StakeCTA />
       </WidgetBottomBox>

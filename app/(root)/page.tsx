@@ -5,6 +5,7 @@ import redirectPage from "../_actions/redirectPage";
 import { getDynamicPageMetadata } from "../_utils/site";
 import revalidatePageQueries from "../_actions/revalidatePageQueries";
 import { DefaultViewTop } from "./_components/WidgetTop";
+import { WidgetContent } from "../_components/WidgetContent";
 import { HeroCard } from "./_components/HeroCard";
 import { StakeNavCard } from "./_components/StakeNavCard";
 import { UnstakeNavCard } from "./_components/UnstakeNavCard";
@@ -20,13 +21,15 @@ export default async function Home({ searchParams }: RouterStruct) {
   return (
     <>
       <DefaultViewTop />
-      <HeroCard />
-      <nav className={cn(S.nav)}>
-        <StakeNavCard searchParams={searchParams} />
-        <UnstakeNavCard searchParams={searchParams} />
-        <RewardsNavCard searchParams={searchParams} />
-        <ActivityNavCard searchParams={searchParams} />
-      </nav>
+      <WidgetContent variant="full">
+        <HeroCard />
+        <nav className={cn(S.nav)}>
+          <StakeNavCard searchParams={searchParams} />
+          <UnstakeNavCard searchParams={searchParams} />
+          <RewardsNavCard searchParams={searchParams} />
+          <ActivityNavCard searchParams={searchParams} />
+        </nav>
+      </WidgetContent>
     </>
   );
 }

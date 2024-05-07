@@ -8,6 +8,7 @@ export type ShellStates = {
   currency: Currency | null;
   coinPrice: CoinPrice | null;
   isOnMobileDevice?: boolean;
+  isScrollActive?: boolean;
   setStates: Dispatch<Partial<ShellStates>>;
 };
 

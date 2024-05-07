@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Icon } from "../../../_components/Icon";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import * as S from "./widgetTop.css";
+import { useShell } from "@/app/_contexts/ShellContext";
 
 export const DefaultViewTop = () => {
   const queryClient = useQueryClient();
@@ -51,8 +52,10 @@ export const PageViewTop = ({
   homeURL: string;
   endBox?: ReactNode;
 }) => {
+  const { isScrollActive } = useShell()
+  
   return (
-    <div className={cn(S.pageTop, className)}>
+    <div className={cn(S.pageTop, { [S.pageTopFixed]: isScrollActive })}>
       <Link href={homeURL} className={cn(S.button())}>
         <Icon name="cross" size={20} />
       </Link>

@@ -6,6 +6,7 @@ import redirectPage from "../../_actions/redirectPage";
 import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { ActivityTable } from "./_components/ActivityTable";
+import { WidgetContent } from "@/app/_components/WidgetContent";
 
 export default async function Activity({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
@@ -15,7 +16,9 @@ export default async function Activity({ searchParams }: RouterStruct) {
   return (
     <>
       <PageViewTop page="Activity" homeURL={getLinkWithSearchParams(searchParams, "")} />
-      <ActivityTable />
+      <WidgetContent variant="full">
+        <ActivityTable />
+      </WidgetContent>
     </>
   );
 }

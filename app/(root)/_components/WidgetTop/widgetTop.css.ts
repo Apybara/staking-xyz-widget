@@ -5,19 +5,32 @@ import { recipe } from "@vanilla-extract/recipes";
 
 export const defaultTop = style({
   display: "flex",
+  alignItems: "center",
   justifyContent: "space-between",
+  paddingInline: pxToRem(16),
+  blockSize: pxToRem(60),
 });
 
 export const pageTop = style({
   display: "flex",
   alignItems: "center",
-  blockSize: pxToRem(28),
+  paddingInline: pxToRem(16),
+  blockSize: pxToRem(60),
+  zIndex: 2,
+  borderBottom: `1px solid transparent`,
+  transition: "background-color 0.3s",
+});
+
+export const pageTopFixed = style({
+  backgroundColor: colors.black750,
+  borderColor: colors.black700,
+  boxShadow: "0px 0px 50px 0px #00000080",
 });
 
 export const title = style({
   fontSize: pxToRem(20),
   fontWeight: weights.semibold,
-  lineHeight: 1,
+  lineHeight: pxToRem(28),
   textAlign: "center",
   flexGrow: 1,
   marginInlineEnd: 20,
