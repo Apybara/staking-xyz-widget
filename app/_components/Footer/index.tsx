@@ -8,7 +8,7 @@ import { networkInfo } from "@/app/consts";
 
 export const Footer = () => {
   const { network } = useShell();
-  const networkName = networkInfo[network as keyof typeof networkInfo].name;
+  const networkName = networkInfo[network as keyof typeof networkInfo]?.name;
 
   const {
     data: networkStatusData,
