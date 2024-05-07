@@ -4,8 +4,8 @@ import type { ActivityItem } from "../../../_services/stakingOperator/types";
 import { useShell } from "../../../_contexts/ShellContext";
 import { Skeleton } from "../../../_components/Skeleton";
 import * as ListTable from "../../../_components/ListTable";
+import { EmptyState } from "../../../_components/EmptyState";
 import { ErrorRetryModule } from "../../../_components/ErrorRetryModule";
-import { EmptyState } from "@/app/_components/EmptyState";
 import { getPercentagedNumber } from "../../../_utils/number";
 import { getUTCStringFromUnixTimestamp } from "../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
@@ -17,7 +17,7 @@ export const ActivityTable = () => {
   const { network } = useShell();
   const { params, query } = useActivity() || {};
   const { offset, setOffset, limit, filterKey, setFilterKey } = params;
-  const { data, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
+  const { formattedEntries, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
 
   if (isFetching) {
     return (
@@ -62,10 +62,10 @@ export const ActivityTable = () => {
           },
         ]}
       />
-      {data?.entries?.length ? (
+      {formattedEntries?.length ? (
         <ListTable.Pad>
           <ListTable.List>
-            {data?.entries?.map((activity, index) => (
+            {formattedEntries?.map((activity, index) => (
               <ListItem key={index + activity.id} activity={activity} network={network} />
             ))}
           </ListTable.List>
@@ -87,7 +87,13 @@ export const ActivityTable = () => {
   );
 };
 
-const ListItem = ({ activity, network }: { activity: ActivityItem; network: Network | null }) => {
+const ListItem = ({
+  activity,
+  network,
+}: {
+  activity: Omit<ActivityItem, "amount"> & { amount: string };
+  network: Network | null;
+}) => {
   const amount = useDynamicAssetValueFromCoin({ coinVal: activity.amount });
   const href = `${networkExplorer[network || defaultNetwork]}tx/${activity.id}`;
 
