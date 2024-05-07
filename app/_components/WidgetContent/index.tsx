@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import cn from "classnames";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 import * as S from "./widgetContent.css";
 import { useShell } from "@/app/_contexts/ShellContext";
@@ -30,8 +31,14 @@ export const WidgetContent = ({ variant = "default", children }: WidgetContentPr
   }, [ref.current]);
 
   return (
-    <div ref={ref} className={cn(S.widgetContent({ state: variant }))}>
-      {children}
-    </div>
+    <ScrollArea.Root className={cn(S.widgetContent({ state: variant }))}>
+      <ScrollArea.Viewport ref={ref} className={S.widgetWrapper}>
+        {children}
+      </ScrollArea.Viewport>
+      <ScrollArea.Scrollbar className={S.scrollbar} orientation="vertical">
+        <ScrollArea.Thumb className={S.thumb} />
+      </ScrollArea.Scrollbar>
+      <ScrollArea.Corner className={S.corner} />
+    </ScrollArea.Root>
   );
 };
