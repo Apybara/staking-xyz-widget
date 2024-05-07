@@ -14,11 +14,11 @@ export const plusSign = style({
 });
 
 export const unstakingTooltip = style({
-  width: pxToRem(300),
+  maxInlineSize: pxToRem(250),
 });
 
 export const approvalTooltip = style({
-  width: pxToRem(250),
+  maxInlineSize: pxToRem(300),
 });
 
 globalStyle(`${approvalTooltip} a`, {

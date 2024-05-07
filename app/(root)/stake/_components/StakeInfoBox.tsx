@@ -54,7 +54,7 @@ export const StakeInfoBox = () => {
               <Tooltip
                 className={S.unstakingTooltip}
                 trigger={<Icon name="question" />}
-                content={<>When you unstake, you will need to wait for {unstakingPeriod}.</>}
+                content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
               />
             </InfoCard.TitleBox>
             <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
