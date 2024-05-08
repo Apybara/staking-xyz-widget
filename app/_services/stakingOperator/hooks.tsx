@@ -169,12 +169,13 @@ export const useLastOffsetRewardsHistory = ({ offset, limit }: T.AddressRewardsH
   return useAddressRewardsHistory({ network, address: address || undefined, offset: lastOffset, limit });
 };
 
-export const useNetworkReward = (network?: Network) => {
-  const { network: globalNetwork } = useShell();
+export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: string }) => {
+  const { defaultNetwork, amount } = args || {};
+  const { network } = useShell();
   const { coinAmountInput } = useStaking();
-  const castedNetwork = network || globalNetwork;
+  const castedNetwork = defaultNetwork || network;
 
-  const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: coinAmountInput || "0" });
+  const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: amount || coinAmountInput || "0" });
 
   switch (castedNetwork) {
     case "celestia":

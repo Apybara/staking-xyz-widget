@@ -5,8 +5,8 @@ import { Icon } from "@/app/_components/Icon";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import * as S from "./rewardsTooltip.css";
 
-export const RewardsTooltip = () => {
-  const networkReward = useNetworkReward();
+export const RewardsTooltip = ({ amount }: { amount?: string }) => {
+  const networkReward = useNetworkReward({ amount });
 
   const formattedDailyReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.daily });
   const formattedMonthlyReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.monthly });

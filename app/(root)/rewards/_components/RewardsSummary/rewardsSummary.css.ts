@@ -53,3 +53,7 @@ export const link = style({
 export const ctaButton = style({
   marginBlockStart: "auto",
 });
+
+export const tooltip = style({
+  maxInlineSize: pxToRem(300),
+});
