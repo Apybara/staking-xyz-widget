@@ -52,7 +52,7 @@ export const NetworkSelect = ({ activeNetwork, onNetworkChange }: NetworkSelectP
 };
 
 const NetworkItem = ({ network }: { network: Network }) => {
-  const networkReward = useNetworkReward(network);
+  const networkReward = useNetworkReward({ defaultNetwork: network });
 
   return (
     <Select.Item value={network} className={cn(S.selectItem)}>

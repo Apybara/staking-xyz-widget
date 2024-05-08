@@ -9,15 +9,16 @@ import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
 import { getTimeTillMidnight } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
-import { useNetworkReward, useRewards } from "@/app/_services/stakingOperator/hooks";
-import { useStaking } from "@/app/_contexts/StakingContext";
+import { useNetworkReward, useRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import * as S from "./rewardsSummary.css";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { WidgetContent } from "@/app/_components/WidgetContent";
+import BigNumber from "bignumber.js";
+import Tooltip from "@/app/_components/Tooltip";
 
 export const RewardsSummary = () => {
   const { network } = useShell();
-  const { stakeFees } = useStaking();
+  const { stakedBalance } = useStakedBalance() || {};
   const networkReward = useNetworkReward();
   const historyLink = useLinkWithSearchParams("rewards/history");
 
@@ -27,6 +28,8 @@ export const RewardsSummary = () => {
   const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: total_rewards });
   const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: last_cycle_rewards });
   const formattedNextCompounding = getTimeTillMidnight();
+
+  const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).toNumber() < 1;
 
   return (
     <>
@@ -44,13 +47,20 @@ export const RewardsSummary = () => {
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Next compounding</InfoCard.Title>
+                {isRewardsSmall && (
+                <Tooltip
+                  className={S.tooltip}
+                  trigger={<Icon name="info" />}
+                  content="The app will only compound if you have more than 1 TIA of staking rewards accrued."
+                />
+              )}
               </InfoCard.TitleBox>
-              <InfoCard.Content>{formattedNextCompounding} left</InfoCard.Content>
+              <InfoCard.Content>{isRewardsSmall ? "-" : `${formattedNextCompounding} left`}</InfoCard.Content>
             </InfoCard.StackItem>
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Est. reward rate</InfoCard.Title>
-                {stakeFees && <RewardsTooltip />}
+                <RewardsTooltip amount={stakedBalance} />
               </InfoCard.TitleBox>
               <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
             </InfoCard.StackItem>
