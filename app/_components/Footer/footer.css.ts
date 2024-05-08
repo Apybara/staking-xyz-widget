@@ -4,33 +4,77 @@ import { pxToRem } from "../../../theme/utils";
 import { colors } from "../../../theme/theme.css";
 
 export const footer = style({
+  position: "relative",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
   paddingInline: pxToRem(32),
   paddingBlock: pxToRem(21),
+  fontSize: pxToRem(12),
+  lineHeight: 1,
 
   "@media": {
     "screen and (max-width: 768px)": {
+      paddingBlockStart: pxToRem(30),
       paddingInline: pxToRem(20),
+      flexDirection: "column",
+      alignItems: "flex-start",
+      gap: pxToRem(16),
     },
   },
 });
 
 export const copy = style({
-  fontSize: pxToRem(12),
-  lineHeight: 1,
   color: colors.black600,
+});
+
+export const content = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(32),
+  "@media": {
+    "screen and (max-width: 768px)": {
+      alignItems: "flex-start",
+      flexDirection: "column-reverse",
+      gap: pxToRem(16),
+    },
+  },
+});
+
+export const linksContainer = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(16),
+});
+
+export const link = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(8),
+  opacity: 0.3,
+  transition: "opacity 0.3s",
+
+  selectors: {
+    "&:hover": {
+      opacity: 1,
+    },
+  },
 });
 
 export const blockHeight = recipe({
   base: {
     position: "relative",
-    fontSize: pxToRem(12),
-    lineHeight: 1,
     display: "flex",
     alignItems: "center",
     gap: pxToRem(2),
+
+    "@media": {
+      "screen and (max-width: 768px)": {
+        position: "absolute",
+        top: pxToRem(27),
+        right: pxToRem(20),
+      },
+    },
   },
   variants: {
     state: {
