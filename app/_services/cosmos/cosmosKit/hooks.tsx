@@ -88,6 +88,7 @@ export const useCosmosKitDisconnector = ({ network = "celestia" }: { network?: C
 
 export const useCosmosKitWalletStates = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
   const { status, wallet, address } = useChain(network);
+  useCosmosKitConnectionEvents({ network });
 
   const walletName = useMemo<WalletStates["activeWallet"]>(() => {
     if (wallet?.name === "keplr-extension") return "keplr";
@@ -198,6 +199,48 @@ const useKeplrSuggestAndConnect = ({
       setStates({ activeWallet: "keplr", connectionStatus: "disconnected", keplrSuggestConnectError: true });
     }
   };
+}
+
+const useCosmosKitConnectionEvents = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
+  const walletContexts = useCosmosKitWalletContexts(network);
+  const keplrConnect = walletContexts?.keplr?.connect || null;
+  const leapConnect = walletContexts?.leap?.connect || null;
+  const okxConnect = walletContexts?.okx?.connect || null;
+  const okxDisconnect = walletContexts?.okx?.disconnect || null;
+
+  // Keplr account change event
+  useEffect(() => {
+    if (!window?.keplr) return;
+
+    window.addEventListener("keplr_keystorechange", keplrConnect || (() => null));
+    return () => {
+      window.removeEventListener("keplr_keystorechange", keplrConnect || (() => null));
+    };
+  }, [keplrConnect]);
+
+  // Leap account change event
+  useEffect(() => {
+    if (!window?.leap) return;
+
+    window.addEventListener("leap_keystorechange", leapConnect || (() => null));
+    return () => {
+      window.removeEventListener("leap_keystorechange", leapConnect || (() => null));
+    };
+  }, [leapConnect]);
+
+  // Okx account change event
+  useEffect(() => {
+    // @ts-ignore
+    if (!window?.okxwallet?.keplr) return;
+    // @ts-ignore
+    window.okxwallet?.keplr.on("accountChanged", (addressInfo: any) => {
+      if (addressInfo?.account) {
+        okxConnect?.();
+      } else {
+        okxDisconnect?.();
+      }
+    });
+  }, [okxConnect, okxDisconnect]);
 };
 
 const useCosmosKitWalletContexts = (network: CosmosNetwork) => {

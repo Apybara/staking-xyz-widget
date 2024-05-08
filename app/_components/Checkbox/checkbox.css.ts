@@ -27,6 +27,11 @@ export const checkbox = recipe({
         backgroundColor: colors.black700,
         color: colors.black000,
       },
+      disabled: {
+        backgroundColor: colors.black900,
+        color: colors.black600,
+        cursor: "default",
+      },
     },
   },
   defaultVariants: {

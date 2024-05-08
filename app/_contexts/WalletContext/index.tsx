@@ -13,7 +13,11 @@ export const WalletProvider = ({ children }: T.WalletProviderProps) => {
 
   useWalletsSupport({ setStates });
   useActiveWalletStates({ setStates });
-  useIsWalletConnectingEagerly(states);
+  useIsWalletConnectingEagerly({
+    connectionStatus: states.connectionStatus,
+    activeWallet: states.activeWallet,
+    setStates,
+  });
 
   // Failed connection event is tracked in WalletConnectionDialog
   const captureWalletConnectSuccess = usePostHogEvent("wallet_connect_succeeded");
@@ -47,7 +51,7 @@ const initialStates: T.WalletContext = {
   activeWallet: null,
   address: null,
   connectionStatus: "disconnected",
-  isEagerlyConnecting: false,
+  isEagerlyConnecting: undefined,
   keplrSuggestConnectError: false,
-  setStates: () => {},
+  setStates: () => { },
 };
