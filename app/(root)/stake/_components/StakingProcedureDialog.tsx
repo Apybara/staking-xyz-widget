@@ -15,7 +15,7 @@ export const StakingProcedureDialog = () => {
   const router = useRouter();
   const { network } = useShell();
   const { connectionStatus, activeWallet } = useWallet();
-  const { procedures, amountInputPad, resetProceduresStates } = useStaking();
+  const { procedures, amountInputPad, inputState, resetProceduresStates } = useStaking();
   const { open, toggleOpen } = useDialog("stakingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
 
@@ -31,10 +31,11 @@ export const StakingProcedureDialog = () => {
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
 
   useEffect(() => {
-    if (connectionStatus === "disconnected" && open) {
+    if (!open) return;
+    if (connectionStatus === "disconnected" || inputState !== "valid") {
       toggleOpen(false);
     }
-  }, [connectionStatus, open]);
+  }, [connectionStatus, open, inputState]);
 
   usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
 
