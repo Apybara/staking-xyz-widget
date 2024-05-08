@@ -15,7 +15,7 @@ export const UnstakingProcedureDialog = () => {
   const router = useRouter();
   const { network } = useShell();
   const { connectionStatus, activeWallet } = useWallet();
-  const { procedures, amountInputPad, resetProceduresStates } = useUnstaking();
+  const { procedures, amountInputPad, inputState, resetProceduresStates } = useUnstaking();
   const { open, toggleOpen } = useDialog("unstakingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
 
@@ -31,10 +31,11 @@ export const UnstakingProcedureDialog = () => {
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
 
   useEffect(() => {
-    if (connectionStatus === "disconnected" && open) {
+    if (!open) return;
+    if (connectionStatus === "disconnected" || inputState !== "valid") {
       toggleOpen(false);
     }
-  }, [connectionStatus, open]);
+  }, [connectionStatus, open, inputState]);
 
   usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
 
