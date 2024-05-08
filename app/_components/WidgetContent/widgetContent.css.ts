@@ -1,17 +1,14 @@
 import { colors } from "@/theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 import { globalStyle, style } from "@vanilla-extract/css";
-import { recipe } from "@vanilla-extract/recipes";
 
 export const widgetContent = style({
   paddingInline: pxToRem(16),
   blockSize: `clamp(342px, 394px, 400px)`,
-  overflow: "auto",
 });
 
 export const widgetContentFull = style({
   blockSize: `100%`,
-  overflow: "auto",
 });
 
 export const widgetWrapper = style({
