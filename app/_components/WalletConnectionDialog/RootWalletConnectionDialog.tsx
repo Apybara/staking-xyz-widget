@@ -71,6 +71,7 @@ export const RootWalletConnectionDialog = ({
                 </a>
               </>
             }
+            disabled={connection.isLoading}
           />
 
           <ul className={cn(S.list)}>
@@ -108,8 +109,8 @@ const WalletCardButton = ({
   const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting);
   const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
-    if (disabled) return "disabled";
     if (connecting) return "loading";
+    if (disabled) return "disabled";
     return "default";
   }, [connecting, disabled]);
 
