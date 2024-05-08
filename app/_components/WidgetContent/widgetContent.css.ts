@@ -3,30 +3,27 @@ import { pxToRem } from "@/theme/utils";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
-export const widgetContent = recipe({
-  base: {
-    paddingInline: pxToRem(16),
-  },
-  variants: {
-    state: {
-      default: {
-        blockSize: `clamp(342px, 394px, 400px)`,
-        overflow: "auto",
-      },
-      full: {
-        blockSize: `100%`,
-        overflow: "auto",
-      },
-    },
-  },
+export const widgetContent = style({
+  paddingInline: pxToRem(16),
+  blockSize: `clamp(342px, 394px, 400px)`,
+  overflow: "auto",
+});
+
+export const widgetContentFull = style({
+  blockSize: `100%`,
+  overflow: "auto",
 });
 
 export const widgetWrapper = style({
   blockSize: "100%",
 });
 
-globalStyle(`${widgetContent()} ${widgetWrapper} > div > *:last-child`, {
+globalStyle(`${widgetContent} ${widgetWrapper} > div > *:last-child`, {
   marginBlockEnd: pxToRem(16),
+});
+
+globalStyle(`${widgetContentFull} ${widgetWrapper} > div > *:last-child`, {
+  marginBlockEnd: pxToRem(0),
 });
 
 globalStyle(`${widgetWrapper} > div`, {
