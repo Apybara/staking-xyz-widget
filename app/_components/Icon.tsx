@@ -16,7 +16,9 @@ export type IconProps = {
     | "rotate"
     | "forward"
     | "arc"
-    | "download";
+    | "download"
+    | "x"
+    | "telegram";
   size?: number;
   className?: string;
 };
