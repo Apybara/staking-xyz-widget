@@ -18,9 +18,7 @@ export const CosmosKitProvider = ({ children }: { children: ReactNode }) => {
         endpoints,
       }}
       walletModal={WalletConnectionDialog}
-      disableIframe={false}
       subscribeConnectEvents={true}
-      // logLevel={"DEBUG"}
     >
       {children}
     </ChainProvider>

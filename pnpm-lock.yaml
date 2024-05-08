@@ -27,23 +27,23 @@ dependencies:
     specifier: ^0.32.3
     version: 0.32.3
   "@cosmos-kit/core":
-    specifier: ^2.8.9
-    version: 2.8.9
+    specifier: ^2.10.0
+    version: 2.10.0(@chain-registry/types@0.18.3)
   "@cosmos-kit/keplr-extension":
-    specifier: ^2.7.9
-    version: 2.7.9(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+    specifier: ^2.9.0
+    version: 2.9.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
   "@cosmos-kit/leap-extension":
-    specifier: ^2.7.10
-    version: 2.7.10(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+    specifier: ^2.9.0
+    version: 2.9.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
   "@cosmos-kit/okxwallet":
-    specifier: ^2.4.9
-    version: 2.4.9(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+    specifier: ^2.6.0
+    version: 2.6.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
   "@cosmos-kit/react":
-    specifier: ^2.10.11
-    version: 2.10.11(@interchain-ui/react@1.22.4)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^2.12.0
+    version: 2.12.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@interchain-ui/react@1.23.11)(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
   "@cosmos-kit/react-lite":
-    specifier: ^2.6.9
-    version: 2.6.9(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^2.8.0
+    version: 2.8.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
   "@radix-ui/react-accordion":
     specifier: ^1.1.2
     version: 1.1.2(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
@@ -777,16 +777,19 @@ packages:
       - debug
     dev: false
 
-  /@cosmos-kit/core@2.8.9:
+  /@cosmos-kit/core@2.10.0(@chain-registry/types@0.18.3):
     resolution:
-      { integrity: sha512-e0Fqbut9mqHlFS6QnLSbU8AFYPtXUcKVaMJsL1dKbfTotACsECgnAs4gzXaTFo3sTwEJrNZ6cq86qvqV85X6uw== }
+      { integrity: sha512-9gSmTCHh2xpG6rfcsVjxDUq1mvAKaS7Nre47ddEzLLrRni685I5ppokPwURsUZpm4lsNpDKKum0nV0P1WtYJhQ== }
+    peerDependencies:
+      "@chain-registry/types": ">= 0.17"
     dependencies:
       "@chain-registry/client": 1.21.1
-      "@chain-registry/types": 0.17.0
+      "@chain-registry/types": 0.18.3
       "@cosmjs/amino": 0.32.3
       "@cosmjs/cosmwasm-stargate": 0.32.3
       "@cosmjs/proto-signing": 0.32.3
       "@cosmjs/stargate": 0.32.3
+      "@dao-dao/cosmiframe": 0.1.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
       "@walletconnect/types": 2.11.0
       bowser: 2.11.0
       cosmjs-types: 0.9.0
@@ -813,17 +816,17 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/keplr-extension@2.7.9(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
+  /@cosmos-kit/keplr-extension@2.9.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
     resolution:
-      { integrity: sha512-asIjLzJjNa1mpQRohoT5zwnutk93WaQ/Y6ndb2CITfjXzM7HWrbhUzShy3FXZjHNO9CbPTjpsHNzhyScTc7fgg== }
+      { integrity: sha512-95mDqZvkuDSep65wVs802MD83xTTIgjbMkV+VnX8GzLAK5dU4DRzklpK9ONlZopceVON6YEPLeGX4q33NXgbTA== }
     peerDependencies:
-      "@cosmjs/amino": ">=0.32.2"
-      "@cosmjs/proto-signing": ">=0.32.2"
+      "@cosmjs/amino": ">=0.32.3"
+      "@cosmjs/proto-signing": ">=0.32.3"
     dependencies:
       "@chain-registry/keplr": 1.28.0
       "@cosmjs/amino": 0.32.3
       "@cosmjs/proto-signing": 0.32.3
-      "@cosmos-kit/core": 2.8.9
+      "@cosmos-kit/core": 2.10.0(@chain-registry/types@0.18.3)
       "@keplr-wallet/types": 0.12.76
     transitivePeerDependencies:
       - "@azure/app-configuration"
@@ -833,6 +836,7 @@ packages:
       - "@azure/keyvault-secrets"
       - "@azure/storage-blob"
       - "@capacitor/preferences"
+      - "@chain-registry/types"
       - "@netlify/blobs"
       - "@planetscale/database"
       - "@react-native-async-storage/async-storage"
@@ -846,17 +850,17 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/leap-extension@2.7.10(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
+  /@cosmos-kit/leap-extension@2.9.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
     resolution:
-      { integrity: sha512-vVMkF+64oMFLbrw244AxoUR4vrFSKlOHhFHw7wOEHfeTSdvX4mcCsU8CC1LtVV5Bc0msVdkNWVbE04VEump8rg== }
+      { integrity: sha512-a+FuMz+vPn9csGxSCNslWE6aTZOiDKjF8CogAgEM+xBKrLcMQ+x08eIKfVg9GdDEiLmW7p1VHBqAleZL3grn1w== }
     peerDependencies:
-      "@cosmjs/amino": ">=0.32.2"
-      "@cosmjs/proto-signing": ">=0.32.2"
+      "@cosmjs/amino": ">=0.32.3"
+      "@cosmjs/proto-signing": ">=0.32.3"
     dependencies:
       "@chain-registry/keplr": 1.28.0
       "@cosmjs/amino": 0.32.3
       "@cosmjs/proto-signing": 0.32.3
-      "@cosmos-kit/core": 2.8.9
+      "@cosmos-kit/core": 2.10.0(@chain-registry/types@0.18.3)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -865,6 +869,7 @@ packages:
       - "@azure/keyvault-secrets"
       - "@azure/storage-blob"
       - "@capacitor/preferences"
+      - "@chain-registry/types"
       - "@netlify/blobs"
       - "@planetscale/database"
       - "@react-native-async-storage/async-storage"
@@ -878,16 +883,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/okxwallet-extension@2.6.9(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
+  /@cosmos-kit/okxwallet-extension@2.8.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
     resolution:
-      { integrity: sha512-QWPtBSd9l7C5O3P+Djvhq/54KORpvGkk/pixsYmaf2Uyq7jbQUFLdeE9ZDsikWdaYtfvb9F4P+YEA1LfbpeaEg== }
+      { integrity: sha512-55R7SqcGQcvhLeVEFni2B5SURcHArh/xz8f+k3kXvPrzPou9SrOMbCn6qZMqibIhtC2z5jeB1b007Lx2Jc513Q== }
     peerDependencies:
-      "@cosmjs/amino": ">=0.32.2"
-      "@cosmjs/proto-signing": ">=0.32.2"
+      "@cosmjs/amino": ">=0.32.3"
+      "@cosmjs/proto-signing": ">=0.32.3"
     dependencies:
       "@cosmjs/amino": 0.32.3
       "@cosmjs/proto-signing": 0.32.3
-      "@cosmos-kit/core": 2.8.9
+      "@cosmos-kit/core": 2.10.0(@chain-registry/types@0.18.3)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -896,6 +901,7 @@ packages:
       - "@azure/keyvault-secrets"
       - "@azure/storage-blob"
       - "@capacitor/preferences"
+      - "@chain-registry/types"
       - "@netlify/blobs"
       - "@planetscale/database"
       - "@react-native-async-storage/async-storage"
@@ -909,11 +915,52 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/okxwallet@2.4.9(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
+  /@cosmos-kit/okxwallet@2.6.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
     resolution:
-      { integrity: sha512-mAz0jG3D+ce+c+C5JDF8CnhgOc0VndHxvc9FzIwXzr7819/5i18kWqqs2iMpWU4MWDMD7EcWZyuGmB8rTZvZPQ== }
+      { integrity: sha512-W7EMJmO/OFrlIq5vQsjCxJtV2uCe23Jb9+YrUdFnpVyQZIaEZ0JfWKSMyMfD+yljux4hGE2XuCE/vThajs5aWA== }
     dependencies:
-      "@cosmos-kit/okxwallet-extension": 2.6.9(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+      "@cosmos-kit/okxwallet-extension": 2.8.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+    transitivePeerDependencies:
+      - "@azure/app-configuration"
+      - "@azure/cosmos"
+      - "@azure/data-tables"
+      - "@azure/identity"
+      - "@azure/keyvault-secrets"
+      - "@azure/storage-blob"
+      - "@capacitor/preferences"
+      - "@chain-registry/types"
+      - "@cosmjs/amino"
+      - "@cosmjs/proto-signing"
+      - "@netlify/blobs"
+      - "@planetscale/database"
+      - "@react-native-async-storage/async-storage"
+      - "@upstash/redis"
+      - "@vercel/kv"
+      - bufferutil
+      - debug
+      - encoding
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+    dev: false
+
+  /@cosmos-kit/react-lite@2.8.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      { integrity: sha512-FSmnmpvVZ2It9Bjop+XX9c/U5emtDSn1VtA3+L+K0Ym5kxrO5udN6tLgCGpyHH+9VNkgO89EFhTuwfhNeKqhug== }
+    peerDependencies:
+      "@chain-registry/types": ">= 0.17"
+      "@types/react": ">= 17"
+      "@types/react-dom": ">= 17"
+      react: ^18
+      react-dom: ^18
+    dependencies:
+      "@chain-registry/types": 0.18.3
+      "@cosmos-kit/core": 2.10.0(@chain-registry/types@0.18.3)
+      "@dao-dao/cosmiframe": 0.1.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+      "@types/react": 18.2.65
+      "@types/react-dom": 18.2.21
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -937,15 +984,24 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/react-lite@2.6.9(react-dom@18.2.0)(react@18.2.0):
+  /@cosmos-kit/react@2.12.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@interchain-ui/react@1.23.11)(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
     resolution:
-      { integrity: sha512-lDD6JcJstQrrQ5ZpdK2xk2OVma8DNwBe3ng3oNKAQmFTAagRjFS+TwkYF1Onl1kAcNmk0TIYStPzzUm9RkwSNw== }
+      { integrity: sha512-hgB8U5ABdiomD3/Sx0f18IhgZVhso0vR3ZEhdYkDpLR2b4LEs9x/mruZF7WOoSWZYKq+GAIhlCofiB2uKCf6vA== }
     peerDependencies:
+      "@chain-registry/types": ">= 0.17"
+      "@interchain-ui/react": ^1.23.9
+      "@types/react": ">= 17"
+      "@types/react-dom": ">= 17"
       react: ^18
       react-dom: ^18
     dependencies:
-      "@chain-registry/types": 0.17.0
-      "@cosmos-kit/core": 2.8.9
+      "@chain-registry/types": 0.18.3
+      "@cosmos-kit/core": 2.10.0(@chain-registry/types@0.18.3)
+      "@cosmos-kit/react-lite": 2.8.0(@chain-registry/types@0.18.3)(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+      "@interchain-ui/react": 1.23.11(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+      "@react-icons/all-files": 4.1.0(react@18.2.0)
+      "@types/react": 18.2.65
+      "@types/react-dom": 18.2.21
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -956,6 +1012,8 @@ packages:
       - "@azure/keyvault-secrets"
       - "@azure/storage-blob"
       - "@capacitor/preferences"
+      - "@cosmjs/amino"
+      - "@cosmjs/proto-signing"
       - "@netlify/blobs"
       - "@planetscale/database"
       - "@react-native-async-storage/async-storage"
@@ -969,40 +1027,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/react@2.10.11(@interchain-ui/react@1.22.4)(react-dom@18.2.0)(react@18.2.0):
+  /@dao-dao/cosmiframe@0.1.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3):
     resolution:
-      { integrity: sha512-8/EFsEGCznrptZscg8fO/9YuE0QrkKWUjCDN9F40cG0sLDGVJig0V2rLalqL5935eH3+W2lwPyr5ASWiVJlLoQ== }
+      { integrity: sha512-NW4pGt1ctqDfhn/A6RU2vwnFEu3O4aBNnBMrGnw31n+L35drYNEsA9ZB7KZsHmRRlkNx+jSuJSv2Fv0BFBDDJQ== }
     peerDependencies:
-      "@interchain-ui/react": ^1.21.19
-      react: ^18
-      react-dom: ^18
+      "@cosmjs/amino": ">= ^0.32"
+      "@cosmjs/proto-signing": ">= ^0.32"
     dependencies:
-      "@chain-registry/types": 0.17.0
-      "@cosmos-kit/core": 2.8.9
-      "@cosmos-kit/react-lite": 2.6.9(react-dom@18.2.0)(react@18.2.0)
-      "@interchain-ui/react": 1.22.4(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
-      "@react-icons/all-files": 4.1.0(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    transitivePeerDependencies:
-      - "@azure/app-configuration"
-      - "@azure/cosmos"
-      - "@azure/data-tables"
-      - "@azure/identity"
-      - "@azure/keyvault-secrets"
-      - "@azure/storage-blob"
-      - "@capacitor/preferences"
-      - "@netlify/blobs"
-      - "@planetscale/database"
-      - "@react-native-async-storage/async-storage"
-      - "@upstash/redis"
-      - "@vercel/kv"
-      - bufferutil
-      - debug
-      - encoding
-      - ioredis
-      - uWebSockets.js
-      - utf-8-validate
+      "@cosmjs/amino": 0.32.3
+      "@cosmjs/proto-signing": 0.32.3
+      uuid: 9.0.1
     dev: false
 
   /@emotion/hash@0.9.1:
@@ -1496,9 +1530,9 @@ packages:
       google-protobuf: 3.21.2
     dev: false
 
-  /@interchain-ui/react@1.22.4(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /@interchain-ui/react@1.23.11(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
     resolution:
-      { integrity: sha512-gxGBdNIjVDRNTm0BgHeDc1ldz4WqP1W0jcZiwS4SNp8aheiJWiVSeiblUsqmT4KO1v/JjXj+jU/ku8YlFUmObw== }
+      { integrity: sha512-FHXm13aYTVxRJKO6ayyj9P4Z24qcb7+o/i00vv1fXcNNJSwpHl4J1zfiChIYJKEl0QKSRinrniR0rA9iOrd8TQ== }
     peerDependencies:
       react: ^18.x
       react-dom: ^18.x
