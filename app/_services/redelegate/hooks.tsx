@@ -64,6 +64,18 @@ export const useRedelegatingProcedures = ({
     },
   }) || {};
 
+  const updateStates = () => {
+    if (cosmosBaseProcedures?.length) {
+      authState.setState(isAuthApproved ? "success" : "active");
+      authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
+      authState.setError(null);
+      redelegateState.setState(!isAuthApproved ? "idle" : "active");
+      redelegateState.setTxHash(undefined);
+      redelegateState.setError(null);
+      refetchAuthCheck?.();
+    }
+  };
+
   useEffect(() => {
     if (!address) {
       setProcedures(undefined);
@@ -78,16 +90,13 @@ export const useRedelegatingProcedures = ({
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length && authState.state === null && redelegateState.state === null) {
-      if (!isAuthApproved) {
-        authState.setState("active");
-        redelegateState.setState("idle");
-      } else {
-        authState.setState("success");
-        authState.setTxHash(authTxHash);
-        redelegateState.setState("active");
-      }
+      updateStates();
     }
   }, [cosmosBaseProcedures?.length, isAuthApproved, authTxHash]);
+
+  useEffect(() => {
+    updateStates();
+  }, [isAuthApproved, authTxHash]);
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length) {
@@ -129,12 +138,7 @@ export const useRedelegatingProcedures = ({
     procedures,
     resetStates: async () => {
       if (cosmosBaseProcedures?.length) {
-        authState.setState(isAuthApproved ? "success" : "active");
-        authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
-        authState.setError(null);
-        redelegateState.setState(!isAuthApproved ? "idle" : "active");
-        redelegateState.setTxHash(undefined);
-        redelegateState.setError(null);
+        updateStates();
         await refetchAuthCheck?.();
       }
     },

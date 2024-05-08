@@ -64,6 +64,17 @@ export const useStakingProcedures = ({
     },
   }) || {};
 
+  const updateStates = () => {
+    if (cosmosBaseProcedures?.length) {
+      authState.setState(isAuthApproved ? "success" : "active");
+      authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
+      authState.setError(null);
+      delegateState.setState(!isAuthApproved ? "idle" : "active");
+      delegateState.setTxHash(undefined);
+      delegateState.setError(null);
+    }
+  };
+
   useEffect(() => {
     if (!address) {
       setProcedures(undefined);
@@ -78,16 +89,13 @@ export const useStakingProcedures = ({
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length && authState.state === null && delegateState.state === null) {
-      if (!isAuthApproved) {
-        authState.setState("active");
-        delegateState.setState("idle");
-      } else {
-        authState.setState("success");
-        authState.setTxHash(authTxHash);
-        delegateState.setState("active");
-      }
+      updateStates();
     }
   }, [cosmosBaseProcedures?.length, isAuthApproved, authTxHash]);
+
+  useEffect(() => {
+    updateStates();
+  }, [isAuthApproved, authTxHash]);
 
   useEffect(() => {
     if (cosmosBaseProcedures?.length) {
@@ -129,12 +137,7 @@ export const useStakingProcedures = ({
     procedures,
     resetStates: async () => {
       if (cosmosBaseProcedures?.length) {
-        authState.setState(isAuthApproved ? "success" : "active");
-        authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
-        authState.setError(null);
-        delegateState.setState(!isAuthApproved ? "idle" : "active");
-        delegateState.setTxHash(undefined);
-        delegateState.setError(null);
+        updateStates();
         await refetchAuthCheck?.();
       }
     },
