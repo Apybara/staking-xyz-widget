@@ -29,7 +29,7 @@ export const RewardsSummary = () => {
   const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: last_cycle_rewards });
   const formattedNextCompounding = getTimeTillMidnight();
 
-  const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).toNumber() < 1;
+  const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).isLessThan(1);
 
   return (
     <>
@@ -48,12 +48,12 @@ export const RewardsSummary = () => {
               <InfoCard.TitleBox>
                 <InfoCard.Title>Next compounding</InfoCard.Title>
                 {isRewardsSmall && (
-                <Tooltip
-                  className={S.tooltip}
-                  trigger={<Icon name="info" />}
-                  content="The app will only compound if you have more than 1 TIA of staking rewards accrued."
-                />
-              )}
+                  <Tooltip
+                    className={S.tooltip}
+                    trigger={<Icon name="info" />}
+                    content="The app will only compound if you have more than 1 TIA of staking rewards accrued."
+                  />
+                )}
               </InfoCard.TitleBox>
               <InfoCard.Content>{isRewardsSmall ? "-" : `${formattedNextCompounding} left`}</InfoCard.Content>
             </InfoCard.StackItem>
