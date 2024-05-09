@@ -1,3 +1,4 @@
+import type { Network } from "../../types";
 import * as T from "./types";
 import { useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
@@ -168,13 +169,14 @@ export const useLastOffsetRewardsHistory = ({ offset, limit }: T.AddressRewardsH
   return useAddressRewardsHistory({ network, address: address || undefined, offset: lastOffset, limit });
 };
 
-export const useNetworkReward = (defaultNetwork?: string) => {
-  const { network } = useShell();
+export const useNetworkReward = (network?: Network) => {
+  const { network: globalNetwork } = useShell();
   const { coinAmountInput } = useStaking();
+  const castedNetwork = network || globalNetwork;
 
-  const celestiaRewards = useCelestiaReward({ network, amount: coinAmountInput || "0" });
+  const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: coinAmountInput || "0" });
 
-  switch (defaultNetwork || network) {
+  switch (castedNetwork) {
     case "celestia":
     case "celestiatestnet3":
       return celestiaRewards;
