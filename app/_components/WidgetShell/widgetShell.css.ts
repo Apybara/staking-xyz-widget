@@ -3,6 +3,7 @@ import { pxToRem } from "../../../theme/utils";
 import { colors } from "../../../theme/theme.css";
 
 export const shell = style({
+  isolation: "isolate",
   display: "flex",
   flexDirection: "column",
   position: "relative",
