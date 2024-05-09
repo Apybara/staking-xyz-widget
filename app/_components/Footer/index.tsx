@@ -10,23 +10,27 @@ export const Footer = () => {
   const { network } = useShell();
   const networkName = networkInfo[network as keyof typeof networkInfo]?.name;
 
+  const networkStatus = useNetworkStatus();
+  const serverStatus = useServerStatus();
+
   const {
     data: networkStatusData,
     isLoading: isLoadingNetworkStatus,
     isRefetching: isRefetchingNetworkStatus,
     error: networkStatusError,
-  } = useNetworkStatus() || {};
+  } = networkStatus || {};
+
   const {
     data: serverStatusData,
     isLoading: isLoadingServerStatus,
     isRefetching: isRefetchingServerStatus,
     error: serverStatusError,
-  } = useServerStatus() || {};
+  } = serverStatus || {};
 
   const isNetworkOffline = networkStatusData?.networkOffline;
   const isServerDown = serverStatusData?.statusCode !== 200;
 
-  const isLoading = isLoadingNetworkStatus || isLoadingServerStatus;
+  const isLoading = isLoadingNetworkStatus || isLoadingServerStatus || !networkStatus || !serverStatus;
   const isError = networkStatusError || serverStatusError || isNetworkOffline || isServerDown;
   const isRefetching = isRefetchingNetworkStatus || isRefetchingServerStatus;
 
