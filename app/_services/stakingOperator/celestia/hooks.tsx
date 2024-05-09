@@ -4,7 +4,7 @@ import type * as T from "../types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
-import { defaultNetwork, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
+import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getTimeDiffInSingleUnits } from "../../../_utils/time";
 import { getCoinValueFromDenom } from "../../cosmos/utils";
 import { getCalculatedRewards, getLastOffset } from "../utils";
@@ -22,10 +22,10 @@ import {
 
 export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address,
+    enabled: !!address && getIsCelestiaNetwork(network),
     queryKey: ["celestiaAddressAuthCheck", address, network],
     queryFn: () =>
-      getAddressAuthCheck({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork], address: address || "" }),
+      getAddressAuthCheck({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address: address || "" }),
     refetchOnWindowFocus: true,
   });
 
@@ -34,10 +34,10 @@ export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: st
 
 export const useCelestiaDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address,
+    enabled: !!address && getIsCelestiaNetwork(network),
     queryKey: ["celestiaDelegations", address, network],
     queryFn: () =>
-      getDelegations({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork], address: address || "" }),
+      getDelegations({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address: address || "" }),
     refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
@@ -54,11 +54,11 @@ export const useCelestiaUnbondingDelegations = ({
   network: Network | null;
 }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address,
+    enabled: !!address && getIsCelestiaNetwork(network),
     queryKey: ["celestiaUnbondingDelegations", address, network],
     queryFn: () =>
       getUnbondingDelegations({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
         address: address || "",
       }),
     refetchInterval: 90000,
@@ -112,12 +112,12 @@ export const useAddressActivity = ({
     T.AddressActivityResponse | null,
     T.AddressActivityResponse
   >({
-    enabled: !!address,
+    enabled: !!address && getIsCelestiaNetwork(network),
     queryKey: ["addressActivity", address, offset, limit, filterKey, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressActivity({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
         address,
         offset,
         limit,
@@ -137,7 +137,7 @@ export const useAddressActivity = ({
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressActivity({
-            apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+            apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
             address,
             offset: nextOffset,
             limit,
@@ -159,7 +159,7 @@ export const useAddressActivity = ({
     data: data?.data,
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
-      amount: getCoinValueFromDenom({ network: network || defaultNetwork, amount: entry.amount }),
+      amount: getCoinValueFromDenom({ network: network || "celestia", amount: entry.amount }),
     })),
     totalEntries,
     lastOffset,
@@ -172,11 +172,11 @@ export const useAddressRewards = ({ network, address }: { network: Network | nul
     T.AddressRewardsResponse | null,
     T.AddressRewardsResponse
   >({
-    enabled: !!address,
+    enabled: !!address && getIsCelestiaNetwork(network),
     queryKey: ["addressRewards", address, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
-      return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork], address });
+      return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address });
     },
     placeholderData: keepPreviousData,
     staleTime: 15000,
@@ -187,12 +187,12 @@ export const useAddressRewards = ({ network, address }: { network: Network | nul
     isLoading: isLoading || status === "pending",
     isFetching,
     data: {
-      total_rewards: getCoinValueFromDenom({ network: network || defaultNetwork, amount: data?.data?.total_rewards }),
+      total_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.total_rewards }),
       last_cycle_rewards: getCoinValueFromDenom({
-        network: network || defaultNetwork,
+        network: network || "celestia",
         amount: data?.data?.last_cycle_rewards,
       }),
-      daily_rewards: getCoinValueFromDenom({ network: network || defaultNetwork, amount: data?.data?.daily_rewards }),
+      daily_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.daily_rewards }),
     },
     refetch,
   };
@@ -210,12 +210,12 @@ export const useAddressRewardsHistory = ({
     T.AddressRewardsHistoryResponse | null,
     T.AddressRewardsHistoryResponse
   >({
-    enabled: !!address,
+    enabled: !!address && getIsCelestiaNetwork(network),
     queryKey: ["addressRewardsHistory", address, offset, limit, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressRewardsHistory({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
         address,
         offset,
         limit,
@@ -234,7 +234,7 @@ export const useAddressRewardsHistory = ({
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressRewardsHistory({
-            apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+            apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
             address,
             offset: nextOffset,
             limit,
@@ -255,7 +255,7 @@ export const useAddressRewardsHistory = ({
     data: data?.data,
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
-      amount: getCoinValueFromDenom({ network: network || defaultNetwork, amount: entry.amount }),
+      amount: getCoinValueFromDenom({ network: network || "celestia", amount: entry.amount }),
     })),
     totalEntries,
     lastOffset,
@@ -265,8 +265,9 @@ export const useAddressRewardsHistory = ({
 
 export const useCelestiaReward = ({ network, amount }: { network: Network | null; amount: string }) => {
   const { data, isLoading, error, refetch } = useQuery({
+    enabled: getIsCelestiaNetwork(network),
     queryKey: ["celestiaReward", network],
-    queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork] }),
+    queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"] }),
     refetchOnWindowFocus: true,
   });
 
@@ -277,8 +278,9 @@ export const useCelestiaReward = ({ network, amount }: { network: Network | null
 
 export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    enabled: getIsCelestiaNetwork(network),
     queryKey: ["celestiaStatus", network],
-    queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork] }),
+    queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"] }),
     refetchOnWindowFocus: true,
     refetchInterval: 180000,
   });
@@ -288,11 +290,14 @@ export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
 
 export const useCelestiaServerStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    enabled: getIsCelestiaNetwork(network),
     queryKey: ["celestiaServerStatus", network],
-    queryFn: () => getServerStatus({ apiUrl: serverUrlByNetwork[network || defaultNetwork] }),
+    queryFn: () => getServerStatus({ apiUrl: serverUrlByNetwork[network || "celestia"] }),
     refetchOnWindowFocus: true,
     refetchInterval: 180000,
   });
 
   return { data, isLoading, isRefetching, error, refetch };
 };
+
+const getIsCelestiaNetwork = (network: Network | null) => network === "celestia" || network === "celestiatestnet3";
