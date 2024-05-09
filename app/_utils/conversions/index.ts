@@ -21,7 +21,7 @@ export const getDynamicAssetValueFromCoin = ({
 }) => {
   const castedCurrency = currency || defaultGlobalCurrency;
 
-  if (!coinVal) return undefined;
+  if (!coinVal && coinVal !== 0) return undefined;
 
   if (castedCurrency === "USD") {
     return getFormattedUSDPriceFromCoin({
