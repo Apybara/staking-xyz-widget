@@ -49,10 +49,12 @@ export const useStakedBalance = () => {
   }
 };
 
-export const useAddressActivityQueryParams = () => {
-  const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(6);
-  const [filterKey, setFilterKey] = useState<T.AddressActivityPaginationParams["filterKey"]>("transactions");
+export const useAddressActivityQueryParams = (defaultParams: T.AddressActivityPaginationParams | null) => {
+  const [offset, setOffset] = useState(defaultParams?.offset || 0);
+  const [limit, setLimit] = useState(defaultParams?.limit || 6);
+  const [filterKey, setFilterKey] = useState<T.AddressActivityPaginationParams["filterKey"]>(
+    defaultParams?.filterKey || "transactions",
+  );
 
   return {
     offset,
@@ -64,11 +66,11 @@ export const useAddressActivityQueryParams = () => {
   };
 };
 
-export const useActivity = () => {
+export const useActivity = (defaultParams: T.AddressActivityPaginationParams | null) => {
   const { network } = useShell();
   const { address } = useWallet();
 
-  const { offset, setOffset, limit, filterKey, setFilterKey } = useAddressActivityQueryParams();
+  const { offset, setOffset, limit, filterKey, setFilterKey } = useAddressActivityQueryParams(defaultParams);
   const celestia = useAddressActivity({
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,

@@ -8,27 +8,33 @@ import * as InfoCard from "../../../_components/InfoCard";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
+import { useActivity } from "../../../_services/stakingOperator/hooks";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
-  const { unbondingDelegations } = useUnstaking();
   const { currency, coinPrice, network } = useShell();
-  const count = unbondingDelegations?.data?.length;
+  const { query: unstakeActivityQuery } =
+    useActivity({
+      filterKey: "transactions_unstake",
+      offset: 0,
+      limit: 1,
+    }) || {};
+  const { formattedEntries, totalEntries } = unstakeActivityQuery || {};
 
   const totalUnbondingAmount = useMemo(() => {
-    if (!count) return undefined;
+    if (!totalEntries) return undefined;
 
     const sumDenom =
-      unbondingDelegations?.data
+      formattedEntries
         ?.reduce((acc, { amount }) => {
           return acc.plus(amount);
         }, BigNumber(0))
         .toString() || "0";
 
     return getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: sumDenom });
-  }, [count, currency]);
+  }, [totalEntries, currency]);
 
-  if (!count) return null;
+  if (!totalEntries) return null;
 
   return (
     <AccordionInfoCard.Root>
@@ -36,15 +42,15 @@ export const UnstakeInfoBox = () => {
         <AccordionInfoCard.Trigger>
           <div className={cn(S.triggerTexts)}>
             <p className={cn(S.triggerProgressText)}>
-              In progress <span className={cn(S.triggerCountText)}>{count}</span>
+              In progress <span className={cn(S.triggerCountText)}>{totalEntries}</span>
             </p>
             <span className={cn(S.triggerAmountText)}>{totalUnbondingAmount}</span>
           </div>
         </AccordionInfoCard.Trigger>
         <AccordionInfoCard.Content>
           <AccordionInfoCard.Stack>
-            {unbondingDelegations.data?.map((item, index) => {
-              const times = item.remainingTime && getTimeUnitStrings(item.remainingTime);
+            {formattedEntries?.map((item, index) => {
+              const times = item.completionTime && getTimeUnitStrings(item.completionTime);
 
               return (
                 <AccordionInfoCard.StackItem key={"unbonding-delegations" + network + index}>

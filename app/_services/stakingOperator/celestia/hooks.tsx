@@ -3,6 +3,7 @@ import type { UnbondingDelegation } from "../../unstake/types";
 import type * as T from "../types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
+import { fromUnixTime } from "date-fns";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getTimeDiffInSingleUnits } from "../../../_utils/time";
@@ -160,6 +161,7 @@ export const useAddressActivity = ({
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
       amount: getCoinValueFromDenom({ network: network || "celestia", amount: entry.amount }),
+      completionTime: getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0)),
     })),
     totalEntries,
     lastOffset,

@@ -15,7 +15,7 @@ import * as S from "./activity.css";
 
 export const ActivityTable = () => {
   const { network } = useShell();
-  const { params, query } = useActivity() || {};
+  const { params, query } = useActivity(null) || {};
   const { offset, setOffset, limit, filterKey, setFilterKey } = params;
   const { formattedEntries, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
 
@@ -91,7 +91,7 @@ const ListItem = ({
   activity,
   network,
 }: {
-  activity: Omit<ActivityItem, "amount"> & { amount: string };
+  activity: Omit<ActivityItem, "amount" | "completionTime"> & { amount: string };
   network: Network | null;
 }) => {
   const amount = useDynamicAssetValueFromCoin({ coinVal: activity.amount });

@@ -10,7 +10,7 @@ import { getTimeUnitStrings, getTimeDiffInSingleUnits } from "../../_utils/time"
 
 export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
   const { connectionStatus } = useWallet();
-  const activity = useActivity();
+  const activity = useActivity(null);
   const { data, totalEntries, isLoading } = useLastOffsetActivity({ ...activity.params });
 
   const isDisabled = connectionStatus !== "connected" || data?.entries?.length === 0;
