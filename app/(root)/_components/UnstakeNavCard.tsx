@@ -1,7 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useUnbondingDelegations, useStakedBalance } from "../../_services/stakingOperator/hooks";
+import { useActivity, useStakedBalance } from "../../_services/stakingOperator/hooks";
 import * as NavCard from "../_components/NavCard";
 import { Skeleton } from "../../_components/Skeleton";
 import { getTimeUnitStrings } from "../../_utils/time";
@@ -9,18 +9,24 @@ import { getTimeUnitStrings } from "../../_utils/time";
 export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
   const { connectionStatus } = useWallet();
   const { stakedBalance } = useStakedBalance() || {};
-  const unbondingDelegations = useUnbondingDelegations();
+  const { query: unstakeActivityQuery } =
+    useActivity({
+      filterKey: "transactions_unstake",
+      offset: 0,
+      limit: 1,
+    }) || {};
+  const { formattedEntries, totalEntries, isLoading, error } = unstakeActivityQuery || {};
 
   const isDisabled =
     connectionStatus !== "connected" ||
-    !!unbondingDelegations?.error ||
-    unbondingDelegations?.isLoading ||
-    (stakedBalance === "0" && !unbondingDelegations?.formatted?.length);
+    !!error ||
+    isLoading ||
+    (stakedBalance === "0" && (!formattedEntries?.length || totalEntries === 0));
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
 
-    if (unbondingDelegations?.isLoading) {
+    if (isLoading) {
       return {
         title: (
           <NavCard.SecondaryText>
@@ -34,13 +40,11 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         ),
       };
     }
-    if (unbondingDelegations?.formatted?.length) {
-      const times =
-        unbondingDelegations.formatted[0].remainingTime &&
-        getTimeUnitStrings(unbondingDelegations.formatted[0].remainingTime);
+    if (formattedEntries?.length && totalEntries) {
+      const times = formattedEntries[0].completionTime && getTimeUnitStrings(formattedEntries[0].completionTime);
 
       return {
-        title: <NavCard.SecondaryText>In progress {unbondingDelegations.formatted.length}</NavCard.SecondaryText>,
+        title: <NavCard.SecondaryText>In progress {totalEntries}</NavCard.SecondaryText>,
         value: (
           <NavCard.PrimaryText>
             {times?.time} <NavCard.SecondaryText>{times?.unit} left</NavCard.SecondaryText>
@@ -48,7 +52,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         ),
       };
     }
-  }, [connectionStatus, unbondingDelegations]);
+  }, [connectionStatus, totalEntries, formattedEntries, isLoading]);
 
   return <NavCard.Card {...props} page="unstake" disabled={isDisabled} endBox={endBoxValue} />;
 };

@@ -1,7 +1,7 @@
 import type * as T from "./types";
 
 import { createContext, useContext, useReducer } from "react";
-import { useUnbondingDelegations, useActivity, useLastOffsetActivity } from "../../_services/stakingOperator/hooks";
+import { useActivity, useLastOffsetActivity } from "../../_services/stakingOperator/hooks";
 
 import { useWidgetRouterGate } from "./hooks";
 
@@ -15,8 +15,7 @@ export const WidgetProvider = ({ children }: T.WidgetProviderProps) => {
   useWidgetRouterGate({ status: states.status, setStates });
 
   // Prefetch queries
-  useUnbondingDelegations();
-  const activity = useActivity();
+  const activity = useActivity(null);
   useLastOffsetActivity({ ...activity.params });
 
   return (

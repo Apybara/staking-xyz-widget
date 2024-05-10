@@ -187,6 +187,7 @@ export type ActivityItem = {
   amount: number;
   rewardRate: number;
   timestamp: number;
+  completionTime?: number;
   txHash: string;
   inProgress?: boolean;
 };

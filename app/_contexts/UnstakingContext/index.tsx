@@ -4,7 +4,7 @@ import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useUnstakingProcedures } from "../../_services/unstake/hooks";
-import { useStakedBalance, useUnbondingDelegations } from "../../_services/stakingOperator/hooks";
+import { useStakedBalance } from "../../_services/stakingOperator/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useUnstakeAmountInputValidation } from "./hooks";
@@ -19,7 +19,6 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   const { network } = useShell();
   const { activeWallet, address } = useWallet();
   const stakedBalance = useStakedBalance();
-  const unbondingDelegations = useUnbondingDelegations();
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
     wallet: activeWallet,
@@ -49,11 +48,6 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
           isLoading: stakedBalance?.isLoading || false,
           error: stakedBalance?.error || null,
         },
-        unbondingDelegations: {
-          data: unbondingDelegations?.formatted,
-          isLoading: unbondingDelegations?.isLoading || false,
-          error: unbondingDelegations?.error || null,
-        },
         cosmosSigningClient: cosmosSigningClient || null,
         resetProceduresStates: resetStates,
         setStates,
@@ -70,11 +64,6 @@ const initialStates: T.UnstakingContext = {
   ctaState: "empty",
   procedures: undefined,
   stakedBalance: {
-    data: undefined,
-    isLoading: false,
-    error: null,
-  },
-  unbondingDelegations: {
     data: undefined,
     isLoading: false,
     error: null,

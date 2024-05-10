@@ -1,6 +1,6 @@
 import type { Dispatch, Reducer, ReactNode } from "react";
 import type { SigningStargateClient } from "@cosmjs/stargate";
-import type { UnstakeProcedure, UnbondingDelegation } from "../../_services/unstake/types";
+import type { UnstakeProcedure } from "../../_services/unstake/types";
 import type { BasicAmountValidationResult, BasicTxCtaValidationResult } from "../../_utils/transaction";
 import type { BaseAmountInputPadProps } from "../../_components/AmountInputPad";
 
@@ -14,11 +14,6 @@ export type UnstakingStates = {
   procedures?: Array<UnstakeProcedure>;
   stakedBalance: {
     data?: string;
-    isLoading: boolean;
-    error: Error | null;
-  };
-  unbondingDelegations: {
-    data?: Array<UnbondingDelegation>;
     isLoading: boolean;
     error: Error | null;
   };
