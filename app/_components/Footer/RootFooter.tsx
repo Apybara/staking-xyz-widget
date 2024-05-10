@@ -16,11 +16,8 @@ export const RootFooter = ({ isRefetching, networkStatus, blockHeight }: RootFoo
 
       <div className={S.content}>
         <div className={S.linksContainer}>
-          <a className={S.link} href={process.env.NEXT_PUBLIC_PRIVACY_LINK} target="_blank" rel="noopener noreferrer">
-            Privacy Policy
-          </a>
-          <a className={S.link} href={process.env.NEXT_PUBLIC_TERMS_LINK} target="_blank" rel="noopener noreferrer">
-            Terms of Use
+          <a className={S.link} href={process.env.NEXT_PUBLIC_DOCS_LINK} target="_blank" rel="noopener noreferrer">
+            Docs
           </a>
         </div>
         <div className={S.linksContainer}>
