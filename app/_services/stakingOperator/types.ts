@@ -179,7 +179,7 @@ export type AddressActivityResponse = CommonEntriesResponse<
   totalEntries?: number | null;
 };
 export type AddressActivityPaginationParams = PaginationParams & {
-  filterKey: "stake" | "unstake" | null;
+  filterKey: "stake" | "unstake" | "transactions" | "transactions_stake" | "transactions_unstake" | null;
 };
 export type ActivityItem = {
   id: string;
