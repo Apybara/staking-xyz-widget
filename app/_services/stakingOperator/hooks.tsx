@@ -52,7 +52,7 @@ export const useStakedBalance = () => {
 export const useAddressActivityQueryParams = () => {
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(6);
-  const [filterKey, setFilterKey] = useState<T.AddressActivityPaginationParams["filterKey"]>(null);
+  const [filterKey, setFilterKey] = useState<T.AddressActivityPaginationParams["filterKey"]>("transactions");
 
   return {
     offset,

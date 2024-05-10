@@ -47,18 +47,18 @@ export const ActivityTable = () => {
         tabs={[
           {
             children: "All",
-            state: filterKey === null ? "highlighted" : "default",
-            onClick: () => setFilterKey(null),
+            state: filterKey === "transactions" ? "highlighted" : "default",
+            onClick: () => setFilterKey("transactions"),
           },
           {
             children: "Stake",
-            state: filterKey === "stake" ? "highlighted" : "default",
-            onClick: () => setFilterKey("stake"),
+            state: filterKey === "transactions_stake" ? "highlighted" : "default",
+            onClick: () => setFilterKey("transactions_stake"),
           },
           {
             children: "Unstake",
-            state: filterKey === "unstake" ? "highlighted" : "default",
-            onClick: () => setFilterKey("unstake"),
+            state: filterKey === "transactions_unstake" ? "highlighted" : "default",
+            onClick: () => setFilterKey("transactions_unstake"),
           },
         ]}
       />
