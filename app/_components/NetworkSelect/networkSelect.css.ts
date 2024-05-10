@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { pxToRem } from "@/theme/utils";
 import { colors, weights } from "@/theme/theme.css";
 
@@ -28,6 +28,9 @@ export const selectItemDisabled = style([
     },
   },
 ]);
+globalStyle(`${selectItemDisabled} img`, {
+  opacity: 0.5,
+});
 
 export const selectItemMain = style({
   display: "flex",
