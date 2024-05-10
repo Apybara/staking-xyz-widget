@@ -56,6 +56,8 @@ export const networkWalletPrefixes: Record<Network, string> = {
   celestiatestnet3: "celestia1",
 };
 
+export const mobileDisabledNetworks = networkVariants.filter((network) => network === "celestiatestnet3");
+
 export const networkEndpoints: Record<
   Network,
   {
