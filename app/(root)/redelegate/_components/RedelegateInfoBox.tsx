@@ -33,7 +33,7 @@ export const RedelegateInfoBox = () => {
             <InfoCard.Title className={S.infoBoxText({})}>Total fees</InfoCard.Title>
 
             <Tooltip
-              trigger={<Icon name="question" />}
+              trigger={<Icon name="info" />}
               content={
                 <>
                   Network fee <span className={S.plusSign}>+</span> Platform fee ({platformFee}%)

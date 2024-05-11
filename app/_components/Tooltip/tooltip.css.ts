@@ -33,6 +33,7 @@ export const tooltip = recipe({
 export const trigger = style({
   display: "flex",
   color: colors.black600,
+  cursor: "default",
 });
 
 export const title = style({
