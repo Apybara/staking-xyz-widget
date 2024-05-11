@@ -27,6 +27,7 @@ globalStyle(`${widgetWrapper} > div`, {
   display: "flex !important",
   flexDirection: "column",
   gap: pxToRem(16),
+  blockSize: "100%",
 });
 
 export const scrollbar = style({
