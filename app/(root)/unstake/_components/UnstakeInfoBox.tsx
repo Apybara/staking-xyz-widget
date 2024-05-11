@@ -13,13 +13,21 @@ import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
   const { currency, coinPrice, network } = useShell();
+
+  const { query: unstakeActivityTotalQuery } =
+    useActivity({
+      filterKey: "transactions_unstake",
+      offset: 0,
+      limit: 999,
+    }) || {};
+  const { totalEntries } = unstakeActivityTotalQuery || {};
   const { query: unstakeActivityQuery } =
     useActivity({
       filterKey: "transactions_unstake",
       offset: 0,
-      limit: 1,
+      limit: totalEntries || 999,
     }) || {};
-  const { formattedEntries, totalEntries } = unstakeActivityQuery || {};
+  const { formattedEntries } = unstakeActivityQuery || {};
 
   const totalUnbondingAmount = useMemo(() => {
     if (!totalEntries) return undefined;
@@ -32,7 +40,7 @@ export const UnstakeInfoBox = () => {
         .toString() || "0";
 
     return getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: sumDenom });
-  }, [totalEntries, currency]);
+  }, [totalEntries, formattedEntries, currency]);
 
   if (!totalEntries) return null;
 

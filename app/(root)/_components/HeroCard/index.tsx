@@ -36,7 +36,7 @@ export const HeroCard = () => {
         <CTACard
           topSubtitle={
             <>
-              <span>Total balance</span>
+              <span>Total staked balance</span>
               <Tooltip
                 className={S.balanceTooltip}
                 trigger={<Icon name="info" />}
@@ -55,7 +55,7 @@ export const HeroCard = () => {
         <CTACard
           topSubtitle={
             <>
-              <span>Total balance</span>
+              <span>Total staked balance</span>
               <Tooltip
                 className={S.balanceTooltip}
                 trigger={<Icon name="info" />}
