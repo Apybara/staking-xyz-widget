@@ -126,7 +126,6 @@ export const useAddressActivity = ({
       });
     },
     placeholderData: keepPreviousData,
-    staleTime: 15000,
   });
 
   // Prefetch the next page
@@ -181,7 +180,6 @@ export const useAddressRewards = ({ network, address }: { network: Network | nul
       return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address });
     },
     placeholderData: keepPreviousData,
-    staleTime: 15000,
   });
 
   return {
