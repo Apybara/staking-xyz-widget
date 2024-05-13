@@ -7,7 +7,7 @@ import * as ListTable from "../../../../_components/ListTable";
 import { EmptyState } from "../../../../_components/EmptyState";
 import { ErrorRetryModule } from "../../../../_components/ErrorRetryModule";
 import { getPercentagedNumber } from "../../../../_utils/number";
-import { getUTCStringFromUnixTimestamp } from "../../../../_utils/time";
+import { getUTCStringFromUnixTimestamp, getUTCStringFromUnixTimeString } from "../../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useRewardsHistory } from "../../../../_services/stakingOperator/hooks";
 import { networkExplorer, defaultNetwork } from "../../../../consts";
@@ -91,7 +91,11 @@ const ListItem = ({
           isProcessing={rewardsHistory.inProgress}
         />
         <ListTable.TxInfoSecondary
-          time={getUTCStringFromUnixTimestamp(rewardsHistory.timestamp)}
+          time={
+            !rewardsHistory.inProgress
+              ? getUTCStringFromUnixTimestamp(rewardsHistory.timestamp)
+              : getUTCStringFromUnixTimeString(rewardsHistory.created_at)
+          }
           reward={`Reward ${getPercentagedNumber(rewardsHistory.rewardRate)}`}
           isProcessing={rewardsHistory.inProgress}
         />

@@ -1,7 +1,7 @@
 import type { Network } from "../../../types";
 import type { UnbondingDelegation } from "../../unstake/types";
 import type * as T from "../types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BigNumber from "bignumber.js";
 import { fromUnixTime } from "date-fns";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
@@ -77,8 +77,9 @@ export const useCelestiaAddressActivity = ({
   offset,
   limit,
   filterKey,
-}: T.AddressActivityPaginationParams & { network: Network | null; address?: string }) => {
+}: T.AddressActivityPaginationParams & { network: Network | null; address?: string; refetchInterval?: number }) => {
   const queryClient = useQueryClient();
+  const [hasInProgress, setHasInProgress] = useState(false);
 
   const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressActivityResponse | null,
@@ -96,6 +97,7 @@ export const useCelestiaAddressActivity = ({
         filterKey,
       });
     },
+    refetchInterval: hasInProgress ? 15000 : 180000,
     placeholderData: keepPreviousData,
   });
 
@@ -121,6 +123,11 @@ export const useCelestiaAddressActivity = ({
 
   const totalEntries = data?.totalEntries || 0;
   const lastOffset = getLastOffset({ totalEntries, limit });
+
+  useEffect(() => {
+    const hasInProgressEntry = data?.data?.entries?.some((entry) => entry.inProgress);
+    setHasInProgress(hasInProgressEntry || false);
+  }, [data?.data?.entries]);
 
   return {
     error,
@@ -150,6 +157,7 @@ export const useCelestiaAddressRewards = ({ network, address }: { network: Netwo
       if (!address) return Promise.resolve(null);
       return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address });
     },
+    refetchInterval: 300000,
     placeholderData: keepPreviousData,
   });
 
