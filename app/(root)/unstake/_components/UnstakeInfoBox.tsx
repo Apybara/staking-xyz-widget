@@ -5,6 +5,7 @@ import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
+import { Skeleton } from "@/app/_components/Skeleton";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
@@ -20,17 +21,20 @@ export const UnstakeInfoBox = () => {
       offset: 0,
       limit: 999,
     }) || {};
-  const { totalEntries } = unstakeActivityTotalQuery || {};
+  const { isLoading: isLoadingTotalEntries, totalEntries } = unstakeActivityTotalQuery || {};
   const { query: unstakeActivityQuery } =
     useActivity({
       filterKey: "transactions_unstake",
       offset: 0,
       limit: totalEntries || 999,
     }) || {};
-  const { formattedEntries } = unstakeActivityQuery || {};
+  const { isLoading: isLoadingFormattedEntries, formattedEntries } = unstakeActivityQuery || {};
+
+  const isLoading = isLoadingTotalEntries || isLoadingFormattedEntries;
+  const isEmpty = !formattedEntries?.length && !isLoading;
 
   const totalUnbondingAmount = useMemo(() => {
-    if (!totalEntries) return undefined;
+    if (isLoading) return <Skeleton width={68} height={12} />;
 
     const sumDenom =
       formattedEntries
@@ -40,19 +44,23 @@ export const UnstakeInfoBox = () => {
         .toString() || "0";
 
     return getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: sumDenom });
-  }, [totalEntries, formattedEntries, currency]);
-
-  if (!totalEntries) return null;
+  }, [isLoading, totalEntries, formattedEntries, currency]);
 
   return (
     <AccordionInfoCard.Root>
       <AccordionInfoCard.Item value="unbonding-delegations">
-        <AccordionInfoCard.Trigger>
-          <div className={cn(S.triggerTexts)}>
-            <p className={cn(S.triggerProgressText)}>
-              In progress <span className={cn(S.triggerCountText)}>{totalEntries}</span>
-            </p>
-            <span className={cn(S.triggerAmountText)}>{totalUnbondingAmount}</span>
+        <AccordionInfoCard.Trigger className={S.triggerButton} disabled={isLoading || isEmpty}>
+          <div className={cn(S.triggerTexts({ state: isEmpty ? "disabled" : "default" }))}>
+            {isEmpty ? (
+              <p className={cn(S.triggerProgressText)}>No unstaking in progress</p>
+            ) : (
+              <>
+                <p className={cn(S.triggerProgressText)}>
+                  In progress {!isLoading && <span className={cn(S.triggerCountText)}>{totalEntries}</span>}
+                </p>
+                <span className={cn(S.triggerAmountText)}>{totalUnbondingAmount}</span>
+              </>
+            )}
           </div>
         </AccordionInfoCard.Trigger>
         <AccordionInfoCard.Content>

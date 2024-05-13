@@ -1,13 +1,37 @@
 import { globalStyle, style } from "@vanilla-extract/css";
 import { colors, weights } from "../../../../theme/theme.css";
 import { pxToRem } from "../../../../theme/utils";
+import { recipe } from "@vanilla-extract/recipes";
 
-export const triggerTexts = style({
-  flexGrow: 1,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
+export const triggerButton = style({
+  selectors: {
+    "&:disabled": {
+      pointerEvents: "none",
+    },
+  },
 });
+
+export const triggerTexts = recipe({
+  base: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+  },
+  variants: {
+    state: {
+      default: {
+        justifyContent: "space-between",
+      },
+      disabled: {
+        justifyContent: "center",
+      },
+    },
+  },
+  defaultVariants: {
+    state: "default",
+  },
+});
+
 export const triggerProgressText = style({
   fontSize: pxToRem(14),
   color: colors.black300,

@@ -35,7 +35,7 @@ export const Trigger = forwardRef(
     <Accordion.Header className={cn(S.itemHeader, "accordionInfoCardHeader")}>
       <Accordion.Trigger className={cn(S.trigger, className)} {...props} ref={forwardedRef}>
         {children}
-        <Icon name="chevron" size={14} className={cn(S.triggerIcon)} aria-hidden />
+        {!props.disabled && <Icon name="chevron" size={14} className={cn(S.triggerIcon)} aria-hidden />}
       </Accordion.Trigger>
     </Accordion.Header>
   ),
