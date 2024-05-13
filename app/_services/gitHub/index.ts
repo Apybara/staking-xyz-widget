@@ -19,7 +19,7 @@ const getLatestRelease = async (): Promise<LatestReleaseResponse> => {
       "X-GitHub-Api-Version": "2022-11-28",
     } as HeadersInit,
     next: {
-      revalidate: 43200, // 12 hours
+      revalidate: 3600,
       tags: ["latestReleaseFromGitHub"],
     },
   });
