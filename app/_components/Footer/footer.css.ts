@@ -16,6 +16,7 @@ export const footer = style({
   "@media": {
     "screen and (max-width: 768px)": {
       paddingBlockStart: pxToRem(30),
+      paddingBlockEnd: pxToRem(20),
       paddingInline: pxToRem(20),
       flexDirection: "column",
       alignItems: "flex-start",

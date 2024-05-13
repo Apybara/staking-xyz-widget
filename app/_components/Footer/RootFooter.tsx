@@ -17,10 +17,9 @@ export const RootFooter = ({ isRefetching, networkStatus, blockHeight }: RootFoo
       <div className={S.content}>
         <div className={S.linksContainer}>
           <a className={S.link} href={process.env.NEXT_PUBLIC_DOCS_LINK} target="_blank" rel="noopener noreferrer">
-            Docs
+            <Icon name="doc" />
+            <span>Docs</span>
           </a>
-        </div>
-        <div className={S.linksContainer}>
           <a className={S.link} href={TWITTER_URL} target="_blank" rel="noopener noreferrer">
             <Icon name="x" />
             <span>@staking_xyz</span>
