@@ -1,6 +1,6 @@
 import type { Network } from "../../types";
 import * as T from "./types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import {
@@ -55,6 +55,12 @@ export const useAddressActivityQueryParams = (defaultParams: T.AddressActivityPa
   const [filterKey, setFilterKey] = useState<T.AddressActivityPaginationParams["filterKey"]>(
     defaultParams?.filterKey || "transactions",
   );
+
+  useEffect(() => {
+    if (offset !== 0) {
+      setOffset(0);
+    }
+  }, [filterKey, limit]);
 
   return {
     offset,
