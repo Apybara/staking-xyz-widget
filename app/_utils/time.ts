@@ -100,6 +100,10 @@ export const getUTCStringFromUnixTimestamp = (timestamp: number) => {
   return getFormattedUTCString(fromUnixTime(timestamp));
 };
 
+export const getUTCStringFromUnixTimeString = (time: string) => {
+  return getFormattedUTCString(moment(time).toDate());
+};
+
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 type TimeUnits = {
