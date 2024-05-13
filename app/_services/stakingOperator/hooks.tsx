@@ -180,10 +180,9 @@ export const useLastOffsetRewardsHistory = ({ offset, limit }: T.AddressRewardsH
 export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: string }) => {
   const { defaultNetwork, amount } = args || {};
   const { network } = useShell();
-  const { coinAmountInput } = useStaking();
   const castedNetwork = defaultNetwork || network;
 
-  const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: amount || coinAmountInput || "0" });
+  const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: amount || "0" });
 
   switch (castedNetwork) {
     case "celestia":

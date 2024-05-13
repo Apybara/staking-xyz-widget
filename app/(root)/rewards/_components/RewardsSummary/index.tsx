@@ -19,14 +19,14 @@ import Tooltip from "@/app/_components/Tooltip";
 export const RewardsSummary = () => {
   const { network } = useShell();
   const { stakedBalance } = useStakedBalance() || {};
-  const networkReward = useNetworkReward();
+  const networkReward = useNetworkReward({ amount: stakedBalance });
   const historyLink = useLinkWithSearchParams("rewards/history");
 
   const { query } = useRewards();
   const { total_rewards, last_cycle_rewards } = query?.data || {};
 
   const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: total_rewards });
-  const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: last_cycle_rewards });
+  const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.daily });
   const formattedNextCompounding = getTimeTillMidnight();
 
   const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).isLessThan(1);
@@ -39,7 +39,7 @@ export const RewardsSummary = () => {
           <p className={cn(S.cardValue)}>{formattedCumulative}</p>
         </section>
         <section className={cn(S.card)}>
-          <h3 className={cn(S.cardTitle)}>Rewards from this cycle</h3>
+          <h3 className={cn(S.cardTitle)}>Est. rewards from next cycle</h3>
           <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
         </section>
         <InfoCard.Card>
