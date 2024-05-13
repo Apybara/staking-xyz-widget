@@ -18,7 +18,8 @@ export type IconProps = {
     | "arc"
     | "download"
     | "x"
-    | "telegram";
+    | "telegram"
+    | "doc";
   size?: number;
   className?: string;
 };
