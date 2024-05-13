@@ -12,8 +12,8 @@ import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 
 export const StakeInfoBox = () => {
   const { network } = useShell();
-  const { stakeFees } = useStaking();
-  const networkReward = useNetworkReward();
+  const { stakeFees, coinAmountInput } = useStaking();
+  const networkReward = useNetworkReward({ amount: coinAmountInput });
   const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
 
   const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
@@ -25,7 +25,7 @@ export const StakeInfoBox = () => {
         <InfoCard.StackItem className={S.rewardInfo}>
           <InfoCard.TitleBox>
             <InfoCard.Title>Est. reward rate</InfoCard.Title>
-            {stakeFees && <RewardsTooltip />}
+            {stakeFees && <RewardsTooltip amount={coinAmountInput} />}
           </InfoCard.TitleBox>
           <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
         </InfoCard.StackItem>
