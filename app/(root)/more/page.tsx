@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { RouterStruct } from "../../types";
+import { revalidateTag } from "next/cache";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 import { getLatestReleaseTag } from "../../_services/gitHub";
 import { PageViewTop } from "../_components/WidgetTop";
@@ -11,6 +12,7 @@ import * as S from "./_components/more.css";
 
 export default async function More({ searchParams }: RouterStruct) {
   const latestReleaseTag = await getLatestReleaseTag();
+  revalidateTag("latestReleaseFromGitHub");
 
   return (
     <>
