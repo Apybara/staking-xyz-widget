@@ -7,15 +7,13 @@ export const defaultTop = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  paddingInline: pxToRem(16),
-  blockSize: pxToRem(60),
+  padding: pxToRem(16),
 });
 
 export const pageTop = style({
   display: "flex",
   alignItems: "center",
-  paddingInline: pxToRem(16),
-  blockSize: pxToRem(60),
+  padding: pxToRem(16),
   zIndex: 2,
   borderBottom: `1px solid transparent`,
   transition: "background-color 0.3s",
@@ -30,7 +28,7 @@ export const pageTopFixed = style({
 export const title = style({
   fontSize: pxToRem(20),
   fontWeight: weights.semibold,
-  lineHeight: pxToRem(28),
+  lineHeight: pxToRem(27),
   textAlign: "center",
   flexGrow: 1,
   marginInlineEnd: 20,
@@ -40,6 +38,7 @@ export const rotate = keyframes({
   "0%": { transform: "rotate(0deg)" },
   "100%": { transform: "rotate(360deg)" },
 });
+
 export const redelegateButton = style({
   borderRadius: pxToRem(4),
   paddingInline: pxToRem(8),
@@ -58,6 +57,7 @@ export const buttonContainer = style({
   display: "flex",
   alignItems: "center",
   gap: pxToRem(12),
+  blockSize: pxToRem(28),
 });
 
 export const button = recipe({

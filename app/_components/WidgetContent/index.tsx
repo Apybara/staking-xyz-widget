@@ -21,6 +21,8 @@ export const WidgetContent = ({ variant = "default", children }: WidgetContentPr
   };
 
   useEffect(() => {
+    setStates({ isScrollActive: false });
+
     if (ref.current) {
       ref.current.addEventListener("scroll", setScrollActive);
 
