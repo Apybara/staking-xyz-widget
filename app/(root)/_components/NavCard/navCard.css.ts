@@ -91,22 +91,13 @@ export const valueTextBox = style({
   gap: pxToRem(4),
 });
 
-export const icon = style({});
-export const iconChevron = style({
-  transform: "rotate(-90deg)",
-  selectors: {
-    [`${card}:hover &`]: {
-      display: "none",
-      visibility: "hidden",
-    },
-  },
-});
 export const iconArrow = style({
-  display: "none",
+  display: "flex",
+  color: colors.black300,
+  transition: "color .3s",
   selectors: {
     [`${card}:hover &`]: {
-      display: "block",
-      visibility: "visible",
+      color: colors.black000,
     },
   },
 });

@@ -17,11 +17,8 @@ export const MoreNavCard = ({ title, description, url }: MoreNavCardProps) => (
       <span className={S.description}>{description}</span>
     </div>
     <div className={S.endBox}>
-      <span className={cn(S.icon, S.iconChevron)}>
-        <Icon name="chevron" size={12} />
-      </span>
-      <span className={cn(S.icon, S.iconArrow)}>
-        <Icon name="arrow" size={12} className={cn(S.icon, S.iconArrow)} />
+      <span className={cn(S.iconArrow)}>
+        <Icon name="arrow" size={12} />
       </span>
     </div>
   </a>
