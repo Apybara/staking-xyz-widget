@@ -1,7 +1,7 @@
 import type { WidgetStates } from "./types";
 import { useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { defaultNetwork, defaultGlobalCurrency, mobileDisabledNetworks } from "../../consts";
+import { defaultNetwork, mobileDisabledNetworks } from "../../consts";
 import { useLinkWithSearchParams } from "../../_utils/routes";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
@@ -27,7 +27,7 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
     if (
       connectionStatus === "disconnected" &&
       status !== "loading" &&
-      (pathname === "/activity" || pathname === "/rewards")
+      (pathname === "/activity" || pathname.includes("/rewards"))
     ) {
       router.push(homePageLink);
       return;
