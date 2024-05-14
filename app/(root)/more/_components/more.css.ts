@@ -53,25 +53,13 @@ export const endBox = style({
   display: "flex",
 });
 
-export const icon = style({});
-
-export const iconChevron = style({
-  transform: "rotate(-90deg)",
-  color: colors.black300,
-  selectors: {
-    [`${card}:hover &`]: {
-      display: "none",
-      visibility: "hidden",
-    },
-  },
-});
-
 export const iconArrow = style({
-  display: "none",
+  display: "flex",
+  color: colors.black300,
+  transition: "color .3s",
   selectors: {
     [`${card}:hover &`]: {
-      display: "block",
-      visibility: "visible",
+      color: colors.black000,
     },
   },
 });

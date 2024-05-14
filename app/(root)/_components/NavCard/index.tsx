@@ -22,8 +22,9 @@ export const Card = ({ disabled = false, searchParams, page, endBox }: NavCardPr
       <Link href={getLinkWithSearchParams(searchParams, page)} className={cn(S.card)}>
         <div className={cn(S.main)}>
           <span className={cn(S.title)}>{pageTitleMap[page]}</span>
-          <Icon name="chevron" size={12} className={cn(S.icon, S.iconChevron)} />
-          <Icon name="arrow" size={12} className={cn(S.icon, S.iconArrow)} />
+          <span className={cn(S.iconArrow)}>
+            <Icon name="arrow" size={12} />
+          </span>
         </div>
         <div className={cn(S.endBox)}>
           {endBox?.title}
