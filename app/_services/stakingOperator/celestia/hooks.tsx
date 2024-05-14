@@ -71,36 +71,7 @@ export const useCelestiaUnbondingDelegations = ({
   return { data, formatted, isLoading, error, refetch };
 };
 
-const useStakedBalance = ({ delegations }: { delegations?: Array<T.DelegationResponseItem> }) => {
-  if (delegations === undefined) return undefined;
-  if (!delegations?.length) return "0";
-
-  const amount = delegations.reduce((acc, { balance }) => {
-    return acc.plus(balance.amount);
-  }, BigNumber(0));
-
-  return getCoinValueFromDenom({ network: "celestia", amount: amount.toString() });
-};
-
-const useFormattedUnbondingDelegations = (
-  delegations?: Array<T.UnbondingDelegationResponseItem>,
-): Array<UnbondingDelegation> => {
-  const formattedDelegations: Array<UnbondingDelegation> = [];
-
-  delegations?.forEach((delegation) => {
-    delegation.entries.forEach((entry) => {
-      formattedDelegations.push({
-        validatorAddress: delegation.validator_address,
-        remainingTime: getTimeDiffInSingleUnits(entry.completion_time),
-        amount: getCoinValueFromDenom({ network: "celestia", amount: entry.balance }),
-      });
-    });
-  });
-
-  return formattedDelegations;
-};
-
-export const useAddressActivity = ({
+export const useCelestiaAddressActivity = ({
   network,
   address,
   offset,
@@ -168,7 +139,7 @@ export const useAddressActivity = ({
   };
 };
 
-export const useAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
+export const useCelestiaAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, error, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressRewardsResponse | null,
     T.AddressRewardsResponse
@@ -198,7 +169,7 @@ export const useAddressRewards = ({ network, address }: { network: Network | nul
   };
 };
 
-export const useAddressRewardsHistory = ({
+export const useCelestiaAddressRewardsHistory = ({
   network,
   address,
   offset,
@@ -266,8 +237,9 @@ export const useAddressRewardsHistory = ({
 export const useCelestiaReward = ({ network, amount }: { network: Network | null; amount: string }) => {
   const { data, isLoading, error, refetch } = useQuery({
     enabled: getIsCelestiaNetwork(network),
-    queryKey: ["celestiaReward", network],
+    queryKey: ["celestiaReward", network, amount],
     queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"] }),
+    refetchInterval: 3600000, // 1 hour
     refetchOnWindowFocus: true,
   });
 
@@ -298,6 +270,35 @@ export const useCelestiaServerStatus = ({ network }: { network: Network | null }
   });
 
   return { data, isLoading, isRefetching, error, refetch };
+};
+
+const useStakedBalance = ({ delegations }: { delegations?: Array<T.DelegationResponseItem> }) => {
+  if (delegations === undefined) return undefined;
+  if (!delegations?.length) return "0";
+
+  const amount = delegations.reduce((acc, { balance }) => {
+    return acc.plus(balance.amount);
+  }, BigNumber(0));
+
+  return getCoinValueFromDenom({ network: "celestia", amount: amount.toString() });
+};
+
+const useFormattedUnbondingDelegations = (
+  delegations?: Array<T.UnbondingDelegationResponseItem>,
+): Array<UnbondingDelegation> => {
+  const formattedDelegations: Array<UnbondingDelegation> = [];
+
+  delegations?.forEach((delegation) => {
+    delegation.entries.forEach((entry) => {
+      formattedDelegations.push({
+        validatorAddress: delegation.validator_address,
+        remainingTime: getTimeDiffInSingleUnits(entry.completion_time),
+        amount: getCoinValueFromDenom({ network: "celestia", amount: entry.balance }),
+      });
+    });
+  });
+
+  return formattedDelegations;
 };
 
 const getIsCelestiaNetwork = (network: Network | null) => network === "celestia" || network === "celestiatestnet3";

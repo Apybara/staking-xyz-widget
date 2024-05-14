@@ -2,6 +2,7 @@
 import cn from "classnames";
 import { useShell } from "../../../../_contexts/ShellContext";
 import { Icon } from "../../../../_components/Icon";
+import { Skeleton } from "../../../../_components/Skeleton";
 import * as InfoCard from "../../../../_components/InfoCard";
 import { LinkCTAButton } from "../../../../_components/CTAButton";
 import { RewardsTooltip } from "../../../_components/RewardsTooltip";
@@ -9,7 +10,7 @@ import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
 import { getTimeTillMidnight } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
-import { useNetworkReward, useRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
+import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import * as S from "./rewardsSummary.css";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { WidgetContent } from "@/app/_components/WidgetContent";
@@ -18,15 +19,15 @@ import Tooltip from "@/app/_components/Tooltip";
 
 export const RewardsSummary = () => {
   const { network } = useShell();
-  const { stakedBalance } = useStakedBalance() || {};
-  const networkReward = useNetworkReward({ amount: stakedBalance });
+  const { stakedBalance, isLoading: isStakedBalanceLoading } = useStakedBalance() || {};
+  const { rewards: networkRewards, isLoading: isNetworkRewardsLoading } =
+    useNetworkReward({ amount: stakedBalance }) || {};
+  const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards()?.query || {};
+  const { total_rewards, last_cycle_rewards } = addressRewards || {};
   const historyLink = useLinkWithSearchParams("rewards/history");
 
-  const { query } = useRewards();
-  const { total_rewards, last_cycle_rewards } = query?.data || {};
-
   const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: total_rewards });
-  const dailyRewards = networkReward?.rewards.daily;
+  const dailyRewards = networkRewards?.daily;
   const isEstRewardsSmall = (dailyRewards || 0) < 1;
   const formattedCycleReward = useDynamicAssetValueFromCoin({
     coinVal: dailyRewards,
@@ -34,19 +35,27 @@ export const RewardsSummary = () => {
     formatOptions: !isEstRewardsSmall ? undefined : { mantissa: 6 },
   });
   const formattedNextCompounding = getTimeTillMidnight();
-
   const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).isLessThan(1);
+  const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
 
   return (
     <>
       <WidgetContent>
         <section className={cn(S.card)}>
           <h3 className={cn(S.cardTitle)}>Cumulative</h3>
-          <p className={cn(S.cardValue)}>{formattedCumulative}</p>
+          {isAddressRewardsLoading ? (
+            <Skeleton width={140} height={24} />
+          ) : (
+            <p className={cn(S.cardValue)}>{formattedCumulative}</p>
+          )}
         </section>
         <section className={cn(S.card)}>
           <h3 className={cn(S.cardTitle)}>Est. rewards from next cycle</h3>
-          <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
+          {isEstRewardsLoading ? (
+            <Skeleton width={140} height={24} />
+          ) : (
+            <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
+          )}
         </section>
         <InfoCard.Card>
           <InfoCard.Stack>
@@ -68,7 +77,13 @@ export const RewardsSummary = () => {
                 <InfoCard.Title>Est. reward rate</InfoCard.Title>
                 <RewardsTooltip amount={stakedBalance} />
               </InfoCard.TitleBox>
-              <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
+              <InfoCard.Content className={S.rewardInfoValue}>
+                {isEstRewardsLoading ? (
+                  <Skeleton width={41.38} height={14} />
+                ) : (
+                  <span>{networkRewards?.percentage}%</span>
+                )}
+              </InfoCard.Content>
             </InfoCard.StackItem>
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
