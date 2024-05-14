@@ -26,6 +26,7 @@ export const trigger = style([
     fontSize: pxToRem(14),
     cursor: "pointer",
     color: colors.black300,
+    transition: "border-color .3s, background-color .3s",
 
     selectors: {
       "&:hover": {
