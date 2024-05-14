@@ -33,9 +33,12 @@ export const getAddressRewardsHistory = async ({
   address,
   offset,
   limit,
+  filterKey,
 }: T.AddressRewardsHistoryPaginationParams & T.BaseParams) => {
+  const filterQuery = !!filterKey ? `&filterBy=type&filterKey=${filterKey}` : "";
+
   const res: T.AddressRewardsHistoryResponse = await fetchData(
-    `${apiUrl}address/${address}/rewards/activity?offset=${offset}&limit=${limit}`,
+    `${apiUrl}address/${address}/rewards/activity?offset=${offset}&limit=${limit}${filterQuery}`,
   );
 
   return res;
@@ -118,7 +121,7 @@ export const getNetworkStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">
 export const getServerStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
   const res: T.ServerStatusResponse = await fetchData(`${apiUrl}status`);
   return res;
-}
+};
 export const getRedelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
   const res: T.RedelegateMessageResponse = await fetchData(`${apiUrl}stake/user/redelegate`, {
     method: "POST",

@@ -26,9 +26,16 @@ export const RewardsSummary = () => {
   const { total_rewards, last_cycle_rewards } = addressRewards || {};
   const historyLink = useLinkWithSearchParams("rewards/history");
 
-  const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: total_rewards });
-  const dailyRewards = networkRewards?.daily;
-  const isEstRewardsSmall = (dailyRewards || 0) < 1;
+  const cumulativeRewards = total_rewards;
+  const isCumulativeRewardsSmall =
+    cumulativeRewards && BigNumber(cumulativeRewards).isLessThan(1) && BigNumber(cumulativeRewards).isGreaterThan(0);
+  const formattedCumulative = useDynamicAssetValueFromCoin({
+    coinVal: cumulativeRewards,
+    minValue: !isCumulativeRewardsSmall ? undefined : 0.000001,
+    formatOptions: !isCumulativeRewardsSmall ? undefined : { mantissa: 6 },
+  });
+  const dailyRewards = networkRewards?.daily || 0;
+  const isEstRewardsSmall = dailyRewards > 0 && dailyRewards < 1;
   const formattedCycleReward = useDynamicAssetValueFromCoin({
     coinVal: dailyRewards,
     minValue: !isEstRewardsSmall ? undefined : 0.000001,

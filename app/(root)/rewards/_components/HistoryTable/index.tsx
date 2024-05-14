@@ -1,7 +1,6 @@
 "use client";
-import type { Network } from "../../../../types";
 import type { RewardsHistoryItem } from "../../../../_services/stakingOperator/types";
-import { useShell } from "../../../../_contexts/ShellContext";
+import BigNumber from "bignumber.js";
 import { Skeleton } from "../../../../_components/Skeleton";
 import * as ListTable from "../../../../_components/ListTable";
 import { EmptyState } from "../../../../_components/EmptyState";
@@ -10,12 +9,10 @@ import { getPercentagedNumber } from "../../../../_utils/number";
 import { getUTCStringFromUnixTimestamp, getUTCStringFromUnixTimeString } from "../../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useRewardsHistory } from "../../../../_services/stakingOperator/hooks";
-import { networkExplorer, defaultNetwork } from "../../../../consts";
 import * as S from "./historyTable.css";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 
 export const RewardsHistoryTable = () => {
-  const { network } = useShell();
   const { params, query } = useRewardsHistory() || {};
   const { offset, setOffset, limit } = params;
   const { formattedEntries, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
@@ -50,7 +47,7 @@ export const RewardsHistoryTable = () => {
         <ListTable.Pad>
           <ListTable.List>
             {formattedEntries?.map((rewardsHistory, index) => (
-              <ListItem key={index + rewardsHistory.id} rewardsHistory={rewardsHistory} network={network} />
+              <ListItem key={index + rewardsHistory.id} rewardsHistory={rewardsHistory} />
             ))}
           </ListTable.List>
           <ListTable.Pagination
@@ -71,40 +68,35 @@ export const RewardsHistoryTable = () => {
   );
 };
 
-const ListItem = ({
-  rewardsHistory,
-  network,
-}: {
-  rewardsHistory: Omit<RewardsHistoryItem, "amount"> & { amount: string };
-  network: Network | null;
-}) => {
-  const amount = useDynamicAssetValueFromCoin({ coinVal: rewardsHistory.amount });
-  const href = `${networkExplorer[network || defaultNetwork]}tx/${rewardsHistory.id}`;
+const ListItem = ({ rewardsHistory }: { rewardsHistory: Omit<RewardsHistoryItem, "amount"> & { amount: string } }) => {
+  const rewardAmount = rewardsHistory.amount;
+  const isAmountSmall = BigNumber(rewardAmount).isLessThan(1) && BigNumber(rewardAmount).isGreaterThan(0);
+  const amount = useDynamicAssetValueFromCoin({
+    coinVal: rewardAmount,
+    minValue: !isAmountSmall ? undefined : 0.000001,
+    formatOptions: !isAmountSmall ? undefined : { mantissa: 6 },
+  });
 
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={rewardsHistory.id ? href : undefined}>
-        <ListTable.TxInfoPrimary
-          title={titleKey[rewardsHistory.type]}
-          externalLink={!!rewardsHistory.id}
-          amount={amount || "－"}
-          isProcessing={rewardsHistory.inProgress}
-        />
-        <ListTable.TxInfoSecondary
-          time={
-            !rewardsHistory.inProgress
-              ? getUTCStringFromUnixTimestamp(rewardsHistory.timestamp)
-              : getUTCStringFromUnixTimeString(rewardsHistory.created_at)
-          }
-          reward={`Reward ${getPercentagedNumber(rewardsHistory.rewardRate)}`}
-          isProcessing={rewardsHistory.inProgress}
-        />
-      </ListTable.ExternalLinkItemWrapper>
+      <ListTable.TxInfoPrimary
+        title={titleKey[rewardsHistory.type]}
+        amount={amount || "－"}
+        isProcessing={rewardsHistory.inProgress}
+      />
+      <ListTable.TxInfoSecondary
+        time={
+          !rewardsHistory.inProgress
+            ? getUTCStringFromUnixTimestamp(rewardsHistory.timestamp)
+            : getUTCStringFromUnixTimeString(rewardsHistory.created_at)
+        }
+        reward={`Reward ${getPercentagedNumber(rewardsHistory.rewardRate)}`}
+        isProcessing={rewardsHistory.inProgress}
+      />
     </ListTable.Item>
   );
 };
 
 const titleKey = {
-  compound: "Compound",
-  rewards: "Rewards",
+  reward: "Compound",
 };

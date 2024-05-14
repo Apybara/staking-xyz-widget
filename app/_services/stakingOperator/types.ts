@@ -209,10 +209,12 @@ export type AddressRewardsHistoryResponse = CommonEntriesResponse<
   hasMore?: boolean | null;
   totalEntries?: number | null;
 };
-export type AddressRewardsHistoryPaginationParams = PaginationParams;
+export type AddressRewardsHistoryPaginationParams = PaginationParams & {
+  filterKey?: "transactions_rewards_daily" | "transactions_rewards_hourly" | null;
+};
 
 export type RewardsHistoryItem = {
-  type: "compound" | "rewards";
+  type: "reward";
   id: string;
   amount: number;
   rewardRate: number;
