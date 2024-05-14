@@ -11,6 +11,7 @@ export const trigger = style({
   paddingInlineEnd: pxToRem(8),
   borderRadius: pxToRem(8),
   backgroundColor: colors.black750,
+  transition: "background-color .3s",
 
   selectors: {
     "&:hover": {

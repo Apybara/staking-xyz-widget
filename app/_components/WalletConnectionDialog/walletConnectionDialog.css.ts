@@ -20,6 +20,7 @@ const baseWalletCardStyle = style({
   backgroundColor: colors.black900,
   fontSize: pxToRem(14),
   fontWeight: weights.semibold,
+  transition: "background-color .3s",
 
   selectors: {
     "&:hover": {

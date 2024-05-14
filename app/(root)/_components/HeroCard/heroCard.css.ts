@@ -8,6 +8,7 @@ export const card = style([
   {
     textAlign: "center",
     paddingBlock: `${pxToRem(27)} !important`,
+    transition: "background-color .3s",
   },
 ]);
 
