@@ -13,12 +13,9 @@ export const getDynamicAssetValueFromCoin = ({
   coinVal,
   coinPrice,
   currency,
-}: {
-  network: Network | null;
-  coinVal?: string | number;
-  coinPrice: CoinPrice | null;
-  currency: Currency | null;
-}) => {
+  minValue,
+  formatOptions,
+}: GetDynamicAssetValueFromCoinProps) => {
   const castedCurrency = currency || defaultGlobalCurrency;
 
   if (!coinVal && coinVal !== 0) return undefined;
@@ -27,6 +24,7 @@ export const getDynamicAssetValueFromCoin = ({
     return getFormattedUSDPriceFromCoin({
       val: coinVal,
       price: coinPrice?.[network || defaultNetwork]?.USD || 0,
+      options: { minValue, formatOptions },
     });
   }
 
@@ -34,12 +32,14 @@ export const getDynamicAssetValueFromCoin = ({
     return getFormattedEURPriceFromCoin({
       val: coinVal,
       price: coinPrice?.[network || defaultNetwork]?.EUR || 0,
+      options: { minValue, formatOptions },
     });
   }
 
   return getFormattedCoinValue({
     val: BigNumber(coinVal).toNumber(),
-    formatOptions: { currencySymbol: networkCurrency[network || defaultNetwork] },
+    formatOptions: { ...formatOptions, currencySymbol: networkCurrency[network || defaultNetwork] },
+    minValue,
   });
 };
 
@@ -53,6 +53,7 @@ export const getFormattedUSDPriceFromCoin = ({ val, price, options }: Omit<GetPr
       currencySymbol: fiatCurrencyMap.USD,
     },
     capAtTrillion: options?.capAtTrillion,
+    minValue: options?.minValue,
   });
 };
 
@@ -66,6 +67,7 @@ export const getFormattedEURPriceFromCoin = ({ val, price, options }: Omit<GetPr
       currencySymbol: fiatCurrencyMap.EUR,
     },
     capAtTrillion: options?.capAtTrillion,
+    minValue: options?.minValue,
   });
 };
 
@@ -83,12 +85,15 @@ export const getFormattedFiatCurrencyValue = ({
   locale,
   formatOptions,
   capAtTrillion = true,
+  minValue = 0.01,
 }: CurrencyPriceProps) => {
   numbro.setLanguage(locale || "en-US");
 
+  const bigNumVal = BigNumber(val);
   const defaultSymbol = formatOptions?.currencySymbol || "$";
-  if ((formatOptions?.mantissa || 2) <= 2 && val > 0 && val < 0.01) {
-    return `<${defaultSymbol}0.01`;
+
+  if ((formatOptions?.mantissa || 2) >= 2 && bigNumVal.isGreaterThan(0) && bigNumVal.isLessThan(minValue)) {
+    return `<${defaultSymbol}${minValue}`;
   }
   if (capAtTrillion && val >= 1e12) {
     return `>${defaultSymbol}1.0T`;
@@ -116,11 +121,17 @@ export const getCoinValueFromFiatPrice = ({ val, price }: Omit<GetPriceProps, "o
   return value;
 };
 
-export const getFormattedCoinValue = ({ val, formatOptions, capAtTrillion = true }: TokenNumberProps) => {
+export const getFormattedCoinValue = ({
+  val,
+  formatOptions,
+  capAtTrillion = true,
+  minValue = 0.01,
+}: TokenNumberProps) => {
+  const bigNumVal = BigNumber(val);
   const defaultSymbol = formatOptions?.currencySymbol ? `${" "}${formatOptions?.currencySymbol}` : "";
 
-  if ((formatOptions?.mantissa || 2) <= 2 && val > 0 && val < 0.01) {
-    return `<0.01${defaultSymbol}`;
+  if ((formatOptions?.mantissa || 2) >= 2 && bigNumVal.isGreaterThan(0) && bigNumVal.isLessThan(minValue)) {
+    return `<${minValue}${defaultSymbol}`;
   }
   if (capAtTrillion && val >= 1e12) {
     return `>1.0T${defaultSymbol}`;
@@ -155,10 +166,20 @@ type CurrencyPriceProps = {
   locale?: string;
   formatOptions?: numbro.Format;
   capAtTrillion?: boolean;
+  minValue?: number;
 };
 type TokenNumberProps = {
   val: number;
   formatOptions?: numbro.Format;
   capAtTrillion?: boolean;
   capAtTwoDecimals?: boolean;
+  minValue?: number;
+};
+type GetDynamicAssetValueFromCoinProps = {
+  network: Network | null;
+  coinVal?: string | number;
+  coinPrice: CoinPrice | null;
+  currency: Currency | null;
+  minValue?: number;
+  formatOptions?: numbro.Format;
 };

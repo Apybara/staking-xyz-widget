@@ -1,3 +1,4 @@
+import numbro from "numbro";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { networkCurrency, defaultNetwork } from "../../consts";
@@ -8,9 +9,17 @@ import {
   getDynamicAssetValueFromCoin,
 } from ".";
 
-export const useDynamicAssetValueFromCoin = ({ coinVal }: { coinVal?: string | number }) => {
+export const useDynamicAssetValueFromCoin = ({
+  coinVal,
+  minValue,
+  formatOptions,
+}: {
+  coinVal?: string | number;
+  minValue?: number;
+  formatOptions?: numbro.Format;
+}) => {
   const { currency, coinPrice, network } = useShell();
-  return getDynamicAssetValueFromCoin({ coinVal, currency, coinPrice, network });
+  return getDynamicAssetValueFromCoin({ coinVal, currency, coinPrice, network, minValue, formatOptions });
 };
 
 export const useFormattedNetworkValue = ({ val }: { val?: string | number }) => {

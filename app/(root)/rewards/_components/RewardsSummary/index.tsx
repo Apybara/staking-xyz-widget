@@ -26,7 +26,13 @@ export const RewardsSummary = () => {
   const { total_rewards, last_cycle_rewards } = query?.data || {};
 
   const formattedCumulative = useDynamicAssetValueFromCoin({ coinVal: total_rewards });
-  const formattedCycleReward = useDynamicAssetValueFromCoin({ coinVal: networkReward?.rewards.daily });
+  const dailyRewards = networkReward?.rewards.daily;
+  const isEstRewardsSmall = (dailyRewards || 0) < 1;
+  const formattedCycleReward = useDynamicAssetValueFromCoin({
+    coinVal: dailyRewards,
+    minValue: !isEstRewardsSmall ? undefined : 0.000001,
+    formatOptions: !isEstRewardsSmall ? undefined : { mantissa: 6 },
+  });
   const formattedNextCompounding = getTimeTillMidnight();
 
   const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).isLessThan(1);
