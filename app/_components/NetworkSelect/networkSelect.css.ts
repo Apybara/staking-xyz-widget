@@ -8,6 +8,7 @@ export const selectItem = style({
   justifyContent: "space-between",
   paddingBlock: pxToRem(14),
   gap: pxToRem(48),
+  transition: "background-color .3s",
 
   "@media": {
     "screen and (max-width: 768px)": {

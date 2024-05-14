@@ -32,6 +32,7 @@ export const tabButton = recipe({
       default: {
         color: colors.black600,
         backgroundColor: "transparent",
+        transition: "color .3s, background-color .3s",
         ":hover": {
           color: colors.black000,
           backgroundColor: colors.black900,

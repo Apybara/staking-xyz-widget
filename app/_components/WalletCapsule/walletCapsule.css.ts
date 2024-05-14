@@ -10,6 +10,7 @@ export const button = style({
   paddingInline: pxToRem(10),
   borderRadius: pxToRem(8),
   backgroundColor: colors.black750,
+  transition: "background-color .3s",
 
   selectors: {
     "&:hover": {

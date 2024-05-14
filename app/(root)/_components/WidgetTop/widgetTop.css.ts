@@ -64,6 +64,7 @@ export const button = recipe({
   base: {
     lineHeight: 0,
     color: colors.black600,
+    transition: "color .3s",
 
     selectors: {
       "&:hover": {
