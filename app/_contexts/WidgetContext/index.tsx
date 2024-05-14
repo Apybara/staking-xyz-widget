@@ -16,7 +16,11 @@ export const WidgetProvider = ({ children }: T.WidgetProviderProps) => {
 
   // Prefetch queries
   const activity = useActivity(null);
-  useLastOffsetActivity({ ...activity.params });
+  useLastOffsetActivity({
+    limit: activity?.params.limit,
+    filterKey: activity?.params.filterKey,
+    lastOffset: activity?.query?.lastOffset || 0,
+  });
 
   return (
     <WidgetContext.Provider

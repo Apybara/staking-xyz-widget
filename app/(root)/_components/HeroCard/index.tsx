@@ -1,5 +1,5 @@
 "use client";
-import { useNetworkReward, useRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
+import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import { Skeleton } from "@/app/_components/Skeleton";
 import Tooltip from "@/app/_components/Tooltip";
 import { useWallet } from "../../../_contexts/WalletContext";
@@ -14,8 +14,8 @@ export const HeroCard = () => {
   const { connectionStatus } = useWallet();
   const { stakedBalance, isLoading: isLoadingStakedBalance, error: stakedBalanceError } = useStakedBalance() || {};
   const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward() || {};
-  const { query } = useRewards();
-  const { daily_rewards } = query?.data || {};
+  const { data: addressRewards } = useAddressRewards()?.query || {};
+  const { daily_rewards } = addressRewards || {};
 
   const formattedStakedBalance = useDynamicAssetValueFromCoin({ coinVal: stakedBalance });
   const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: daily_rewards });
