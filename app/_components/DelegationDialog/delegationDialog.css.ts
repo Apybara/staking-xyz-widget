@@ -38,6 +38,10 @@ export const title = style({
   color: colors.black000,
 });
 
+export const item = style({
+  blockSize: pxToRem(20),
+});
+
 export const itemIcon = recipe({
   base: {
     lineHeight: 0,

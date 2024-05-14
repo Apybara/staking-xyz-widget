@@ -43,7 +43,7 @@ export const StepsBox = ({ children }: { children: ReactNode }) => {
 
 export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: StepItemProps) => {
   return (
-    <InfoCard.StackItem>
+    <InfoCard.StackItem className={S.item}>
       <InfoCard.TitleBox>
         <span className={cn(S.itemIcon({ checked: state === "success" }))}>
           <Icon name="check" size={14} />
