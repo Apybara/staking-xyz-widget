@@ -59,14 +59,16 @@ export const TxInfoPrimary = ({ title, externalLink, isProcessing, amount }: TxI
   return (
     <div className={cn(S.txInfoPrimary({ isProcessing }))}>
       <div className={cn(S.txInfoPrimaryStart)}>
-        <h5 className={cn(S.txInfoPrimaryTitle)}>{title}</h5>
-
-        {externalLink && (
-          <span className={S.txInfoLinkIcon}>
-            <Icon name="external-link" size={10} />
-          </span>
-        )}
         {isProcessing && <LoadingSpinner className={S.txInfoLoadingIcon} size={12} />}
+
+        <div className={S.txInfoPrimaryChild}>
+          <h5 className={cn(S.txInfoPrimaryTitle)}>{title}</h5>
+          {externalLink && (
+            <span className={S.txInfoLinkIcon}>
+              <Icon name="external-link" size={10} />
+            </span>
+          )}
+        </div>
       </div>
       <p className={cn(S.txInfoPrimaryAmount)}>{amount}</p>
     </div>
