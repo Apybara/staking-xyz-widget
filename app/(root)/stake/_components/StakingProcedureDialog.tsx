@@ -132,21 +132,17 @@ const usePostHogEvents = ({
   }, [open]);
 
   useEffect(() => {
-    if (!hasAuthApproval && authProcedure?.state === "success") {
-      captureAuthSuccess();
-      return;
-    }
-    if (!hasAuthApproval && authProcedure?.state === "error") {
-      captureAuthFailed();
-      return;
+    if (!hasAuthApproval) {
+      if (authProcedure?.state === "success") {
+        captureAuthSuccess();
+      } else if (authProcedure?.state === "error") {
+        captureAuthFailed();
+      }
     }
     if (delegateProcedure?.state === "success") {
       captureDelegateSuccess();
-      return;
-    }
-    if (delegateProcedure?.state === "error") {
+    } else if (delegateProcedure?.state === "error") {
       captureDelegateFailed();
-      return;
     }
   }, [hasAuthApproval, authProcedure?.step, delegateProcedure?.state]);
 };
