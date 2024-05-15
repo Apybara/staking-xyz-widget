@@ -117,9 +117,12 @@ const usePostHogEvents = ({
 }) => {
   const hasAuthApproval = uncheckedProcedures?.[0]?.step === "undelegate";
   const captureFlowStart = usePostHogEvent("unstake_tx_flow_started");
+  const captureAuthSuccess = usePostHogEvent("stake_tx_flow_auth_succeeded");
+  const captureAuthFailed = usePostHogEvent("stake_tx_flow_auth_failed");
   const captureUndelegateSuccess = usePostHogEvent("unstake_tx_flow_undelegate_succeeded");
   const captureUndelegateFailed = usePostHogEvent("unstake_tx_flow_undelegate_failed");
 
+  const authProcedure = procedures?.find((procedure) => procedure.step === "auth");
   const undelegateProcedure = procedures?.find((procedure) => procedure.step === "undelegate");
 
   useEffect(() => {
@@ -129,15 +132,19 @@ const usePostHogEvents = ({
   }, [open]);
 
   useEffect(() => {
+    if (!hasAuthApproval) {
+      if (authProcedure?.state === "success") {
+        captureAuthSuccess();
+      } else if (authProcedure?.state === "error") {
+        captureAuthFailed();
+      }
+    }
     if (undelegateProcedure?.state === "success") {
       captureUndelegateSuccess();
-      return;
-    }
-    if (undelegateProcedure?.state === "error") {
+    } else if (undelegateProcedure?.state === "error") {
       captureUndelegateFailed();
-      return;
     }
-  }, [hasAuthApproval, undelegateProcedure?.state]);
+  }, [hasAuthApproval, authProcedure?.step, undelegateProcedure?.state]);
 };
 
 const getUncheckedProcedures = (procedures: Array<UnstakeProcedure>) => {
