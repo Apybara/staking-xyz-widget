@@ -75,8 +75,14 @@ export const txInfoPrimary = recipe({
 export const txInfoPrimaryStart = style({
   display: "flex",
   alignItems: "center",
-  gap: pxToRem(4),
+  gap: pxToRem(8),
 });
+export const txInfoPrimaryChild = style([
+  txInfoPrimaryStart,
+  {
+    gap: pxToRem(4),
+  },
+]);
 export const txInfoPrimaryTitle = style({
   fontSize: pxToRem(14),
   fontWeight: weights.bold,
