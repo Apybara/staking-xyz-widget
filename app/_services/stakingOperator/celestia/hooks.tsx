@@ -138,7 +138,9 @@ export const useCelestiaAddressActivity = ({
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
       amount: getCoinValueFromDenom({ network: network || "celestia", amount: entry.amount }),
-      completionTime: getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0)),
+      completionTime: entry.completionTime
+        ? getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0))
+        : undefined,
     })),
     totalEntries,
     lastOffset,
