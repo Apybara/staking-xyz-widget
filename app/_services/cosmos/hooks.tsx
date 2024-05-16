@@ -434,6 +434,12 @@ const useCosmosBroadcastDelegateTx = ({
       });
 
       const res = await client.signAndBroadcast(address, msgs, fee);
+
+      if (res?.code) {
+        // Transaction is successful only if code is 0
+        throw new Error(res?.rawLog || "Sign in wallet failed");
+      }
+
       return {
         tx: res,
         uuid,
