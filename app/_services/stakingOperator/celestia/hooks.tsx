@@ -182,9 +182,11 @@ export const useCelestiaAddressRewardsHistory = ({
   address,
   offset,
   limit,
-  filterKey = "transactions_rewards_daily",
+  filterKey,
 }: T.AddressRewardsHistoryPaginationParams & { network: Network | null; address?: string }) => {
   const queryClient = useQueryClient();
+  const filterKeyByNetwork =
+    network === "celestiatestnet3" ? "transactions_rewards_hourly" : "transactions_rewards_daily";
 
   const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressRewardsHistoryResponse | null,
@@ -199,7 +201,7 @@ export const useCelestiaAddressRewardsHistory = ({
         address,
         offset,
         limit,
-        filterKey: network === "celestiatestnet3" ? "transactions_rewards_hourly" : filterKey,
+        filterKey: filterKeyByNetwork,
       });
     },
     placeholderData: keepPreviousData,
@@ -219,7 +221,7 @@ export const useCelestiaAddressRewardsHistory = ({
             address,
             offset: nextOffset,
             limit,
-            filterKey,
+            filterKey: filterKeyByNetwork,
           });
         },
       });
