@@ -28,21 +28,22 @@ export const UnstakeInfoBox = () => {
       limit: totalEntries || 999,
     }) || {};
   const { formattedEntries } = unstakeActivityQuery || {};
+  const inProgressEntries = formattedEntries?.filter((item) => !!item.completionTime);
 
   const totalUnbondingAmount = useMemo(() => {
-    if (!totalEntries) return undefined;
+    if (!inProgressEntries?.length) return undefined;
 
     const sumDenom =
-      formattedEntries
+      inProgressEntries
         ?.reduce((acc, { amount }) => {
           return acc.plus(amount);
         }, BigNumber(0))
         .toString() || "0";
 
     return getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: sumDenom });
-  }, [totalEntries, formattedEntries, currency]);
+  }, [inProgressEntries, currency]);
 
-  if (!totalEntries) return null;
+  if (!inProgressEntries?.length) return null;
 
   return (
     <AccordionInfoCard.Root>
@@ -50,14 +51,14 @@ export const UnstakeInfoBox = () => {
         <AccordionInfoCard.Trigger>
           <div className={cn(S.triggerTexts)}>
             <p className={cn(S.triggerProgressText)}>
-              In progress <span className={cn(S.triggerCountText)}>{totalEntries}</span>
+              In progress <span className={cn(S.triggerCountText)}>{inProgressEntries?.length}</span>
             </p>
             <span className={cn(S.triggerAmountText)}>{totalUnbondingAmount}</span>
           </div>
         </AccordionInfoCard.Trigger>
         <AccordionInfoCard.Content>
           <AccordionInfoCard.Stack>
-            {formattedEntries?.map((item, index) => {
+            {inProgressEntries?.map((item, index) => {
               const times = item.completionTime && getTimeUnitStrings(item.completionTime);
 
               return (

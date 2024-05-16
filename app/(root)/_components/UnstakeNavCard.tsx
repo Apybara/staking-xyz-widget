@@ -16,12 +16,13 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
       limit: 1,
     }) || {};
   const { formattedEntries, totalEntries, isLoading, error } = unstakeActivityQuery || {};
+  const inProgressEntries = formattedEntries?.filter((item) => !!item.completionTime);
 
   const isDisabled =
     connectionStatus !== "connected" ||
     !!error ||
     isLoading ||
-    (stakedBalance === "0" && (!formattedEntries?.length || totalEntries === 0));
+    (stakedBalance === "0" && (!inProgressEntries?.length || totalEntries === 0));
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
@@ -40,8 +41,8 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         ),
       };
     }
-    if (formattedEntries?.length && totalEntries) {
-      const times = formattedEntries[0].completionTime && getTimeUnitStrings(formattedEntries[0].completionTime);
+    if (inProgressEntries?.length && totalEntries) {
+      const times = inProgressEntries[0].completionTime && getTimeUnitStrings(inProgressEntries[0].completionTime);
 
       return {
         title: <NavCard.SecondaryText>In progress {totalEntries}</NavCard.SecondaryText>,
@@ -52,7 +53,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         ),
       };
     }
-  }, [connectionStatus, totalEntries, formattedEntries, isLoading]);
+  }, [connectionStatus, totalEntries, inProgressEntries, isLoading]);
 
   return <NavCard.Card {...props} page="unstake" disabled={isDisabled} endBox={endBoxValue} />;
 };
