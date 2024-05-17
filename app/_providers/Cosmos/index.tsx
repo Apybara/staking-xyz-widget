@@ -11,7 +11,7 @@ export const CosmosProviders = ({
 }) => {
   return (
     <GrazProvider walletConnectAPIKey={walletConnectAPIKey}>
-      <CosmosKitProvider>{children}</CosmosKitProvider>
+      <CosmosKitProvider walletConnectAPIKey={walletConnectAPIKey}>{children}</CosmosKitProvider>
     </GrazProvider>
   );
 };

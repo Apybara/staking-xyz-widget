@@ -726,8 +726,14 @@ export const useCosmosWalletBalance = ({
 };
 
 export const useCosmosWalletConnectors = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
-  const { keplr: keplrConnect, leap: leapConnect, okx: okxConnect } = useCosmosKitConnectors(network);
-  const { keplrMobile, leapMobile, walletConnect } = useGrazConnectors(network);
+  const {
+    keplr: keplrConnect,
+    keplrMobile,
+    leap: leapConnect,
+    leapMobile,
+    okx: okxConnect,
+  } = useCosmosKitConnectors(network);
+  const { walletConnect } = useGrazConnectors(network);
 
   return {
     keplr: keplrConnect,
@@ -745,9 +751,9 @@ export const useCosmosWalletDisconnectors = ({ network = "celestia" }: { network
 
   return {
     keplr: disconnectCosmosKit,
-    keplrMobile: disconnectGraz,
+    keplrMobile: disconnectCosmosKit,
     leap: disconnectCosmosKit,
-    leapMobile: disconnectGraz,
+    leapMobile: disconnectCosmosKit,
     okx: disconnectCosmosKit,
     walletConnect: disconnectGraz,
   } as Record<CosmosWalletType, () => Promise<void> | null>;

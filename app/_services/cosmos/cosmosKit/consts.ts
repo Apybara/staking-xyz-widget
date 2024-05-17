@@ -2,7 +2,7 @@ import { assets, chains } from "chain-registry";
 import celestiatestnet3Chains from "../celestiatestnet3/chain.json";
 import celestiatestnet3AssetList from "../celestiatestnet3/assetlist.json";
 
-export const CosmosKitWalletVariants = ["keplr", "leap", "okx"] as const;
+export const CosmosKitWalletVariants = ["keplr", "leap", "okx", "keplrMobile", "leapMobile"] as const;
 export const cosmosKitWalletVariants = [...CosmosKitWalletVariants];
 
 export const cosmosKitChains = [

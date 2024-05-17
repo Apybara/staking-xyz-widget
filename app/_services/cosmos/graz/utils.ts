@@ -13,11 +13,5 @@ export const getGrazWalletTypeEnum = (walletType: WalletType | null) => {
   switch (walletType) {
     case "walletConnect":
       return grazWalletType.WALLETCONNECT;
-    case "keplrMobile":
-      return grazWalletType.WC_KEPLR_MOBILE;
-    case "leapMobile":
-      return grazWalletType.WC_LEAP_MOBILE;
   }
-
-  return undefined;
 };
