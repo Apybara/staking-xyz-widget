@@ -172,6 +172,19 @@ export const feeReceiverByNetwork: Record<Network, string> = {
   celestiatestnet3: process.env.NEXT_PUBLIC_CELESTIATESTNET3_FEE_RECEIVER || "",
 };
 
+export const unstakeFeeRatioByNetwork: Record<Network, number> = {
+  celestia:
+    process.env.NEXT_PUBLIC_CELESTIA_UNSTAKE_FEE_RATE &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIA_UNSTAKE_FEE_RATE))
+      ? Number(process.env.NEXT_PUBLIC_CELESTIA_UNSTAKE_FEE_RATE)
+      : 0.33,
+  celestiatestnet3:
+    process.env.NEXT_PUBLIC_CELESTIATESTNET3_UNSTAKE_FEE_RATE &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_UNSTAKE_FEE_RATE))
+      ? Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_UNSTAKE_FEE_RATE)
+      : 0.33,
+};
+
 export const unstakingPeriodByNetwork: Record<Network, string> = {
   celestia: "21 days",
   celestiatestnet3: "21 days",
