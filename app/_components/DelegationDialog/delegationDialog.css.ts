@@ -107,12 +107,14 @@ export const cancelButton = style({
   },
 });
 
-export const successTag = style({
-  paddingInlineEnd: pxToRem(4),
+export const explorerTag = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(4),
 });
-export const successTagIcon = style({
+export const explorerTagIcon = style({
   selectors: {
-    [`${successTag}:hover &`]: {
+    [`${explorerTag}:hover &`]: {
       transition: "transform 0.2s",
       transform: "translate3d(1px, -1px, 0)",
     },

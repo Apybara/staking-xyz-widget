@@ -231,12 +231,12 @@ export const useCosmosStakingProcedures = ({
   authStep: {
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
-    onError: (e: Error) => void;
+    onError: (e: Error, txHash?: string) => void;
   };
   delegateStep: {
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
-    onError: (e: Error) => void;
+    onError: (e: Error, txHash?: string) => void;
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
@@ -313,7 +313,7 @@ const useCosmosBroadcastAuthzTx = ({
   address?: string;
   onLoading?: () => void;
   onSuccess?: (txHash: string) => void;
-  onError?: (e: Error) => void;
+  onError?: (e: Error, txHash?: string) => void;
 }) => {
   const { isPending, error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosAuthzTx", address, network],
@@ -336,11 +336,16 @@ const useCosmosBroadcastAuthzTx = ({
       return await client.signAndBroadcast(address, grantingMsgs, fee);
     },
     onSuccess: (res) => {
-      onSuccess?.(res.transactionHash);
-      setMonitorGrantTx({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        txHash: res.transactionHash,
-      });
+      if (res?.code) {
+        const error = new Error("Sign in wallet failed");
+        onError?.(error, res.transactionHash);
+      } else {
+        onSuccess?.(res.transactionHash);
+        setMonitorGrantTx({
+          apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+          txHash: res.transactionHash,
+        });
+      }
     },
     onError: (error) => onError?.(error),
   });
@@ -378,7 +383,7 @@ const useCosmosBroadcastDelegateTx = ({
   address?: string;
   onLoading?: () => void;
   onSuccess?: (txHash: string) => void;
-  onError?: (e: Error) => void;
+  onError?: (e: Error, txHash?: string) => void;
 }) => {
   const { isPending, error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosDelegateTx", address, amount, network],
@@ -435,23 +440,23 @@ const useCosmosBroadcastDelegateTx = ({
 
       const res = await client.signAndBroadcast(address, msgs, fee);
 
-      if (res?.code) {
-        // Transaction is successful only if code is 0
-        throw new Error(res?.rawLog || "Sign in wallet failed");
-      }
-
       return {
         tx: res,
         uuid,
       };
     },
     onSuccess: ({ tx, uuid }) => {
-      onSuccess?.(tx.transactionHash);
-      setMonitorTx({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        txHash: tx.transactionHash,
-        uuid,
-      });
+      if (tx?.code) {
+        const error = new Error("Sign in wallet failed");
+        onError?.(error, tx.transactionHash);
+      } else {
+        onSuccess?.(tx.transactionHash);
+        setMonitorTx({
+          apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+          txHash: tx.transactionHash,
+          uuid,
+        });
+      }
     },
     onError: (error) => onError?.(error),
   });
