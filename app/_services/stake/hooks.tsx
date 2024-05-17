@@ -40,9 +40,10 @@ export const useStakingProcedures = ({
         authState.setTxHash(txHash);
         delegateState.setState("active");
       },
-      onError: (e) => {
+      onError: (e, txHash) => {
         console.error(e);
         authState.setState("error");
+        authState.setTxHash(txHash);
         authState.setError(e);
       },
     },
@@ -56,9 +57,10 @@ export const useStakingProcedures = ({
         delegateState.setState("success");
         delegateState.setTxHash(txHash);
       },
-      onError: (e) => {
+      onError: (e, txHash) => {
         console.error(e);
         delegateState.setState("error");
+        delegateState.setTxHash(txHash);
         delegateState.setError(e);
       },
     },
