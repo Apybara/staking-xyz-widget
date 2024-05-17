@@ -42,6 +42,7 @@ export const link = style({
   fontSize: pxToRem(14),
   lineHeight: 1,
   color: colors.black600,
+  transition: "color .3s",
 
   selectors: {
     "&:hover": {

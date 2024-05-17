@@ -250,17 +250,17 @@ export const useCelestiaAddressRewardsHistory = ({
 };
 
 export const useCelestiaReward = ({ network, amount }: { network: Network | null; amount: string }) => {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
     enabled: getIsCelestiaNetwork(network),
     queryKey: ["celestiaReward", network, amount],
     queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"] }),
-    refetchInterval: 3600000, // 1 hour
+    refetchInterval: 600000, // 10 minutes
     refetchOnWindowFocus: true,
   });
 
   const rewards = getCalculatedRewards(amount, data || 0);
 
-  return { data, rewards, isLoading, error, refetch };
+  return { data, rewards, isLoading: isLoading || isRefetching, error, refetch };
 };
 
 export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
