@@ -71,12 +71,16 @@ export const useCosmosKitError = ({
 export const useCosmosKitConnectors = (network: CosmosNetwork) => {
   const walletContexts = useCosmosKitWalletContexts(network);
   const keplrConnect = useKeplrSuggestAndConnect({ network, keplrConnect: walletContexts?.keplr?.connect || null });
+  const keplrMobileConnect = walletContexts?.keplrMobile?.connect || null;
   const leapConnect = walletContexts?.leap?.connect || null;
+  const leapMobileConnect = walletContexts?.leapMobile?.connect || null;
   const okxConnect = walletContexts?.okx?.connect || null;
 
   return {
     keplr: keplrConnect,
+    keplrMobile: keplrMobileConnect,
     leap: leapConnect,
+    leapMobile: leapMobileConnect,
     okx: okxConnect,
   } as Record<CosmosKitWalletType, ChainWalletContext["connect"] | null>;
 };
@@ -92,7 +96,9 @@ export const useCosmosKitWalletStates = ({ network = "celestia" }: { network?: C
 
   const walletName = useMemo<WalletStates["activeWallet"]>(() => {
     if (wallet?.name === "keplr-extension") return "keplr";
+    if (wallet?.name === "keplr-mobile") return "keplrMobile";
     if (wallet?.name === "leap-extension") return "leap";
+    if (wallet?.name === "leap-cosmos-mobile") return "leapMobile";
     if (wallet?.name === "okxwallet-extension") return "okx";
     return null;
   }, [wallet]);
@@ -199,7 +205,7 @@ const useKeplrSuggestAndConnect = ({
       setStates({ activeWallet: "keplr", connectionStatus: "disconnected", keplrSuggestConnectError: true });
     }
   };
-}
+};
 
 const useCosmosKitConnectionEvents = ({ network = "celestia" }: { network?: CosmosNetwork }) => {
   const walletContexts = useCosmosKitWalletContexts(network);
@@ -245,12 +251,16 @@ const useCosmosKitConnectionEvents = ({ network = "celestia" }: { network?: Cosm
 
 const useCosmosKitWalletContexts = (network: CosmosNetwork) => {
   const keplrContext = useChainWallet(network, "keplr-extension");
+  const keplrMobileContext = useChainWallet(network, "keplr-mobile");
   const leapContext = useChainWallet(network, "leap-extension");
+  const leapMobileContext = useChainWallet(network, "leap-cosmos-mobile");
   const okxContext = useChainWallet(network, "okxwallet-extension");
 
   return {
     keplr: keplrContext,
+    keplrMobile: keplrMobileContext,
     leap: leapContext,
+    leapMobile: leapMobileContext,
     okx: okxContext,
   } as Record<CosmosKitWalletType, ChainWalletContext | undefined>;
 };

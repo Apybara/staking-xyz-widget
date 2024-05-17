@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { GrazProvider as Provider } from "graz";
-import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL } from "../../consts";
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, SITE_WALLET_CONNECT_LOGO } from "../../consts";
 import { celestiaChainInfo, celestiatestnet3ChainInfo } from "../../_services/cosmos/consts";
 
 export const GrazProvider = ({
@@ -21,7 +21,7 @@ export const GrazProvider = ({
               name: SITE_TITLE,
               description: SITE_DESCRIPTION,
               url: SITE_URL,
-              icons: [""],
+              icons: [SITE_WALLET_CONNECT_LOGO],
             },
           },
         },

@@ -25,18 +25,6 @@ export const useGrazConnectors = (network: CosmosNetwork) => {
   });
 
   return {
-    keplrMobile: async () => {
-      await connectAsync({
-        chainId: chainInfo[network].chainId,
-        walletType: WalletType.WC_KEPLR_MOBILE,
-      });
-    },
-    leapMobile: async () => {
-      await connectAsync({
-        chainId: chainInfo[network].chainId,
-        walletType: WalletType.WC_LEAP_MOBILE,
-      });
-    },
     walletConnect: async () => {
       await connectAsync({
         chainId: chainInfo[network].chainId,
@@ -68,8 +56,6 @@ export const useGrazWalletStates = ({ network = "celestia" }: { network?: Cosmos
     if (!walletType) return null;
 
     if (walletType === WalletType.WALLETCONNECT) return "walletConnect";
-    if (walletType === WalletType.WC_KEPLR_MOBILE) return "keplrMobile";
-    if (walletType === WalletType.WC_LEAP_MOBILE) return "leapMobile";
     return null;
   }, [walletType]);
 
