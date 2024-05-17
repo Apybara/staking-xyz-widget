@@ -14,6 +14,10 @@ export const emptyState = style({
   textAlign: "center",
 });
 
+export const skeleton = style({
+  display: "inline-block",
+});
+
 export const title = style({
   fontSize: pxToRem(16),
   lineHeight: 1,

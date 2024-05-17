@@ -29,7 +29,7 @@ export const HistoryEmptyState = () => {
       <h4 className={S.title}>
         The compound will be in{" "}
         {isEstRewardsLoading ? (
-          <Skeleton width={60} height={12} />
+          <Skeleton className={S.skeleton} width={60} height={12} />
         ) : nextCompounding > 100 ? (
           ">100 days"
         ) : (
@@ -37,8 +37,9 @@ export const HistoryEmptyState = () => {
         )}
       </h4>
       <p className={S.subtitle}>
-        You&apos;ve accrued {isEstRewardsLoading ? <Skeleton width={90} height={12} /> : `${formattedCycleReward}.`} The
-        app will only compound if more than 1 TIA is accrued.
+        You&apos;ve accrued{" "}
+        {isEstRewardsLoading ? <Skeleton className={S.skeleton} width={90} height={12} /> : `${formattedCycleReward}.`}{" "}
+        The app will only compound if more than 1 TIA is accrued.
       </p>
 
       <Link href={stakeLink} className={S.button}>
