@@ -11,11 +11,14 @@ import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hoo
 import { useRewardsHistory } from "../../../../_services/stakingOperator/hooks";
 import * as S from "./historyTable.css";
 import { WidgetContent } from "@/app/_components/WidgetContent";
+import { HistoryEmptyState } from "./EmptyState";
 
 export const RewardsHistoryTable = () => {
   const { params, query } = useRewardsHistory() || {};
   const { offset, setOffset, limit } = params;
   const { formattedEntries, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
+
+  const isRewardsZero = formattedEntries?.every((entry) => entry?.amount === "0");
 
   if (isFetching) {
     return (
@@ -43,7 +46,7 @@ export const RewardsHistoryTable = () => {
 
   return (
     <WidgetContent variant="full">
-      {formattedEntries?.length ? (
+      {formattedEntries?.length && !isRewardsZero ? (
         <ListTable.Pad>
           <ListTable.List>
             {formattedEntries?.map((rewardsHistory, index) => (
@@ -61,7 +64,7 @@ export const RewardsHistoryTable = () => {
         </ListTable.Pad>
       ) : (
         <ListTable.Pad className={S.errorPad}>
-          <EmptyState />
+          <HistoryEmptyState />
         </ListTable.Pad>
       )}
     </WidgetContent>
