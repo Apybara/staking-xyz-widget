@@ -49,7 +49,7 @@ export const RewardsSummary = () => {
     <>
       <WidgetContent>
         <section className={cn(S.card)}>
-          <h3 className={cn(S.cardTitle)}>Cumulative</h3>
+          <h3 className={cn(S.cardTitle)}>Cumulative rewards</h3>
           {isAddressRewardsLoading ? (
             <Skeleton width={140} height={24} />
           ) : (
@@ -57,7 +57,7 @@ export const RewardsSummary = () => {
           )}
         </section>
         <section className={cn(S.card)}>
-          <h3 className={cn(S.cardTitle)}>Est. rewards from next cycle</h3>
+          <h3 className={cn(S.cardTitle)}>Accrued rewards</h3>
           {isEstRewardsLoading ? (
             <Skeleton width={140} height={24} />
           ) : (
@@ -69,13 +69,6 @@ export const RewardsSummary = () => {
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Next compounding</InfoCard.Title>
-                {isRewardsSmall && (
-                  <Tooltip
-                    className={S.tooltip}
-                    trigger={<Icon name="info" />}
-                    content="The app will only compound if you have more than 1 TIA of staking rewards accrued."
-                  />
-                )}
               </InfoCard.TitleBox>
               <InfoCard.Content>{isRewardsSmall ? "-" : `${formattedNextCompounding} left`}</InfoCard.Content>
             </InfoCard.StackItem>
