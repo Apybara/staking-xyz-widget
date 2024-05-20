@@ -1,7 +1,7 @@
 import type { Network } from "../../types";
 import BigNumber from "bignumber.js";
-import { gasFeeRatioByNetwork } from "../../consts";
+import { requiredBalanceByNetwork } from "../../consts";
 
-export const getGasFeeEstimationAmount = ({ amount, network }: { amount: string; network: Network }) => {
-  return Math.floor(BigNumber(amount).times(gasFeeRatioByNetwork[network]).toNumber()).toString();
+export const getRequiredBalance = ({ network }: { network: Network }) => {
+  return BigNumber(requiredBalanceByNetwork[network]).toString();
 };
