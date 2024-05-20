@@ -1,7 +1,7 @@
 import type { UnstakingStates } from "./types";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
-import { getFeeCollectingAmount } from "@/app/_services/unstake";
+import { getGasFeeEstimationAmount } from "@/app/_services/unstake";
 import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
 import { defaultNetwork } from "../../consts";
 
@@ -19,7 +19,7 @@ export const useUnstakeAmountInputValidation = ({
     amount: inputAmount,
     min: "0",
     max: stakedBalance,
-    buffer: getFeeCollectingAmount({ amount: inputAmount, network: network || defaultNetwork }),
+    buffer: getGasFeeEstimationAmount({ amount: inputAmount, network: network || defaultNetwork }),
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
