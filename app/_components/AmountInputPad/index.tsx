@@ -176,6 +176,11 @@ const AvailabilityElement = ({
 
   return (
     <div className={S.topBarInfo}>
+      <Tooltip
+        className={S.topBarTooltip}
+        trigger={<Icon name="info" />}
+        content="0.05 TIA will be kept as a buffer on your balance to pay for future stake and unstake transactions."
+      />
       <p style={{ lineHeight: 0 }}>
         <AvailabilityText.Primary>
           {prefix}: {primaryValue}
