@@ -1,25 +1,31 @@
-import BigNumber from "bignumber.js";
 import type { StakingStates } from "./types";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { getFeeCollectingAmount, getRequiredBalance } from "../../_services/stake";
 import { useWalletBalance } from "../../_services/wallet/hooks";
-import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeFees } from "../../_utils/transaction";
+import {
+  getBasicAmountValidation,
+  getBasicTxCtaValidation,
+  getStakeFees,
+  getDenomValueFromCoinByNetwork,
+} from "../../_utils/transaction";
 import { defaultNetwork } from "../../consts";
+import { useStakeMaxAmountBuffer } from "../../_services/stake/hooks";
 
 export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
   const { network } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
+  const castedNetwork = network || defaultNetwork;
 
-  const requiredBalance = getRequiredBalance({ network: network || defaultNetwork });
-  const feesCollecting = getFeeCollectingAmount({ amount: inputAmount, network: network || defaultNetwork });
+  const denomAmount = getDenomValueFromCoinByNetwork({ network: castedNetwork, amount: inputAmount });
+  const denomBalance = getDenomValueFromCoinByNetwork({ network: castedNetwork, amount: balanceData || "0" });
+  const maxAmountBuffer = useStakeMaxAmountBuffer({ amount: denomAmount });
 
   const amountValidation = getBasicAmountValidation({
-    amount: inputAmount,
+    amount: denomAmount,
     min: "0",
-    max: balanceData,
-    buffer: BigNumber(requiredBalance).plus(BigNumber(feesCollecting)).toString(),
+    max: denomBalance,
+    buffer: maxAmountBuffer,
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,

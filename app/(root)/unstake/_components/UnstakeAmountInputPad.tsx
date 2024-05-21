@@ -1,13 +1,11 @@
 "use client";
 import { AmountInputPad } from "../../../_components/AmountInputPad";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
-import { useShell } from "@/app/_contexts/ShellContext";
-import { getRequiredBalance } from "@/app/_services/unstake";
-import { defaultNetwork } from "../../../consts";
+import { useUnstakeMaxAmountBuffer } from "../../../_services/unstake/hooks";
 
 export const UnstakeAmountInputPad = () => {
-  const { network } = useShell();
   const { amountInputPad, stakedBalance, setStates } = useUnstaking();
+  const maxAmountBuffer = useUnstakeMaxAmountBuffer({ amount: stakedBalance.data || "0" });
 
   return (
     <AmountInputPad
@@ -17,7 +15,7 @@ export const UnstakeAmountInputPad = () => {
       onValueChange={(val) => {
         setStates({ coinAmountInput: val });
       }}
-      maxAmountBuffer={getRequiredBalance({ network: network || defaultNetwork })}
+      maxAmountBuffer={maxAmountBuffer}
       {...amountInputPad}
     />
   );
