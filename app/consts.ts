@@ -167,6 +167,18 @@ export const feeRatioByNetwork: Record<Network, number> = {
       : 0.03,
 };
 
+export const estGasByNetwork: Record<Network, number> = {
+  celestia:
+    process.env.NEXT_PUBLIC_CELESTIA_EST_GAS_RATE && !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIA_EST_GAS_RATE))
+      ? Number(process.env.NEXT_PUBLIC_CELESTIA_EST_GAS_RATE)
+      : 0.03,
+  celestiatestnet3:
+    process.env.NEXT_PUBLIC_CELESTIATESTNET3_EST_GAS_RATE &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_EST_GAS_RATE))
+      ? Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_EST_GAS_RATE)
+      : 0.03,
+};
+
 export const feeReceiverByNetwork: Record<Network, string> = {
   celestia: process.env.NEXT_PUBLIC_CELESTIA_FEE_RECEIVER || "",
   celestiatestnet3: process.env.NEXT_PUBLIC_CELESTIATESTNET3_FEE_RECEIVER || "",
@@ -177,12 +189,12 @@ export const requiredBalanceByNetwork: Record<Network, number> = {
     process.env.NEXT_PUBLIC_CELESTIA_REQUIRED_BALANCE &&
     !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIA_REQUIRED_BALANCE))
       ? Number(process.env.NEXT_PUBLIC_CELESTIA_REQUIRED_BALANCE)
-      : 0.33,
+      : 0.05,
   celestiatestnet3:
     process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE &&
     !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE))
       ? Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE)
-      : 0.33,
+      : 0.05,
 };
 
 export const unstakingPeriodByNetwork: Record<Network, string> = {
