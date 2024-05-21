@@ -1,21 +1,20 @@
 "use client";
 import cn from "classnames";
+import BigNumber from "bignumber.js";
 import { useShell } from "../../../../_contexts/ShellContext";
+import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
+import { WidgetContent } from "@/app/_components/WidgetContent";
+import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "../../../../_components/Icon";
 import { Skeleton } from "../../../../_components/Skeleton";
 import * as InfoCard from "../../../../_components/InfoCard";
 import { LinkCTAButton } from "../../../../_components/CTAButton";
 import { RewardsTooltip } from "../../../_components/RewardsTooltip";
 import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
-import { getTimeTillMidnight } from "../../../../_utils/time";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import * as S from "./rewardsSummary.css";
-import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
-import { WidgetContent } from "@/app/_components/WidgetContent";
-import BigNumber from "bignumber.js";
-import Tooltip from "@/app/_components/Tooltip";
 
 export const RewardsSummary = () => {
   const { network } = useShell();
@@ -23,7 +22,7 @@ export const RewardsSummary = () => {
   const { rewards: networkRewards, isLoading: isNetworkRewardsLoading } =
     useNetworkReward({ amount: stakedBalance }) || {};
   const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards()?.query || {};
-  const { total_rewards, last_cycle_rewards } = addressRewards || {};
+  const { total_rewards, accrued_rewards } = addressRewards || {};
   const historyLink = useLinkWithSearchParams("rewards/history");
 
   const cumulativeRewards = total_rewards;
@@ -34,22 +33,30 @@ export const RewardsSummary = () => {
     minValue: !isCumulativeRewardsSmall ? undefined : 0.000001,
     formatOptions: !isCumulativeRewardsSmall ? undefined : { mantissa: 6 },
   });
-  const dailyRewards = networkRewards?.daily || 0;
-  const isEstRewardsSmall = dailyRewards > 0 && dailyRewards < 1;
-  const formattedCycleReward = useDynamicAssetValueFromCoin({
-    coinVal: dailyRewards,
-    minValue: !isEstRewardsSmall ? undefined : 0.000001,
-    formatOptions: !isEstRewardsSmall ? undefined : { mantissa: 6 },
+
+  const isAccruedRewardsSmall =
+    accrued_rewards && BigNumber(accrued_rewards).isLessThan(1) && BigNumber(accrued_rewards).isGreaterThan(0);
+  const formattedAccruedRewards = useDynamicAssetValueFromCoin({
+    coinVal: accrued_rewards,
+    minValue: !isAccruedRewardsSmall ? undefined : 0.000001,
+    formatOptions: !isAccruedRewardsSmall ? undefined : { mantissa: 6 },
   });
-  const formattedNextCompounding = getTimeTillMidnight();
-  const isRewardsSmall = last_cycle_rewards && BigNumber(last_cycle_rewards).isLessThan(1);
+
+  const nextCompounding = networkRewards?.nextCompounding || 0;
   const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
 
   return (
     <>
       <WidgetContent>
         <section className={cn(S.card)}>
-          <h3 className={cn(S.cardTitle)}>Cumulative rewards</h3>
+          <div className={cn(S.cardTitle)}>
+            <h3>Cumulative rewards</h3>
+            <Tooltip
+              className={S.tooltip}
+              trigger={<Icon name="info" />}
+              content="This is the sum of all rewards claimed and compounded on this address."
+            />
+          </div>
           {isAddressRewardsLoading ? (
             <Skeleton width={140} height={24} />
           ) : (
@@ -57,11 +64,18 @@ export const RewardsSummary = () => {
           )}
         </section>
         <section className={cn(S.card)}>
-          <h3 className={cn(S.cardTitle)}>Accrued rewards</h3>
-          {isEstRewardsLoading ? (
+          <div className={cn(S.cardTitle)}>
+            <h3>Accrued rewards</h3>
+            <Tooltip
+              className={S.tooltip}
+              trigger={<Icon name="info" />}
+              content="This is the amount of rewards that have accrued but have yet to be claimed and compounded."
+            />
+          </div>
+          {isAddressRewardsLoading ? (
             <Skeleton width={140} height={24} />
           ) : (
-            <p className={cn(S.cardValue)}>{formattedCycleReward}</p>
+            <p className={cn(S.cardValue)}>{formattedAccruedRewards}</p>
           )}
         </section>
         <InfoCard.Card>
@@ -70,7 +84,9 @@ export const RewardsSummary = () => {
               <InfoCard.TitleBox>
                 <InfoCard.Title>Next compounding</InfoCard.Title>
               </InfoCard.TitleBox>
-              <InfoCard.Content>{isRewardsSmall ? "-" : `${formattedNextCompounding} left`}</InfoCard.Content>
+              <InfoCard.Content>
+                {isEstRewardsLoading ? <Skeleton width={41.38} height={14} /> : `${nextCompounding} left`}
+              </InfoCard.Content>
             </InfoCard.StackItem>
             <InfoCard.StackItem>
               <InfoCard.TitleBox>

@@ -1,7 +1,8 @@
 import Link from "next/link";
+import BigNumber from "bignumber.js";
 import { Icon } from "@/app/_components/Icon";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
-import { useNetworkReward, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
+import { useAddressRewards, useNetworkReward, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { Skeleton } from "@/app/_components/Skeleton";
 
@@ -12,17 +13,19 @@ export const HistoryEmptyState = () => {
   const { stakedBalance, isLoading: isStakedBalanceLoading } = useStakedBalance() || {};
   const { rewards, isLoading: isNetworkRewardsLoading } = useNetworkReward({ amount: stakedBalance }) || {};
 
-  const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
+  const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards()?.query || {};
+  const { accrued_rewards } = addressRewards || {};
 
-  const nextCompounding = rewards?.nextCompounding || 0;
-
-  const dailyRewards = rewards?.daily || 0;
-  const isEstRewardsSmall = dailyRewards > 0 && dailyRewards < 1;
-  const formattedCycleReward = useDynamicAssetValueFromCoin({
-    coinVal: dailyRewards,
-    minValue: !isEstRewardsSmall ? undefined : 0.000001,
-    formatOptions: !isEstRewardsSmall ? undefined : { mantissa: 6 },
+  const isAccruedRewardsSmall =
+    accrued_rewards && BigNumber(accrued_rewards).isLessThan(1) && BigNumber(accrued_rewards).isGreaterThan(0);
+  const formattedAccruedRewards = useDynamicAssetValueFromCoin({
+    coinVal: accrued_rewards,
+    minValue: !isAccruedRewardsSmall ? undefined : 0.000001,
+    formatOptions: !isAccruedRewardsSmall ? undefined : { mantissa: 6 },
   });
+
+  const nextCompounding = rewards?.nextCompoundingDays || 0;
+  const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
 
   return (
     <div className={S.emptyState}>
@@ -38,7 +41,11 @@ export const HistoryEmptyState = () => {
       </h4>
       <p className={S.subtitle}>
         You&apos;ve accrued{" "}
-        {isEstRewardsLoading ? <Skeleton className={S.skeleton} width={60} height={14} /> : `${formattedCycleReward}.`}{" "}
+        {isAddressRewardsLoading ? (
+          <Skeleton className={S.skeleton} width={60} height={14} />
+        ) : (
+          `${formattedAccruedRewards}.`
+        )}{" "}
         The app will only compound if more than 1 TIA is accrued.
       </p>
 
