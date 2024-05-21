@@ -1,6 +1,7 @@
 "use client";
 import type { UnstakeProcedure, UnstakeProcedureStep, UnstakeProcedureState } from "../../../_services/unstake/types";
 import { useMemo, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useShell } from "../../../_contexts/ShellContext";
@@ -13,6 +14,7 @@ import { networkExplorer, defaultNetwork } from "../../../consts";
 
 export const UnstakingProcedureDialog = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { network } = useShell();
   const { connectionStatus, activeWallet } = useWallet();
   const { procedures, amountInputPad, inputState, resetProceduresStates } = useUnstaking();
@@ -96,6 +98,7 @@ export const UnstakingProcedureDialog = () => {
           onDismissButtonClick={() => {
             amountInputPad.setPrimaryValue("");
             resetProceduresStates();
+            queryClient.resetQueries();
             toggleOpen(false);
           }}
         />
