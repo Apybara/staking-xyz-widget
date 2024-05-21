@@ -149,7 +149,7 @@ export const useCelestiaAddressActivity = ({
 };
 
 export const useCelestiaAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
-  const { data, error, status, isLoading, isFetching, refetch } = useQuery<
+  const { data, error, status, isLoading, isFetching, isRefetching, refetch } = useQuery<
     T.AddressRewardsResponse | null,
     T.AddressRewardsResponse
   >({
@@ -165,7 +165,7 @@ export const useCelestiaAddressRewards = ({ network, address }: { network: Netwo
 
   return {
     error,
-    isLoading: isLoading || status === "pending",
+    isLoading: isLoading || isRefetching || status === "pending",
     isFetching,
     data: {
       total_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.total_rewards }),
@@ -174,6 +174,7 @@ export const useCelestiaAddressRewards = ({ network, address }: { network: Netwo
         amount: data?.data?.last_cycle_rewards,
       }),
       daily_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.daily_rewards }),
+      accrued_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.accrued_rewards }),
     },
     refetch,
   };

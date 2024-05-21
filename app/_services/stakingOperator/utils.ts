@@ -1,4 +1,6 @@
+import { getTimeDiffInSingleString } from "@/app/_utils/time";
 import BigNumber from "bignumber.js";
+import moment from "moment";
 import numbro from "numbro";
 
 export const getLastOffset = ({ totalEntries, limit }: { totalEntries: number; limit: number }) => {
@@ -11,6 +13,9 @@ export const getCalculatedRewards = (amountStaked: string, rewardRate: number) =
   const base = formattedAmountStaked * rewardRate;
   const daily = base / 365;
 
+  const nextCompoundingDays = Math.ceil(1 / daily);
+  const nextCompoundingDate = moment().add(nextCompoundingDays, "d").toDate();
+
   return {
     percentage: numbro(rewardRate * 100).format({
       mantissa: 2,
@@ -18,6 +23,7 @@ export const getCalculatedRewards = (amountStaked: string, rewardRate: number) =
     daily,
     monthly: base / 12,
     yearly: base,
-    nextCompounding: Math.ceil(1 / daily),
+    nextCompoundingDays,
+    nextCompounding: nextCompoundingDays > 100 ? ">100d" : getTimeDiffInSingleString(nextCompoundingDate),
   };
 };

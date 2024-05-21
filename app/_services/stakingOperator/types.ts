@@ -199,6 +199,7 @@ export type AddressRewardsResponse = CommonResponse<
     total_rewards: number;
     last_cycle_rewards: number;
     daily_rewards: number;
+    accrued_rewards: number;
   }
 >;
 

@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../../../theme/utils";
 import { colors } from "../../../../../theme/theme.css";
 
@@ -17,6 +17,11 @@ export const card = style({
 });
 
 export const cardTitle = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(4),
+});
+globalStyle(`${cardTitle} h3`, {
   textAlign: "center",
   fontSize: pxToRem(12),
   lineHeight: 1,
