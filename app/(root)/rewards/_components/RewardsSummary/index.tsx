@@ -57,7 +57,11 @@ export const RewardsSummary = () => {
               content="This is the sum of all rewards claimed and compounded on this address."
             />
           </div>
-          <p className={cn(S.cardValue)}>{formattedCumulative}</p>
+          {isAddressRewardsLoading ? (
+            <Skeleton width={140} height={24} />
+          ) : (
+            <p className={cn(S.cardValue)}>{formattedCumulative}</p>
+          )}
         </section>
         <section className={cn(S.card)}>
           <div className={cn(S.cardTitle)}>
@@ -68,7 +72,11 @@ export const RewardsSummary = () => {
               content="This is the amount of rewards that have accrued but have yet to be claimed and compounded."
             />
           </div>
-          <p className={cn(S.cardValue)}>{formattedAccruedRewards}</p>
+          {isAddressRewardsLoading ? (
+            <Skeleton width={140} height={24} />
+          ) : (
+            <p className={cn(S.cardValue)}>{formattedAccruedRewards}</p>
+          )}
         </section>
         <InfoCard.Card>
           <InfoCard.Stack>
