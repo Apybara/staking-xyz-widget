@@ -72,11 +72,7 @@ export const RewardsSummary = () => {
               content="This is the amount of rewards that have accrued but have yet to be claimed and compounded."
             />
           </div>
-          {isAddressRewardsLoading ? (
-            <Skeleton width={140} height={24} />
-          ) : (
-            <p className={cn(S.cardValue)}>{formattedAccruedRewards}</p>
-          )}
+          <p className={cn(S.cardValue)}>{formattedAccruedRewards}</p>
         </section>
         <InfoCard.Card>
           <InfoCard.Stack>
