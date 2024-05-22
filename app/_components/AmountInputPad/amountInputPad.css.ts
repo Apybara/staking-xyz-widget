@@ -88,6 +88,12 @@ export const topBarTooltip = style({
   maxInlineSize: pxToRem(300),
 });
 
+export const maxButtonContainer = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(4),
+});
+
 export const maxButton = style({
   fontSize: pxToRem(12),
   fontWeight: weights.semibold,
