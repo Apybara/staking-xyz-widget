@@ -57,11 +57,7 @@ export const RewardsSummary = () => {
               content="This is the sum of all rewards claimed and compounded on this address."
             />
           </div>
-          {isAddressRewardsLoading ? (
-            <Skeleton width={140} height={24} />
-          ) : (
-            <p className={cn(S.cardValue)}>{formattedCumulative}</p>
-          )}
+          <p className={cn(S.cardValue)}>{formattedCumulative}</p>
         </section>
         <section className={cn(S.card)}>
           <div className={cn(S.cardTitle)}>
