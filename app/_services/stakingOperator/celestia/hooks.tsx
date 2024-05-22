@@ -159,7 +159,7 @@ export const useCelestiaAddressRewards = ({ network, address }: { network: Netwo
       if (!address) return Promise.resolve(null);
       return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address });
     },
-    refetchInterval: 300000,
+    refetchInterval: 12000, // 12 seconds
     placeholderData: keepPreviousData,
   });
 
