@@ -1,7 +1,6 @@
 import type { WalletConnectionStatus, Network } from "../types";
 import BigNumber from "bignumber.js";
-import { feeRatioByNetwork, estGasByNetwork } from "../consts";
-import { getDenomValueFromCoin as getCosmosDenomValueFromCoin } from "../_services/cosmos/utils";
+import { feeRatioByNetwork } from "../consts";
 
 export const getBasicAmountValidation = ({
   amount,
@@ -63,23 +62,8 @@ export const getBasicRedelegateCtaValidation = ({
   return "submittable";
 };
 
-export const getDenomValueFromCoinByNetwork = ({ amount, network }: { amount: string; network: Network }) => {
-  switch (network) {
-    case "celestia":
-    case "celestiatestnet3":
-      return getCosmosDenomValueFromCoin({ amount, network });
-    default:
-      return amount;
-  }
-};
-
 export const getStakeFees = ({ amount, network }: { amount: string; network: Network }) => {
   const ratio = feeRatioByNetwork[network];
-  return BigNumber(amount).times(ratio).toString();
-};
-
-export const getEstGasAmount = ({ amount, network }: { amount: string; network: Network }) => {
-  const ratio = estGasByNetwork[network];
   return BigNumber(amount).times(ratio).toString();
 };
 

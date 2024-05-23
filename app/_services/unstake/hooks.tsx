@@ -2,11 +2,7 @@ import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { Network } from "../../types";
 import type { UnstakeProcedure, UnstakeProcedureState } from "./types";
 import { useEffect, useState } from "react";
-import BigNumber from "bignumber.js";
-import { useShell } from "../../_contexts/ShellContext";
 import { useCosmosUnstakingProcedures } from "../cosmos/hooks";
-import { getEstGasAmount } from "../../_utils/transaction";
-import { defaultNetwork, requiredBalanceByNetwork } from "../../consts";
 
 export const useUnstakingProcedures = ({
   address,
@@ -161,14 +157,4 @@ const useProcedureStates = () => {
     setTxHash,
     setError,
   };
-};
-
-export const useUnstakeMaxAmountBuffer = ({ amount }: { amount: string }) => {
-  const { network } = useShell();
-  const castedNetwork = network || defaultNetwork;
-
-  const requiredBalance = requiredBalanceByNetwork[castedNetwork];
-  const estGas = getEstGasAmount({ amount, network: castedNetwork });
-
-  return BigNumber(requiredBalance).plus(estGas).toString();
 };
