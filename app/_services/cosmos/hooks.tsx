@@ -781,7 +781,7 @@ export const useCosmosSigningClient = ({
     error,
   } = useQuery({
     enabled: !!network && !!wallet,
-    queryKey: ["cosmosSigningClient", network, wallet, offlineSignerGetter],
+    queryKey: ["cosmosSigningClient", network, wallet, !!offlineSignerGetter],
     queryFn: () => getSigningClient({ network, getOfflineSigner: offlineSignerGetter }),
   });
 
