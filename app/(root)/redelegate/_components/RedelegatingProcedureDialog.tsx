@@ -63,7 +63,7 @@ export const RedelegatingProcedureDialog = () => {
             key={index}
             state={procedure.state || "idle"}
             onCancel={
-              activeWallet === "okx" || activeWallet?.includes("Mobile")
+              activeWallet === "okx"
                 ? () => {
                     activeProcedure?.setState("active");
                   }

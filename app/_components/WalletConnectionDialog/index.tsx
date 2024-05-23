@@ -6,7 +6,7 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_utils/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
-import { useWalletConnectors } from "../../_services/wallet/hooks";
+import { useWalletConnectors, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { networkWalletInfos, defaultNetwork } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
@@ -20,6 +20,7 @@ export const WalletConnectionDialog = () => {
     useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
   const connectors = useWalletConnectors(network || defaultNetwork);
+  const disconnectors = useWalletDisconnectors(network || defaultNetwork);
   const cosmosKitConnectionError = useCosmosKitError({
     network,
     modalOpen: open,
@@ -111,7 +112,11 @@ export const WalletConnectionDialog = () => {
         },
       }}
       isOnMobileDevice={isOnMobileDevice}
-      onCancelConnection={() => setStates({ connectionStatus: "disconnected" })}
+      onCancelConnection={(wallet) => {
+        if (!wallet || !disconnectors?.[wallet.id]) throw new Error("Disconnector not found");
+        disconnectors[wallet.id]?.();
+        setStates({ connectionStatus: "disconnected" });
+      }}
     />
   );
 };
