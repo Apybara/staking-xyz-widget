@@ -1,17 +1,21 @@
 "use client";
+import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
+import { getFeeCollectingAmount, getRequiredBalance } from "../../../_services/stake";
 import { useWalletBalance } from "../../../_services/wallet/hooks";
 import { AmountInputPad } from "../../../_components/AmountInputPad";
 import { useStaking } from "../../../_contexts/StakingContext";
-import { useStakeMaxAmountBuffer } from "../../../_services/stake/hooks";
+import { defaultNetwork } from "../../../consts";
 
 export const StakeAmountInputPad = () => {
   const { network } = useShell();
   const { activeWallet, address } = useWallet();
   const { amountInputPad, setStates } = useStaking();
   const { data: balanceData, isLoading: isBalanceLoading } = useWalletBalance({ address, network, activeWallet }) || {};
-  const maxAmountBuffer = useStakeMaxAmountBuffer({ amount: balanceData || "0" });
+
+  const feesCollecting = getFeeCollectingAmount({ amount: balanceData || "0", network: network || defaultNetwork });
+  const requiredBalance = getRequiredBalance({ network: network || defaultNetwork });
 
   return (
     <AmountInputPad
@@ -21,7 +25,7 @@ export const StakeAmountInputPad = () => {
       onValueChange={(val) => {
         setStates({ coinAmountInput: val });
       }}
-      maxAmountBuffer={maxAmountBuffer}
+      maxAmountBuffer={BigNumber(requiredBalance).plus(BigNumber(feesCollecting)).toString()}
       {...amountInputPad}
     />
   );

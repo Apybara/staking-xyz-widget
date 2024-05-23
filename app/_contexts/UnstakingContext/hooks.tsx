@@ -1,14 +1,9 @@
 import type { UnstakingStates } from "./types";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
-import {
-  getBasicAmountValidation,
-  getBasicTxCtaValidation,
-  getDenomValueFromCoinByNetwork,
-  getEstGasAmount,
-} from "../../_utils/transaction";
+import { getRequiredBalance } from "@/app/_services/unstake";
+import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
 import { defaultNetwork } from "../../consts";
-import { useUnstakeMaxAmountBuffer } from "../../_services/unstake/hooks";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -19,17 +14,12 @@ export const useUnstakeAmountInputValidation = ({
 }) => {
   const { network } = useShell();
   const { connectionStatus } = useWallet();
-  const castedNetwork = network || defaultNetwork;
-
-  const denomAmount = getDenomValueFromCoinByNetwork({ network: castedNetwork, amount: inputAmount });
-  const denomStakedBalance = getDenomValueFromCoinByNetwork({ network: castedNetwork, amount: stakedBalance || "0" });
-  const maxAmountBuffer = useUnstakeMaxAmountBuffer({ amount: denomAmount });
 
   const amountValidation = getBasicAmountValidation({
-    amount: denomAmount,
+    amount: inputAmount,
     min: "0",
-    max: denomStakedBalance,
-    buffer: maxAmountBuffer,
+    max: stakedBalance,
+    buffer: getRequiredBalance({ network: network || defaultNetwork }),
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,

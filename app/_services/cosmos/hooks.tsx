@@ -8,7 +8,7 @@ import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
 import { getOfflineSigners } from "graz";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getStakeFees } from "../../_utils/transaction";
+import { getFeeCollectingAmount } from "../../_services/stake";
 import {
   getDelegateMessage,
   getDelegateValidatorMessages,
@@ -400,9 +400,7 @@ const useCosmosBroadcastDelegateTx = ({
       });
       const delegateValues = getDelegateValidatorMessages(unsignedMessage);
       const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      const feeAmount = Math.floor(
-        Number(getStakeFees({ amount: denomAmount, network: network || defaultNetwork })),
-      ).toString();
+      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
 
       if (!delegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
@@ -597,7 +595,7 @@ const useCosmosBroadcastRedelegateTx = ({
       });
       const reDelegateValues = getRedelegateValidatorMessages(unsignedMessage);
       const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork });
+      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
 
       if (!reDelegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
