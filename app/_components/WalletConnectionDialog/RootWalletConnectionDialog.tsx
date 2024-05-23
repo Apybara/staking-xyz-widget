@@ -24,7 +24,7 @@ export type RootWalletConnectionDialogProps = {
     onConnect: (wallet: WalletInfo) => void;
   };
   isOnMobileDevice?: boolean;
-  onCancelConnection?: () => void;
+  onCancelConnection?: (wallet?: WalletInfo) => void;
 };
 
 export type WalletCardButtonProps = {
@@ -130,7 +130,7 @@ const WalletCardButton = ({
         {wallet.isConnected && <MessageTag variant="success">Connected</MessageTag>}
       </button>
       {showCancel && (
-        <button onClick={onCancelConnection} className={cn(S.cancelButton)}>
+        <button onClick={() => onCancelConnection?.(wallet)} className={cn(S.cancelButton)}>
           <Icon name="cross" size={14} />
         </button>
       )}
