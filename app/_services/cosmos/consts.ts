@@ -1,5 +1,5 @@
 import type { ChainInfo } from "@keplr-wallet/types";
-import type { CosmosTestnet } from "../../types";
+import type { CosmosNetwork, CosmosTestnet } from "../../types";
 import { networkEndpoints } from "../../consts";
 
 const celestia = {
@@ -87,4 +87,9 @@ export const celestiatestnet3ChainInfo: ChainInfo = {
 
 export const cosmosTestnetChainInfo: Record<CosmosTestnet, ChainInfo> = {
   celestiatestnet3: celestiatestnet3ChainInfo,
+};
+
+export const cosmosChainInfoId: Record<CosmosNetwork, string> = {
+  celestia: celestiaChainInfo.chainId,
+  celestiatestnet3: celestiatestnet3ChainInfo.chainId,
 };

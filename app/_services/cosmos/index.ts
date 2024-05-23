@@ -18,6 +18,7 @@ import {
 import { networkDefaultGasPrice, networkEndpoints } from "../../consts";
 import { createAuthzAminoConverters } from "./amino";
 import { getCoinValueFromDenom, getChainAssets } from "./utils";
+import { cosmosChainInfoId } from "./consts";
 
 const { GenericAuthorization } = cosmos.authz.v1beta1;
 
@@ -33,7 +34,7 @@ export const getSigningClient = async ({
       throw new Error("Missing parameter: network.");
     }
 
-    const signer = getOfflineSigner ? await getOfflineSigner() : window?.getOfflineSigner?.(network);
+    const signer = getOfflineSigner ? await getOfflineSigner() : window?.getOfflineSigner?.(cosmosChainInfoId[network]);
     if (!signer) {
       throw new Error("Missing parameter: offlineSigner.");
     }
