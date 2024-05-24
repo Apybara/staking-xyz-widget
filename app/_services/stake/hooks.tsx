@@ -34,6 +34,11 @@ export const useStakingProcedures = ({
     address,
     cosmosSigningClient,
     authStep: {
+      onPreparing: () => {
+        authState.setState("preparing");
+        authState.setTxHash(undefined);
+        authState.setError(null);
+      },
       onLoading: () => {
         authState.setState("loading");
         authState.setTxHash(undefined);
@@ -52,6 +57,11 @@ export const useStakingProcedures = ({
       },
     },
     delegateStep: {
+      onPreparing: () => {
+        delegateState.setState("preparing");
+        delegateState.setTxHash(undefined);
+        delegateState.setError(null);
+      },
       onLoading: () => {
         delegateState.setState("loading");
         delegateState.setTxHash(undefined);

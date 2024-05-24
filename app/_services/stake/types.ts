@@ -16,4 +16,4 @@ export type BaseStakeProcedure = {
 
 export type StakeProcedureStep = "auth" | "delegate";
 
-export type StakeProcedureState = "idle" | "active" | "loading" | "success" | "error";
+export type StakeProcedureState = "idle" | "active" | "preparing" | "loading" | "success" | "error";

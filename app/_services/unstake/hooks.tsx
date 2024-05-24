@@ -30,6 +30,11 @@ export const useUnstakingProcedures = ({
     address,
     cosmosSigningClient,
     authStep: {
+      onPreparing: () => {
+        authState.setState("preparing");
+        authState.setTxHash(undefined);
+        authState.setError(null);
+      },
       onLoading: () => {
         authState.setState("loading");
         authState.setTxHash(undefined);
@@ -47,6 +52,11 @@ export const useUnstakingProcedures = ({
       },
     },
     undelegateStep: {
+      onPreparing: () => {
+        undelegateState.setState("preparing");
+        undelegateState.setTxHash(undefined);
+        undelegateState.setError(null);
+      },
       onLoading: () => {
         undelegateState.setState("loading");
         undelegateState.setTxHash(undefined);
