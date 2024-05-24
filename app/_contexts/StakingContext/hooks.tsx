@@ -11,7 +11,7 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
 
-  const buffer = useStakeMaxAmountBuffer();
+  const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
