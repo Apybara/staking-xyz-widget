@@ -17,7 +17,7 @@ export const useRedelegateValidation = ({
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
 
-  const buffer = useRedelegateMaxAmountBuffer({ amount });
+  const buffer = useRedelegateMaxAmountBuffer();
 
   const amountValidation = getBasicAmountValidation({
     amount,
