@@ -1,11 +1,10 @@
 import type { RedelegatingStates } from "./types";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
-import { getFeeCollectingAmount, getRequiredBalance } from "../../_services/redelegate";
 import { useWalletBalance } from "../../_services/wallet/hooks";
 import { getBasicAmountValidation, getBasicRedelegateCtaValidation, getStakeFees } from "../../_utils/transaction";
 import { defaultNetwork } from "../../consts";
-import BigNumber from "bignumber.js";
+import { useRedelegateMaxAmountBuffer } from "@/app/_services/redelegate/hooks";
 
 export const useRedelegateValidation = ({
   isAgreementChecked,
@@ -18,14 +17,13 @@ export const useRedelegateValidation = ({
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
 
-  const requiredBalance = getRequiredBalance({ network: network || defaultNetwork });
-  const feesCollecting = getFeeCollectingAmount({ amount, network: network || defaultNetwork });
+  const buffer = useRedelegateMaxAmountBuffer({ amount });
 
   const amountValidation = getBasicAmountValidation({
     amount,
     min: "0",
     max: balanceData,
-    buffer: BigNumber(requiredBalance).plus(BigNumber(feesCollecting)).toString(),
+    buffer,
   });
 
   const ctaValidation = getBasicRedelegateCtaValidation({

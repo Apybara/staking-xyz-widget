@@ -1,25 +1,23 @@
-import BigNumber from "bignumber.js";
 import type { StakingStates } from "./types";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { getFeeCollectingAmount, getRequiredBalance } from "../../_services/stake";
 import { useWalletBalance } from "../../_services/wallet/hooks";
 import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeFees } from "../../_utils/transaction";
 import { defaultNetwork } from "../../consts";
+import { useStakeMaxAmountBuffer } from "@/app/_services/stake/hooks";
 
 export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
   const { network } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
 
-  const requiredBalance = getRequiredBalance({ network: network || defaultNetwork });
-  const feesCollecting = getFeeCollectingAmount({ amount: inputAmount, network: network || defaultNetwork });
+  const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
     min: "0",
     max: balanceData,
-    buffer: BigNumber(requiredBalance).plus(BigNumber(feesCollecting)).toString(),
+    buffer,
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,

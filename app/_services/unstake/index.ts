@@ -1,7 +1,7 @@
 import type { Network } from "../../types";
 import BigNumber from "bignumber.js";
-import { requiredBalanceByNetwork } from "../../consts";
+import { requiredBalanceUnstakingByNetwork } from "../../consts";
 
 export const getRequiredBalance = ({ network }: { network: Network }) => {
-  return BigNumber(requiredBalanceByNetwork[network]).toString();
+  return BigNumber(requiredBalanceUnstakingByNetwork[network]).toString();
 };
