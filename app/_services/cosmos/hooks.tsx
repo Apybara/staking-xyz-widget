@@ -57,11 +57,13 @@ export const useCosmosUnstakingProcedures = ({
   address: string | null;
   cosmosSigningClient?: SigningStargateClient;
   authStep: {
+    onPreparing: () => void;
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error) => void;
   };
   undelegateStep: {
+    onPreparing: () => void;
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error) => void;
@@ -78,6 +80,7 @@ export const useCosmosUnstakingProcedures = ({
     client: cosmosSigningClient || null,
     network: network && isCosmosNetwork ? network : undefined,
     address: address || undefined,
+    onPreparing: authStep.onPreparing,
     onLoading: authStep.onLoading,
     onSuccess: authStep.onSuccess,
     onError: authStep.onError,
@@ -88,6 +91,7 @@ export const useCosmosUnstakingProcedures = ({
     network: network && isCosmosNetwork ? network : undefined,
     address: address || undefined,
     amount,
+    onPreparing: undelegateStep.onPreparing,
     onLoading: undelegateStep.onLoading,
     onSuccess: undelegateStep.onSuccess,
     onError: undelegateStep.onError,
@@ -134,6 +138,7 @@ export const useCosmosUndelegate = ({
   amount,
   network,
   address,
+  onPreparing,
   onLoading,
   onSuccess,
   onError,
@@ -142,6 +147,7 @@ export const useCosmosUndelegate = ({
   amount: string;
   network?: CosmosNetwork;
   address?: string;
+  onPreparing?: () => void;
   onLoading?: () => void;
   onSuccess?: (txHash: string) => void;
   onError?: (e: Error) => void;
@@ -181,6 +187,7 @@ export const useCosmosUndelegate = ({
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
+      onLoading?.();
       const res = await client.signAndBroadcast(address, undelegateMsgs, fee);
       return {
         tx: res,
@@ -200,7 +207,7 @@ export const useCosmosUndelegate = ({
 
   useEffect(() => {
     if (isPending) {
-      onLoading?.();
+      onPreparing?.();
     }
   }, [isPending]);
 
@@ -229,11 +236,13 @@ export const useCosmosStakingProcedures = ({
   address: string | null;
   cosmosSigningClient?: SigningStargateClient;
   authStep: {
+    onPreparing: () => void;
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error, txHash?: string) => void;
   };
   delegateStep: {
+    onPreparing: () => void;
     onLoading: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error, txHash?: string) => void;
@@ -250,6 +259,7 @@ export const useCosmosStakingProcedures = ({
     client: cosmosSigningClient || null,
     network: network && isCosmosNetwork ? network : undefined,
     address: address || undefined,
+    onPreparing: authStep.onPreparing,
     onLoading: authStep.onLoading,
     onSuccess: authStep.onSuccess,
     onError: authStep.onError,
@@ -259,6 +269,7 @@ export const useCosmosStakingProcedures = ({
     network: network && isCosmosNetwork ? network : undefined,
     address: address || undefined,
     amount,
+    onPreparing: delegateStep.onPreparing,
     onLoading: delegateStep.onLoading,
     onSuccess: delegateStep.onSuccess,
     onError: delegateStep.onError,
@@ -304,6 +315,7 @@ const useCosmosBroadcastAuthzTx = ({
   client,
   network,
   address,
+  onPreparing,
   onLoading,
   onSuccess,
   onError,
@@ -311,6 +323,7 @@ const useCosmosBroadcastAuthzTx = ({
   client: SigningStargateClient | null;
   network?: CosmosNetwork;
   address?: string;
+  onPreparing?: () => void;
   onLoading?: () => void;
   onSuccess?: (txHash: string) => void;
   onError?: (e: Error, txHash?: string) => void;
@@ -333,6 +346,7 @@ const useCosmosBroadcastAuthzTx = ({
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
+      onLoading?.();
       return await client.signAndBroadcast(address, grantingMsgs, fee);
     },
     onSuccess: (res) => {
@@ -352,7 +366,7 @@ const useCosmosBroadcastAuthzTx = ({
 
   useEffect(() => {
     if (isPending) {
-      onLoading?.();
+      onPreparing?.();
     }
   }, [isPending]);
 
@@ -373,6 +387,7 @@ const useCosmosBroadcastDelegateTx = ({
   amount,
   network,
   address,
+  onPreparing,
   onLoading,
   onSuccess,
   onError,
@@ -381,6 +396,7 @@ const useCosmosBroadcastDelegateTx = ({
   amount: string;
   network?: CosmosNetwork;
   address?: string;
+  onPreparing?: () => void;
   onLoading?: () => void;
   onSuccess?: (txHash: string) => void;
   onError?: (e: Error, txHash?: string) => void;
@@ -438,6 +454,7 @@ const useCosmosBroadcastDelegateTx = ({
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
+      onLoading?.();
       const res = await client.signAndBroadcast(address, msgs, fee);
 
       return {
@@ -463,7 +480,7 @@ const useCosmosBroadcastDelegateTx = ({
 
   useEffect(() => {
     if (isPending) {
-      onLoading?.();
+      onPreparing?.();
     }
   }, [isPending]);
 

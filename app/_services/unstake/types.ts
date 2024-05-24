@@ -16,7 +16,7 @@ export type BaseUnstakeProcedure = {
 
 export type UnstakeProcedureStep = "auth" | "undelegate";
 
-export type UnstakeProcedureState = "idle" | "active" | "loading" | "success" | "error";
+export type UnstakeProcedureState = "idle" | "active" | "preparing" | "loading" | "success" | "error";
 
 export type UnbondingDelegation = {
   validatorAddress: string;

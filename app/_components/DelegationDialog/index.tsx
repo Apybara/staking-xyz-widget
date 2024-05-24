@@ -135,7 +135,7 @@ export type TopBoxProps = {
   type: "stake" | "unstake";
 };
 export type StepItemProps = {
-  state: "idle" | "active" | "loading" | "success" | "error";
+  state: "idle" | "active" | "preparing" | "loading" | "success" | "error";
   explorerLink?: {
     url: string;
     label: string;

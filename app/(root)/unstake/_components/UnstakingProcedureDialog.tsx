@@ -27,6 +27,8 @@ export const UnstakingProcedureDialog = () => {
   const allProceduresCompleted = checkedProcedures.length === (procedures || []).length;
   const hasLoadingProcedures = getHasLoadingProcedures(procedures || []);
 
+  const isLoading = getIsLoadingState(uncheckedProcedures?.[0]);
+
   const ctaText = useMemo(() => {
     if (!uncheckedProcedures?.[0]) return ctaTextMap.undelegate.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
@@ -84,8 +86,8 @@ export const UnstakingProcedureDialog = () => {
       </DelegationDialog.StepsBox>
       {!allProceduresCompleted ? (
         <DelegationDialog.CTAButton
-          state={uncheckedProcedures?.[0]?.state === "loading" ? "loading" : "default"}
-          disabled={uncheckedProcedures?.[0]?.state === "loading"}
+          state={isLoading ? "loading" : "default"}
+          disabled={isLoading}
           onClick={() => activeProcedure?.send()}
         >
           {ctaText}
@@ -162,11 +164,15 @@ const getHasLoadingProcedures = (procedures: Array<UnstakeProcedure>) => {
 const getActiveProcedure = (procedures: Array<UnstakeProcedure>) => {
   return procedures.find((procedure) => procedure.state !== "success");
 };
+const getIsLoadingState = (procedure: UnstakeProcedure) => {
+  return procedure?.state === "preparing" || procedure?.state === "loading";
+};
 
 const ctaTextMap: Record<UnstakeProcedureStep, Record<UnstakeProcedureState, string>> = {
   auth: {
     idle: "Approve",
     active: "Approve",
+    preparing: "Preparing transaction",
     loading: "Proceed in the wallet",
     success: "Approved",
     error: "Try again",
@@ -174,6 +180,7 @@ const ctaTextMap: Record<UnstakeProcedureStep, Record<UnstakeProcedureState, str
   undelegate: {
     idle: "Confirm",
     active: "Confirm",
+    preparing: "Preparing transaction",
     loading: "Proceed in the wallet",
     success: "Confirmed",
     error: "Try again",
