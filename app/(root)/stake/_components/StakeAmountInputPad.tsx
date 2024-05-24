@@ -12,7 +12,7 @@ export const StakeAmountInputPad = () => {
   const { amountInputPad, setStates } = useStaking();
   const { data: balanceData, isLoading: isBalanceLoading } = useWalletBalance({ address, network, activeWallet }) || {};
 
-  const maxAmountBuffer = useStakeMaxAmountBuffer({ amount: balanceData || "0" });
+  const maxAmountBuffer = useStakeMaxAmountBuffer();
 
   return (
     <AmountInputPad

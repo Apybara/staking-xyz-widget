@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useCosmosRedelegatingProcedures } from "../cosmos/hooks";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
-import { getFeeCollectingAmount } from ".";
 import BigNumber from "bignumber.js";
 
 export const useRedelegatingProcedures = ({
@@ -164,12 +163,11 @@ const useProcedureStates = () => {
   };
 };
 
-export const useRedelegateMaxAmountBuffer = ({ amount }: { amount: string }) => {
+export const useRedelegateMaxAmountBuffer = () => {
   const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
 
   const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
-  const collectedFee = getFeeCollectingAmount({ amount, network: castedNetwork });
 
-  return BigNumber(requiredBalance).plus(collectedFee).toString();
+  return BigNumber(requiredBalance).toString();
 };
