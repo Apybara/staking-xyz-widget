@@ -83,6 +83,11 @@ export const RewardsSummary = () => {
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Next compounding</InfoCard.Title>
+                <Tooltip
+                  className={S.tooltip}
+                  trigger={<Icon name="info" />}
+                  content="Compounding occurs when the accrued rewards are at least 1 TIA."
+                />
               </InfoCard.TitleBox>
               <InfoCard.Content>
                 {isEstRewardsLoading ? <Skeleton width={41.38} height={14} /> : `${nextCompounding} left`}
