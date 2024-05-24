@@ -3,6 +3,10 @@ import type { Network } from "../../types";
 import type { StakeProcedure, StakeProcedureState } from "./types";
 import { useEffect, useState } from "react";
 import { useCosmosStakingProcedures } from "../cosmos/hooks";
+import { useShell } from "@/app/_contexts/ShellContext";
+import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
+import { getFeeCollectingAmount } from ".";
+import BigNumber from "bignumber.js";
 
 export const useStakingProcedures = ({
   address,
@@ -159,4 +163,14 @@ const useProcedureStates = () => {
     setTxHash,
     setError,
   };
+};
+
+export const useStakeMaxAmountBuffer = ({ amount }: { amount: string }) => {
+  const { network } = useShell();
+  const castedNetwork = network || defaultNetwork;
+
+  const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
+  const collectedFee = getFeeCollectingAmount({ amount, network: castedNetwork });
+
+  return BigNumber(requiredBalance).plus(collectedFee).toString();
 };

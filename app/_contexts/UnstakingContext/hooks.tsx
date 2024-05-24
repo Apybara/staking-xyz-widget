@@ -4,6 +4,7 @@ import { useWallet } from "../WalletContext";
 import { getRequiredBalance } from "@/app/_services/unstake";
 import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
 import { defaultNetwork } from "../../consts";
+import { useWalletBalance } from "@/app/_services/wallet/hooks";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -13,12 +14,14 @@ export const useUnstakeAmountInputValidation = ({
   stakedBalance?: string;
 }) => {
   const { network } = useShell();
-  const { connectionStatus } = useWallet();
+  const { address, activeWallet, connectionStatus } = useWallet();
+  const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
     min: "0",
     max: stakedBalance,
+    walletBalance: balanceData,
     buffer: getRequiredBalance({ network: network || defaultNetwork }),
   });
   const ctaValidation = getBasicTxCtaValidation({
