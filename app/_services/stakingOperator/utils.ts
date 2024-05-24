@@ -14,7 +14,8 @@ export const getCalculatedRewards = (amountStaked: string, rewardRate: number) =
   const daily = base / 365;
 
   const nextCompoundingDays = Math.ceil(1 / daily);
-  const nextCompoundingDate = moment().add(nextCompoundingDays, "d").toDate();
+  const nextCompoundingDaysByInterval = nextCompoundingDays % 2 !== 0 ? nextCompoundingDays + 1 : nextCompoundingDays;
+  const nextCompoundingDate = moment().add(nextCompoundingDaysByInterval, "d").toDate();
 
   return {
     percentage: numbro(rewardRate * 100).format({
@@ -23,7 +24,7 @@ export const getCalculatedRewards = (amountStaked: string, rewardRate: number) =
     daily,
     monthly: base / 12,
     yearly: base,
-    nextCompoundingDays,
-    nextCompounding: nextCompoundingDays > 100 ? ">100d" : getTimeDiffInSingleString(nextCompoundingDate),
+    nextCompoundingDays: nextCompoundingDaysByInterval,
+    nextCompounding: nextCompoundingDaysByInterval > 100 ? ">100d" : getTimeDiffInSingleString(nextCompoundingDate),
   };
 };

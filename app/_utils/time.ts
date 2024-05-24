@@ -6,17 +6,17 @@ export const getTimeDiffInSingleString = (time?: string | Date) => {
   const diff = getTimeDiffFromNow(time);
 
   if (diff.asMinutes() <= 1) {
-    return `${diff.seconds()}s`;
+    return `${diff.asSeconds()}s`;
   } else if (diff.asHours() <= 1) {
-    return `${diff.minutes()}m`;
+    return `${diff.asMinutes()}m`;
   } else if (diff.asHours() <= 24) {
     let result = `${Math.floor(diff.asHours())}h`;
     if (diff.minutes() > 0) {
-      result += ` ${diff.minutes()}m`;
+      result += ` ${diff.asMinutes()}m`;
     }
     return result;
   } else {
-    return `${diff.days()}d`;
+    return `${diff.asDays()}d`;
   }
 };
 
