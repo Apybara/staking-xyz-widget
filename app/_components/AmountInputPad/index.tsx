@@ -11,7 +11,7 @@ import {
 } from "../../_utils/conversions";
 import { getFormattedMantissa } from "../../_utils/number";
 import { removeLeadingAndTrailingZeros } from "../../_utils";
-import { fiatCurrencyMap } from "../../consts";
+import { defaultNetwork, fiatCurrencyMap, requiredBalanceStakingByNetwork } from "../../consts";
 import { RootAmountInputPad } from "./RootAmountInputPad";
 import * as AvailabilityText from "./AvailabilityText";
 import { getStringHasNumbersOnly } from "./InputField";
@@ -52,6 +52,9 @@ export const AmountInputPad = ({
   maxAmountBuffer,
   onMax,
 }: AmountInputPadProps) => {
+  const { network } = useShell();
+  const castedNetwork = network || defaultNetwork;
+
   useEffect(() => {
     if (primaryValue === "") {
       onValueChange("");
@@ -149,6 +152,10 @@ export const AmountInputPad = ({
             content="0.05 TIA will be kept as a buffer on your balance to pay for future stake and unstake transactions."
           />
         ) : null
+      }
+      isMaxDisabled={
+        type === "stake" &&
+        BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalanceStakingByNetwork[castedNetwork])
       }
     />
   );
