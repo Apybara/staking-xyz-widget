@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
+import { recipe } from "@vanilla-extract/recipes";
 
 export const inputField = style({
   display: "flex",
@@ -94,16 +95,30 @@ export const maxButtonContainer = style({
   gap: pxToRem(4),
 });
 
-export const maxButton = style({
-  fontSize: pxToRem(12),
-  fontWeight: weights.semibold,
-  textAlign: "center",
-  lineHeight: 1,
-  color: colors.green900,
-  paddingBlock: pxToRem(6),
-  paddingInline: pxToRem(8),
-  borderRadius: pxToRem(8),
-  backgroundColor: colors.green100,
+export const maxButton = recipe({
+  base: {
+    fontSize: pxToRem(12),
+    fontWeight: weights.semibold,
+    textAlign: "center",
+    lineHeight: 1,
+    color: colors.green900,
+    paddingBlock: pxToRem(6),
+    paddingInline: pxToRem(8),
+    borderRadius: pxToRem(8),
+    backgroundColor: colors.green100,
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        opacity: "0.3",
+        pointerEvents: "none",
+      },
+    },
+  },
+  defaultVariants: {
+    state: "default",
+  },
 });
 
 export const primaryAvailabilityText = style({

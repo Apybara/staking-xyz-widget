@@ -14,6 +14,7 @@ export type RootAmountInputPadProps = {
   currencyConversionTool: CurrencyConversionToolProps;
   onClickMax: () => void;
   maxTooltip?: ReactNode;
+  isMaxDisabled?: boolean;
 };
 
 export const RootAmountInputPad = ({
@@ -24,6 +25,7 @@ export const RootAmountInputPad = ({
   currencyConversionTool,
   onClickMax,
   maxTooltip,
+  isMaxDisabled,
 }: RootAmountInputPadProps) => {
   return (
     <div className={cn(S.amountInputPad)}>
@@ -37,7 +39,7 @@ export const RootAmountInputPad = ({
         <div className={cn(S.topBar)}>
           {availabilityElement}
           {availableValue && availableValue !== "" && availableValue !== "0" && (
-            <MaxButton onClick={onClickMax} tooltip={maxTooltip} />
+            <MaxButton onClick={onClickMax} tooltip={maxTooltip} disabled={isMaxDisabled} />
           )}
         </div>
       )}
