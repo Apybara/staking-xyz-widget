@@ -40,6 +40,11 @@ export const useUnstakingProcedures = ({
         authState.setTxHash(undefined);
         authState.setError(null);
       },
+      onBroadcasting: () => {
+        authState.setState("broadcasting");
+        authState.setTxHash(undefined);
+        authState.setError(null);
+      },
       onSuccess: (txHash) => {
         authState.setState("success");
         authState.setTxHash(txHash);
@@ -59,6 +64,11 @@ export const useUnstakingProcedures = ({
       },
       onLoading: () => {
         undelegateState.setState("loading");
+        undelegateState.setTxHash(undefined);
+        undelegateState.setError(null);
+      },
+      onBroadcasting: () => {
+        undelegateState.setState("broadcasting");
         undelegateState.setTxHash(undefined);
         undelegateState.setError(null);
       },

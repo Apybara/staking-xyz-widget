@@ -44,6 +44,11 @@ export const useStakingProcedures = ({
         authState.setTxHash(undefined);
         authState.setError(null);
       },
+      onBroadcasting: () => {
+        authState.setState("broadcasting");
+        authState.setTxHash(undefined);
+        authState.setError(null);
+      },
       onSuccess: (txHash) => {
         authState.setState("success");
         authState.setTxHash(txHash);
@@ -64,6 +69,11 @@ export const useStakingProcedures = ({
       },
       onLoading: () => {
         delegateState.setState("loading");
+        delegateState.setTxHash(undefined);
+        delegateState.setError(null);
+      },
+      onBroadcasting: () => {
+        delegateState.setState("broadcasting");
         delegateState.setTxHash(undefined);
         delegateState.setError(null);
       },

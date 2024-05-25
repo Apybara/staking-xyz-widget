@@ -54,7 +54,7 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
         {!!tooltip && tooltip}
       </InfoCard.TitleBox>
       <div className={cn(S.itemEndBox)}>
-        {state === "loading" && <LoadingSpinner size={14} />}
+        {(state === "loading" || state === "preparing" || state === "broadcasting") && <LoadingSpinner size={14} />}
 
         {state === "error" &&
           (hasExplorerLink ? (
@@ -135,7 +135,7 @@ export type TopBoxProps = {
   type: "stake" | "unstake";
 };
 export type StepItemProps = {
-  state: "idle" | "active" | "preparing" | "loading" | "success" | "error";
+  state: "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";
   explorerLink?: {
     url: string;
     label: string;

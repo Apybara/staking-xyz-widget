@@ -165,7 +165,7 @@ const getActiveProcedure = (procedures: Array<StakeProcedure>) => {
   return procedures.find((procedure) => procedure.state !== "success");
 };
 const getIsLoadingState = (procedure: StakeProcedure) => {
-  return procedure?.state === "preparing" || procedure?.state === "loading";
+  return procedure?.state === "preparing" || procedure?.state === "loading" || procedure?.state === "broadcasting";
 };
 
 const ctaTextMap: Record<StakeProcedureStep, Record<StakeProcedureState, string>> = {
@@ -174,6 +174,7 @@ const ctaTextMap: Record<StakeProcedureStep, Record<StakeProcedureState, string>
     active: "Approve",
     preparing: "Preparing transaction",
     loading: "Proceed in the wallet",
+    broadcasting: "Broadcasting transaction",
     success: "Approved",
     error: "Try again",
   },
@@ -182,6 +183,7 @@ const ctaTextMap: Record<StakeProcedureStep, Record<StakeProcedureState, string>
     active: "Confirm",
     preparing: "Preparing transaction",
     loading: "Proceed in the wallet",
+    broadcasting: "Broadcasting transaction",
     success: "Confirmed",
     error: "Try again",
   },
