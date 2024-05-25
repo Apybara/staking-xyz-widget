@@ -1,4 +1,4 @@
-import type { SigningStargateClient } from "@cosmjs/stargate";
+import type { IndexedTx, SigningStargateClient } from "@cosmjs/stargate";
 import type { BaseStakeProcedure } from "../stake/types";
 import type { BaseUnstakeProcedure } from "../unstake/types";
 import type { BaseRedelegateProcedure } from "../redelegate/types";
@@ -59,12 +59,14 @@ export const useCosmosUnstakingProcedures = ({
   authStep: {
     onPreparing: () => void;
     onLoading: () => void;
+    onBroadcasting: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error) => void;
   };
   undelegateStep: {
     onPreparing: () => void;
     onLoading: () => void;
+    onBroadcasting: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error) => void;
   };
@@ -82,6 +84,7 @@ export const useCosmosUnstakingProcedures = ({
     address: address || undefined,
     onPreparing: authStep.onPreparing,
     onLoading: authStep.onLoading,
+    onBroadcasting: authStep.onBroadcasting,
     onSuccess: authStep.onSuccess,
     onError: authStep.onError,
   });
@@ -93,6 +96,7 @@ export const useCosmosUnstakingProcedures = ({
     amount,
     onPreparing: undelegateStep.onPreparing,
     onLoading: undelegateStep.onLoading,
+    onBroadcasting: undelegateStep.onBroadcasting,
     onSuccess: undelegateStep.onSuccess,
     onError: undelegateStep.onError,
   });
@@ -140,6 +144,7 @@ export const useCosmosUndelegate = ({
   address,
   onPreparing,
   onLoading,
+  onBroadcasting,
   onSuccess,
   onError,
 }: {
@@ -149,15 +154,17 @@ export const useCosmosUndelegate = ({
   address?: string;
   onPreparing?: () => void;
   onLoading?: () => void;
+  onBroadcasting?: () => void;
   onSuccess?: (txHash: string) => void;
   onError?: (e: Error) => void;
 }) => {
-  const { isPending, error, mutate, reset } = useMutation({
+  const { error, mutate, reset } = useMutation({
     mutationKey: ["signUndelegateCosmosMessage", address, amount, network],
     mutationFn: async () => {
       if (!client || !address) {
         throw new Error("Missing parameter: client, address");
       }
+      onPreparing?.();
 
       const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
       const { unsignedMessage, uuid } = await getUndelegateMessage({
@@ -188,9 +195,26 @@ export const useCosmosUndelegate = ({
       });
 
       onLoading?.();
-      const res = await client.signAndBroadcast(address, undelegateMsgs, fee);
+      const txHash = await client.signAndBroadcastSync(address, undelegateMsgs, fee);
+
+      onBroadcasting?.();
+      let txResult = null;
+      const getTxResult = async (txHash: string) => {
+        while (txHash) {
+          const res = await client.getTx(txHash);
+          if (res) {
+            return res;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+      txResult = await getTxResult(txHash);
+
       return {
-        tx: res,
+        tx: {
+          ...txResult,
+          transactionHash: txHash,
+        },
         uuid,
       };
     },
@@ -204,12 +228,6 @@ export const useCosmosUndelegate = ({
     },
     onError: (error) => onError?.(error),
   });
-
-  useEffect(() => {
-    if (isPending) {
-      onPreparing?.();
-    }
-  }, [isPending]);
 
   useEffect(() => {
     if (error) {
@@ -238,12 +256,14 @@ export const useCosmosStakingProcedures = ({
   authStep: {
     onPreparing: () => void;
     onLoading: () => void;
+    onBroadcasting: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error, txHash?: string) => void;
   };
   delegateStep: {
     onPreparing: () => void;
     onLoading: () => void;
+    onBroadcasting: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error, txHash?: string) => void;
   };
@@ -261,6 +281,7 @@ export const useCosmosStakingProcedures = ({
     address: address || undefined,
     onPreparing: authStep.onPreparing,
     onLoading: authStep.onLoading,
+    onBroadcasting: authStep.onBroadcasting,
     onSuccess: authStep.onSuccess,
     onError: authStep.onError,
   });
@@ -271,6 +292,7 @@ export const useCosmosStakingProcedures = ({
     amount,
     onPreparing: delegateStep.onPreparing,
     onLoading: delegateStep.onLoading,
+    onBroadcasting: delegateStep.onBroadcasting,
     onSuccess: delegateStep.onSuccess,
     onError: delegateStep.onError,
   });
@@ -317,6 +339,7 @@ const useCosmosBroadcastAuthzTx = ({
   address,
   onPreparing,
   onLoading,
+  onBroadcasting,
   onSuccess,
   onError,
 }: {
@@ -325,15 +348,18 @@ const useCosmosBroadcastAuthzTx = ({
   address?: string;
   onPreparing?: () => void;
   onLoading?: () => void;
+  onBroadcasting?: () => void;
   onSuccess?: (txHash: string) => void;
   onError?: (e: Error, txHash?: string) => void;
 }) => {
-  const { isPending, error, mutate, reset } = useMutation({
+  const { error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosAuthzTx", address, network],
     mutationFn: async () => {
       if (!client || !address) {
         throw new Error("Missing parameter: client, address");
       }
+
+      onPreparing?.();
 
       const grantingMsgs = getGrantingMessages({
         granter: address,
@@ -347,7 +373,25 @@ const useCosmosBroadcastAuthzTx = ({
       });
 
       onLoading?.();
-      return await client.signAndBroadcast(address, grantingMsgs, fee);
+      const txHash = await client.signAndBroadcastSync(address, grantingMsgs, fee);
+
+      onBroadcasting?.();
+      let txResult = null;
+      const getTxResult = async (txHash: string) => {
+        while (txHash) {
+          const res = await client.getTx(txHash);
+          if (res) {
+            return res;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+      txResult = (await getTxResult(txHash)) as unknown as IndexedTx;
+
+      return {
+        ...txResult,
+        transactionHash: txHash,
+      };
     },
     onSuccess: (res) => {
       if (res?.code) {
@@ -363,12 +407,6 @@ const useCosmosBroadcastAuthzTx = ({
     },
     onError: (error) => onError?.(error),
   });
-
-  useEffect(() => {
-    if (isPending) {
-      onPreparing?.();
-    }
-  }, [isPending]);
 
   useEffect(() => {
     if (error) {
@@ -389,6 +427,7 @@ const useCosmosBroadcastDelegateTx = ({
   address,
   onPreparing,
   onLoading,
+  onBroadcasting,
   onSuccess,
   onError,
 }: {
@@ -398,15 +437,18 @@ const useCosmosBroadcastDelegateTx = ({
   address?: string;
   onPreparing?: () => void;
   onLoading?: () => void;
+  onBroadcasting?: () => void;
   onSuccess?: (txHash: string) => void;
   onError?: (e: Error, txHash?: string) => void;
 }) => {
-  const { isPending, error, mutate, reset } = useMutation({
+  const { error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosDelegateTx", address, amount, network],
     mutationFn: async () => {
       if (!client || !address) {
         throw new Error("Missing parameter: client, address");
       }
+
+      onPreparing?.();
 
       const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
       const { unsignedMessage, uuid } = await getDelegateMessage({
@@ -455,10 +497,26 @@ const useCosmosBroadcastDelegateTx = ({
       });
 
       onLoading?.();
-      const res = await client.signAndBroadcast(address, msgs, fee);
+      const txHash = await client.signAndBroadcastSync(address, msgs, fee);
+
+      onBroadcasting?.();
+      let txResult = null;
+      const getTxResult = async (txHash: string) => {
+        while (txHash) {
+          const res = await client.getTx(txHash);
+          if (res) {
+            return res;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+      txResult = (await getTxResult(txHash)) as unknown as IndexedTx;
 
       return {
-        tx: res,
+        tx: {
+          ...txResult,
+          transactionHash: txHash,
+        },
         uuid,
       };
     },
@@ -477,12 +535,6 @@ const useCosmosBroadcastDelegateTx = ({
     },
     onError: (error) => onError?.(error),
   });
-
-  useEffect(() => {
-    if (isPending) {
-      onPreparing?.();
-    }
-  }, [isPending]);
 
   useEffect(() => {
     if (error) {
