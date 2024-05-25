@@ -42,7 +42,7 @@ export const StepsBox = ({ children }: { children: ReactNode }) => {
 };
 
 export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: StepItemProps) => {
-  const hasExplorerLink = explorerLink?.url;
+  const hasExplorerLink = !!explorerLink?.url;
 
   return (
     <InfoCard.StackItem className={S.item}>
@@ -56,13 +56,18 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
       <div className={cn(S.itemEndBox)}>
         {state === "loading" && <LoadingSpinner size={14} />}
 
-        {state === "error" && (
-          <a href={explorerLink?.url || "#"} target="_blank" rel="noopener noreferrer">
+        {state === "error" &&
+          (hasExplorerLink ? (
+            <a href={explorerLink?.url} target="_blank" rel="noopener noreferrer">
+              <MessageTag className={S.explorerTag} variant="warning">
+                Failed <Icon className={S.explorerTagIcon} name="external-link" size={10} />
+              </MessageTag>
+            </a>
+          ) : (
             <MessageTag className={S.explorerTag} variant="warning">
-              Failed {hasExplorerLink && <Icon className={S.explorerTagIcon} name="external-link" size={10} />}
+              Failed
             </MessageTag>
-          </a>
-        )}
+          ))}
 
         {explorerLink && state === "success" && (
           <a href={explorerLink.url} target="_blank" rel="noopener noreferrer">
