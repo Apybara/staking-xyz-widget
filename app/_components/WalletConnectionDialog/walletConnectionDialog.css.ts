@@ -105,3 +105,8 @@ export const cancelButton = style({
     },
   },
 });
+
+export const disabledText = style({
+  fontSize: pxToRem(14),
+  color: colors.black300,
+});

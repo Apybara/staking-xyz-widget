@@ -106,7 +106,8 @@ const WalletCardButton = ({
 }: Pick<RootWalletConnectionDialogProps, "connection" | "isOnMobileDevice" | "onCancelConnection"> &
   WalletCardButtonProps) => {
   const connecting = connection.isLoading && wallet.isConnecting;
-  const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting);
+  const temporarilyDisabled = wallet.id === "keplrMobile" && isOnMobileDevice;
+  const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting) || temporarilyDisabled;
   const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
     if (connecting) return "loading";
@@ -128,6 +129,7 @@ const WalletCardButton = ({
         {connecting && <LoadingSpinner />}
         {connection.error?.walletId === wallet.id && <MessageTag variant="warning">Failed</MessageTag>}
         {wallet.isConnected && <MessageTag variant="success">Connected</MessageTag>}
+        {temporarilyDisabled && <p className={cn(S.disabledText)}>Coming soon</p>}
       </button>
       {showCancel && (
         <button onClick={() => onCancelConnection?.(wallet)} className={cn(S.cancelButton)}>
