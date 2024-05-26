@@ -1,4 +1,5 @@
 import type { StakingStates } from "./types";
+import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
@@ -17,7 +18,8 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
     amount: inputAmount,
     min: "0",
     max: balanceData,
-    buffer,
+    bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
+    bufferValidationMax: balanceData,
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,

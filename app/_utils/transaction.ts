@@ -6,14 +6,14 @@ export const getBasicAmountValidation = ({
   amount,
   min,
   max,
-  walletBalance,
-  buffer,
+  bufferValidationAmount,
+  bufferValidationMax,
 }: {
   amount?: string;
   min?: string;
   max?: string;
-  walletBalance?: string;
-  buffer?: string;
+  bufferValidationAmount?: string;
+  bufferValidationMax?: string;
 }): BasicAmountValidationResult => {
   if (!amount || amount === "" || amount === "0") return "empty";
 
@@ -28,10 +28,11 @@ export const getBasicAmountValidation = ({
   if (max && parsedAmount.isGreaterThan(max)) {
     return "exceeded";
   }
-  if (!walletBalance && buffer && max && parsedAmount.plus(buffer).isGreaterThan(max)) {
-    return "bufferExceeded";
-  }
-  if (walletBalance && buffer && parsedAmount.plus(buffer).isGreaterThan(walletBalance)) {
+  if (
+    bufferValidationAmount &&
+    bufferValidationMax &&
+    BigNumber(bufferValidationAmount).isGreaterThan(bufferValidationMax)
+  ) {
     return "bufferExceeded";
   }
 
