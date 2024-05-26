@@ -106,7 +106,7 @@ const WalletCardButton = ({
 }: Pick<RootWalletConnectionDialogProps, "connection" | "isOnMobileDevice" | "onCancelConnection"> &
   WalletCardButtonProps) => {
   const connecting = connection.isLoading && wallet.isConnecting;
-  const temporarilyDisabled = wallet.id === "keplrMobile" && isOnMobileDevice;
+  const temporarilyDisabled = isOnMobileDevice;
   const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting) || temporarilyDisabled;
   const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
