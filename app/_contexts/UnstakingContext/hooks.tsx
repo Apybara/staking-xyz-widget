@@ -1,10 +1,9 @@
 import type { UnstakingStates } from "./types";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
-import { getRequiredBalance } from "@/app/_services/unstake";
-import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
-import { defaultNetwork } from "../../consts";
 import { useWalletBalance } from "@/app/_services/wallet/hooks";
+import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
+import { defaultNetwork, requiredBalanceUnstakingByNetwork } from "../../consts";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -21,8 +20,8 @@ export const useUnstakeAmountInputValidation = ({
     amount: inputAmount,
     min: "0",
     max: stakedBalance,
-    walletBalance: balanceData,
-    buffer: getRequiredBalance({ network: network || defaultNetwork }),
+    bufferValidationAmount: requiredBalanceUnstakingByNetwork[network || defaultNetwork].toString(),
+    bufferValidationMax: balanceData,
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,

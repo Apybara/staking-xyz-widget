@@ -1,4 +1,5 @@
 import type { RedelegatingStates } from "./types";
+import BigNumber from "bignumber.js";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
@@ -23,7 +24,8 @@ export const useRedelegateValidation = ({
     amount,
     min: "0",
     max: balanceData,
-    buffer,
+    bufferValidationAmount: BigNumber(amount).plus(buffer).toString(),
+    bufferValidationMax: balanceData,
   });
 
   const ctaValidation = getBasicRedelegateCtaValidation({
