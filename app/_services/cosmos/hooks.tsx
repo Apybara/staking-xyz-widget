@@ -633,7 +633,6 @@ export const useCosmosWithdrawRewards = ({
         address,
       });
       const withdrawRewardsValues = getWithdrawRewardsValidatorMessages(unsignedMessage);
-      console.log(unsignedMessage, withdrawRewardsValues);
 
       if (!withdrawRewardsValues.length) {
         throw new Error("Missing parameter: validatorAddress");

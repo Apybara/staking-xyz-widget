@@ -9,10 +9,9 @@ import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "../../../../_components/Icon";
 import { Skeleton } from "../../../../_components/Skeleton";
 import * as InfoCard from "../../../../_components/InfoCard";
-import { CTAButton, LinkCTAButton } from "../../../../_components/CTAButton";
+import { CTAButton } from "../../../../_components/CTAButton";
 import { RewardsTooltip } from "../../../_components/RewardsTooltip";
 import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
-import { useLinkWithSearchParams } from "../../../../_utils/routes";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import * as S from "./rewardsSummary.css";
@@ -24,7 +23,6 @@ export const RewardsSummary = () => {
     useNetworkReward({ amount: stakedBalance }) || {};
   const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards()?.query || {};
   const { total_rewards, accrued_rewards } = addressRewards || {};
-  const historyLink = useLinkWithSearchParams("rewards/history");
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
   const cumulativeRewards = total_rewards;
@@ -130,22 +128,17 @@ export const RewardsSummary = () => {
       </WidgetContent>
 
       <WidgetBottomBox>
-        <div className={cn(S.ctaButtons)}>
-          <LinkCTAButton className={S.ctaButton} variant="secondary" href={historyLink}>
-            View history
-          </LinkCTAButton>
-          <CTAButton
-            variant="primary"
-            state={isClaimDisabled ? "disabled" : "default"}
-            disabled={isClaimDisabled}
-            onClick={() => {
-              if (isClaimDisabled) return;
-              toggleClaimingProcedureDialog(true);
-            }}
-          >
-            Claim
-          </CTAButton>
-        </div>
+        <CTAButton
+          variant="primary"
+          state={isClaimDisabled ? "disabled" : "default"}
+          disabled={isClaimDisabled}
+          onClick={() => {
+            if (isClaimDisabled) return;
+            toggleClaimingProcedureDialog(true);
+          }}
+        >
+          Claim
+        </CTAButton>
       </WidgetBottomBox>
     </>
   );

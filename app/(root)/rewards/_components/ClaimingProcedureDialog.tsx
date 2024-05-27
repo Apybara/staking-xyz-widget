@@ -28,7 +28,7 @@ export const ClaimingProcedureDialog = () => {
     cosmosSigningClient,
   });
   const { open, toggleOpen } = useDialog("claimingProcedure");
-  const activityLink = useLinkWithSearchParams("rewards/history");
+  const activityLink = useLinkWithSearchParams("activity");
 
   const uncheckedProcedures = getUncheckedProcedures(procedures || []);
   const checkedProcedures = getCheckedProcedures(procedures || []);

@@ -97,7 +97,7 @@ export const useCelestiaAddressActivity = ({
         filterKey,
       });
     },
-    refetchInterval: hasInProgress ? 15000 : 180000,
+    refetchInterval: hasInProgress ? 5000 : 180000,
     placeholderData: keepPreviousData,
   });
 

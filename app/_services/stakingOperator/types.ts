@@ -196,11 +196,18 @@ export type AddressActivityResponse = CommonEntriesResponse<
   totalEntries?: number | null;
 };
 export type AddressActivityPaginationParams = PaginationParams & {
-  filterKey: "stake" | "unstake" | "transactions" | "transactions_stake" | "transactions_unstake" | null;
+  filterKey:
+    | "stake"
+    | "unstake"
+    | "transactions"
+    | "transactions_stake"
+    | "transactions_unstake"
+    | "transactions_rewards"
+    | null;
 };
 export type ActivityItem = {
   id: string;
-  type: "stake" | "unstake";
+  type: "stake" | "unstake" | "rewards";
   amount: number;
   rewardRate: number;
   timestamp: number;
