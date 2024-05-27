@@ -118,10 +118,12 @@ export const ResultButtons = ({
 const iconMap: Record<TopBoxProps["type"], string> = {
   stake: StakeIcon,
   unstake: UnstakeIcon,
+  claim: UnstakeIcon,
 };
 const titleMap: Record<TopBoxProps["type"], string> = {
   stake: "Steps to stake",
   unstake: "Steps to unstake",
+  claim: "Steps to claim",
 };
 
 export type ShellProps = {
@@ -132,7 +134,7 @@ export type ShellProps = {
   children: ReactNode;
 };
 export type TopBoxProps = {
-  type: "stake" | "unstake";
+  type: "stake" | "unstake" | "claim";
 };
 export type StepItemProps = {
   state: "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";

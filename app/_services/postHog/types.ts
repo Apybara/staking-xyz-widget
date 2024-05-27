@@ -20,6 +20,9 @@ export type EventFunctionTypes = {
   redelegate_tx_flow_auth_failed: () => void;
   redelegate_tx_flow_redelegate_succeeded: () => void;
   redelegate_tx_flow_redelegate_failed: () => void;
+  claim_tx_flow_started: () => void;
+  claim_tx_flow_succeeded: () => void;
+  claim_tx_flow_failed: () => void;
 };
 
 export type WalletConnectivityProps = {

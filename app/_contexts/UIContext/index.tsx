@@ -8,6 +8,7 @@ const initialState: T.UIState = {
     stakingProcedure: false,
     unstakingProcedure: false,
     redelegatingProcedure: false,
+    claimingProcedure: false,
     importHelp: false,
   },
 };

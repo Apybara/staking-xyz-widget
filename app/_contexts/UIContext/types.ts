@@ -9,6 +9,7 @@ export const DialogTypeVariants = [
   "stakingProcedure",
   "unstakingProcedure",
   "redelegatingProcedure",
+  "claimingProcedure",
   "importHelp",
 ] as const;
 export type DialogTypeVariant = (typeof DialogTypeVariants)[number];

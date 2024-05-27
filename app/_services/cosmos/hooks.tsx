@@ -2,6 +2,7 @@ import type { IndexedTx, SigningStargateClient } from "@cosmjs/stargate";
 import type { BaseStakeProcedure } from "../stake/types";
 import type { BaseUnstakeProcedure } from "../unstake/types";
 import type { BaseRedelegateProcedure } from "../redelegate/types";
+import type { BaseClaimProcedure } from "../rewards/types";
 import type { CosmosNetwork, Network, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
 import useLocalStorage from "use-local-storage";
@@ -18,6 +19,8 @@ import {
   setMonitorGrantTx,
   getRedelegateMessage,
   getRedelegateValidatorMessages,
+  getWithdrawRewardsMessage,
+  getWithdrawRewardsValidatorMessages,
 } from "../stakingOperator/celestia";
 import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
 import {
@@ -537,6 +540,151 @@ const useCosmosBroadcastDelegateTx = ({
           uuid,
         });
       }
+    },
+    onError: (error) => onError?.(error),
+  });
+
+  useEffect(() => {
+    if (error) {
+      onError?.(error);
+    }
+  }, [error]);
+
+  return {
+    reset,
+    send: mutate,
+  };
+};
+
+export const useCosmosWithdrawRewardsProcedures = ({
+  network,
+  address,
+  cosmosSigningClient,
+  withdrawRewardsStep,
+}: {
+  network: Network | null;
+  address: string | null;
+  cosmosSigningClient?: SigningStargateClient;
+  withdrawRewardsStep: {
+    onPreparing: () => void;
+    onLoading: () => void;
+    onBroadcasting: () => void;
+    onSuccess: (txHash?: string) => void;
+    onError: (e: Error, txHash?: string) => void;
+  };
+}) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+
+  const undelegateTx = useCosmosWithdrawRewards({
+    client: cosmosSigningClient || null,
+    network: network && isCosmosNetwork ? network : undefined,
+    address: address || undefined,
+    onPreparing: withdrawRewardsStep.onPreparing,
+    onLoading: withdrawRewardsStep.onLoading,
+    onBroadcasting: withdrawRewardsStep.onBroadcasting,
+    onSuccess: withdrawRewardsStep.onSuccess,
+    onError: withdrawRewardsStep.onError,
+  });
+
+  if (!isCosmosNetwork || !address) return null;
+
+  const procedures = [
+    {
+      step: "claim",
+      stepName: "Sign in wallet",
+      send: undelegateTx.send,
+    } as BaseClaimProcedure,
+  ];
+
+  return {
+    baseProcedures: procedures,
+  };
+};
+
+export const useCosmosWithdrawRewards = ({
+  client,
+  network,
+  address,
+  onPreparing,
+  onLoading,
+  onBroadcasting,
+  onSuccess,
+  onError,
+}: {
+  client: SigningStargateClient | null;
+  network?: CosmosNetwork;
+  address?: string;
+  onPreparing?: () => void;
+  onLoading?: () => void;
+  onBroadcasting?: () => void;
+  onSuccess?: (txHash: string) => void;
+  onError?: (e: Error) => void;
+}) => {
+  const { error, mutate, reset } = useMutation({
+    mutationKey: ["signWithdrawRewardsCosmosMessage", address, network],
+    mutationFn: async () => {
+      if (!client || !address) {
+        throw new Error("Missing parameter: client, address");
+      }
+      onPreparing?.();
+
+      const { unsignedMessage, uuid } = await getWithdrawRewardsMessage({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        address,
+      });
+      const withdrawRewardsValues = getWithdrawRewardsValidatorMessages(unsignedMessage);
+      console.log(unsignedMessage, withdrawRewardsValues);
+
+      if (!withdrawRewardsValues.length) {
+        throw new Error("Missing parameter: validatorAddress");
+      }
+
+      const undelegateMsgs = withdrawRewardsValues.map((val) => ({
+        typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+        value: {
+          delegatorAddress: address,
+          validatorAddress: val.validator,
+        },
+      }));
+
+      const estimatedGas = await getEstimatedGas({ client, address, msgArray: undelegateMsgs });
+      const fee = getFee({
+        gasLimit: estimatedGas,
+        network: network || defaultNetwork,
+        networkDenom: networkInfo[network || defaultNetwork].denom,
+      });
+
+      onLoading?.();
+      const txHash = await client.signAndBroadcastSync(address, undelegateMsgs, fee);
+
+      onBroadcasting?.();
+      let txResult = null;
+      const getTxResult = async (txHash: string) => {
+        while (txHash) {
+          const res = await client.getTx(txHash);
+          if (res) {
+            return res;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+      txResult = await getTxResult(txHash);
+
+      return {
+        tx: {
+          ...txResult,
+          transactionHash: txHash,
+        },
+        uuid,
+      };
+    },
+    onSuccess: ({ tx, uuid }) => {
+      onSuccess?.(tx.transactionHash);
+      setMonitorTx({
+        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+        txHash: tx.transactionHash,
+        uuid,
+      });
     },
     onError: (error) => onError?.(error),
   });
