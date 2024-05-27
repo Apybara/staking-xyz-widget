@@ -8,7 +8,7 @@ import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
 import { getOfflineSigners } from "graz";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getFeeCollectingAmount } from "../../_services/stake";
+import { getStakeFees } from "../../_utils/transaction";
 import {
   getDelegateMessage,
   getDelegateValidatorMessages,
@@ -72,22 +72,22 @@ export const useCosmosUnstakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const {
-    data: authCheck,
-    isLoading,
-    refetch,
-  } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+  // const {
+  //   data: authCheck,
+  //   isLoading,
+  //   refetch,
+  // } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
 
-  const authTx = useCosmosBroadcastAuthzTx({
-    client: cosmosSigningClient || null,
-    network: network && isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    onPreparing: authStep.onPreparing,
-    onLoading: authStep.onLoading,
-    onBroadcasting: authStep.onBroadcasting,
-    onSuccess: authStep.onSuccess,
-    onError: authStep.onError,
-  });
+  // const authTx = useCosmosBroadcastAuthzTx({
+  //   client: cosmosSigningClient || null,
+  //   network: network && isCosmosNetwork ? network : undefined,
+  //   address: address || undefined,
+  //   onPreparing: authStep.onPreparing,
+  //   onLoading: authStep.onLoading,
+  //   onBroadcasting: authStep.onBroadcasting,
+  //   onSuccess: authStep.onSuccess,
+  //   onError: authStep.onError,
+  // });
 
   const undelegateTx = useCosmosUndelegate({
     client: cosmosSigningClient || null,
@@ -101,27 +101,26 @@ export const useCosmosUnstakingProcedures = ({
     onError: undelegateStep.onError,
   });
 
-  // TODO: handle error state
-  if (!isCosmosNetwork || !address || isLoading) return null;
+  if (!isCosmosNetwork || !address) return null;
 
   const procedures = [
-    {
-      step: "auth",
-      stepName: "Approval in wallet",
-      send: authTx.send,
-      tooltip: (
-        <Tooltip
-          className={StakeStyle.approvalTooltip}
-          trigger={<Icon name="info" />}
-          content={
-            <>
-              This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
-              control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
-            </>
-          }
-        />
-      ),
-    },
+    // {
+    //   step: "auth",
+    //   stepName: "Approval in wallet",
+    //   send: authTx.send,
+    //   tooltip: (
+    //     <Tooltip
+    //       className={StakeStyle.approvalTooltip}
+    //       trigger={<Icon name="info" />}
+    //       content={
+    //         <>
+    //           This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
+    //           control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
+    //         </>
+    //       }
+    //     />
+    //   ),
+    // },
     {
       step: "undelegate",
       stepName: "Sign in wallet",
@@ -131,9 +130,12 @@ export const useCosmosUnstakingProcedures = ({
 
   return {
     baseProcedures: procedures,
-    isAuthApproved: authCheck?.granted,
-    authTxHash: authCheck?.txnHash,
-    refetchAuthCheck: refetch,
+    // isAuthApproved: authCheck?.granted,
+    // authTxHash: authCheck?.txnHash,
+    // refetchAuthCheck: refetch,
+    isAuthApproved: true,
+    authTxHash: undefined,
+    refetchAuthCheck: () => null,
   };
 };
 
@@ -269,22 +271,22 @@ export const useCosmosStakingProcedures = ({
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const {
-    data: authCheck,
-    isLoading,
-    refetch,
-  } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+  // const {
+  //   data: authCheck,
+  //   isLoading,
+  //   refetch,
+  // } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
 
-  const cosmosAuthTx = useCosmosBroadcastAuthzTx({
-    client: cosmosSigningClient || null,
-    network: network && isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    onPreparing: authStep.onPreparing,
-    onLoading: authStep.onLoading,
-    onBroadcasting: authStep.onBroadcasting,
-    onSuccess: authStep.onSuccess,
-    onError: authStep.onError,
-  });
+  // const cosmosAuthTx = useCosmosBroadcastAuthzTx({
+  //   client: cosmosSigningClient || null,
+  //   network: network && isCosmosNetwork ? network : undefined,
+  //   address: address || undefined,
+  //   onPreparing: authStep.onPreparing,
+  //   onLoading: authStep.onLoading,
+  //   onBroadcasting: authStep.onBroadcasting,
+  //   onSuccess: authStep.onSuccess,
+  //   onError: authStep.onError,
+  // });
   const cosmosDelegateTx = useCosmosBroadcastDelegateTx({
     client: cosmosSigningClient || null,
     network: network && isCosmosNetwork ? network : undefined,
@@ -297,27 +299,26 @@ export const useCosmosStakingProcedures = ({
     onError: delegateStep.onError,
   });
 
-  // TODO: handle error state
-  if (!isCosmosNetwork || !address || isLoading) return null;
+  if (!isCosmosNetwork || !address) return null;
 
   const baseProcedures: Array<BaseStakeProcedure> = [
-    {
-      step: "auth",
-      stepName: "Approval in wallet",
-      send: cosmosAuthTx.send,
-      tooltip: (
-        <Tooltip
-          className={StakeStyle.approvalTooltip}
-          trigger={<Icon name="info" />}
-          content={
-            <>
-              This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
-              control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
-            </>
-          }
-        />
-      ),
-    },
+    // {
+    //   step: "auth",
+    //   stepName: "Approval in wallet",
+    //   send: cosmosAuthTx.send,
+    //   tooltip: (
+    //     <Tooltip
+    //       className={StakeStyle.approvalTooltip}
+    //       trigger={<Icon name="info" />}
+    //       content={
+    //         <>
+    //           This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
+    //           control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
+    //         </>
+    //       }
+    //     />
+    //   ),
+    // },
     {
       step: "delegate",
       stepName: "Sign in wallet",
@@ -327,9 +328,12 @@ export const useCosmosStakingProcedures = ({
 
   return {
     baseProcedures,
-    isAuthApproved: authCheck?.granted,
-    authTxHash: authCheck?.txnHash,
-    refetchAuthCheck: refetch,
+    // isAuthApproved: authCheck?.granted,
+    // authTxHash: authCheck?.txnHash,
+    // refetchAuthCheck: refetch,
+    isAuthApproved: true,
+    authTxHash: undefined,
+    refetchAuthCheck: () => null,
   };
 };
 
@@ -458,7 +462,7 @@ const useCosmosBroadcastDelegateTx = ({
       });
       const delegateValues = getDelegateValidatorMessages(unsignedMessage);
       const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
+      // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
 
       if (!delegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
@@ -472,22 +476,23 @@ const useCosmosBroadcastDelegateTx = ({
           amount: val.amount,
         },
       }));
-      const feeCollectMsgs = [
-        {
-          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-          value: {
-            fromAddress: address,
-            toAddress: feeReceiver,
-            amount: [
-              {
-                denom: networkInfo[network || defaultNetwork].denom,
-                amount: feeAmount,
-              },
-            ],
-          },
-        },
-      ];
-      const msgs = [...delegateMsgs, ...feeCollectMsgs];
+      // const feeCollectMsgs = [
+      //   {
+      //     typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+      //     value: {
+      //       fromAddress: address,
+      //       toAddress: feeReceiver,
+      //       amount: [
+      //         {
+      //           denom: networkInfo[network || defaultNetwork].denom,
+      //           amount: feeAmount,
+      //         },
+      //       ],
+      //     },
+      //   },
+      // ];
+      // const msgs = [...delegateMsgs, ...feeCollectMsgs];
+      const msgs = delegateMsgs;
 
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
@@ -664,7 +669,7 @@ const useCosmosBroadcastRedelegateTx = ({
       });
       const reDelegateValues = getRedelegateValidatorMessages(unsignedMessage);
       const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      const feeAmount = getFeeCollectingAmount({ amount: denomAmount, network: network || defaultNetwork });
+      const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
 
       if (!reDelegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");

@@ -8,7 +8,6 @@ export type StakingContext = StakingStates & {};
 
 export type StakingStates = {
   coinAmountInput: string;
-  stakeFees?: string;
   inputState: BasicAmountValidationResult;
   ctaState: BasicTxCtaValidationResult;
   amountInputPad: BaseAmountInputPadProps;

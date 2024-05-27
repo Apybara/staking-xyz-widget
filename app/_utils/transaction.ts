@@ -68,9 +68,20 @@ export const getBasicRedelegateCtaValidation = ({
   return "submittable";
 };
 
-export const getStakeFees = ({ amount, network }: { amount: string; network: Network }) => {
+export const getStakeFees = ({
+  amount,
+  network,
+  floorResult,
+}: {
+  amount: string;
+  network: Network;
+  floorResult?: boolean;
+}) => {
+  if (amount === "" || amount === "0") return undefined;
+
   const ratio = feeRatioByNetwork[network];
-  return BigNumber(amount).times(ratio).toString();
+  const result = BigNumber(amount).times(ratio);
+  return floorResult ? Math.floor(result.toNumber()).toString() : result.toString();
 };
 
 export type BasicAmountValidationResult =
