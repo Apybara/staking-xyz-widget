@@ -6,7 +6,7 @@ import { useStakingProcedures } from "../../_services/stake/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
-import { useStakeAmountInputValidation, useStakeFees } from "./hooks";
+import { useStakeAmountInputValidation } from "./hooks";
 
 const StakingContext = createContext({} as T.StakingContext);
 
@@ -18,7 +18,6 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const { network } = useShell();
   const { activeWallet, address } = useWallet();
   const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.coinAmountInput });
-  const stakeFees = useStakeFees({ inputAmount: states.coinAmountInput });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
     wallet: activeWallet,
@@ -37,7 +36,6 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
         ...states,
         inputState: amountValidation,
         ctaState: ctaValidation,
-        stakeFees,
         procedures,
         amountInputPad,
         cosmosSigningClient: cosmosSigningClient || null,
@@ -52,7 +50,6 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
 
 const initialStates: T.StakingContext = {
   coinAmountInput: "",
-  stakeFees: undefined,
   inputState: "empty",
   ctaState: "empty",
   procedures: undefined,

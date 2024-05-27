@@ -2,11 +2,11 @@ import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { Network } from "../../types";
 import type { RedelegateProcedure, RedelegateProcedureState } from "./types";
 import { useEffect, useState } from "react";
+import BigNumber from "bignumber.js";
 import { useCosmosRedelegatingProcedures } from "../cosmos/hooks";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
-import { getFeeCollectingAmount } from ".";
-import BigNumber from "bignumber.js";
+import { getStakeFees } from "@/app/_utils/transaction";
 
 export const useRedelegatingProcedures = ({
   address,
@@ -169,7 +169,9 @@ export const useRedelegateMaxAmountBuffer = ({ amount }: { amount: string }) => 
   const castedNetwork = network || defaultNetwork;
 
   const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
-  const collectedFee = getFeeCollectingAmount({ amount, network: castedNetwork });
+  const collectedFee = getStakeFees({ amount, network: castedNetwork, floorResult: true });
 
-  return BigNumber(requiredBalance).plus(collectedFee).toString();
+  return BigNumber(requiredBalance)
+    .plus(collectedFee || 0)
+    .toString();
 };

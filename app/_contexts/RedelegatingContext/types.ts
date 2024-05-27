@@ -8,7 +8,6 @@ export type RedelegatingContext = RedelegatingStates & {};
 export type RedelegatingStates = {
   redelegateAmount: string;
   isAgreementChecked: boolean;
-  stakeFees?: string;
   ctaState: BasicTxCtaValidationResult;
   procedures?: Array<RedelegateProcedure>;
   cosmosSigningClient: SigningStargateClient | null;

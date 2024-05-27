@@ -3,8 +3,7 @@ import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
-import { getBasicAmountValidation, getBasicTxCtaValidation, getStakeFees } from "../../_utils/transaction";
-import { defaultNetwork } from "../../consts";
+import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
 import { useStakeMaxAmountBuffer } from "@/app/_services/stake/hooks";
 
 export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
@@ -27,11 +26,4 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
   });
 
   return { amountValidation, ctaValidation };
-};
-
-export const useStakeFees = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
-  const { network } = useShell();
-
-  if (inputAmount === "" || inputAmount === "0") return undefined;
-  return getStakeFees({ amount: inputAmount, network: network || defaultNetwork });
 };
