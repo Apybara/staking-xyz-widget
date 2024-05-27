@@ -3,7 +3,7 @@ import { colors, weights } from "@/theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 
 export const errorPad = style({
-  justifyContent: "center",
+  justifyContent: "center !important",
 });
 
 export const emptyState = style({
