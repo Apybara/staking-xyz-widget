@@ -1,6 +1,7 @@
 "use client";
 import type { Network } from "../../../types";
 import type { ActivityItem } from "../../../_services/stakingOperator/types";
+import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { Skeleton } from "../../../_components/Skeleton";
 import * as ListTable from "../../../_components/ListTable";
@@ -17,9 +18,9 @@ export const ActivityTable = () => {
   const { network } = useShell();
   const { params, query } = useActivity(null) || {};
   const { offset, setOffset, limit, filterKey, setFilterKey } = params;
-  const { formattedEntries, isFetching, error, disableNextPage, lastOffset, refetch } = query || {};
+  const { formattedEntries, isLoading, error, disableNextPage, lastOffset, refetch } = query || {};
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <>
         <Skeleton width="100%" height={26} />
@@ -36,7 +37,7 @@ export const ActivityTable = () => {
   if (error) {
     return (
       <ListTable.Pad className={S.errorPad}>
-        <ErrorRetryModule onRetry={refetch} isLoading={isFetching} />
+        <ErrorRetryModule onRetry={refetch} isLoading={isLoading} />
       </ListTable.Pad>
     );
   }
@@ -59,6 +60,11 @@ export const ActivityTable = () => {
             children: "Unstake",
             state: filterKey === "transactions_unstake" ? "highlighted" : "default",
             onClick: () => setFilterKey("transactions_unstake"),
+          },
+          {
+            children: "Claim",
+            state: filterKey === "transactions_rewards" ? "highlighted" : "default",
+            onClick: () => setFilterKey("transactions_rewards"),
           },
         ]}
       />
@@ -94,7 +100,17 @@ const ListItem = ({
   activity: Omit<ActivityItem, "amount" | "completionTime"> & { amount: string };
   network: Network | null;
 }) => {
-  const amount = useDynamicAssetValueFromCoin({ coinVal: activity.amount });
+  const isAmountSmall =
+    activity.amount && BigNumber(activity.amount).isLessThan(0.01) && BigNumber(activity.amount).isGreaterThan(0);
+  const formattedAmount = useDynamicAssetValueFromCoin({
+    coinVal: activity.amount,
+    minValue: !isAmountSmall ? undefined : 0.000001,
+    formatOptions: !isAmountSmall ? undefined : { mantissa: 6 },
+  });
+  const amountValue =
+    activity.type === "rewards" && activity.inProgress && activity.amount === "0"
+      ? "Collecting.."
+      : formattedAmount || "-";
   const href = `${networkExplorer[network || defaultNetwork]}tx/${activity.id}`;
 
   return (
@@ -103,7 +119,7 @@ const ListItem = ({
         <ListTable.TxInfoPrimary
           title={titleKey[activity.type]}
           externalLink={!!activity.id}
-          amount={amount || "－"}
+          amount={amountValue}
           isProcessing={activity.inProgress}
         />
         <ListTable.TxInfoSecondary
@@ -123,4 +139,5 @@ const ListItem = ({
 const titleKey = {
   stake: "Stake",
   unstake: "Unstake",
+  rewards: "Claim",
 };
