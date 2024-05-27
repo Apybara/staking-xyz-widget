@@ -56,7 +56,7 @@ export const RewardsSummary = () => {
             <Tooltip
               className={S.tooltip}
               trigger={<Icon name="info" />}
-              content="This is the sum of all rewards claimed and compounded on this address."
+              content="This is the sum of all rewards claimed on this address."
             />
           </div>
           {isAddressRewardsLoading ? (
@@ -71,7 +71,7 @@ export const RewardsSummary = () => {
             <Tooltip
               className={S.tooltip}
               trigger={<Icon name="info" />}
-              content="This is the amount of rewards that have accrued but have yet to be claimed and compounded."
+              content="This is the amount of rewards that have accrued but have yet to be claimed."
             />
           </div>
           {isAddressRewardsLoading ? (
