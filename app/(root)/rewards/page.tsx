@@ -6,6 +6,7 @@ import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 import { RewardsSummary } from "./_components/RewardsSummary";
+import { ClaimingProcedureDialog } from "./_components/ClaimingProcedureDialog";
 
 export default async function Rewards({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
@@ -16,6 +17,7 @@ export default async function Rewards({ searchParams }: RouterStruct) {
     <>
       <PageViewTop page="Rewards" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <RewardsSummary />
+      <ClaimingProcedureDialog />
     </>
   );
 }

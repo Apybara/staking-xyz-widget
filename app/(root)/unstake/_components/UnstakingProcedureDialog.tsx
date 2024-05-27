@@ -7,7 +7,7 @@ import { useDialog } from "../../../_contexts/UIContext";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
-import * as DelegationDialog from "../../../_components/DelegationDialog";
+import * as TransactionDialog from "../../../_components/TransactionDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 import { usePostHogEvent } from "../../../_services/postHog/hooks";
 import { networkExplorer, defaultNetwork } from "../../../consts";
@@ -44,7 +44,7 @@ export const UnstakingProcedureDialog = () => {
   usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
 
   return (
-    <DelegationDialog.Shell
+    <TransactionDialog.Shell
       dialog={{
         open: !!open,
         onOpenChange: () => {
@@ -57,10 +57,10 @@ export const UnstakingProcedureDialog = () => {
         },
       }}
     >
-      <DelegationDialog.TopBox type="unstake" />
-      <DelegationDialog.StepsBox>
+      <TransactionDialog.TopBox type="unstake" />
+      <TransactionDialog.StepsBox>
         {procedures?.map((procedure, index) => (
-          <DelegationDialog.StepItem
+          <TransactionDialog.StepItem
             key={index}
             state={procedure.state || "idle"}
             onCancel={
@@ -81,19 +81,19 @@ export const UnstakingProcedureDialog = () => {
             }
           >
             {procedure.stepName}
-          </DelegationDialog.StepItem>
+          </TransactionDialog.StepItem>
         ))}
-      </DelegationDialog.StepsBox>
+      </TransactionDialog.StepsBox>
       {!allProceduresCompleted ? (
-        <DelegationDialog.CTAButton
+        <TransactionDialog.CTAButton
           state={isLoading ? "loading" : "default"}
           disabled={isLoading}
           onClick={() => activeProcedure?.send()}
         >
           {ctaText}
-        </DelegationDialog.CTAButton>
+        </TransactionDialog.CTAButton>
       ) : (
-        <DelegationDialog.ResultButtons
+        <TransactionDialog.ResultButtons
           onActivityButtonClick={() => {
             router.push(activityLink);
           }}
@@ -105,7 +105,7 @@ export const UnstakingProcedureDialog = () => {
           }}
         />
       )}
-    </DelegationDialog.Shell>
+    </TransactionDialog.Shell>
   );
 };
 

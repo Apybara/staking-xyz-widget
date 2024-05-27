@@ -1,6 +1,7 @@
 "use client";
 import cn from "classnames";
 import BigNumber from "bignumber.js";
+import { useDialog } from "../../../../_contexts/UIContext";
 import { useShell } from "../../../../_contexts/ShellContext";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { WidgetContent } from "@/app/_components/WidgetContent";
@@ -8,7 +9,7 @@ import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "../../../../_components/Icon";
 import { Skeleton } from "../../../../_components/Skeleton";
 import * as InfoCard from "../../../../_components/InfoCard";
-import { LinkCTAButton } from "../../../../_components/CTAButton";
+import { CTAButton, LinkCTAButton } from "../../../../_components/CTAButton";
 import { RewardsTooltip } from "../../../_components/RewardsTooltip";
 import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
 import { useLinkWithSearchParams } from "../../../../_utils/routes";
@@ -24,6 +25,7 @@ export const RewardsSummary = () => {
   const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards()?.query || {};
   const { total_rewards, accrued_rewards } = addressRewards || {};
   const historyLink = useLinkWithSearchParams("rewards/history");
+  const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
   const cumulativeRewards = total_rewards;
   const isCumulativeRewardsSmall =
@@ -42,8 +44,10 @@ export const RewardsSummary = () => {
     formatOptions: !isAccruedRewardsSmall ? undefined : { mantissa: 6 },
   });
 
-  const nextCompounding = networkRewards?.nextCompounding || 0;
+  // const nextCompounding = networkRewards?.nextCompounding || 0;
   const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
+  const isClaimDisabled =
+    isAddressRewardsLoading || !accrued_rewards || isNaN(Number(accrued_rewards)) || Number(accrued_rewards) === 0;
 
   return (
     <>
@@ -80,7 +84,7 @@ export const RewardsSummary = () => {
         </section>
         <InfoCard.Card>
           <InfoCard.Stack>
-            <InfoCard.StackItem>
+            {/* <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Next compounding</InfoCard.Title>
                 <Tooltip
@@ -92,7 +96,7 @@ export const RewardsSummary = () => {
               <InfoCard.Content>
                 {isEstRewardsLoading ? <Skeleton width={41.38} height={14} /> : `${nextCompounding} left`}
               </InfoCard.Content>
-            </InfoCard.StackItem>
+            </InfoCard.StackItem> */}
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Est. reward rate</InfoCard.Title>
@@ -114,7 +118,7 @@ export const RewardsSummary = () => {
             </InfoCard.StackItem>
           </InfoCard.Stack>
         </InfoCard.Card>
-        <a
+        {/* <a
           className={S.link}
           href={process.env.NEXT_PUBLIC_COMPOUNDING_INFO_LINK}
           target="_blank"
@@ -122,13 +126,26 @@ export const RewardsSummary = () => {
         >
           <span>More info about compounding</span>
           <Icon name="arrow" size={12} />
-        </a>
+        </a> */}
       </WidgetContent>
 
       <WidgetBottomBox>
-        <LinkCTAButton className={S.ctaButton} variant="secondary" href={historyLink}>
-          View history
-        </LinkCTAButton>
+        <div className={cn(S.ctaButtons)}>
+          <LinkCTAButton className={S.ctaButton} variant="secondary" href={historyLink}>
+            View history
+          </LinkCTAButton>
+          <CTAButton
+            variant="primary"
+            state={isClaimDisabled ? "disabled" : "default"}
+            disabled={isClaimDisabled}
+            onClick={() => {
+              if (isClaimDisabled) return;
+              toggleClaimingProcedureDialog(true);
+            }}
+          >
+            Claim
+          </CTAButton>
+        </div>
       </WidgetBottomBox>
     </>
   );

@@ -1,25 +1,34 @@
 "use client";
-import type { StakeProcedure, StakeProcedureStep, StakeProcedureState } from "../../../_services/stake/types";
+import type { ClaimProcedure, ClaimProcedureStep, ClaimProcedureState } from "../../../_services/rewards/types";
 import { useEffect, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
-import { useStaking } from "../../../_contexts/StakingContext";
 import * as TransactionDialog from "../../../_components/TransactionDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 import { usePostHogEvent } from "../../../_services/postHog/hooks";
 import { networkExplorer, defaultNetwork } from "../../../consts";
+import { useClaimingProcedures } from "../../../_services/rewards/hooks";
+import { useCosmosSigningClient } from "../../../_services/cosmos/hooks";
 
-export const StakingProcedureDialog = () => {
+export const ClaimingProcedureDialog = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { network } = useShell();
-  const { connectionStatus, activeWallet } = useWallet();
-  const { procedures, amountInputPad, inputState, resetProceduresStates } = useStaking();
-  const { open, toggleOpen } = useDialog("stakingProcedure");
-  const activityLink = useLinkWithSearchParams("activity");
+  const { connectionStatus, activeWallet, address } = useWallet();
+  const { data: cosmosSigningClient } = useCosmosSigningClient({
+    network: network || defaultNetwork,
+    wallet: activeWallet,
+  });
+  const { procedures, resetStates } = useClaimingProcedures({
+    address: address,
+    network: network || defaultNetwork,
+    cosmosSigningClient,
+  });
+  const { open, toggleOpen } = useDialog("claimingProcedure");
+  const activityLink = useLinkWithSearchParams("rewards/history");
 
   const uncheckedProcedures = getUncheckedProcedures(procedures || []);
   const checkedProcedures = getCheckedProcedures(procedures || []);
@@ -30,18 +39,18 @@ export const StakingProcedureDialog = () => {
   const isLoading = getIsLoadingState(uncheckedProcedures?.[0]);
 
   const ctaText = useMemo(() => {
-    if (!uncheckedProcedures?.[0]) return ctaTextMap.auth.idle;
+    if (!uncheckedProcedures?.[0]) return ctaTextMap.claim.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
 
   useEffect(() => {
     if (!open) return;
-    if (connectionStatus === "disconnected" || inputState !== "valid") {
+    if (connectionStatus === "disconnected") {
       toggleOpen(false);
     }
-  }, [connectionStatus, open, inputState]);
+  }, [connectionStatus, open]);
 
-  usePostHogEvents({ open, amount: amountInputPad.primaryValue, uncheckedProcedures, procedures });
+  usePostHogEvents({ open, procedures });
 
   return (
     <TransactionDialog.Shell
@@ -52,12 +61,12 @@ export const StakingProcedureDialog = () => {
             return;
           }
 
-          if (open) resetProceduresStates();
+          if (open) resetStates();
           toggleOpen(!open);
         },
       }}
     >
-      <TransactionDialog.TopBox type="stake" />
+      <TransactionDialog.TopBox type="claim" />
       <TransactionDialog.StepsBox>
         {procedures?.map((procedure, index) => (
           <TransactionDialog.StepItem
@@ -98,8 +107,7 @@ export const StakingProcedureDialog = () => {
             router.push(activityLink);
           }}
           onDismissButtonClick={() => {
-            amountInputPad.setPrimaryValue("");
-            resetProceduresStates();
+            resetStates();
             queryClient.resetQueries();
             toggleOpen(false);
           }}
@@ -109,76 +117,46 @@ export const StakingProcedureDialog = () => {
   );
 };
 
-const usePostHogEvents = ({
-  open,
-  amount,
-  procedures,
-  uncheckedProcedures,
-}: {
-  open: boolean;
-  amount: string;
-  procedures?: Array<StakeProcedure>;
-  uncheckedProcedures: Array<StakeProcedure>;
-}) => {
-  const hasAuthApproval = uncheckedProcedures?.[0]?.step === "delegate";
-  const captureFlowStart = usePostHogEvent("stake_tx_flow_started");
-  const captureAuthSuccess = usePostHogEvent("stake_tx_flow_auth_succeeded");
-  const captureAuthFailed = usePostHogEvent("stake_tx_flow_auth_failed");
-  const captureDelegateSuccess = usePostHogEvent("stake_tx_flow_delegate_succeeded");
-  const captureDelegateFailed = usePostHogEvent("stake_tx_flow_delegate_failed");
+const usePostHogEvents = ({ open, procedures }: { open: boolean; procedures?: Array<ClaimProcedure> }) => {
+  const captureFlowStart = usePostHogEvent("claim_tx_flow_started");
+  const captureSuccess = usePostHogEvent("claim_tx_flow_succeeded");
+  const captureFailed = usePostHogEvent("claim_tx_flow_failed");
 
-  const authProcedure = procedures?.find((procedure) => procedure.step === "auth");
-  const delegateProcedure = procedures?.find((procedure) => procedure.step === "delegate");
+  const claimProcedure = procedures?.find((procedure) => procedure.step === "claim");
 
   useEffect(() => {
     if (open) {
-      captureFlowStart({ amount, hasAuthApproval });
+      captureFlowStart();
     }
   }, [open]);
 
   useEffect(() => {
-    if (!hasAuthApproval) {
-      if (authProcedure?.state === "success") {
-        captureAuthSuccess();
-      } else if (authProcedure?.state === "error") {
-        captureAuthFailed();
-      }
+    if (claimProcedure?.state === "success") {
+      captureSuccess();
+    } else if (claimProcedure?.state === "error") {
+      captureFailed();
     }
-    if (delegateProcedure?.state === "success") {
-      captureDelegateSuccess();
-    } else if (delegateProcedure?.state === "error") {
-      captureDelegateFailed();
-    }
-  }, [hasAuthApproval, authProcedure?.step, delegateProcedure?.state]);
+  }, [claimProcedure?.state]);
 };
 
-const getUncheckedProcedures = (procedures: Array<StakeProcedure>) => {
+const getUncheckedProcedures = (procedures: Array<ClaimProcedure>) => {
   return procedures.filter((procedure) => procedure.state !== "success");
 };
-const getCheckedProcedures = (procedures: Array<StakeProcedure>) => {
+const getCheckedProcedures = (procedures: Array<ClaimProcedure>) => {
   return procedures.filter((procedure) => procedure.state === "success");
 };
-const getHasLoadingProcedures = (procedures: Array<StakeProcedure>) => {
+const getHasLoadingProcedures = (procedures: Array<ClaimProcedure>) => {
   return procedures.some((procedure) => procedure.state === "loading");
 };
-const getActiveProcedure = (procedures: Array<StakeProcedure>) => {
+const getActiveProcedure = (procedures: Array<ClaimProcedure>) => {
   return procedures.find((procedure) => procedure.state !== "success");
 };
-const getIsLoadingState = (procedure: StakeProcedure) => {
+const getIsLoadingState = (procedure: ClaimProcedure) => {
   return procedure?.state === "preparing" || procedure?.state === "loading" || procedure?.state === "broadcasting";
 };
 
-const ctaTextMap: Record<StakeProcedureStep, Record<StakeProcedureState, string>> = {
-  auth: {
-    idle: "Approve",
-    active: "Approve",
-    preparing: "Preparing transaction",
-    loading: "Proceed in the wallet",
-    broadcasting: "Broadcasting transaction",
-    success: "Approved",
-    error: "Try again",
-  },
-  delegate: {
+const ctaTextMap: Record<ClaimProcedureStep, Record<ClaimProcedureState, string>> = {
+  claim: {
     idle: "Confirm",
     active: "Confirm",
     preparing: "Preparing transaction",
@@ -189,7 +167,6 @@ const ctaTextMap: Record<StakeProcedureStep, Record<StakeProcedureState, string>
   },
 };
 
-const explorerLabelMap: Record<StakeProcedureStep, string> = {
-  auth: "Approved",
-  delegate: "Signed",
+const explorerLabelMap: Record<ClaimProcedureStep, string> = {
+  claim: "Signed",
 };

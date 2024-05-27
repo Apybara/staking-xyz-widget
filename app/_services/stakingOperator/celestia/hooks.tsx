@@ -202,7 +202,7 @@ export const useCelestiaAddressRewardsHistory = ({
         address,
         offset,
         limit,
-        filterKey: filterKey || "transactions_rewards_daily",
+        filterKey: filterKey || "transactions_rewards",
       });
     },
     placeholderData: keepPreviousData,
@@ -222,7 +222,7 @@ export const useCelestiaAddressRewardsHistory = ({
             address,
             offset: nextOffset,
             limit,
-            filterKey: filterKey || "transactions_rewards_daily",
+            filterKey: filterKey || "transactions_rewards",
           });
         },
       });

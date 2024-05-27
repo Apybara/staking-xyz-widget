@@ -60,6 +60,17 @@ export type DecodedUndelegateMessageResponse = {
   signatures: any[];
 };
 
+export type WithdrawRewardsMessageResponse = {
+  unsigned_txn: string;
+  uuid: string;
+};
+
+export type DecodedWithdrawRewardsMessageResponse = {
+  body: {
+    messages: Array<CosmosDistributionMsgWithdrawDelegatorReward>;
+  };
+};
+
 export type RedelegateMessageResponse = {
   unsigned_txn: string;
   uuid: string;
@@ -104,6 +115,12 @@ export type CosmosStakingMsgUndelegate = {
     denom: string;
     amount: string;
   };
+};
+
+export type CosmosDistributionMsgWithdrawDelegatorReward = {
+  "@type": "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward";
+  delegator_address: string;
+  validator_address: string;
 };
 
 export type CosmosStakingMsgRedelegate = {
@@ -211,11 +228,11 @@ export type AddressRewardsHistoryResponse = CommonEntriesResponse<
   totalEntries?: number | null;
 };
 export type AddressRewardsHistoryPaginationParams = PaginationParams & {
-  filterKey?: "transactions_rewards_daily" | "transactions_rewards_hourly" | null;
+  filterKey?: "transactions_rewards_daily" | "transactions_rewards_hourly" | "transactions_rewards" | null;
 };
 
 export type RewardsHistoryItem = {
-  type: "reward";
+  type: "rewards";
   id: string;
   amount: number;
   rewardRate: number;

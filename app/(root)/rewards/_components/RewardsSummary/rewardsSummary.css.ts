@@ -56,6 +56,13 @@ export const link = style({
   },
 });
 
+export const ctaButtons = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(16),
+  inlineSize: "100%",
+});
+
 export const ctaButton = style({
   marginBlockStart: "auto",
 });

@@ -92,6 +92,26 @@ export const getUndelegateMessage = async ({ apiUrl, address, amount }: { amount
   };
 };
 
+export const getWithdrawRewardsMessage = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.WithdrawRewardsMessageResponse = await fetchData(`${apiUrl}stake/user/claim`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address }),
+  });
+  return {
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedWithdrawRewardsMessageResponse,
+    uuid: res.uuid,
+  };
+};
+
+export const getWithdrawRewardsValidatorMessages = (operatorMessage: T.DecodedWithdrawRewardsMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward")
+    .map((msg: T.CosmosDistributionMsgWithdrawDelegatorReward) => ({ validator: msg.validator_address }));
+};
+
 export const getUndelegateValidatorMessages = (operatorMessage: T.DecodedUndelegateMessageResponse) => {
   return operatorMessage.body.messages
     .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgUndelegate")

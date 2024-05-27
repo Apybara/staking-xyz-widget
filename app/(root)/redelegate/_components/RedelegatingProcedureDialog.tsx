@@ -10,7 +10,7 @@ import { useDialog } from "../../../_contexts/UIContext";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useRedelegating } from "../../../_contexts/RedelegatingContext";
-import * as DelegationDialog from "../../../_components/DelegationDialog";
+import * as TransactionDialog from "../../../_components/TransactionDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 import { usePostHogEvent } from "../../../_services/postHog/hooks";
 import { networkExplorer, defaultNetwork } from "../../../consts";
@@ -43,7 +43,7 @@ export const RedelegatingProcedureDialog = () => {
   usePostHogEvents({ open, amount: redelegateAmount, uncheckedProcedures, procedures });
 
   return (
-    <DelegationDialog.Shell
+    <TransactionDialog.Shell
       dialog={{
         open: !!open,
         onOpenChange: () => {
@@ -56,10 +56,10 @@ export const RedelegatingProcedureDialog = () => {
         },
       }}
     >
-      <DelegationDialog.TopBox type="stake" />
-      <DelegationDialog.StepsBox>
+      <TransactionDialog.TopBox type="stake" />
+      <TransactionDialog.StepsBox>
         {procedures?.map((procedure, index) => (
-          <DelegationDialog.StepItem
+          <TransactionDialog.StepItem
             key={index}
             state={procedure.state || "idle"}
             onCancel={
@@ -80,19 +80,19 @@ export const RedelegatingProcedureDialog = () => {
             }
           >
             {procedure.stepName}
-          </DelegationDialog.StepItem>
+          </TransactionDialog.StepItem>
         ))}
-      </DelegationDialog.StepsBox>
+      </TransactionDialog.StepsBox>
       {!allProceduresCompleted ? (
-        <DelegationDialog.CTAButton
+        <TransactionDialog.CTAButton
           state={uncheckedProcedures?.[0]?.state === "loading" ? "loading" : "default"}
           disabled={uncheckedProcedures?.[0]?.state === "loading"}
           onClick={() => activeProcedure?.send()}
         >
           {ctaText}
-        </DelegationDialog.CTAButton>
+        </TransactionDialog.CTAButton>
       ) : (
-        <DelegationDialog.ResultButtons
+        <TransactionDialog.ResultButtons
           onActivityButtonClick={() => {
             router.push(activityLink);
           }}
@@ -102,7 +102,7 @@ export const RedelegatingProcedureDialog = () => {
           }}
         />
       )}
-    </DelegationDialog.Shell>
+    </TransactionDialog.Shell>
   );
 };
 
