@@ -44,7 +44,7 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
       return {
         title: (
           <NavCard.SecondaryText>
-            For {numbro(times?.time).format({ thousandSeparated: true })} {times?.unit}
+            For {numbro(Math.abs(times?.time || 0)).format({ thousandSeparated: true })} {times?.unit}
           </NavCard.SecondaryText>
         ),
         value: (
