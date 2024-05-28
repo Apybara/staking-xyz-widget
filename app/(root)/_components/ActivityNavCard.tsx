@@ -41,10 +41,11 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
     if (lastData) {
       const timeUnits = getTimeDiffInSingleUnits(fromUnixTime(lastData.timestamp));
       const times = timeUnits && getTimeUnitStrings(timeUnits);
+
       return {
-        title: (
+        title: times && (
           <NavCard.SecondaryText>
-            For {numbro(Math.abs(times?.time || 0)).format({ thousandSeparated: true })} {times?.unit}
+            For {numbro(Math.abs(times.time)).format({ thousandSeparated: true })} {times.unit}
           </NavCard.SecondaryText>
         ),
         value: (
