@@ -2,7 +2,13 @@
 
 import type { RouterStruct } from "../types";
 import { redirect } from "next/navigation";
-import { defaultNetwork, networkRegex, currencyRegex, networkCurrency } from "../consts";
+import {
+  defaultNetwork,
+  networkUrlParamRegex,
+  networkIdToUrlParamAlias,
+  currencyRegex,
+  networkCurrency,
+} from "../consts";
 import { getCurrentSearchParams } from "../_utils/routes";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
@@ -13,11 +19,13 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     redirect("https://aleo.staking.xyz");
   }
 
-  const isNetworkInvalid = !network || !networkRegex.test(network);
+  const isNetworkInvalid = !network || !networkUrlParamRegex.test(network);
   const isCurrencyInvalid = !currencyRegex.test(currency || "");
 
   if (isNetworkInvalid) {
-    current.set("network", defaultNetwork);
+    const targetParamFromAlias = getNetworkParamFromValidAlias(network || "");
+    const targetNetwork = targetParamFromAlias || defaultNetwork;
+    current.set("network", targetNetwork);
   }
   if (isCurrencyInvalid) {
     current.set("currency", networkCurrency[defaultNetwork]);
@@ -28,3 +36,7 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     redirect(`/${page}${query}`);
   }
 }
+
+const getNetworkParamFromValidAlias = (network: string) => {
+  if (/\b(celestiatestnet3|mocha-4|mocha4)\b/.test(network)) return networkIdToUrlParamAlias.celestiatestnet3;
+};

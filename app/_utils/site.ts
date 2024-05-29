@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import type { Network } from "../types";
-import { SITE_TITLE, SITE_DESCRIPTION, networkInfo } from "../consts";
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  networkInfo,
+  networkIdRegex,
+  networkUrlParamToId,
+  defaultNetwork,
+} from "../consts";
 
 export const getDefaultPageMetadata = ({
   page,
@@ -25,7 +32,10 @@ export const getDynamicPageMetadata = ({
   networkParam?: string;
 }): Metadata => {
   const baseMetaTitle = getBaseMetaTitle(page);
-  const networkName = networkInfo?.[networkParam as Network]?.name;
+  const networkId = networkIdRegex.test(networkParam || "")
+    ? (networkParam as Network)
+    : networkUrlParamToId[networkParam as string] || defaultNetwork;
+  const networkName = networkInfo[networkId].name;
   const dynamicTitle = networkName ? `${baseMetaTitle} ✦ ${networkName}` : baseMetaTitle;
 
   return {

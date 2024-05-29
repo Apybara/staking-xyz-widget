@@ -16,7 +16,18 @@ export const networkCoinPriceSymbol: Record<Network, string> = {
   celestia: "celestia",
   celestiatestnet3: "celestia",
 };
-export const networkRegex = /\b(celestia|celestiatestnet3)\b/;
+
+export const networkIdToUrlParamAlias: Record<Network, string> = {
+  celestia: "celestia",
+  celestiatestnet3: "celestiatestnet",
+};
+export const networkUrlParamToId: Record<string, Network> = {
+  celestia: "celestia",
+  celestiatestnet: "celestiatestnet3",
+  celestiatestnet3: "celestiatestnet3",
+};
+export const networkIdRegex = /\b(celestia|celestiatestnet3)\b/;
+export const networkUrlParamRegex = /\b(celestia|celestiatestnet)\b/;
 
 export const networkInfo: Record<Network, NetworkInfo> = {
   celestia: {
