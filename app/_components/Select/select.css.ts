@@ -39,6 +39,7 @@ export const content = style({
   marginBlockStart: pxToRem(6),
   backgroundColor: colors.black750,
   borderRadius: pxToRem(8),
+  boxShadow: "0px 0px 12px 0px #00000029",
 });
 
 export const viewport = style({
