@@ -3,19 +3,26 @@ import type { ShellContext } from "./types";
 import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useShell } from "../../_contexts/ShellContext";
-import { networkCurrency, networkRegex, currencyRegex, defaultGlobalCurrency, defaultNetwork } from "../../consts";
+import {
+  networkCurrency,
+  networkUrlParamRegex,
+  networkIdToUrlParamAlias,
+  networkUrlParamToId,
+  currencyRegex,
+  defaultGlobalCurrency,
+  defaultNetwork,
+} from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const network = searchParams.get("network");
-    if (!network || !networkRegex.test(network)) {
+    if (!network || !networkUrlParamRegex.test(network)) {
       // The redirect operation is handled in the page component
       return;
     }
-
-    setStates({ network: network as Network });
+    setStates({ network: networkUrlParamToId[network] as Network });
   }, [searchParams]);
 
   return null;
@@ -29,7 +36,7 @@ export const useNetworkChange = () => {
 
   const onUpdateRouter = (net: Network) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set("network", net);
+    current.set("network", networkIdToUrlParamAlias[net]);
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);
