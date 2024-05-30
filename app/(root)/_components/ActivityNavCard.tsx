@@ -23,7 +23,7 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
   const allData = data?.entries;
   const readyData = allData?.filter(({ inProgress }) => !inProgress);
 
-  const lastData = readyData?.length ? readyData[readyData.length - 1] : allData?.[allData.length - 1];
+  const lastData = readyData?.[readyData?.length - 1];
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
@@ -42,16 +42,17 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
         ),
       };
     }
-    if (lastData) {
-      const timeUnits = getTimeDiffInSingleUnits(fromUnixTime(lastData.timestamp));
+
+    if (allData?.length) {
+      const timeUnits = getTimeDiffInSingleUnits(fromUnixTime(lastData?.timestamp || 0));
       const times = timeUnits && getTimeUnitStrings(timeUnits);
 
       return {
-        title: times && (
+        title: (
           <NavCard.SecondaryText>
-            {lastData.timestamp
-              ? `For ${numbro(times.time).format({ thousandSeparated: true })} ${times.unit}`
-              : "Starting"}
+            {lastData?.timestamp && times
+              ? `For ${numbro(Math.abs(times.time)).format({ thousandSeparated: true })} ${times.unit}`
+              : "Welcoming.."}
           </NavCard.SecondaryText>
         ),
         value: (
