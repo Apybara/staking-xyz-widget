@@ -19,7 +19,11 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
     }) || {};
 
   const isDisabled = connectionStatus !== "connected" || data?.entries?.length === 0;
-  const lastData = data?.entries?.[data?.entries.length - 1];
+
+  const allData = data?.entries;
+  const readyData = allData?.filter(({ inProgress }) => !inProgress);
+
+  const lastData = readyData?.length ? readyData[readyData.length - 1] : allData?.[allData.length - 1];
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
@@ -45,8 +49,9 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
       return {
         title: times && (
           <NavCard.SecondaryText>
-            For{" "}
-            {lastData.timestamp ? `${numbro(times.time).format({ thousandSeparated: true })} ${times.unit}` : "1 day"}
+            {lastData.timestamp
+              ? `For ${numbro(times.time).format({ thousandSeparated: true })} ${times.unit}`
+              : "Starting"}
           </NavCard.SecondaryText>
         ),
         value: (
