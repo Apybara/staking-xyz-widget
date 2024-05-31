@@ -83,8 +83,7 @@ export const useCelestiaExternalDelegations = ({ address, network }: { address?:
     refetchOnWindowFocus: true,
   });
 
-  const { reward_rate } = data?.response || {};
-  const total = 7000000;
+  const { total, reward_rate } = data?.response || {};
 
   return {
     data: {
