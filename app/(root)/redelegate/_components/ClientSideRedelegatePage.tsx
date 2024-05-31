@@ -8,6 +8,7 @@ import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { PageViewTop } from "../../_components/WidgetTop";
 import { Icon } from "@/app/_components/Icon";
 import { ImportHelpDialog } from "@/app/_components/ImportHelpDialog";
+import Tooltip from "@/app/_components/Tooltip";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { CTACard } from "../../_components/HeroCard/CTACard";
 import { RedelegateInfoBox } from "./RedelegateInfoBox";
@@ -37,7 +38,17 @@ export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: Route
       />
       <ImportHelpDialog />
       <WidgetContent>
-        <CTACard topSubtitle="Amount to import" title={amountToImport} />
+        <CTACard
+          topSubtitle="Amount to import"
+          tooltip={
+            <Tooltip
+              className={S.unstakingTooltip}
+              trigger={<Icon name="info" />}
+              content="If you redelegated some positions within 21 days, the amount can't be imported."
+            />
+          }
+          title={amountToImport}
+        />
         <RedelegateInfoBox />
       </WidgetContent>
       <RedelegateAgreement />

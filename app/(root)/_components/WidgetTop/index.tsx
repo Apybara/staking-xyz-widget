@@ -28,13 +28,14 @@ export const DefaultViewTop = () => {
 
   return (
     <div className={cn(S.defaultTop)}>
-      <Link
-        href={redelegateLink}
-        className={cn(S.redelegateButton({ state: redelegationAmount ? "default" : "disabled" }))}
-      >
-        <Icon name="download" />
-        <span>Import my stake</span>
-      </Link>
+      {redelegationAmount ? (
+        <Link href={redelegateLink} className={S.redelegateButton}>
+          <Icon name="download" />
+          <span>Import my stake</span>
+        </Link>
+      ) : (
+        <div></div>
+      )}
       <div className={S.buttonContainer}>
         <button className={cn(S.button({ state: isRefetching ? "fetching" : "default" }))} onClick={refetch}>
           <Icon name="rotate" size={20} />
@@ -65,7 +66,7 @@ export const PageViewTop = ({
       <Link href={homeURL} className={cn(S.button())}>
         <Icon name="cross" size={20} />
       </Link>
-      <h1 className={cn(S.title)}>{page}</h1>
+      <h1 className={cn(S.title({ state: !endBox ? "noEndBox" : "default" }))}>{page}</h1>
       {!!endBox && endBox}
     </div>
   );

@@ -25,13 +25,25 @@ export const pageTopFixed = style({
   boxShadow: "0px 0px 50px 0px #00000080",
 });
 
-export const title = style({
-  fontSize: pxToRem(20),
-  fontWeight: weights.semibold,
-  lineHeight: pxToRem(27),
-  textAlign: "center",
-  flexGrow: 1,
-  marginInlineEnd: 20,
+export const title = recipe({
+  base: {
+    fontSize: pxToRem(20),
+    fontWeight: weights.semibold,
+    lineHeight: pxToRem(27),
+    textAlign: "center",
+    flexGrow: 1,
+  },
+  variants: {
+    state: {
+      default: {},
+      noEndBox: {
+        marginInlineEnd: 20,
+      },
+    },
+  },
+  defaultVariants: {
+    state: "default",
+  },
 });
 
 export const rotate = keyframes({
@@ -39,31 +51,24 @@ export const rotate = keyframes({
   "100%": { transform: "rotate(360deg)" },
 });
 
-export const redelegateButton = recipe({
-  base: {
-    borderRadius: pxToRem(4),
-    paddingInline: pxToRem(8),
-    blockSize: pxToRem(26),
-    backgroundColor: colors.green100,
-    color: colors.green900,
-    fontSize: pxToRem(14),
-    fontWeight: weights.bold,
-    lineHeight: 1,
-    display: "flex",
-    alignItems: "center",
-    gap: pxToRem(5),
-  },
-  variants: {
-    state: {
-      default: {},
-      disabled: {
-        opacity: 0.5,
-        pointerEvents: "none",
-      },
+export const redelegateButton = style({
+  borderRadius: pxToRem(4),
+  paddingInline: pxToRem(8),
+  blockSize: pxToRem(26),
+  backgroundColor: colors.green100,
+  color: colors.green900,
+  fontSize: pxToRem(14),
+  fontWeight: weights.bold,
+  lineHeight: 1,
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(5),
+  transition: "box-shadow .3s",
+
+  selectors: {
+    "&:hover": {
+      boxShadow: "0px 0px 16px 0px #001E0A80",
     },
-  },
-  defaultVariants: {
-    state: "default",
   },
 });
 
