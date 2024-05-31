@@ -838,7 +838,7 @@ const useCosmosBroadcastRedelegateTx = ({
       }
 
       const redelegateMsgs = reDelegateValues.map((val) => ({
-        typeUrl: "/cosmos.staking.v1beta1.MsgRedelegate",
+        typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
         value: {
           delegatorAddress: address,
           validatorAddress: val.validator,

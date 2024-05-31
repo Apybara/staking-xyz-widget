@@ -78,7 +78,7 @@ export type RedelegateMessageResponse = {
 
 export type DecodedRedelegateMessageResponse = {
   body: {
-    messages: Array<CosmosStakingMsgRedelegate | CosmosStakingMsgRedelegate>;
+    messages: Array<CosmosStakingMsgBeginRedelegate | CosmosStakingMsgBeginRedelegate>;
     memo: string;
     timeout_height: string;
     extension_options: any[];
@@ -123,8 +123,8 @@ export type CosmosDistributionMsgWithdrawDelegatorReward = {
   validator_address: string;
 };
 
-export type CosmosStakingMsgRedelegate = {
-  "@type": "/cosmos.staking.v1beta1.MsgRedelegate";
+export type CosmosStakingMsgBeginRedelegate = {
+  "@type": "/cosmos.staking.v1beta1.MsgBeginRedelegate";
   delegator_address: string;
   validator_address: string;
   amount: {

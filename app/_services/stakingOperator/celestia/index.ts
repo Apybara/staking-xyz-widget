@@ -164,6 +164,6 @@ export const getRedelegateMessage = async ({ apiUrl, address, amount }: { amount
 
 export const getRedelegateValidatorMessages = (operatorMessage: T.DecodedRedelegateMessageResponse) => {
   return operatorMessage.body.messages
-    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgRedelegate")
-    .map((msg: T.CosmosStakingMsgRedelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
+    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgBeginRedelegate")
+    .map((msg: T.CosmosStakingMsgBeginRedelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
 };
