@@ -11,7 +11,14 @@ globalStyle(`${redelegateTop} h1`, {
 
 export const helpButton = style({
   display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
   color: colors.black300,
+  blockSize: pxToRem(28),
+  inlineSize: pxToRem(28),
+  borderRadius: pxToRem(4),
+  backgroundColor: colors.black700,
+  transition: "color .3s",
 
   selectors: {
     "&:hover": {

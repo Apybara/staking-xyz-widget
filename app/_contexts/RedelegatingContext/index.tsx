@@ -6,6 +6,7 @@ import { useRedelegatingProcedures } from "../../_services/redelegate/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { defaultNetwork } from "../../consts";
 import { useRedelegateValidation } from "./hooks";
+import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 
 const RedelegatingContext = createContext({} as T.RedelegatingContext);
 
@@ -19,9 +20,11 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
 
   const { network } = useShell();
   const { activeWallet, address } = useWallet();
+  const externalDelegations = useExternalDelegations();
+  const { redelegationAmount } = externalDelegations?.data || {};
+  const amount = redelegationAmount || "0";
   const { ctaValidation } = useRedelegateValidation({
     isAgreementChecked: states.isAgreementChecked,
-    amount: states.redelegateAmount,
   });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
@@ -31,7 +34,7 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
     address,
     cosmosSigningClient,
     network: network || defaultNetwork,
-    amount: states.redelegateAmount,
+    amount,
   });
 
   return (
@@ -52,7 +55,6 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
 
 const initialStates: T.RedelegatingContext = {
   isAgreementChecked: false,
-  redelegateAmount: "1000",
   ctaState: "invalid",
   procedures: undefined,
   cosmosSigningClient: null,

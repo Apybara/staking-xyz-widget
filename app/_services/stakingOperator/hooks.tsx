@@ -12,12 +12,30 @@ import {
   useCelestiaAddressRewards,
   useCelestiaStatus,
   useCelestiaServerStatus,
+  useCelestiaExternalDelegations,
 } from "../stakingOperator/celestia/hooks";
 
 export const useUnbondingDelegations = () => {
   const { network } = useShell();
   const { address } = useWallet();
   const celestia = useCelestiaUnbondingDelegations({
+    network,
+    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+  });
+
+  switch (network) {
+    case "celestia":
+    case "celestiatestnet3":
+      return celestia;
+    default:
+      return undefined;
+  }
+};
+
+export const useExternalDelegations = () => {
+  const { network } = useShell();
+  const { address } = useWallet();
+  const celestia = useCelestiaExternalDelegations({
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });

@@ -1,13 +1,14 @@
 "use client";
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import cn from "classnames";
 import Link from "next/link";
-import { useQueryClient } from "@tanstack/react-query";
+import { useShell } from "@/app/_contexts/ShellContext";
+import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 import { Icon } from "../../../_components/Icon";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import * as S from "./widgetTop.css";
-import { useShell } from "@/app/_contexts/ShellContext";
 
 export const DefaultViewTop = () => {
   const queryClient = useQueryClient();
@@ -15,6 +16,9 @@ export const DefaultViewTop = () => {
 
   const moreLink = useLinkWithSearchParams("more");
   const redelegateLink = useLinkWithSearchParams("redelegate");
+
+  const externalDelegations = useExternalDelegations();
+  const { redelegationAmount } = externalDelegations?.data || {};
 
   const refetch = async () => {
     setIsRefetching(true);
@@ -24,11 +28,13 @@ export const DefaultViewTop = () => {
 
   return (
     <div className={cn(S.defaultTop)}>
-      <div></div>
-      {/* <Link href={redelegateLink} className={S.redelegateButton}>
+      <Link
+        href={redelegateLink}
+        className={cn(S.redelegateButton({ state: redelegationAmount ? "default" : "disabled" }))}
+      >
         <Icon name="download" />
         <span>Import my stake</span>
-      </Link> */}
+      </Link>
       <div className={S.buttonContainer}>
         <button className={cn(S.button({ state: isRefetching ? "fetching" : "default" }))} onClick={refetch}>
           <Icon name="rotate" size={20} />
@@ -52,8 +58,8 @@ export const PageViewTop = ({
   homeURL: string;
   endBox?: ReactNode;
 }) => {
-  const { isScrollActive } = useShell()
-  
+  const { isScrollActive } = useShell();
+
   return (
     <div className={cn(S.pageTop, { [S.pageTopFixed]: isScrollActive })}>
       <Link href={homeURL} className={cn(S.button())}>

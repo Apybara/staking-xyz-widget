@@ -5,6 +5,7 @@ import type {
   RedelegateProcedureState,
 } from "../../../_services/redelegate/types";
 import { useEffect, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useShell } from "../../../_contexts/ShellContext";
@@ -14,14 +15,19 @@ import * as TransactionDialog from "../../../_components/TransactionDialog";
 import { useLinkWithSearchParams } from "../../../_utils/routes";
 import { usePostHogEvent } from "../../../_services/postHog/hooks";
 import { networkExplorer, defaultNetwork } from "../../../consts";
+import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 
 export const RedelegatingProcedureDialog = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { network } = useShell();
   const { connectionStatus, activeWallet } = useWallet();
-  const { procedures, redelegateAmount, resetProceduresStates } = useRedelegating();
+  const { procedures, resetProceduresStates } = useRedelegating();
   const { open, toggleOpen } = useDialog("redelegatingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
+
+  const externalDelegations = useExternalDelegations();
+  const { redelegationAmount } = externalDelegations?.data || {};
 
   const uncheckedProcedures = getUncheckedProcedures(procedures || []);
   const checkedProcedures = getCheckedProcedures(procedures || []);
@@ -29,18 +35,21 @@ export const RedelegatingProcedureDialog = () => {
   const allProceduresCompleted = checkedProcedures.length === (procedures || []).length;
   const hasLoadingProcedures = getHasLoadingProcedures(procedures || []);
 
+  const isLoading = getIsLoadingState(uncheckedProcedures?.[0]);
+
   const ctaText = useMemo(() => {
     if (!uncheckedProcedures?.[0]) return ctaTextMap.auth.idle;
     return ctaTextMap[uncheckedProcedures[0].step][uncheckedProcedures[0].state || "idle"];
   }, [uncheckedProcedures?.[0]?.step, uncheckedProcedures?.[0]?.state]);
 
   useEffect(() => {
+    if (!open) return;
     if (connectionStatus === "disconnected" && open) {
       toggleOpen(false);
     }
   }, [connectionStatus, open]);
 
-  usePostHogEvents({ open, amount: redelegateAmount, uncheckedProcedures, procedures });
+  usePostHogEvents({ open, amount: redelegationAmount || "0", uncheckedProcedures, procedures });
 
   return (
     <TransactionDialog.Shell
@@ -56,7 +65,7 @@ export const RedelegatingProcedureDialog = () => {
         },
       }}
     >
-      <TransactionDialog.TopBox type="stake" />
+      <TransactionDialog.TopBox type="redelegate" />
       <TransactionDialog.StepsBox>
         {procedures?.map((procedure, index) => (
           <TransactionDialog.StepItem
@@ -85,8 +94,8 @@ export const RedelegatingProcedureDialog = () => {
       </TransactionDialog.StepsBox>
       {!allProceduresCompleted ? (
         <TransactionDialog.CTAButton
-          state={uncheckedProcedures?.[0]?.state === "loading" ? "loading" : "default"}
-          disabled={uncheckedProcedures?.[0]?.state === "loading"}
+          state={isLoading ? "loading" : "default"}
+          disabled={isLoading}
           onClick={() => activeProcedure?.send()}
         >
           {ctaText}
@@ -98,6 +107,7 @@ export const RedelegatingProcedureDialog = () => {
           }}
           onDismissButtonClick={() => {
             resetProceduresStates();
+            queryClient.resetQueries();
             toggleOpen(false);
           }}
         />
@@ -134,21 +144,17 @@ const usePostHogEvents = ({
   }, [open]);
 
   useEffect(() => {
-    if (!hasAuthApproval && authProcedure?.state === "success") {
-      captureAuthSuccess();
-      return;
-    }
-    if (!hasAuthApproval && authProcedure?.state === "error") {
-      captureAuthFailed();
-      return;
+    if (!hasAuthApproval) {
+      if (authProcedure?.state === "success") {
+        captureAuthSuccess();
+      } else if (authProcedure?.state === "error") {
+        captureAuthFailed();
+      }
     }
     if (redelegateProcedure?.state === "success") {
       captureRedelegateSuccess();
-      return;
-    }
-    if (redelegateProcedure?.state === "error") {
+    } else if (redelegateProcedure?.state === "error") {
       captureRedelegateFailed();
-      return;
     }
   }, [hasAuthApproval, authProcedure?.step, redelegateProcedure?.state]);
 };
@@ -165,19 +171,26 @@ const getHasLoadingProcedures = (procedures: Array<RedelegateProcedure>) => {
 const getActiveProcedure = (procedures: Array<RedelegateProcedure>) => {
   return procedures.find((procedure) => procedure.state !== "success");
 };
+const getIsLoadingState = (procedure: RedelegateProcedure) => {
+  return procedure?.state === "preparing" || procedure?.state === "loading" || procedure?.state === "broadcasting";
+};
 
 const ctaTextMap: Record<RedelegateProcedureStep, Record<RedelegateProcedureState, string>> = {
   auth: {
     idle: "Approve",
     active: "Approve",
+    preparing: "Preparing transaction",
     loading: "Approving",
+    broadcasting: "Broadcasting transaction",
     success: "Approved",
     error: "Try again",
   },
   redelegate: {
     idle: "Confirm",
     active: "Confirm",
+    preparing: "Preparing transaction",
     loading: "Confirming",
+    broadcasting: "Broadcasting transaction",
     success: "Confirmed",
     error: "Try again",
   },

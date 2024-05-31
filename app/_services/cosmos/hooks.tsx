@@ -713,62 +713,68 @@ export const useCosmosRedelegatingProcedures = ({
   address: string | null;
   cosmosSigningClient?: SigningStargateClient;
   authStep: {
+    onPreparing: () => void;
     onLoading: () => void;
+    onBroadcasting: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error) => void;
   };
   redelegateStep: {
+    onPreparing: () => void;
     onLoading: () => void;
+    onBroadcasting: () => void;
     onSuccess: (txHash?: string) => void;
     onError: (e: Error) => void;
   };
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  const {
-    data: authCheck,
-    isLoading,
-    refetch,
-  } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+  // const {
+  //   data: authCheck,
+  //   isLoading,
+  //   refetch,
+  // } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
 
-  const cosmosAuthTx = useCosmosBroadcastAuthzTx({
-    client: cosmosSigningClient || null,
-    network: network && isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    onLoading: authStep.onLoading,
-    onSuccess: authStep.onSuccess,
-    onError: authStep.onError,
-  });
+  // const cosmosAuthTx = useCosmosBroadcastAuthzTx({
+  //   client: cosmosSigningClient || null,
+  //   network: network && isCosmosNetwork ? network : undefined,
+  //   address: address || undefined,
+  //   onLoading: authStep.onLoading,
+  //   onSuccess: authStep.onSuccess,
+  //   onError: authStep.onError,
+  // });
   const cosmosRedelegateTx = useCosmosBroadcastRedelegateTx({
     client: cosmosSigningClient || null,
     network: network && isCosmosNetwork ? network : undefined,
     address: address || undefined,
     amount,
+    onPreparing: redelegateStep.onPreparing,
     onLoading: redelegateStep.onLoading,
+    onBroadcasting: redelegateStep.onBroadcasting,
     onSuccess: redelegateStep.onSuccess,
     onError: redelegateStep.onError,
   });
 
   // TODO: handle error state
-  if (!isCosmosNetwork || !address || isLoading) return null;
+  if (!isCosmosNetwork || !address) return null;
 
   const baseProcedures: Array<BaseRedelegateProcedure> = [
-    {
-      step: "auth",
-      stepName: "Approval in wallet",
-      send: cosmosAuthTx.send,
-      tooltip: (
-        <Tooltip
-          className={StakeStyle.approvalTooltip}
-          trigger={<Icon name="info" />}
-          content={
-            <>
-              This approval lets Staking.xyz manage staking operations on your behalf. You always have full control of
-              your funds. <a href="#">(more)</a>
-            </>
-          }
-        />
-      ),
-    },
+    // {
+    //   step: "auth",
+    //   stepName: "Approval in wallet",
+    //   send: cosmosAuthTx.send,
+    //   tooltip: (
+    //     <Tooltip
+    //       className={StakeStyle.approvalTooltip}
+    //       trigger={<Icon name="info" />}
+    //       content={
+    //         <>
+    //           This approval lets Staking.xyz manage staking operations on your behalf. You always have full control of
+    //           your funds. <a href="#">(more)</a>
+    //         </>
+    //       }
+    //     />
+    //   ),
+    // },
     {
       step: "redelegate",
       stepName: "Sign in wallet",
@@ -778,9 +784,12 @@ export const useCosmosRedelegatingProcedures = ({
 
   return {
     baseProcedures,
-    isAuthApproved: authCheck?.granted,
-    authTxHash: authCheck?.txnHash,
-    refetchAuthCheck: refetch,
+    // isAuthApproved: authCheck?.granted,
+    // authTxHash: authCheck?.txnHash,
+    // refetchAuthCheck: refetch,
+    isAuthApproved: true,
+    authTxHash: undefined,
+    refetchAuthCheck: () => null,
   };
 };
 
@@ -789,7 +798,9 @@ const useCosmosBroadcastRedelegateTx = ({
   amount,
   network,
   address,
+  onPreparing,
   onLoading,
+  onBroadcasting,
   onSuccess,
   onError,
 }: {
@@ -797,16 +808,20 @@ const useCosmosBroadcastRedelegateTx = ({
   amount: string;
   network?: CosmosNetwork;
   address?: string;
+  onPreparing?: () => void;
   onLoading?: () => void;
+  onBroadcasting?: () => void;
   onSuccess?: (txHash: string) => void;
-  onError?: (e: Error) => void;
+  onError?: (e: Error, txHash?: string) => void;
 }) => {
-  const { isPending, error, mutate, reset } = useMutation({
+  const { error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosRedelegateTx", address, amount, network],
     mutationFn: async () => {
       if (!client || !address) {
         throw new Error("Missing parameter: client, address");
       }
+
+      onPreparing?.();
 
       const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
       const { unsignedMessage, uuid } = await getRedelegateMessage({
@@ -816,7 +831,7 @@ const useCosmosBroadcastRedelegateTx = ({
       });
       const reDelegateValues = getRedelegateValidatorMessages(unsignedMessage);
       const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
+      // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
 
       if (!reDelegateValues.length || feeReceiver === "") {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
@@ -830,22 +845,23 @@ const useCosmosBroadcastRedelegateTx = ({
           amount: val.amount,
         },
       }));
-      const feeCollectMsgs = [
-        {
-          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-          value: {
-            fromAddress: address,
-            toAddress: feeReceiver,
-            amount: [
-              {
-                denom: networkInfo[network || defaultNetwork].denom,
-                amount: feeAmount,
-              },
-            ],
-          },
-        },
-      ];
-      const msgs = [...redelegateMsgs, ...feeCollectMsgs];
+      // const feeCollectMsgs = [
+      //   {
+      //     typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+      //     value: {
+      //       fromAddress: address,
+      //       toAddress: feeReceiver,
+      //       amount: [
+      //         {
+      //           denom: networkInfo[network || defaultNetwork].denom,
+      //           amount: feeAmount,
+      //         },
+      //       ],
+      //     },
+      //   },
+      // ];
+      // const msgs = [...redelegateMsgs, ...feeCollectMsgs];
+      const msgs = redelegateMsgs;
 
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
@@ -854,28 +870,45 @@ const useCosmosBroadcastRedelegateTx = ({
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
-      const res = await client.signAndBroadcast(address, msgs, fee);
+      onLoading?.();
+      const txHash = await client.signAndBroadcastSync(address, msgs, fee);
+
+      onBroadcasting?.();
+      let txResult = null;
+      const getTxResult = async (txHash: string) => {
+        while (txHash) {
+          const res = await client.getTx(txHash);
+          if (res) {
+            return res;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+      txResult = (await getTxResult(txHash)) as unknown as IndexedTx;
+
       return {
-        tx: res,
+        tx: {
+          ...txResult,
+          transactionHash: txHash,
+        },
         uuid,
       };
     },
     onSuccess: ({ tx, uuid }) => {
-      onSuccess?.(tx.transactionHash);
-      setMonitorTx({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        txHash: tx.transactionHash,
-        uuid,
-      });
+      if (tx?.code) {
+        const error = new Error("Sign in wallet failed");
+        onError?.(error, tx.transactionHash);
+      } else {
+        onSuccess?.(tx.transactionHash);
+        setMonitorTx({
+          apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+          txHash: tx.transactionHash,
+          uuid,
+        });
+      }
     },
     onError: (error) => onError?.(error),
   });
-
-  useEffect(() => {
-    if (isPending) {
-      onLoading?.();
-    }
-  }, [isPending]);
 
   useEffect(() => {
     if (error) {

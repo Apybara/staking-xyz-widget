@@ -6,7 +6,7 @@ import BigNumber from "bignumber.js";
 import { useCosmosRedelegatingProcedures } from "../cosmos/hooks";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
-import { getStakeFees } from "@/app/_utils/transaction";
+// import { getStakeFees } from "@/app/_utils/transaction";
 
 export const useRedelegatingProcedures = ({
   address,
@@ -34,8 +34,18 @@ export const useRedelegatingProcedures = ({
     address,
     cosmosSigningClient,
     authStep: {
+      onPreparing: () => {
+        authState.setState("preparing");
+        authState.setTxHash(undefined);
+        authState.setError(null);
+      },
       onLoading: () => {
         authState.setState("loading");
+        authState.setTxHash(undefined);
+        authState.setError(null);
+      },
+      onBroadcasting: () => {
+        authState.setState("broadcasting");
         authState.setTxHash(undefined);
         authState.setError(null);
       },
@@ -51,8 +61,18 @@ export const useRedelegatingProcedures = ({
       },
     },
     redelegateStep: {
+      onPreparing: () => {
+        redelegateState.setState("preparing");
+        redelegateState.setTxHash(undefined);
+        redelegateState.setError(null);
+      },
       onLoading: () => {
         redelegateState.setState("loading");
+        redelegateState.setTxHash(undefined);
+        redelegateState.setError(null);
+      },
+      onBroadcasting: () => {
+        redelegateState.setState("broadcasting");
         redelegateState.setTxHash(undefined);
         redelegateState.setError(null);
       },
@@ -76,7 +96,6 @@ export const useRedelegatingProcedures = ({
       redelegateState.setState(!isAuthApproved ? "idle" : "active");
       redelegateState.setTxHash(undefined);
       redelegateState.setError(null);
-      refetchAuthCheck?.();
     }
   };
 
@@ -169,7 +188,8 @@ export const useRedelegateMaxAmountBuffer = ({ amount }: { amount: string }) => 
   const castedNetwork = network || defaultNetwork;
 
   const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
-  const collectedFee = getStakeFees({ amount, network: castedNetwork, floorResult: true });
+  // const collectedFee = getStakeFees({ amount, network: castedNetwork, floorResult: true });
+  const collectedFee = 0;
 
   return BigNumber(requiredBalance)
     .plus(collectedFee || 0)

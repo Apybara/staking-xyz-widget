@@ -39,18 +39,32 @@ export const rotate = keyframes({
   "100%": { transform: "rotate(360deg)" },
 });
 
-export const redelegateButton = style({
-  borderRadius: pxToRem(4),
-  paddingInline: pxToRem(8),
-  blockSize: pxToRem(26),
-  backgroundColor: colors.green100,
-  color: colors.green900,
-  fontSize: pxToRem(14),
-  fontWeight: weights.bold,
-  lineHeight: 1,
-  display: "flex",
-  alignItems: "center",
-  gap: pxToRem(5),
+export const redelegateButton = recipe({
+  base: {
+    borderRadius: pxToRem(4),
+    paddingInline: pxToRem(8),
+    blockSize: pxToRem(26),
+    backgroundColor: colors.green100,
+    color: colors.green900,
+    fontSize: pxToRem(14),
+    fontWeight: weights.bold,
+    lineHeight: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: pxToRem(5),
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        opacity: 0.5,
+        pointerEvents: "none",
+      },
+    },
+  },
+  defaultVariants: {
+    state: "default",
+  },
 });
 
 export const buttonContainer = style({
