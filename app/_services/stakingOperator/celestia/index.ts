@@ -1,5 +1,6 @@
 import { fetchData } from "@/app/_utils/fetch";
 import type * as T from "../types";
+import { getCoinValueFromDenom } from "../../cosmos/utils";
 
 export const getAddressAuthCheck = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.AuthCheckResponse = await fetchData(`${apiUrl}address/check/${address}`);
@@ -126,6 +127,11 @@ export const getUnbondingDelegations = async ({ apiUrl, address }: T.BaseParams)
 export const getDelegations = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.DelegationsResponse = await fetchData(`${apiUrl}address/fetch/delegate/${address}`);
   return res.response.delegation_responses;
+};
+
+export const getExternalDelegations = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.ExternalDelegationsResponse = await fetchData(`${apiUrl}address/fetch/external/delegate/${address}`);
+  return res;
 };
 
 export const getNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {

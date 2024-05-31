@@ -9,6 +9,7 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import { type CTAButtonProps, CTAButton as BaseCTAButton } from "../CTAButton";
 import StakeIcon from "./stakeIcon.svg";
 import UnstakeIcon from "./unstakeIcon.svg";
+import RedelegateIcon from "./redelegateIcon.svg";
 import * as S from "./delegationDialog.css";
 
 export const Shell = ({ dialog, children }: ShellProps) => {
@@ -118,11 +119,13 @@ export const ResultButtons = ({
 const iconMap: Record<TopBoxProps["type"], string> = {
   stake: StakeIcon,
   unstake: UnstakeIcon,
+  redelegate: RedelegateIcon,
   claim: UnstakeIcon,
 };
 const titleMap: Record<TopBoxProps["type"], string> = {
   stake: "Steps to stake",
   unstake: "Steps to unstake",
+  redelegate: "Steps to import",
   claim: "Steps to claim",
 };
 
@@ -134,7 +137,7 @@ export type ShellProps = {
   children: ReactNode;
 };
 export type TopBoxProps = {
-  type: "stake" | "unstake" | "claim";
+  type: "stake" | "unstake" | "redelegate" | "claim";
 };
 export type StepItemProps = {
   state: "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";

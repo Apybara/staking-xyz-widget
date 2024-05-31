@@ -176,6 +176,17 @@ export type DelegationsResponse = {
   };
 };
 
+export type ExternalDelegationsResponse = {
+  address: string;
+  list: Array<string>;
+  message: string;
+  response: {
+    total: number;
+    reward_rate: number;
+    unbonding_time: string;
+  };
+};
+
 export type DelegationResponseItem = {
   delegation: {
     delegator_address: string;

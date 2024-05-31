@@ -22,7 +22,7 @@ export const ImportHelpDialog = () => {
           </div>
 
           <ul className={S.benefits}>
-            <li className={S.benefitsItem}>Auto compounding</li>
+            {/* <li className={S.benefitsItem}>Auto compounding</li> */}
             <li className={S.benefitsItem}>Staking position guardian</li>
             <li className={S.benefitsItem}>Increase network decentralization</li>
           </ul>

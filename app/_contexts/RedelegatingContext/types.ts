@@ -6,7 +6,6 @@ import type { BasicTxCtaValidationResult } from "../../_utils/transaction";
 export type RedelegatingContext = RedelegatingStates & {};
 
 export type RedelegatingStates = {
-  redelegateAmount: string;
   isAgreementChecked: boolean;
   ctaState: BasicTxCtaValidationResult;
   procedures?: Array<RedelegateProcedure>;

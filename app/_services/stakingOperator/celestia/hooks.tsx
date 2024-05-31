@@ -19,7 +19,9 @@ import {
   getAddressRewards,
   getNetworkStatus,
   getServerStatus,
+  getExternalDelegations,
 } from ".";
+import numbro from "numbro";
 
 export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -69,6 +71,32 @@ export const useCelestiaUnbondingDelegations = ({
   const formatted = useFormattedUnbondingDelegations(data);
 
   return { data, formatted, isLoading, error, refetch };
+};
+
+export const useCelestiaExternalDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+  const castedNetwork = network || "celestia";
+  const { data, isLoading, error, refetch } = useQuery({
+    enabled: !!address && getIsCelestiaNetwork(network),
+    queryKey: ["celestiaExternalDelegations", address, network],
+    queryFn: () =>
+      getExternalDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
+    refetchOnWindowFocus: true,
+  });
+
+  const { reward_rate } = data?.response || {};
+  const total = 7000000;
+
+  return {
+    data: {
+      redelegationAmount: getCoinValueFromDenom({ network: castedNetwork, amount: total?.toString() }),
+      rewardPercentage: numbro((reward_rate || 0) * 100).format({
+        mantissa: 2,
+      }),
+    },
+    isLoading,
+    error,
+    refetch,
+  };
 };
 
 export const useCelestiaAddressActivity = ({

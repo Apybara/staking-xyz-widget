@@ -16,4 +16,11 @@ export type BaseRedelegateProcedure = {
 
 export type RedelegateProcedureStep = "auth" | "redelegate";
 
-export type RedelegateProcedureState = "idle" | "active" | "loading" | "success" | "error";
+export type RedelegateProcedureState =
+  | "idle"
+  | "active"
+  | "preparing"
+  | "loading"
+  | "broadcasting"
+  | "success"
+  | "error";
