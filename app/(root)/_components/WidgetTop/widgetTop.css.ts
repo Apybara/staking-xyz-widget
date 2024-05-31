@@ -67,7 +67,7 @@ export const redelegateButton = style({
 
   selectors: {
     "&:hover": {
-      boxShadow: "0px 0px 16px 0px #001E0A80",
+      boxShadow: "0px 0px 16px 0px #011408A8",
     },
   },
 });

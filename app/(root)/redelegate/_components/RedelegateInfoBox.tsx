@@ -1,20 +1,22 @@
 "use client";
-// import { useShell } from "../../../_contexts/ShellContext";
+import { useShell } from "../../../_contexts/ShellContext";
 // import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 // import { feeRatioByNetwork } from "../../../consts";
 // import Tooltip from "@/app/_components/Tooltip";
 // import { Icon } from "@/app/_components/Icon";
+import { useExternalDelegations, useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import * as InfoCard from "../../../_components/InfoCard";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import * as S from "./redelegate.css";
-import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 
 export const RedelegateInfoBox = () => {
-  // const { network } = useShell();
+  const { network } = useShell();
   // const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: 1.2 });
   // const platformFee = feeRatioByNetwork[network || "celestia"] * 100;
   const externalDelegations = useExternalDelegations();
-  const { redelegationAmount, rewardPercentage } = externalDelegations?.data || {};
+  const { redelegationAmount } = externalDelegations?.data || {};
+
+  const networkReward = useNetworkReward({ amount: redelegationAmount });
 
   return (
     <InfoCard.Card className={S.infoBox}>
@@ -27,7 +29,7 @@ export const RedelegateInfoBox = () => {
           <InfoCard.Content className={S.rewardInfoContent}>
             {/* <span className={S.rewardInfoValueSlashed}>15.21%</span>
             <Icon name="arrow" /> */}
-            <span className={S.infoBoxText({ state: "up" })}>{rewardPercentage}%</span>
+            <span className={S.infoBoxText({ state: "up" })}>{networkReward?.rewards.percentage}%</span>
           </InfoCard.Content>
         </InfoCard.StackItem>
         {/* <InfoCard.StackItem>

@@ -83,14 +83,9 @@ export const useCelestiaExternalDelegations = ({ address, network }: { address?:
     refetchOnWindowFocus: true,
   });
 
-  const { total, reward_rate } = data?.response || {};
-
   return {
     data: {
-      redelegationAmount: getCoinValueFromDenom({ network: castedNetwork, amount: total?.toString() }),
-      rewardPercentage: numbro((reward_rate || 0) * 100).format({
-        mantissa: 2,
-      }),
+      redelegationAmount: getCoinValueFromDenom({ network: castedNetwork, amount: data?.response?.total.toString() }),
     },
     isLoading,
     error,

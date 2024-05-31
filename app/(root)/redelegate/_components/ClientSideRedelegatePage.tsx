@@ -39,13 +39,15 @@ export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: Route
       <ImportHelpDialog />
       <WidgetContent>
         <CTACard
-          topSubtitle="Amount to import"
-          tooltip={
-            <Tooltip
-              className={S.unstakingTooltip}
-              trigger={<Icon name="info" />}
-              content="If you redelegated some positions within 21 days, the amount can't be imported."
-            />
+          topSubtitle={
+            <>
+              <span>Amount to import</span>
+              <Tooltip
+                className={S.unstakingTooltip}
+                trigger={<Icon name="info" />}
+                content="If you redelegated some positions within 21 days, the amount can't be imported."
+              />
+            </>
           }
           title={amountToImport}
         />

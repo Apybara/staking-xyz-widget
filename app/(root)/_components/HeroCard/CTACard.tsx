@@ -6,17 +6,11 @@ type CTACardProps = {
   topSubtitle?: ReactNode;
   title?: ReactNode;
   subtitle?: ReactNode;
-  tooltip?: ReactNode;
 };
 
-export const CTACard = ({ topSubtitle, title, subtitle, tooltip }: CTACardProps) => (
+export const CTACard = ({ topSubtitle, title, subtitle }: CTACardProps) => (
   <div className={cn(S.ctaCard)}>
-    {topSubtitle && (
-      <div className={cn(S.ctaCardTopSubtitle)}>
-        <span>{topSubtitle}</span>
-        {!!tooltip && tooltip}
-      </div>
-    )}
+    {topSubtitle && <span className={cn(S.ctaCardTopSubtitle)}>{topSubtitle}</span>}
     {title && <span className={cn(S.title)}>{title}</span>}
     {subtitle && <span className={cn(S.subtitle)}>{subtitle}</span>}
   </div>
