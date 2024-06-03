@@ -5,7 +5,6 @@ import type {
   RedelegateProcedureState,
 } from "../../../_services/redelegate/types";
 import { useEffect, useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useShell } from "../../../_contexts/ShellContext";
@@ -19,12 +18,12 @@ import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 
 export const RedelegatingProcedureDialog = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { network } = useShell();
   const { connectionStatus, activeWallet } = useWallet();
   const { procedures, resetProceduresStates } = useRedelegating();
   const { open, toggleOpen } = useDialog("redelegatingProcedure");
   const activityLink = useLinkWithSearchParams("activity");
+  const homeLink = useLinkWithSearchParams("");
 
   const externalDelegations = useExternalDelegations();
   const { redelegationAmount } = externalDelegations?.data || {};
@@ -106,9 +105,7 @@ export const RedelegatingProcedureDialog = () => {
             router.push(activityLink);
           }}
           onDismissButtonClick={() => {
-            resetProceduresStates();
-            queryClient.resetQueries();
-            toggleOpen(false);
+            router.push(homeLink);
           }}
         />
       )}
