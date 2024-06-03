@@ -829,19 +829,20 @@ const useCosmosBroadcastRedelegateTx = ({
         address,
         amount: Number(denomAmount),
       });
-      const reDelegateValues = getRedelegateValidatorMessages(unsignedMessage);
-      const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
+      const redelegateValues = getRedelegateValidatorMessages(unsignedMessage);
+      // const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
       // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
 
-      if (!reDelegateValues.length || feeReceiver === "") {
+      if (!redelegateValues.length) {
         throw new Error("Missing parameter: validatorAddress, feeReceiver");
       }
 
-      const redelegateMsgs = reDelegateValues.map((val) => ({
+      const redelegateMsgs = redelegateValues.map((val) => ({
         typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
         value: {
           delegatorAddress: address,
-          validatorAddress: val.validator,
+          validatorSrcAddress: val.validatorSrc,
+          validatorDstAddress: val.validatorDst,
           amount: val.amount,
         },
       }));

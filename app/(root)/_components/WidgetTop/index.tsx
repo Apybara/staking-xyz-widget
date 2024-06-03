@@ -15,7 +15,7 @@ export const DefaultViewTop = () => {
   const [isRefetching, setIsRefetching] = useState(false);
 
   const moreLink = useLinkWithSearchParams("more");
-  const redelegateLink = useLinkWithSearchParams("redelegate");
+  const importLink = useLinkWithSearchParams("import");
 
   const externalDelegations = useExternalDelegations();
   const { redelegationAmount } = externalDelegations?.data || {};
@@ -28,8 +28,8 @@ export const DefaultViewTop = () => {
 
   return (
     <div className={cn(S.defaultTop)}>
-      {redelegationAmount ? (
-        <Link href={redelegateLink} className={S.redelegateButton}>
+      {redelegationAmount && redelegationAmount !== "0" ? (
+        <Link href={importLink} className={S.redelegateButton}>
           <Icon name="download" />
           <span>Import my stake</span>
         </Link>

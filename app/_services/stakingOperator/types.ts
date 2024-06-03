@@ -126,7 +126,8 @@ export type CosmosDistributionMsgWithdrawDelegatorReward = {
 export type CosmosStakingMsgBeginRedelegate = {
   "@type": "/cosmos.staking.v1beta1.MsgBeginRedelegate";
   delegator_address: string;
-  validator_address: string;
+  validator_src_address: string;
+  validator_dst_address: string;
   amount: {
     denom: string;
     amount: string;
