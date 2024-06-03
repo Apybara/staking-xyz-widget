@@ -5,6 +5,7 @@ import * as Select from "../Select";
 import { networkVariants, networkInfo, mobileDisabledNetworks } from "../../consts";
 import * as S from "./networkSelect.css";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
+import { getIsCosmosHubEnabled } from "@/app/_contexts/WidgetContext/hooks";
 
 export type RootNetworkSelectProps = {
   activeNetwork: Network;
@@ -12,7 +13,20 @@ export type RootNetworkSelectProps = {
   isOnMobileDevice?: boolean;
 };
 
+const useNetworkOptions = () => {
+  const isCosmosHubEnabled = getIsCosmosHubEnabled();
+
+  const enabledNetworks = isCosmosHubEnabled
+    ? networkVariants
+    : networkVariants.filter((network) => network !== "cosmoshub" && network !== "cosmoshubtestnet");
+  const disabledNetworks = isCosmosHubEnabled ? [] : [networkInfo.cosmoshub, networkInfo.cosmoshubtestnet];
+
+  return { enabledNetworks, disabledNetworks };
+};
+
 export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDevice }: RootNetworkSelectProps) => {
+  const { enabledNetworks, disabledNetworks } = useNetworkOptions();
+
   return (
     <Select.Main
       defaultValue={activeNetwork}
@@ -28,23 +42,18 @@ export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDe
       }
       items={
         <>
-          {networkVariants.map((network) => (
+          {enabledNetworks.map((network) => (
             <NetworkItem network={network} key={"select-" + network} isOnMobileDevice={isOnMobileDevice} />
           ))}
-          {/* {disabledNetworks.map((network) => (
-            <Select.Item
-              key={"select-" + network}
-              value={network.id as any}
-              className={cn(S.selectItemDisabled)}
-              disabled
-            >
+          {disabledNetworks?.map((network) => (
+            <Select.Item key={"select-" + network} value={network.id as any} className={S.selectItemDisabled} disabled>
               <div className={cn(S.selectItemMain)}>
                 <Image src={network.logo} width={18} height={18} alt={`Logo of ${network}`} />
                 <h5 className={cn(S.itemTitle)}>{network.name}</h5>
               </div>
               <p className={cn(S.itemSuffixText)}>Coming soon</p>
             </Select.Item>
-          ))} */}
+          ))}
         </>
       }
     />

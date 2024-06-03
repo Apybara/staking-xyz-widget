@@ -53,3 +53,7 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
     }
   }, [searchParams]);
 };
+
+export const getIsCosmosHubEnabled = () => {
+  return process.env.NEXT_PUBLIC_COSMOSHUB_ENABLED === "true";
+};
