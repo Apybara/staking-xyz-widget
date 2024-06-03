@@ -34,7 +34,7 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
     }
 
     setStates({ status: "loaded" });
-  }, [pathname, connectionStatus]);
+  }, [pathname, connectionStatus, status]);
 
   // Redirect to the default network if the current network is disabled on mobile
   useEffect(() => {
