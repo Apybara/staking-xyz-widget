@@ -211,15 +211,17 @@ export type AddressActivityPaginationParams = PaginationParams & {
   filterKey:
     | "stake"
     | "unstake"
+    | "redelegate"
     | "transactions"
     | "transactions_stake"
     | "transactions_unstake"
     | "transactions_rewards"
+    | "transactions_redelegate"
     | null;
 };
 export type ActivityItem = {
   id: string;
-  type: "stake" | "unstake" | "rewards";
+  type: "stake" | "unstake" | "rewards" | "redelegate";
   amount: number;
   rewardRate: number;
   timestamp: number;
