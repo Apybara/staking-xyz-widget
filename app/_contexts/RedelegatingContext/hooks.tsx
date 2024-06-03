@@ -1,11 +1,9 @@
-import type { RedelegatingStates } from "./types";
-import BigNumber from "bignumber.js";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
 import { getBasicAmountValidation, getBasicRedelegateCtaValidation } from "../../_utils/transaction";
-import { useRedelegateMaxAmountBuffer } from "@/app/_services/redelegate/hooks";
 import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
+import { defaultNetwork, requiredBalanceUnstakingByNetwork } from "@/app/consts";
 
 export const useRedelegateValidation = ({ isAgreementChecked }: { isAgreementChecked: boolean }) => {
   const { network } = useShell();
@@ -16,13 +14,11 @@ export const useRedelegateValidation = ({ isAgreementChecked }: { isAgreementChe
   const { redelegationAmount } = externalDelegations?.data || {};
   const amount = redelegationAmount || "0";
 
-  const buffer = useRedelegateMaxAmountBuffer({ amount });
-
   const amountValidation = getBasicAmountValidation({
     amount,
     min: "0",
     max: amount,
-    bufferValidationAmount: BigNumber(amount).plus(buffer).toString(),
+    bufferValidationAmount: requiredBalanceUnstakingByNetwork[network || defaultNetwork].toString(),
     bufferValidationMax: balanceData,
   });
 
