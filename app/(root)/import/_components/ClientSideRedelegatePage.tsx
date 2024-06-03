@@ -8,6 +8,7 @@ import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { PageViewTop } from "../../_components/WidgetTop";
 import { Icon } from "@/app/_components/Icon";
 import { ImportHelpDialog } from "@/app/_components/ImportHelpDialog";
+import { Skeleton } from "@/app/_components/Skeleton";
 import Tooltip from "@/app/_components/Tooltip";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { CTACard } from "../../_components/HeroCard/CTACard";
@@ -20,8 +21,8 @@ import * as S from "./redelegate.css";
 export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
   const { toggleOpen } = useDialog("importHelp");
 
-  const externalDelegations = useExternalDelegations();
-  const { redelegationAmount } = externalDelegations?.data || {};
+  const { data, isLoading } = useExternalDelegations() || {};
+  const { redelegationAmount } = data || {};
   const amountToImport = useDynamicAssetValueFromCoin({ coinVal: redelegationAmount });
 
   return (
@@ -49,7 +50,7 @@ export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: Route
               />
             </>
           }
-          title={amountToImport}
+          title={isLoading ? <Skeleton height={20} width={100} /> : amountToImport}
         />
         <RedelegateInfoBox />
       </WidgetContent>

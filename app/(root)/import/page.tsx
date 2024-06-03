@@ -7,12 +7,12 @@ import { ClientSideRedelegatePage } from "./_components/ClientSideRedelegatePage
 
 export default async function Stake({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
-  await redirectPage(searchParams, "redelegate");
+  await redirectPage(searchParams, "import");
   await revalidatePageQueries(network);
 
   return <ClientSideRedelegatePage searchParams={searchParams} />;
 }
 
 export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
-  return getDynamicPageMetadata({ page: "Redelegate", networkParam: searchParams?.network });
+  return getDynamicPageMetadata({ page: "Import", networkParam: searchParams?.network });
 }
