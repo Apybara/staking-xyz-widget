@@ -24,7 +24,7 @@ export const CopyButton = ({ size, content, className, onClick, ...props }: Copy
       data-copied={copyClipboard.copied}
       {...props}
     >
-      <Icon name={copyClipboard.copied ? "check" : "copy"} />
+      <Icon name={copyClipboard.copied ? "circleCheck" : "copy"} />
     </button>
   );
 };
