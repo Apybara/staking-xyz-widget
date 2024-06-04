@@ -154,7 +154,7 @@ const WalletInstallButton = ({ wallet, isAgreementChecked }: WalletCardButtonPro
       </div>
       <MessageTag variant="neutral">
         <span>Install</span>
-        <Icon name="external-link" size={10} />
+        <Icon name="externalLink" size={10} />
       </MessageTag>
     </a>
   );

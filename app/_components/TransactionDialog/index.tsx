@@ -25,7 +25,7 @@ export const TopBox = ({ type }: TopBoxProps) => {
   return (
     <div className={cn(S.topBox)}>
       <div className={cn(S.icons)}>
-        <Icon name="check" size={40} />
+        <Icon name="circleCheck" size={40} />
         <Image src={iconMap[type]} width={40} height={40} alt="Assistive visual" />
       </div>
       <h2 className={cn(S.title)}>{titleMap[type]}</h2>
@@ -48,7 +48,7 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
     <InfoCard.StackItem className={S.item}>
       <InfoCard.TitleBox>
         <span className={cn(S.itemIcon({ checked: state === "success" }))}>
-          <Icon name="check" size={14} />
+          <Icon name="circleCheck" size={14} />
         </span>
         <p className={cn(S.itemText({ highlighted: state !== "idle" }))}>{children}</p>
         {!!tooltip && tooltip}
@@ -60,7 +60,7 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
           (hasExplorerLink ? (
             <a href={explorerLink?.url} target="_blank" rel="noopener noreferrer">
               <MessageTag className={S.explorerTag} variant="warning">
-                Failed <Icon className={S.explorerTagIcon} name="external-link" size={10} />
+                Failed <Icon className={S.explorerTagIcon} name="externalLink" size={10} />
               </MessageTag>
             </a>
           ) : (
@@ -72,7 +72,7 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
         {explorerLink && state === "success" && (
           <a href={explorerLink.url} target="_blank" rel="noopener noreferrer">
             <MessageTag className={S.explorerTag} variant="success">
-              {explorerLink.label} <Icon className={S.explorerTagIcon} name="external-link" size={10} />
+              {explorerLink.label} <Icon className={S.explorerTagIcon} name="externalLink" size={10} />
             </MessageTag>
           </a>
         )}

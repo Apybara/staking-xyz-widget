@@ -215,6 +215,7 @@ export type ActivityItem = {
   completionTime?: number;
   txHash: string;
   inProgress?: boolean;
+  result?: "success" | "failed";
 };
 
 export type AddressRewardsResponse = CommonResponse<

@@ -121,6 +121,7 @@ const ListItem = ({
           externalLink={!!activity.id}
           amount={amountValue}
           isProcessing={activity.inProgress}
+          isSuccess={activity.result === "success"}
         />
         <ListTable.TxInfoSecondary
           time={

@@ -51,7 +51,7 @@ export const txInfoPrimary = recipe({
     inlineSize: "100%",
   },
   variants: {
-    isProcessing: {
+    isInactive: {
       true: {
         color: colors.black600,
         transition: "color 0.3s",
@@ -69,13 +69,13 @@ export const txInfoPrimary = recipe({
     },
   },
   defaultVariants: {
-    isProcessing: false,
+    isInactive: false,
   },
 });
 export const txInfoPrimaryStart = style({
   display: "flex",
   alignItems: "center",
-  gap: pxToRem(8),
+  gap: pxToRem(6),
 });
 export const txInfoPrimaryChild = style([
   txInfoPrimaryStart,
@@ -110,6 +110,24 @@ export const txInfoLinkIcon = style({
 });
 export const txInfoLoadingIcon = style({
   color: colors.black000,
+});
+export const txInfoResultIcon = recipe({
+  base: {
+    color: `${colors.green900} !important`,
+  },
+  variants: {
+    type: {
+      success: {
+        color: `${colors.green900} !important`,
+      },
+      fail: {
+        color: `${colors.yellow900} !important`,
+      },
+    },
+  },
+  defaultVariants: {
+    type: "fail",
+  },
 });
 
 export const txInfoSecondary = recipe({

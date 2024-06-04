@@ -4,8 +4,9 @@ export type IconProps = {
   name:
     | "chevron"
     | "copy"
-    | "check"
-    | "external-link"
+    | "circleCheck"
+    | "circleCross"
+    | "externalLink"
     | "cross"
     | "refresh"
     | "menu"

@@ -53,19 +53,27 @@ export type TxInfoPrimaryProps = {
   title: string;
   externalLink?: boolean;
   isProcessing?: boolean;
+  isSuccess?: boolean;
   amount: string;
 };
-export const TxInfoPrimary = ({ title, externalLink, isProcessing, amount }: TxInfoPrimaryProps) => {
+export const TxInfoPrimary = ({ title, externalLink, isProcessing, isSuccess, amount }: TxInfoPrimaryProps) => {
   return (
-    <div className={cn(S.txInfoPrimary({ isProcessing }))}>
+    <div className={cn(S.txInfoPrimary({ isInactive: isProcessing || !isSuccess }))}>
       <div className={cn(S.txInfoPrimaryStart)}>
         {isProcessing && <LoadingSpinner className={S.txInfoLoadingIcon} size={12} />}
+        {!isProcessing && (
+          <Icon
+            className={S.txInfoResultIcon({ type: isSuccess ? "success" : "fail" })}
+            name={isSuccess ? "circleCheck" : "circleCross"}
+            size={14}
+          />
+        )}
 
         <div className={S.txInfoPrimaryChild}>
           <h5 className={cn(S.txInfoPrimaryTitle)}>{title}</h5>
           {externalLink && (
             <span className={S.txInfoLinkIcon}>
-              <Icon name="external-link" size={10} />
+              <Icon name="externalLink" size={10} />
             </span>
           )}
         </div>

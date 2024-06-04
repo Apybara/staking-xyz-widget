@@ -17,7 +17,7 @@ export const ImportHelpDialog = () => {
       <Dialog.Main>
         <Dialog.Content className={S.content}>
           <div className={S.topBox}>
-            <Icon name="check" size={40} />
+            <Icon name="circleCheck" size={40} />
             <h1 className={S.title}>Import your staking position to enjoy the following benefits</h1>
           </div>
 
