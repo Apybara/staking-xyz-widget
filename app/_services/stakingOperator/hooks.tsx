@@ -54,12 +54,14 @@ export const useAddressActivityQueryParams = (defaultParams: T.AddressActivityPa
   const [filterKey, setFilterKey] = useState<T.AddressActivityPaginationParams["filterKey"]>(
     defaultParams?.filterKey || "transactions",
   );
+  const { network } = useShell();
+  const { address } = useWallet();
 
   useEffect(() => {
     if (offset !== 0) {
       setOffset(0);
     }
-  }, [filterKey, limit]);
+  }, [filterKey, limit, address, network]);
 
   return {
     offset,
