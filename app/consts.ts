@@ -1,33 +1,42 @@
 import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType } from "./types";
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
+import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 
-export const NetworkVariants = ["celestia", "celestiatestnet3"] as const;
+export const NetworkVariants = ["celestia", "celestiatestnet3", "cosmoshub", "cosmoshubtestnet"] as const;
 export const networkVariants = [...NetworkVariants];
 export const defaultNetwork = "celestia" as Network;
 
-export const CoinVariants = ["TIA"] as const;
+export const CoinVariants = ["TIA", "ATOM"] as const;
 export const coinVariants = [...CoinVariants];
 
 export const networkCurrency: Record<Network, NetworkCurrency> = {
   celestia: "TIA",
   celestiatestnet3: "TIA",
+  cosmoshub: "ATOM",
+  cosmoshubtestnet: "ATOM",
 };
 export const networkCoinPriceSymbol: Record<Network, string> = {
   celestia: "celestia",
   celestiatestnet3: "celestia",
+  cosmoshub: "cosmoshub",
+  cosmoshubtestnet: "cosmoshub",
 };
 
 export const networkIdToUrlParamAlias: Record<Network, string> = {
   celestia: "celestia",
   celestiatestnet3: "celestiatestnet",
+  cosmoshub: "cosmoshub",
+  cosmoshubtestnet: "cosmoshubtestnet",
 };
 export const networkUrlParamToId: Record<string, Network> = {
   celestia: "celestia",
   celestiatestnet: "celestiatestnet3",
   celestiatestnet3: "celestiatestnet3",
+  cosmoshub: "cosmoshub",
+  cosmoshubtestnet: "cosmoshubtestnet",
 };
-export const networkIdRegex = /\b(celestia|celestiatestnet3)\b/;
-export const networkUrlParamRegex = /\b(celestia|celestiatestnet)\b/;
+export const networkIdRegex = /\b(celestia|celestiatestnet3|cosmoshub|cosmoshubtestnet)\b/;
+export const networkUrlParamRegex = /\b(celestia|celestiatestnet|cosmoshub|cosmoshubtestnet)\b/;
 
 export const networkInfo: Record<Network, NetworkInfo> = {
   celestia: {
@@ -44,30 +53,52 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     currency: networkCurrency.celestiatestnet3,
     denom: "u" + networkCurrency.celestiatestnet3.toLowerCase(),
   },
+  cosmoshub: {
+    id: "cosmoshub",
+    name: "Cosmos Hub",
+    logo: CosmosHubLogo,
+    currency: networkCurrency.cosmoshub,
+    denom: "u" + networkCurrency.cosmoshub.toLowerCase(),
+  },
+  cosmoshubtestnet: {
+    id: "cosmoshubtestnet",
+    name: "Cosmos Hub Testnet",
+    logo: CosmosHubLogo,
+    currency: networkCurrency.cosmoshubtestnet,
+    denom: "u" + networkCurrency.cosmoshubtestnet.toLowerCase(),
+  },
 };
 
 export const networkDefaultGasPrice: Record<Network, number> = {
   celestia: 0.02,
   celestiatestnet3: 0.02,
+  cosmoshub: 0.02,
+  cosmoshubtestnet: 0.02,
 };
 
 export const networkExplorer: Record<Network, string> = {
   celestia: "https://www.mintscan.io/celestia/",
   celestiatestnet3: "https://www.mintscan.io/celestia-testnet/",
+  cosmoshub: "https://www.mintscan.io/cosmos/",
+  cosmoshubtestnet: "https://www.mintscan.io/cosmoshub-testnet/",
 };
 
-export const CosmosNetworkVariants = ["celestia", "celestiatestnet3"] as const;
+export const CosmosNetworkVariants = ["celestia", "celestiatestnet3", "cosmoshub", "cosmoshubtestnet"] as const;
 export const cosmosNetworkVariants = [...CosmosNetworkVariants];
 
-export const CosmosTestnetVariants = ["celestiatestnet3"] as const;
+export const CosmosTestnetVariants = ["celestiatestnet3", "cosmoshubtestnet"] as const;
 export const cosmosTestnetVariants = [...CosmosTestnetVariants];
 
 export const networkWalletPrefixes: Record<Network, string> = {
   celestia: "celestia1",
   celestiatestnet3: "celestia1",
+  cosmoshub: "cosmos1",
+  cosmoshubtestnet: "cosmos1",
 };
 
-export const mobileDisabledNetworks = networkVariants.filter((network) => network === "celestiatestnet3");
+export const mobileDisabledNetworks = networkVariants.filter(
+  (network) => network === "celestiatestnet3" || network === "cosmoshubtestnet",
+);
 
 export const networkEndpoints: Record<
   Network,
@@ -84,12 +115,20 @@ export const networkEndpoints: Record<
     rpc: process.env.NEXT_PUBLIC_CELESTIATESTNET3_RPC_ENDPOINT || "https://rpc-mocha.pops.one/",
     rest: process.env.NEXT_PUBLIC_CELESTIATESTNET3_REST_ENDPOINT || "https://api-mocha.pops.one/",
   },
+  cosmoshub: {
+    rpc: process.env.NEXT_PUBLIC_COSMOSHUB_RPC_ENDPOINT || "https://rpc-cosmoshub.pupmos.network", // @vince to provide value
+    rest: process.env.NEXT_PUBLIC_COSMOSHUB_REST_ENDPOINT || "https://api-cosmoshub.pupmos.network", // @vince to provide value
+  },
+  cosmoshubtestnet: {
+    rpc: process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_RPC_ENDPOINT || "https://public-cosmos-theta.w3node.com", // @vince to provide value
+    rest: process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REST_ENDPOINT || "https://public-cosmos-theta.w3node.com/rest/", // @vince to provide value
+  },
 };
 
 export const FiatCurrencyVariants = ["USD", "EUR"] as const;
 export const fiatCurrencyVariants = [...FiatCurrencyVariants];
 
-export const currencyRegex = /\b(usd|eur|tia)\b/i;
+export const currencyRegex = /\b(usd|eur|tia|atom)\b/i;
 export const fiatCurrencyMap = {
   USD: "$",
   EUR: "€",
@@ -105,6 +144,8 @@ export const walletVariants = [...WalletVariants];
 export const networkWalletVariants: Record<Network, Array<string>> = {
   celestia: cosmosWalletVariants,
   celestiatestnet3: cosmosWalletVariants,
+  cosmoshub: cosmosWalletVariants,
+  cosmoshubtestnet: cosmosWalletVariants,
 };
 
 export const walletsInfo: Record<WalletType, WalletInfo> = {
@@ -161,6 +202,15 @@ export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
     walletsInfo.walletConnect,
   ],
   celestiatestnet3: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.keplrMobile, walletsInfo.leapMobile],
+  cosmoshub: [
+    walletsInfo.keplr,
+    walletsInfo.leap,
+    walletsInfo.okx,
+    walletsInfo.keplrMobile,
+    walletsInfo.leapMobile,
+    walletsInfo.walletConnect,
+  ],
+  cosmoshubtestnet: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.keplrMobile, walletsInfo.leapMobile],
 };
 
 export const ConnectorVariants = ["cosmosKit"] as const;
@@ -176,11 +226,22 @@ export const feeRatioByNetwork: Record<Network, number> = {
     !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_FEE_RATE))
       ? Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_FEE_RATE)
       : 0.03,
+  cosmoshub:
+    process.env.NEXT_PUBLIC_COSMOSHUB_FEE_RATE && !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUB_FEE_RATE))
+      ? Number(process.env.NEXT_PUBLIC_COSMOSHUB_FEE_RATE)
+      : 0.03,
+  cosmoshubtestnet:
+    process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_FEE_RATE &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_FEE_RATE))
+      ? Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_FEE_RATE)
+      : 0.03,
 };
 
 export const feeReceiverByNetwork: Record<Network, string> = {
   celestia: process.env.NEXT_PUBLIC_CELESTIA_FEE_RECEIVER || "",
   celestiatestnet3: process.env.NEXT_PUBLIC_CELESTIATESTNET3_FEE_RECEIVER || "",
+  cosmoshub: process.env.NEXT_PUBLIC_COSMOSHUB_FEE_RECEIVER || "",
+  cosmoshubtestnet: process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_FEE_RECEIVER || "",
 };
 
 export const requiredBalanceStakingByNetwork: Record<Network, number> = {
@@ -193,6 +254,16 @@ export const requiredBalanceStakingByNetwork: Record<Network, number> = {
     process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE_STAKING &&
     !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE_STAKING))
       ? Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE_STAKING)
+      : 0.05,
+  cosmoshub:
+    process.env.NEXT_PUBLIC_COSMOSHUB_REQUIRED_BALANCE_STAKING &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUB_REQUIRED_BALANCE_STAKING))
+      ? Number(process.env.NEXT_PUBLIC_COSMOSHUB_REQUIRED_BALANCE_STAKING)
+      : 0.05,
+  cosmoshubtestnet:
+    process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_STAKING &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_STAKING))
+      ? Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_STAKING)
       : 0.05,
 };
 
@@ -207,26 +278,44 @@ export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
     !isNaN(Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE_UNSTAKING))
       ? Number(process.env.NEXT_PUBLIC_CELESTIATESTNET3_REQUIRED_BALANCE_UNSTAKING)
       : 0.03,
+  cosmoshub:
+    process.env.NEXT_PUBLIC_COSMOSHUB_REQUIRED_BALANCE_UNSTAKING &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUB_REQUIRED_BALANCE_UNSTAKING))
+      ? Number(process.env.NEXT_PUBLIC_COSMOSHUB_REQUIRED_BALANCE_UNSTAKING)
+      : 0.03,
+  cosmoshubtestnet:
+    process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_UNSTAKING &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_UNSTAKING))
+      ? Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_UNSTAKING)
+      : 0.03,
 };
 
 export const unstakingPeriodByNetwork: Record<Network, string> = {
   celestia: "21 days",
   celestiatestnet3: "21 days",
+  cosmoshub: "21 days",
+  cosmoshubtestnet: "21 days",
 };
 
 export const rewardsFrequencyByNetwork: Record<Network, string> = {
   celestia: "15s",
   celestiatestnet3: "15s",
+  cosmoshub: "15s",
+  cosmoshubtestnet: "15s",
 };
 
 export const stakingOperatorUrlByNetwork: Record<Network, string> = {
   celestia: process.env.NEXT_PUBLIC_STAKING_API_CELESTIA || "",
   celestiatestnet3: process.env.NEXT_PUBLIC_STAKING_API_CELESTIA_TESTNET || "",
+  cosmoshub: process.env.NEXT_PUBLIC_STAKING_API_COSMOSHUB || "",
+  cosmoshubtestnet: process.env.NEXT_PUBLIC_STAKING_API_COSMOSHUB_TESTNET || "",
 };
 
 export const serverUrlByNetwork: Record<Network, string> = {
   celestia: process.env.NEXT_PUBLIC_SERVER_API_CELESTIA || "",
   celestiatestnet3: process.env.NEXT_PUBLIC_SERVER_API_CELESTIA_TESTNET || "",
+  cosmoshub: process.env.NEXT_PUBLIC_SERVER_API_COSMOSHUB || "",
+  cosmoshubtestnet: process.env.NEXT_PUBLIC_SERVER_API_COSMOSHUB_TESTNET || "",
 };
 
 export const SITE_TITLE = "Staking.xyz";

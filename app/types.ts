@@ -38,6 +38,8 @@ export type WalletInfo = {
 export type NetworkWalletType = {
   celestia: CosmosWalletType[];
   celestiatestnet3: CosmosWalletType[];
+  cosmoshub: CosmosWalletType[];
+  cosmoshubtestnet: CosmosWalletType[];
 };
 export type ConnectorType = (typeof ConnectorVariants)[number];
 export type WalletConnectionStatus = "connecting" | "connected" | "disconnecting" | "disconnected";

@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
 import { GrazProvider as Provider } from "graz";
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, SITE_WALLET_CONNECT_LOGO } from "../../consts";
-import { celestiaChainInfo, celestiatestnet3ChainInfo } from "../../_services/cosmos/consts";
+import {
+  celestiaChainInfo,
+  celestiatestnet3ChainInfo,
+  cosmoshubChainInfo,
+  cosmoshubtestnetChainInfo,
+} from "../../_services/cosmos/consts";
 
 export const GrazProvider = ({
   walletConnectAPIKey,
@@ -13,7 +18,7 @@ export const GrazProvider = ({
   return (
     <Provider
       grazOptions={{
-        chains: [celestiaChainInfo, celestiatestnet3ChainInfo],
+        chains: [celestiaChainInfo, celestiatestnet3ChainInfo, cosmoshubChainInfo, cosmoshubtestnetChainInfo],
         walletConnect: {
           options: {
             projectId: walletConnectAPIKey,
