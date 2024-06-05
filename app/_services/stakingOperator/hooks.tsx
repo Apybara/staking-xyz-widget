@@ -22,11 +22,15 @@ export const useUnbondingDelegations = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
       return celestia;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshub;
     default:
       return undefined;
   }
@@ -56,11 +60,15 @@ export const useStakedBalance = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
       return celestia;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshub;
     default:
       return undefined;
   }
@@ -103,6 +111,7 @@ export const useActivity = (defaultParams: T.AddressActivityPaginationParams | n
     limit,
     filterKey,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
@@ -110,6 +119,12 @@ export const useActivity = (defaultParams: T.AddressActivityPaginationParams | n
       return {
         params: { offset, setOffset, limit, filterKey, setFilterKey },
         query: celestia,
+      };
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return {
+        params: { offset, setOffset, limit, filterKey, setFilterKey },
+        query: cosmoshub,
       };
     default:
       return {
@@ -133,11 +148,15 @@ export const useLastOffsetActivity = ({
     limit,
     filterKey,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
       return celestia;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshub;
     default:
       return undefined;
   }
@@ -163,12 +182,18 @@ export const useAddressRewards = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
       return {
         query: celestia,
+      };
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return {
+        query: cosmoshub,
       };
     default:
       return {
@@ -188,6 +213,7 @@ export const useRewardsHistory = () => {
     offset,
     limit,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
@@ -195,6 +221,12 @@ export const useRewardsHistory = () => {
       return {
         params: { offset, setOffset, limit },
         query: celestia,
+      };
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return {
+        params: { offset, setOffset, limit },
+        query: cosmoshub,
       };
     default:
       return {
@@ -210,11 +242,15 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
   const castedNetwork = defaultNetwork || network;
 
   const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: amount || "0" });
+  const cosmoshubRewards = celestiaRewards; // @David change this when cosmos endpoints are ready
 
   switch (castedNetwork) {
     case "celestia":
     case "celestiatestnet3":
       return celestiaRewards;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshubRewards;
     default:
       return undefined;
   }
@@ -223,11 +259,15 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
 export const useNetworkStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
   const celestiaStatus = useCelestiaStatus({ network });
+  const cosmoshubStatus = celestiaStatus; // @David change this when cosmos endpoints are ready
 
   switch (defaultNetwork || network) {
     case "celestia":
     case "celestiatestnet3":
       return celestiaStatus;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshubStatus;
     default:
       return undefined;
   }
@@ -236,11 +276,15 @@ export const useNetworkStatus = (defaultNetwork?: string) => {
 export const useServerStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
   const celestiaStatus = useCelestiaServerStatus({ network });
+  const cosmoshubStatus = celestiaStatus; // @David change this when cosmos endpoints are ready
 
   switch (defaultNetwork || network) {
     case "celestia":
     case "celestiatestnet3":
       return celestiaStatus;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshubStatus;
     default:
       return undefined;
   }

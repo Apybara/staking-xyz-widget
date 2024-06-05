@@ -1053,6 +1053,9 @@ const granteeAddress: Record<CosmosNetwork, string> = {
   celestia: process.env.NEXT_PUBLIC_CELESTIA_AUTH_GRANTEE || "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
   celestiatestnet3:
     process.env.NEXT_PUBLIC_CELESTIATESTNET3_AUTH_GRANTEE || "celestia1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf",
+  cosmoshub: process.env.NEXT_PUBLIC_COSMOSHUB_AUTH_GRANTEE || "cosmos1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf", // @vince to provide value
+  cosmoshubtestnet:
+    process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_AUTH_GRANTEE || "cosmos1kwe3z6wyq9tenu24a80z4sh6yv2w5xjp8zzukf", // @vince to provide value
 };
 
 const useOfflineSignerGetter = ({ network, wallet }: { network?: CosmosNetwork; wallet: CosmosWalletType | null }) => {

@@ -27,11 +27,14 @@ export const useInputStates = () => {
 
   const { onUpdateRouter: onUpdateCurrency } = useCurrencyChange();
 
-  // Transition state on global currency change
+  // Transition state on global currency and network currency change
   useEffect(() => {
     switch (primaryCurrency) {
       case "USD":
-        if (globalCurrency === "USD") break;
+        if (globalCurrency === "USD") {
+          setSecondaryCurrency(networkCurrency);
+          break;
+        }
         setPreviousPrimaryCurrency("USD");
 
         if (globalCurrency === "EUR") {
@@ -43,7 +46,10 @@ export const useInputStates = () => {
         setSecondaryCurrency("USD");
         break;
       case "EUR":
-        if (globalCurrency === "EUR") break;
+        if (globalCurrency === "EUR") {
+          setSecondaryCurrency(networkCurrency);
+          break;
+        }
         setPreviousPrimaryCurrency("EUR");
 
         if (globalCurrency === "USD") {
@@ -69,7 +75,7 @@ export const useInputStates = () => {
           break;
         }
     }
-  }, [globalCurrency]);
+  }, [globalCurrency, networkCurrency]);
 
   // Update primary values on currency change
   useEffect(() => {

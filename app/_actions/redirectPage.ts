@@ -39,4 +39,6 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
 
 const getNetworkParamFromValidAlias = (network: string) => {
   if (/\b(celestiatestnet3|mocha-4|mocha4)\b/.test(network)) return networkIdToUrlParamAlias.celestiatestnet3;
+  if (/\b(cosmoshub|cosmoshub-4)\b/.test(network)) return networkIdToUrlParamAlias.cosmoshub;
+  if (/\b(cosmoshubtestnet|theta-testnet-001)\b/.test(network)) return networkIdToUrlParamAlias.cosmoshubtestnet;
 };

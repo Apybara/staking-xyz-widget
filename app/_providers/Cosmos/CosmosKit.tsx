@@ -74,4 +74,32 @@ const endpoints = {
       },
     ],
   },
+  cosmoshub: {
+    rpc: [
+      {
+        url: networkEndpoints.cosmoshub.rpc,
+        headers: {},
+      },
+    ],
+    rest: [
+      {
+        url: networkEndpoints.cosmoshub.rest,
+        headers: {},
+      },
+    ],
+  },
+  cosmoshubtestnet: {
+    rpc: [
+      {
+        url: networkEndpoints.cosmoshubtestnet.rpc,
+        headers: {},
+      },
+    ],
+    rest: [
+      {
+        url: networkEndpoints.cosmoshubtestnet.rest,
+        headers: {},
+      },
+    ],
+  },
 };

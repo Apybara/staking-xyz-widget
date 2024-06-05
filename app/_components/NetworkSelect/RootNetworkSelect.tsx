@@ -4,7 +4,6 @@ import Image from "next/image";
 import * as Select from "../Select";
 import { networkVariants, networkInfo, mobileDisabledNetworks } from "../../consts";
 import * as S from "./networkSelect.css";
-import CosmosHubLogo from "../../_assets/networks/cosmos-hub-logo.svg";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 
 export type RootNetworkSelectProps = {
@@ -32,7 +31,7 @@ export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDe
           {networkVariants.map((network) => (
             <NetworkItem network={network} key={"select-" + network} isOnMobileDevice={isOnMobileDevice} />
           ))}
-          {disabledNetworks.map((network) => (
+          {/* {disabledNetworks.map((network) => (
             <Select.Item
               key={"select-" + network}
               value={network.id as any}
@@ -45,7 +44,7 @@ export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDe
               </div>
               <p className={cn(S.itemSuffixText)}>Coming soon</p>
             </Select.Item>
-          ))}
+          ))} */}
         </>
       }
     />
@@ -75,11 +74,3 @@ const NetworkItem = ({ network, isOnMobileDevice }: { network: Network; isOnMobi
     </Select.Item>
   );
 };
-
-const disabledNetworks = [
-  {
-    id: "cosmoshub",
-    name: "Cosmos Hub",
-    logo: CosmosHubLogo,
-  },
-];

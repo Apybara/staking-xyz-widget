@@ -1,4 +1,4 @@
-import type { Currency, Network } from "../../types";
+import type { Currency, Network, NetworkCurrency } from "../../types";
 import type { ShellContext } from "./types";
 import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -11,6 +11,7 @@ import {
   currencyRegex,
   defaultGlobalCurrency,
   defaultNetwork,
+  CoinVariants,
 } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
@@ -36,7 +37,12 @@ export const useNetworkChange = () => {
 
   const onUpdateRouter = (net: Network) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
+    const activeCurrency = current.get("currency");
     current.set("network", networkIdToUrlParamAlias[net]);
+    if (CoinVariants.includes(activeCurrency as NetworkCurrency)) {
+      // activate currency when network is changed and the previous active currency is not FIAT
+      current.set("currency", networkCurrency[net]);
+    }
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);

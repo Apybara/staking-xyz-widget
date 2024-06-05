@@ -338,3 +338,4 @@ const useFormattedUnbondingDelegations = (
 };
 
 const getIsCelestiaNetwork = (network: Network | null) => network === "celestia" || network === "celestiatestnet3";
+const getIsCosmoshubNetwork = (network: Network | null) => network === "cosmoshub" || network === "cosmoshubtestnet";
