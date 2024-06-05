@@ -43,11 +43,15 @@ export const useExternalDelegations = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
+  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
       return celestia;
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return cosmoshub;
     default:
       return undefined;
   }
