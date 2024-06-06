@@ -22,7 +22,7 @@ export const useUnbondingDelegations = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
-  const cosmoshub = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshub = undefined;
 
   switch (network) {
     case "celestia":
@@ -64,7 +64,7 @@ export const useStakedBalance = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
-  const cosmoshub = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshub = undefined;
 
   switch (network) {
     case "celestia":
@@ -115,7 +115,7 @@ export const useActivity = (defaultParams: T.AddressActivityPaginationParams | n
     limit,
     filterKey,
   });
-  const cosmoshub = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshub = undefined;
 
   switch (network) {
     case "celestia":
@@ -152,7 +152,7 @@ export const useLastOffsetActivity = ({
     limit,
     filterKey,
   });
-  const cosmoshub = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshub = undefined;
 
   switch (network) {
     case "celestia":
@@ -186,7 +186,7 @@ export const useAddressRewards = () => {
     network,
     address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
   });
-  const cosmoshub = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshub = undefined;
 
   switch (network) {
     case "celestia":
@@ -217,7 +217,7 @@ export const useRewardsHistory = () => {
     offset,
     limit,
   });
-  const cosmoshub = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshub = undefined;
 
   switch (network) {
     case "celestia":
@@ -246,7 +246,7 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
   const castedNetwork = defaultNetwork || network;
 
   const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: amount || "0" });
-  const cosmoshubRewards = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshubRewards = undefined;
 
   switch (castedNetwork) {
     case "celestia":
@@ -263,7 +263,7 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
 export const useNetworkStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
   const celestiaStatus = useCelestiaStatus({ network });
-  const cosmoshubStatus = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshubStatus = undefined;
 
   switch (defaultNetwork || network) {
     case "celestia":
@@ -280,7 +280,7 @@ export const useNetworkStatus = (defaultNetwork?: string) => {
 export const useServerStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
   const celestiaStatus = useCelestiaServerStatus({ network });
-  const cosmoshubStatus = undefined; // @David change this when cosmos endpoints are ready
+  const cosmoshubStatus = undefined;
 
   switch (defaultNetwork || network) {
     case "celestia":
