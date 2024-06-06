@@ -5,7 +5,7 @@ import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { ClientSideRedelegatePage } from "./_components/ClientSideRedelegatePage";
 
-export default async function Stake({ searchParams }: RouterStruct) {
+export default async function Import({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
   await redirectPage(searchParams, "import");
   await revalidatePageQueries(network);
