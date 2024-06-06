@@ -4,6 +4,7 @@ import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 import { RedelegatingProvider } from "@/app/_contexts/RedelegatingContext";
 import { useDialog } from "@/app/_contexts/UIContext";
+import { removeLeadingAndTrailingZeros } from "@/app/_utils";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { PageViewTop } from "../../_components/WidgetTop";
 import { Icon } from "@/app/_components/Icon";
@@ -23,7 +24,12 @@ export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: Route
 
   const { data, isLoading } = useExternalDelegations() || {};
   const { redelegationAmount } = data || {};
-  const amountToImport = useDynamicAssetValueFromCoin({ coinVal: redelegationAmount });
+  const amountToImport = useDynamicAssetValueFromCoin({
+    coinVal: redelegationAmount,
+    minValue: 0.000001,
+    formatOptions: { mantissa: 6 },
+  });
+  const formattedAmount = amountToImport ? removeLeadingAndTrailingZeros(amountToImport.split(" ")[0]) : 0;
 
   return (
     <RedelegatingProvider>
@@ -50,7 +56,7 @@ export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: Route
               />
             </>
           }
-          title={isLoading ? <Skeleton height={20} width={100} /> : amountToImport}
+          title={isLoading ? <Skeleton height={20} width={100} /> : formattedAmount}
         />
         <RedelegateInfoBox />
       </WidgetContent>
