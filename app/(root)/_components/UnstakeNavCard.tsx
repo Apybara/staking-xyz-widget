@@ -22,7 +22,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     connectionStatus !== "connected" ||
     !!error ||
     isLoading ||
-    (stakedBalance === "0" && (!inProgressEntries?.length || totalEntries === 0));
+    ((!stakedBalance || stakedBalance === "0") && (!inProgressEntries?.length || totalEntries === 0));
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;

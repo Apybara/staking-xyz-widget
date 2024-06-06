@@ -18,7 +18,7 @@ export const ActivityNavCard = (props: NavCard.PageNavCardProps) => {
       lastOffset: activity?.query?.lastOffset || 0,
     }) || {};
 
-  const isDisabled = connectionStatus !== "connected" || data?.entries?.length === 0;
+  const isDisabled = connectionStatus !== "connected" || !data?.entries?.length;
 
   const allData = data?.entries;
   const readyData = allData?.filter(({ inProgress }) => !inProgress);
