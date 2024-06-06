@@ -1,6 +1,6 @@
-import { fetchData } from "@/app/_utils/fetch";
+import type { Network } from "../../../types";
 import type * as T from "../types";
-import { getCoinValueFromDenom } from "../../cosmos/utils";
+import { fetchData } from "@/app/_utils/fetch";
 
 export const getAddressAuthCheck = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.AuthCheckResponse = await fetchData(`${apiUrl}address/check/${address}`);
@@ -171,3 +171,6 @@ export const getRedelegateValidatorMessages = (operatorMessage: T.DecodedRedeleg
       amount: msg.amount,
     }));
 };
+
+export const getIsCelestia = (network: Network | null) => network === "celestia" || network === "celestiatestnet3";
+export const getIsCosmosHub = (network: Network | null) => network === "cosmoshub" || network === "cosmoshubtestnet";

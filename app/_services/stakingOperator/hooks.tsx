@@ -3,26 +3,20 @@ import * as T from "./types";
 import { useEffect, useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import {
-  useCelestiaDelegations,
-  useCelestiaUnbondingDelegations,
-  useCelestiaAddressActivity,
-  useCelestiaAddressRewardsHistory,
-  useCelestiaReward,
-  useCelestiaAddressRewards,
-  useCelestiaStatus,
-  useCelestiaServerStatus,
-  useCelestiaExternalDelegations,
-} from "../stakingOperator/celestia/hooks";
+import { getIsCelestia, getIsCosmosHub } from "./cosmos";
+import * as cosmos from "../stakingOperator/cosmos/hooks";
 
 export const useUnbondingDelegations = () => {
   const { network } = useShell();
   const { address } = useWallet();
-  const celestia = useCelestiaUnbondingDelegations({
+  const celestia = cosmos.useCosmosUnbondingDelegations({
     network,
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
   });
-  const cosmoshub = undefined;
+  const cosmoshub = cosmos.useCosmosUnbondingDelegations({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+  });
 
   switch (network) {
     case "celestia":
@@ -39,11 +33,14 @@ export const useUnbondingDelegations = () => {
 export const useExternalDelegations = () => {
   const { network } = useShell();
   const { address } = useWallet();
-  const celestia = useCelestiaExternalDelegations({
+  const celestia = cosmos.useCosmosExternalDelegations({
     network,
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
   });
-  const cosmoshub = celestia; // @David change this when cosmos endpoints are ready
+  const cosmoshub = cosmos.useCosmosExternalDelegations({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+  });
 
   switch (network) {
     case "celestia":
@@ -60,11 +57,14 @@ export const useExternalDelegations = () => {
 export const useStakedBalance = () => {
   const { network } = useShell();
   const { address } = useWallet();
-  const celestia = useCelestiaDelegations({
+  const celestia = cosmos.useCosmosDelegations({
     network,
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
   });
-  const cosmoshub = undefined;
+  const cosmoshub = cosmos.useCosmosDelegations({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+  });
 
   switch (network) {
     case "celestia":
@@ -108,14 +108,20 @@ export const useActivity = (defaultParams: T.AddressActivityPaginationParams | n
   const { address } = useWallet();
 
   const { offset, setOffset, limit, filterKey, setFilterKey } = useAddressActivityQueryParams(defaultParams);
-  const celestia = useCelestiaAddressActivity({
+  const celestia = cosmos.useCosmosAddressActivity({
     network,
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
     offset,
     limit,
     filterKey,
   });
-  const cosmoshub = undefined;
+  const cosmoshub = cosmos.useCosmosAddressActivity({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+    offset,
+    limit,
+    filterKey,
+  });
 
   switch (network) {
     case "celestia":
@@ -145,14 +151,20 @@ export const useLastOffsetActivity = ({
 }: Omit<T.AddressActivityPaginationParams, "offset"> & { lastOffset: number }) => {
   const { network } = useShell();
   const { address } = useWallet();
-  const celestia = useCelestiaAddressActivity({
+  const celestia = cosmos.useCosmosAddressActivity({
     network,
-    address: address || undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
     offset: lastOffset,
     limit,
     filterKey,
   });
-  const cosmoshub = undefined;
+  const cosmoshub = cosmos.useCosmosAddressActivity({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+    offset: lastOffset,
+    limit,
+    filterKey,
+  });
 
   switch (network) {
     case "celestia":
@@ -182,11 +194,14 @@ export const useAddressRewards = () => {
   const { network } = useShell();
   const { address } = useWallet();
 
-  const celestia = useCelestiaAddressRewards({
+  const celestia = cosmos.useCosmosAddressRewards({
     network,
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
   });
-  const cosmoshub = undefined;
+  const cosmoshub = cosmos.useCosmosAddressRewards({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+  });
 
   switch (network) {
     case "celestia":
@@ -211,13 +226,18 @@ export const useRewardsHistory = () => {
   const { address } = useWallet();
 
   const { offset, setOffset, limit } = useAddressRewardsHistoryQueryParams();
-  const celestia = useCelestiaAddressRewardsHistory({
+  const celestia = cosmos.useCosmosAddressRewardsHistory({
     network,
-    address: address && (network === "celestia" || network === "celestiatestnet3") ? address : undefined,
+    address: address && getIsCelestia(network) ? address : undefined,
     offset,
     limit,
   });
-  const cosmoshub = undefined;
+  const cosmoshub = cosmos.useCosmosAddressRewardsHistory({
+    network,
+    address: address && getIsCosmosHub(network) ? address : undefined,
+    offset,
+    limit,
+  });
 
   switch (network) {
     case "celestia":
@@ -245,8 +265,14 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
   const { network } = useShell();
   const castedNetwork = defaultNetwork || network;
 
-  const celestiaRewards = useCelestiaReward({ network: castedNetwork, amount: amount || "0" });
-  const cosmoshubRewards = undefined;
+  const celestiaRewards = cosmos.useCosmosReward({
+    network: getIsCelestia(castedNetwork) ? castedNetwork : null,
+    amount: amount || "0",
+  });
+  const cosmoshubRewards = cosmos.useCosmosReward({
+    network: getIsCosmosHub(castedNetwork) ? castedNetwork : null,
+    amount: amount || "0",
+  });
 
   switch (castedNetwork) {
     case "celestia":
@@ -262,8 +288,8 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
 
 export const useNetworkStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
-  const celestiaStatus = useCelestiaStatus({ network });
-  const cosmoshubStatus = undefined;
+  const celestiaStatus = cosmos.useCosmosStatus({ network: getIsCelestia(network) ? network : null });
+  const cosmoshubStatus = cosmos.useCosmosStatus({ network: getIsCosmosHub(network) ? network : null });
 
   switch (defaultNetwork || network) {
     case "celestia":
@@ -279,8 +305,8 @@ export const useNetworkStatus = (defaultNetwork?: string) => {
 
 export const useServerStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
-  const celestiaStatus = useCelestiaServerStatus({ network });
-  const cosmoshubStatus = undefined;
+  const celestiaStatus = cosmos.useCosmosServerStatus({ network: getIsCelestia(network) ? network : null });
+  const cosmoshubStatus = cosmos.useCosmosServerStatus({ network: getIsCosmosHub(network) ? network : null });
 
   switch (defaultNetwork || network) {
     case "celestia":
