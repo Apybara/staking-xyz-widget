@@ -21,8 +21,8 @@ import {
   getRedelegateValidatorMessages,
   getWithdrawRewardsMessage,
   getWithdrawRewardsValidatorMessages,
-} from "../stakingOperator/celestia";
-import { useCelestiaAddressAuthCheck } from "../stakingOperator/celestia/hooks";
+} from "../stakingOperator/cosmos";
+import { useCosmosAddressAuthCheck } from "../stakingOperator/cosmos/hooks";
 import {
   cosmosNetworkVariants,
   networkInfo,
@@ -44,8 +44,6 @@ import { getDenomValueFromCoin, getIsCosmosNetwork } from "./utils";
 import { getSigningClient, getGrantingMessages, getEstimatedGas, getFee } from ".";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
-
-import * as StakeStyle from "@/app/(root)/stake/_components/stake.css";
 
 export const useCosmosUnstakingProcedures = ({
   amount,
@@ -79,7 +77,7 @@ export const useCosmosUnstakingProcedures = ({
   //   data: authCheck,
   //   isLoading,
   //   refetch,
-  // } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+  // } = useCosmosAddressAuthCheck({ network, address: address || undefined });
 
   // const authTx = useCosmosBroadcastAuthzTx({
   //   client: cosmosSigningClient || null,
@@ -278,7 +276,7 @@ export const useCosmosStakingProcedures = ({
   //   data: authCheck,
   //   isLoading,
   //   refetch,
-  // } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+  // } = useCosmosAddressAuthCheck({ network, address: address || undefined });
 
   // const cosmosAuthTx = useCosmosBroadcastAuthzTx({
   //   client: cosmosSigningClient || null,
@@ -732,7 +730,7 @@ export const useCosmosRedelegatingProcedures = ({
   //   data: authCheck,
   //   isLoading,
   //   refetch,
-  // } = useCelestiaAddressAuthCheck({ network, address: address || undefined });
+  // } = useCosmosAddressAuthCheck({ network, address: address || undefined });
 
   // const cosmosAuthTx = useCosmosBroadcastAuthzTx({
   //   client: cosmosSigningClient || null,

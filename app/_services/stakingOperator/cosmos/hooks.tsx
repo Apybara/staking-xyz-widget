@@ -7,7 +7,7 @@ import { fromUnixTime } from "date-fns";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getTimeDiffInSingleUnits } from "../../../_utils/time";
-import { getCoinValueFromDenom } from "../../cosmos/utils";
+import { getCoinValueFromDenom, getIsCosmosNetwork } from "../../cosmos/utils";
 import { getCalculatedRewards, getLastOffset } from "../utils";
 import {
   getAddressAuthCheck,
@@ -21,12 +21,11 @@ import {
   getServerStatus,
   getExternalDelegations,
 } from ".";
-import numbro from "numbro";
 
-export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
+export const useCosmosAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCelestiaNetwork(network),
-    queryKey: ["celestiaAddressAuthCheck", address, network],
+    enabled: !!address && getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosAddressAuthCheck", address, network],
     queryFn: () =>
       getAddressAuthCheck({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address: address || "" }),
     refetchOnWindowFocus: true,
@@ -35,10 +34,10 @@ export const useCelestiaAddressAuthCheck = ({ address, network }: { address?: st
   return { data, isLoading, error, refetch };
 };
 
-export const useCelestiaDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+export const useCosmosDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCelestiaNetwork(network),
-    queryKey: ["celestiaDelegations", address, network],
+    enabled: !!address && getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosDelegations", address, network],
     queryFn: () =>
       getDelegations({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address: address || "" }),
     refetchInterval: 90000,
@@ -49,16 +48,10 @@ export const useCelestiaDelegations = ({ address, network }: { address?: string;
   return { data, stakedBalance: !isLoading && !error ? stakedBalance : undefined, isLoading, error, refetch };
 };
 
-export const useCelestiaUnbondingDelegations = ({
-  address,
-  network,
-}: {
-  address?: string;
-  network: Network | null;
-}) => {
+export const useCosmosUnbondingDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCelestiaNetwork(network),
-    queryKey: ["celestiaUnbondingDelegations", address, network],
+    enabled: !!address && getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosUnbondingDelegations", address, network],
     queryFn: () =>
       getUnbondingDelegations({
         apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
@@ -73,11 +66,11 @@ export const useCelestiaUnbondingDelegations = ({
   return { data, formatted, isLoading, error, refetch };
 };
 
-export const useCelestiaExternalDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+export const useCosmosExternalDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
   const castedNetwork = network || "celestia";
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCelestiaNetwork(network),
-    queryKey: ["celestiaExternalDelegations", address, network],
+    enabled: !!address && getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosExternalDelegations", address, network],
     queryFn: () =>
       getExternalDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
     refetchOnWindowFocus: true,
@@ -93,7 +86,7 @@ export const useCelestiaExternalDelegations = ({ address, network }: { address?:
   };
 };
 
-export const useCelestiaAddressActivity = ({
+export const useCosmosAddressActivity = ({
   network,
   address,
   offset,
@@ -107,7 +100,7 @@ export const useCelestiaAddressActivity = ({
     T.AddressActivityResponse | null,
     T.AddressActivityResponse
   >({
-    enabled: !!address && getIsCelestiaNetwork(network),
+    enabled: !!address && getIsCosmosNetwork(network || ""),
     queryKey: ["addressActivity", address, offset, limit, filterKey, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
@@ -170,12 +163,12 @@ export const useCelestiaAddressActivity = ({
   };
 };
 
-export const useCelestiaAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
+export const useCosmosAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, error, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressRewardsResponse | null,
     T.AddressRewardsResponse
   >({
-    enabled: !!address && getIsCelestiaNetwork(network),
+    enabled: !!address && getIsCosmosNetwork(network || ""),
     queryKey: ["addressRewards", address, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
@@ -202,7 +195,7 @@ export const useCelestiaAddressRewards = ({ network, address }: { network: Netwo
   };
 };
 
-export const useCelestiaAddressRewardsHistory = ({
+export const useCosmosAddressRewardsHistory = ({
   network,
   address,
   offset,
@@ -215,7 +208,7 @@ export const useCelestiaAddressRewardsHistory = ({
     T.AddressRewardsHistoryResponse | null,
     T.AddressRewardsHistoryResponse
   >({
-    enabled: !!address && getIsCelestiaNetwork(network),
+    enabled: !!address && getIsCosmosNetwork(network || ""),
     queryKey: ["addressRewardsHistory", address, offset, limit, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
@@ -270,10 +263,10 @@ export const useCelestiaAddressRewardsHistory = ({
   };
 };
 
-export const useCelestiaReward = ({ network, amount }: { network: Network | null; amount: string }) => {
+export const useCosmosReward = ({ network, amount }: { network: Network | null; amount: string }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsCelestiaNetwork(network),
-    queryKey: ["celestiaReward", network, amount],
+    enabled: getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosReward", network, amount],
     queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"] }),
     refetchInterval: 600000, // 10 minutes
     refetchOnWindowFocus: true,
@@ -284,10 +277,10 @@ export const useCelestiaReward = ({ network, amount }: { network: Network | null
   return { data, rewards, isLoading: isLoading || isRefetching, error, refetch };
 };
 
-export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
+export const useCosmosStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsCelestiaNetwork(network),
-    queryKey: ["celestiaStatus", network],
+    enabled: getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosStatus", network],
     queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"] }),
     refetchOnWindowFocus: true,
     refetchInterval: 180000,
@@ -296,10 +289,10 @@ export const useCelestiaStatus = ({ network }: { network: Network | null }) => {
   return { data, isLoading, isRefetching, error, refetch };
 };
 
-export const useCelestiaServerStatus = ({ network }: { network: Network | null }) => {
+export const useCosmosServerStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsCelestiaNetwork(network),
-    queryKey: ["celestiaServerStatus", network],
+    enabled: getIsCosmosNetwork(network || ""),
+    queryKey: ["cosmosServerStatus", network],
     queryFn: () => getServerStatus({ apiUrl: serverUrlByNetwork[network || "celestia"] }),
     refetchOnWindowFocus: true,
     refetchInterval: 180000,
@@ -336,6 +329,3 @@ const useFormattedUnbondingDelegations = (
 
   return formattedDelegations;
 };
-
-const getIsCelestiaNetwork = (network: Network | null) => network === "celestia" || network === "celestiatestnet3";
-const getIsCosmoshubNetwork = (network: Network | null) => network === "cosmoshub" || network === "cosmoshubtestnet";
