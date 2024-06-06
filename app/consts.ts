@@ -116,12 +116,13 @@ export const networkEndpoints: Record<
     rest: process.env.NEXT_PUBLIC_CELESTIATESTNET3_REST_ENDPOINT || "https://api-mocha.pops.one/",
   },
   cosmoshub: {
-    rpc: process.env.NEXT_PUBLIC_COSMOSHUB_RPC_ENDPOINT || "https://rpc-cosmoshub.pupmos.network", // @vince to provide value
-    rest: process.env.NEXT_PUBLIC_COSMOSHUB_REST_ENDPOINT || "https://api-cosmoshub.pupmos.network", // @vince to provide value
+    rpc: process.env.NEXT_PUBLIC_COSMOSHUB_RPC_ENDPOINT || "https://cosmos-rpc.publicnode.com/",
+    rest: process.env.NEXT_PUBLIC_COSMOSHUB_REST_ENDPOINT || "https://cosmos-rest.publicnode.com/",
   },
   cosmoshubtestnet: {
-    rpc: process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_RPC_ENDPOINT || "https://public-cosmos-theta.w3node.com", // @vince to provide value
-    rest: process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REST_ENDPOINT || "https://public-cosmos-theta.w3node.com/rest/", // @vince to provide value
+    rpc: process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_RPC_ENDPOINT || "https://rpc.sentry-01.theta-testnet.polypore.xyz/",
+    rest:
+      process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REST_ENDPOINT || "https://rest.sentry-01.theta-testnet.polypore.xyz/",
   },
 };
 
@@ -300,8 +301,8 @@ export const unstakingPeriodByNetwork: Record<Network, string> = {
 export const rewardsFrequencyByNetwork: Record<Network, string> = {
   celestia: "15s",
   celestiatestnet3: "15s",
-  cosmoshub: "15s",
-  cosmoshubtestnet: "15s",
+  cosmoshub: "7.23s",
+  cosmoshubtestnet: "7.23s",
 };
 
 export const stakingOperatorUrlByNetwork: Record<Network, string> = {
