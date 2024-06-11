@@ -33,7 +33,7 @@ export const WidgetContent = ({ variant = "default", children }: WidgetContentPr
   }, [ref.current]);
 
   return (
-    <ScrollArea.Root className={cn(S.widgetContent, { [S.widgetContentFull]: variant === "full" })}>
+    <ScrollArea.Root className={cn(S.widgetContent, { [S.widgetContentFull]: variant === "full" })} scrollHideDelay={0}>
       <ScrollArea.Viewport ref={ref} className={S.widgetWrapper}>
         {children}
       </ScrollArea.Viewport>
