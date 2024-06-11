@@ -12,10 +12,16 @@ export const borderedCard = style({
 export const borderedCardButton = style([
   borderedCard,
   {
+    backgroundColor: colors.black700,
+    borderColor: colors.black800,
+    boxShadow: "0px 0px 12px 0px rgba(0, 0, 0, 0.16)",
+    transition: "background-color .3s",
+
     selectors: {
       "&:hover": {
-        borderColor: colors.black800,
-        backgroundColor: colors.black700,
+        transition: "background-color .3s",
+        backgroundColor: colors.black750,
+        borderColor: colors.black900,
       },
     },
   },
