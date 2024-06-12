@@ -462,11 +462,11 @@ const useCosmosBroadcastDelegateTx = ({
         amount: Number(denomAmount),
       });
       const delegateValues = getDelegateValidatorMessages(unsignedMessage);
-      const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
+      // const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
       // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
 
-      if (!delegateValues.length || feeReceiver === "") {
-        throw new Error("Missing parameter: validatorAddress, feeReceiver");
+      if (!delegateValues.length) {
+        throw new Error("Missing parameter: validatorAddress");
       }
 
       const delegateMsgs = delegateValues.map((val) => ({
