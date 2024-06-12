@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import cn from "classnames";
 import Link from "next/link";
 import { useShell } from "@/app/_contexts/ShellContext";
-import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
+// import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 import { Icon } from "../../../_components/Icon";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import * as S from "./widgetTop.css";
@@ -15,10 +15,10 @@ export const DefaultViewTop = () => {
   const [isRefetching, setIsRefetching] = useState(false);
 
   const moreLink = useLinkWithSearchParams("more");
-  const importLink = useLinkWithSearchParams("import");
+  // const importLink = useLinkWithSearchParams("import");
 
-  const externalDelegations = useExternalDelegations();
-  const { redelegationAmount } = externalDelegations?.data || {};
+  // const externalDelegations = useExternalDelegations();
+  // const { redelegationAmount } = externalDelegations?.data || {};
 
   const refetch = async () => {
     setIsRefetching(true);
@@ -28,14 +28,15 @@ export const DefaultViewTop = () => {
 
   return (
     <div className={cn(S.defaultTop)}>
-      {redelegationAmount && redelegationAmount !== "0" ? (
+      {/* {redelegationAmount && redelegationAmount !== "0" ? (
         <Link href={importLink} className={S.redelegateButton}>
           <Icon name="download" />
           <span>Import my stake</span>
         </Link>
       ) : (
         <div></div>
-      )}
+      )} */}
+      <div></div>
       <div className={S.buttonContainer}>
         <button className={cn(S.button({ state: isRefetching ? "fetching" : "default" }))} onClick={refetch}>
           <Icon name="rotate" size={20} />
