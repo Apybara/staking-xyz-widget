@@ -4,7 +4,7 @@ import { globalStyle, style } from "@vanilla-extract/css";
 
 export const widgetContent = style({
   paddingInline: pxToRem(16),
-  blockSize: `clamp(342px, 378px, 400px)`,
+  blockSize: pxToRem(378),
 });
 
 export const widgetContentFull = style({
