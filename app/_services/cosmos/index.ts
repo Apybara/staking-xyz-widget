@@ -104,23 +104,11 @@ export const getEstimatedGas = async ({
   }
 };
 
-export const getFee = ({
-  gasLimit,
-  gasPrice,
-  network,
-  networkDenom,
-}: {
-  gasLimit?: number;
-  gasPrice?: number;
-  network: CosmosNetwork;
-  networkDenom: string;
-}) => {
+export const getFee = ({ gasLimit, networkDenom }: { gasLimit?: number; networkDenom: string }) => {
   if (!gasLimit) gasLimit = 200000;
-  if (!gasPrice) gasPrice = networkDefaultGasPrice[network] || 0.02;
 
-  const amount = ceil(new BigNumber(gasPrice).multipliedBy(gasLimit).toNumber());
   return {
-    amount: [coin(amount, networkDenom)],
+    amount: [coin(0, networkDenom)],
     gas: gasLimit.toString(),
   };
 };

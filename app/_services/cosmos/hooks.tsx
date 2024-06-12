@@ -193,7 +193,6 @@ export const useCosmosUndelegate = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: undelegateMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || defaultNetwork,
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
@@ -373,7 +372,6 @@ const useCosmosBroadcastAuthzTx = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: grantingMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || defaultNetwork,
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
@@ -498,7 +496,6 @@ const useCosmosBroadcastDelegateTx = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || defaultNetwork,
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
@@ -647,7 +644,6 @@ export const useCosmosWithdrawRewards = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: undelegateMsgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || defaultNetwork,
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
@@ -865,7 +861,6 @@ const useCosmosBroadcastRedelegateTx = ({
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
         gasLimit: estimatedGas,
-        network: network || defaultNetwork,
         networkDenom: networkInfo[network || defaultNetwork].denom,
       });
 
