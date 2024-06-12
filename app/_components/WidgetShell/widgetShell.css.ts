@@ -12,7 +12,7 @@ export const shell = style({
   background: colors.gradientBg,
   boxShadow: `0px 0px 25px 0px rgba(0, 0, 0, 0.25)`,
   inlineSize: `clamp(240px, calc(100vw - 20px), 340px)`,
-  blockSize: `clamp(400px, 520px, 540px)`,
+  blockSize: pxToRem(520),
   paddingBlockEnd: pxToRem(16),
   overflow: "hidden",
 });
