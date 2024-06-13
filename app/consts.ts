@@ -41,7 +41,7 @@ export const networkUrlParamRegex = /\b(celestia|celestiatestnet|cosmoshub|cosmo
 export const networkInfo: Record<Network, NetworkInfo> = {
   celestia: {
     id: "celestia",
-    name: "Celesita",
+    name: "Celestia",
     logo: CelestiaLogo,
     currency: networkCurrency.celestia,
     denom: "u" + networkCurrency.celestia.toLowerCase(),
