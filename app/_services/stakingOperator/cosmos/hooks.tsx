@@ -43,7 +43,7 @@ export const useCosmosDelegations = ({ address, network }: { address?: string; n
     refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
-  const stakedBalance = useStakedBalance({ delegations: data });
+  const stakedBalance = getCoinValueFromDenom({ network: network || "celestia", amount: data?.total.toString() });
 
   return { data, stakedBalance: !isLoading && !error ? stakedBalance : undefined, isLoading, error, refetch };
 };
@@ -299,17 +299,6 @@ export const useCosmosServerStatus = ({ network }: { network: Network | null }) 
   });
 
   return { data, isLoading, isRefetching, error, refetch };
-};
-
-const useStakedBalance = ({ delegations }: { delegations?: Array<T.DelegationResponseItem> }) => {
-  if (delegations === undefined) return undefined;
-  if (!delegations?.length) return "0";
-
-  const amount = delegations.reduce((acc, { balance }) => {
-    return acc.plus(balance.amount);
-  }, BigNumber(0));
-
-  return getCoinValueFromDenom({ network: "celestia", amount: amount.toString() });
 };
 
 const useFormattedUnbondingDelegations = (
