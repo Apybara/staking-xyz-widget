@@ -126,7 +126,7 @@ export const getUnbondingDelegations = async ({ apiUrl, address }: T.BaseParams)
 
 export const getDelegations = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.DelegationsResponse = await fetchData(`${apiUrl}address/fetch/delegate/${address}`);
-  return res.response.delegation_responses;
+  return res;
 };
 
 export const getExternalDelegations = async ({ apiUrl, address }: T.BaseParams) => {

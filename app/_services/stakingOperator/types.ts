@@ -171,10 +171,8 @@ export type DelegationsResponse = {
   message: string;
   response: {
     delegation_responses: Array<DelegationResponseItem>;
-    pagination: {
-      total: number;
-    };
   };
+  total: number;
 };
 
 export type ExternalDelegationsResponse = {
