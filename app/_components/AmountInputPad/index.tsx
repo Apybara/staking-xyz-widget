@@ -11,7 +11,12 @@ import {
 } from "../../_utils/conversions";
 import { getFormattedMantissa } from "../../_utils/number";
 import { removeLeadingAndTrailingZeros } from "../../_utils";
-import { defaultNetwork, fiatCurrencyMap, requiredBalanceStakingByNetwork } from "../../consts";
+import {
+  defaultNetwork,
+  fiatCurrencyMap,
+  networkCurrency as networkCurrencyMap,
+  requiredBalanceStakingByNetwork,
+} from "../../consts";
 import { RootAmountInputPad } from "./RootAmountInputPad";
 import * as AvailabilityText from "./AvailabilityText";
 import { getStringHasNumbersOnly } from "./InputField";
@@ -54,6 +59,7 @@ export const AmountInputPad = ({
 }: AmountInputPadProps) => {
   const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
+  const networkCurrency = networkCurrencyMap[castedNetwork];
 
   useEffect(() => {
     if (primaryValue === "") {
@@ -149,7 +155,7 @@ export const AmountInputPad = ({
           <Tooltip
             className={S.topBarTooltip}
             trigger={<Icon name="info" />}
-            content="0.05 TIA will be kept as a buffer on your balance to pay for future stake and unstake transactions."
+            content={`0.05 ${networkCurrency} will be kept as a buffer on your balance to pay for future stake and unstake transactions.`}
           />
         ) : null
       }
