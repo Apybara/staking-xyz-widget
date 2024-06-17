@@ -2,13 +2,16 @@ import Link from "next/link";
 import BigNumber from "bignumber.js";
 import { Icon } from "@/app/_components/Icon";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { useShell } from "@/app/_contexts/ShellContext";
 import { useAddressRewards, useNetworkReward, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { Skeleton } from "@/app/_components/Skeleton";
+import { defaultNetwork, networkCurrency as networkCurrencyMap } from "@/app/consts";
 
 import * as S from "./historyTable.css";
 
 export const HistoryEmptyState = () => {
+  const { network } = useShell();
   const stakeLink = useLinkWithSearchParams("stake");
   const { stakedBalance, isLoading: isStakedBalanceLoading } = useStakedBalance() || {};
   const { rewards, isLoading: isNetworkRewardsLoading } = useNetworkReward({ amount: stakedBalance }) || {};
@@ -26,6 +29,8 @@ export const HistoryEmptyState = () => {
 
   const nextCompounding = rewards?.nextCompoundingDays || 0;
   const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
+
+  const networkCurrency = networkCurrencyMap[network || defaultNetwork];
 
   return (
     <div className={S.emptyState}>
@@ -46,7 +51,7 @@ export const HistoryEmptyState = () => {
         ) : (
           `${formattedAccruedRewards}.`
         )}{" "}
-        The app will only compound if more than 1 TIA is accrued.
+        The app will only compound if more than 1 {networkCurrency} is accrued.
       </p>
 
       <Link href={stakeLink} className={S.button}>
