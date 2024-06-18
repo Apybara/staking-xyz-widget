@@ -47,11 +47,12 @@ const initialStates: T.WalletContext = {
     leapMobile: null,
     okx: null,
     walletConnect: null,
+    leoWallet: null,
   },
   activeWallet: null,
   address: null,
   connectionStatus: "disconnected",
   isEagerlyConnecting: undefined,
   keplrSuggestConnectError: false,
-  setStates: () => { },
+  setStates: () => {},
 };

@@ -1,9 +1,6 @@
 import type { TxProcedure, TxProcedureState, TxProcedureType } from "./types";
 import { useEffect, useState } from "react";
-import BigNumber from "bignumber.js";
 import { useCosmosTxProcedures } from "../cosmos/hooks";
-import { useShell } from "@/app/_contexts/ShellContext";
-import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
 import type { CosmosTxParams } from "../cosmos/types";
 // import { getStakeFees } from "@/app/_utils/transaction";
 
@@ -11,7 +8,7 @@ export const useTxProcedure = ({
   address,
   amount,
   network,
-  client,
+  wallet,
   type,
 }: CosmosTxParams & {
   type: TxProcedureType;
@@ -28,8 +25,8 @@ export const useTxProcedure = ({
   } = useCosmosTxProcedures({
     amount,
     network,
+    wallet,
     address,
-    client,
     type,
     authStep: {
       onPreparing: () => {

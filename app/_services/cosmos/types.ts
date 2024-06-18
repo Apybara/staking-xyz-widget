@@ -1,6 +1,5 @@
-import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { ChainWalletContext } from "@cosmos-kit/core";
-import type { CosmosNetwork } from "../../types";
+import type { Network, CosmosNetwork, WalletType } from "../../types";
 
 export type GetBalanceProps = {
   address: string | null;
@@ -9,9 +8,9 @@ export type GetBalanceProps = {
 };
 
 export type CosmosTxParams = {
-  client?: SigningStargateClient | null;
   amount?: string;
-  network?: CosmosNetwork;
+  network: Network | null;
+  wallet: WalletType | null;
   address?: string | null;
 };
 

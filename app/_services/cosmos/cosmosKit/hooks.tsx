@@ -1,6 +1,6 @@
 import type { ChainWalletContext } from "@cosmos-kit/core";
 import type { WalletStates } from "../../../_contexts/WalletContext/types";
-import type { Network, CosmosNetwork, CosmosWalletType } from "../../../types";
+import type { Network, CosmosNetwork, WalletType } from "../../../types";
 import type { UseWalletBalanceGettersProps } from "../../wallet/types";
 import type { GetBalanceProps } from "../types";
 import type { CosmosKitWalletType } from "./types";
@@ -44,7 +44,7 @@ export const useCosmosKitError = ({
   keplrSuggestConnectError,
 }: {
   network?: Network | null;
-  walletType: CosmosWalletType | null;
+  walletType: WalletType | null;
   modalOpen: boolean;
   keplrSuggestConnectError?: boolean;
 }) => {

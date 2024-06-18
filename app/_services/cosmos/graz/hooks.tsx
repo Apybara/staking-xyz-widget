@@ -6,10 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { fromBech32, toBech32 } from "@cosmjs/encoding";
 import { useConnect, useDisconnect, useActiveWalletType, useAccount, WalletType, useStargateClient } from "graz";
 import { useWallet } from "../../../_contexts/WalletContext";
-import { defaultNetwork } from "../../../consts";
 import { getIsCosmosNetwork, getCoinValueFromDenom } from "../utils";
 import { getIsGrazWalletType } from "./utils";
 import { chainInfo } from "./consts";
+
+const defaultNetwork = "celestia";
 
 export const useGrazConnectors = (network: CosmosNetwork) => {
   const { setStates } = useWallet();
@@ -76,16 +77,27 @@ export const useGrazWalletBalance = ({ address, network, activeWallet }: UseWall
   const { data, isLoading, error, refetch } = useQuery({
     enabled: isCosmosNetwork && isGrazWallet && !!client && !!address,
     queryKey: ["grazWalletBalance", address, network],
-    queryFn: async () =>
-      await client?.getAllBalances(
-        toBech32(chainInfo[network || defaultNetwork].bech32Config.bech32PrefixAccAddr, fromBech32(address!).data),
-      ),
+    queryFn: async () => {
+      try {
+        if (!isCosmosNetwork) throw new Error("Invalid Cosmos network.");
+        const castedNetwork = (network || defaultNetwork) as CosmosNetwork;
+
+        return await client?.getAllBalances(
+          toBech32(chainInfo[castedNetwork].bech32Config.bech32PrefixAccAddr, fromBech32(address!).data),
+        );
+      } catch (error) {
+        throw error;
+      }
+    },
     refetchOnWindowFocus: true,
     refetchInterval: 30000,
   });
 
   const amount = !isLoading && !error && !data?.[0]?.amount ? "0" : data?.[0]?.amount;
-  const balance = getCoinValueFromDenom({ network: network || defaultNetwork, amount });
+  const balance = getCoinValueFromDenom({
+    network: isCosmosNetwork ? (network as CosmosNetwork) : defaultNetwork,
+    amount,
+  });
   return {
     isLoading,
     error: error as Error,

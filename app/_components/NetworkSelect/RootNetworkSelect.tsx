@@ -13,6 +13,8 @@ export type RootNetworkSelectProps = {
 };
 
 export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDevice }: RootNetworkSelectProps) => {
+  const { enabledNetworks, disabledNetworks } = useNetworkOptions();
+
   return (
     <Select.Main
       defaultValue={activeNetwork}
@@ -28,10 +30,10 @@ export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDe
       }
       items={
         <>
-          {networkVariants.map((network) => (
+          {enabledNetworks.map((network) => (
             <NetworkItem network={network} key={"select-" + network} isOnMobileDevice={isOnMobileDevice} />
           ))}
-          {/* {disabledNetworks?.map((network) => (
+          {disabledNetworks?.map((network) => (
             <Select.Item key={"select-" + network} value={network.id as any} className={S.selectItemDisabled} disabled>
               <div className={cn(S.selectItemMain)}>
                 <Image src={network.logo} width={18} height={18} alt={`Logo of ${network}`} />
@@ -39,7 +41,7 @@ export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDe
               </div>
               <p className={cn(S.itemSuffixText)}>Coming soon</p>
             </Select.Item>
-          ))} */}
+          ))}
         </>
       }
     />
@@ -68,4 +70,13 @@ const NetworkItem = ({ network, isOnMobileDevice }: { network: Network; isOnMobi
       )}
     </Select.Item>
   );
+};
+
+const useNetworkOptions = () => {
+  const isAleoEnabled = process.env.NEXT_PUBLIC_ALEO_ENABLED === "true";
+
+  const enabledNetworks = isAleoEnabled ? networkVariants : networkVariants.filter((network) => network !== "aleo");
+  const disabledNetworks = isAleoEnabled ? [] : [networkInfo.aleo];
+
+  return { enabledNetworks, disabledNetworks };
 };

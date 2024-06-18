@@ -15,9 +15,9 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const { network, currency } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
 
-  if (network?.toLowerCase() === "aleo") {
-    redirect("https://aleo.staking.xyz");
-  }
+  // if (network?.toLowerCase() === "aleo") {
+  //   redirect("https://aleo.staking.xyz");
+  // }
 
   const isNetworkInvalid = !network || !networkUrlParamRegex.test(network);
   const isCurrencyInvalid = !currencyRegex.test(currency || "");

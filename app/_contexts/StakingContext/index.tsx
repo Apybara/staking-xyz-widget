@@ -24,8 +24,8 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   });
   const { procedures, resetStates } = useTxProcedure({
     address,
-    client: cosmosSigningClient,
     network: network || defaultNetwork,
+    wallet: activeWallet,
     amount: states.coinAmountInput || "",
     type: "delegate",
   });

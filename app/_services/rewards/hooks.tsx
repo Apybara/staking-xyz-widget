@@ -1,18 +1,17 @@
-import { useEffect, useState } from "react";
-import type { SigningStargateClient } from "@cosmjs/stargate";
-import type { Network } from "../../types";
+import type { Network, WalletType } from "../../types";
 import type { TxProcedure, TxProcedureState } from "../txProcedure/types";
+import { useEffect, useState } from "react";
 import { useCosmosTxProcedures } from "../cosmos/hooks";
 import { ClaimingStates } from "./types";
 
 export const useClaimingProcedures = ({
   address,
   network,
-  cosmosSigningClient,
+  wallet,
 }: {
   address: string | null;
   network: Network;
-  cosmosSigningClient?: SigningStargateClient;
+  wallet: WalletType | null;
 }): ClaimingStates => {
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
   const claimState = useProcedureStates();
@@ -21,8 +20,8 @@ export const useClaimingProcedures = ({
     useCosmosTxProcedures({
       type: "claim",
       network,
+      wallet,
       address,
-      client: cosmosSigningClient,
       signStep: {
         onPreparing: () => {
           claimState.setState("preparing");

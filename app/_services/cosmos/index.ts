@@ -1,9 +1,7 @@
 import type { OfflineSigner } from "@cosmjs/proto-signing";
 import type { ExtendedHttpEndpoint } from "@cosmos-kit/core";
-import type { CosmosNetwork } from "../../types";
+import type { Network } from "../../types";
 import type { GetBalanceProps } from "./types";
-import { ceil } from "mathjs";
-import BigNumber from "bignumber.js";
 import { cosmos } from "juno-network";
 import { Registry } from "@cosmjs/proto-signing";
 import {
@@ -15,9 +13,9 @@ import {
   createDistributionAminoConverters,
   coin,
 } from "@cosmjs/stargate";
-import { networkDefaultGasPrice, networkEndpoints } from "../../consts";
+import { networkEndpoints } from "../../consts";
 import { createAuthzAminoConverters } from "./amino";
-import { getCoinValueFromDenom, getChainAssets } from "./utils";
+import { getCoinValueFromDenom, getChainAssets, getIsCosmosNetwork } from "./utils";
 import { cosmosChainInfoId } from "./consts";
 
 const { GenericAuthorization } = cosmos.authz.v1beta1;
@@ -26,11 +24,11 @@ export const getSigningClient = async ({
   network,
   getOfflineSigner,
 }: {
-  network?: CosmosNetwork;
+  network?: Network;
   getOfflineSigner?: () => Promise<OfflineSigner>;
 }) => {
   try {
-    if (!network) {
+    if (!network || !getIsCosmosNetwork(network)) {
       throw new Error("Missing parameter: network.");
     }
 
