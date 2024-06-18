@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import type { TxType } from "@/app/types";
+import { TxProcedure } from "../txProcedure/types";
 import type * as T from "./types";
 import { usePostHog } from "posthog-js/react";
 
@@ -48,3 +51,50 @@ export function usePostHogEvent<E extends T.Event>(event: E): T.EventFunctionTyp
       throw new Error(`Unhandled event type: ${event}`);
   }
 }
+
+export const useTxPostHogEvents = ({
+  type,
+  open,
+  amount,
+  procedures,
+  uncheckedProcedures,
+}: {
+  type: TxType;
+  open: boolean;
+  amount: string;
+  procedures?: Array<TxProcedure>;
+  uncheckedProcedures: Array<TxProcedure>;
+}) => {
+  const hasAuthApproval = uncheckedProcedures?.[0]?.step === "sign";
+
+  // still figuring out how to conditionally determine the events
+  const captureFlowStart = usePostHogEvent("stake_tx_flow_started");
+  const captureAuthSuccess = usePostHogEvent("stake_tx_flow_auth_succeeded");
+  const captureAuthFailed = usePostHogEvent("stake_tx_flow_auth_failed");
+  const captureSignSuccess = usePostHogEvent("stake_tx_flow_delegate_succeeded");
+  const captureSignFailed = usePostHogEvent("stake_tx_flow_delegate_failed");
+
+  const authProcedure = procedures?.find((procedure) => procedure.step === "auth");
+  const signProcedure = procedures?.find((procedure) => procedure.step === "sign");
+
+  useEffect(() => {
+    if (open) {
+      captureFlowStart({ amount, hasAuthApproval });
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!hasAuthApproval) {
+      if (authProcedure?.state === "success") {
+        captureAuthSuccess();
+      } else if (authProcedure?.state === "error") {
+        captureAuthFailed();
+      }
+    }
+    if (signProcedure?.state === "success") {
+      captureSignSuccess();
+    } else if (signProcedure?.state === "error") {
+      captureSignFailed();
+    }
+  }, [hasAuthApproval, authProcedure?.step, signProcedure?.state]);
+};
