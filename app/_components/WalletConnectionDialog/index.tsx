@@ -6,6 +6,7 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useProceduralStates } from "../../_utils/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
+import { useLeoWalletConnectError } from "@/app/_services/aleo/leoWallet/hooks";
 import { useWalletConnectors, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { networkWalletInfos, defaultNetwork } from "../../consts";
@@ -27,6 +28,7 @@ export const WalletConnectionDialog = () => {
     walletType: connectingWallet,
     keplrSuggestConnectError,
   });
+  const leoWalletConnectError = useLeoWalletConnectError();
 
   // Success connection event is tracked in WalletContext
   const captureWalletConnectFailed = usePostHogEvent("wallet_connect_failed");
@@ -54,15 +56,15 @@ export const WalletConnectionDialog = () => {
     }
   }, [open, connectionStatus, isEagerlyConnecting]);
 
-  // This is a hacky handling of the connection error with CosmosKit
-  // because CosmosKit doesn't throw an error from the `connect` method.
+  // This is a hacky handling of the connection error with CosmosKit and LeoWallet
+  // because both don't throw errors from the `connect` methods.
   useEffect(() => {
     if (connectionStatus === "connecting") return;
-    if (open && cosmosKitConnectionError && connectingWallet) {
+    if (open && (cosmosKitConnectionError || leoWalletConnectError) && connectingWallet) {
       setError(new Error(`Failed to connect to ${connectingWallet}`));
       captureWalletConnectFailed({ wallet: connectingWallet, address: "" });
     }
-  }, [open, cosmosKitConnectionError, connectingWallet, connectionStatus]);
+  }, [open, cosmosKitConnectionError, leoWalletConnectError, connectingWallet, connectionStatus]);
 
   return (
     <RootWalletConnectionDialog

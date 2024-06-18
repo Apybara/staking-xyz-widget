@@ -1,4 +1,4 @@
-import type { Network } from "../../../types";
+import type { CosmosNetwork, Network } from "../../../types";
 import type * as T from "../types";
 import { useEffect, useState } from "react";
 import { fromUnixTime } from "date-fns";
@@ -32,23 +32,27 @@ export const useCosmosAddressAuthCheck = ({ address, network }: { address?: stri
 };
 
 export const useCosmosDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
+
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCosmosNetwork(network || ""),
+    enabled: !!address && !!isCosmosNetwork,
     queryKey: ["cosmosDelegations", address, network],
-    queryFn: () =>
-      getDelegations({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address: address || "" }),
+    queryFn: () => getDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
     refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
-  const stakedBalance = getCoinValueFromDenom({ network: network || "celestia", amount: data?.total.toString() });
+  const stakedBalance = getCoinValueFromDenom({ network: castedNetwork, amount: data?.total.toString() });
 
   return { data, stakedBalance: !isLoading && !error ? stakedBalance : undefined, isLoading, error, refetch };
 };
 
 export const useCosmosExternalDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
-  const castedNetwork = network || "celestia";
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
+
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCosmosNetwork(network || ""),
+    enabled: !!address && !!isCosmosNetwork,
     queryKey: ["cosmosExternalDelegations", address, network],
     queryFn: () =>
       getExternalDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
@@ -74,17 +78,19 @@ export const useCosmosAddressActivity = ({
 }: T.AddressActivityPaginationParams & { network: Network | null; address?: string; refetchInterval?: number }) => {
   const queryClient = useQueryClient();
   const [hasInProgress, setHasInProgress] = useState(false);
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
 
   const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressActivityResponse | null,
     T.AddressActivityResponse
   >({
-    enabled: !!address && getIsCosmosNetwork(network || ""),
+    enabled: !!address && !!isCosmosNetwork,
     queryKey: ["addressActivity", address, offset, limit, filterKey, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressActivity({
-        apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
+        apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
         address,
         offset,
         limit,
@@ -104,7 +110,7 @@ export const useCosmosAddressActivity = ({
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressActivity({
-            apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
+            apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
             address,
             offset: nextOffset,
             limit,
@@ -131,7 +137,7 @@ export const useCosmosAddressActivity = ({
     data: data?.data,
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
-      amount: getCoinValueFromDenom({ network: network || "celestia", amount: entry.amount }),
+      amount: getCoinValueFromDenom({ network: castedNetwork, amount: entry.amount }),
       completionTime: entry.completionTime
         ? getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0))
         : undefined,
@@ -174,15 +180,18 @@ export const useCosmosUnbondingDelegations = ({ address, network }: { address?: 
 };
 
 export const useCosmosAddressRewards = ({ network, address }: { network: Network | null; address?: string }) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
+
   const { data, error, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressRewardsResponse | null,
     T.AddressRewardsResponse
   >({
-    enabled: !!address && getIsCosmosNetwork(network || ""),
+    enabled: !!address && !!isCosmosNetwork,
     queryKey: ["addressRewards", address, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
-      return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "celestia"], address });
+      return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address });
     },
     refetchInterval: 12000, // 12 seconds
     placeholderData: keepPreviousData,
@@ -193,13 +202,13 @@ export const useCosmosAddressRewards = ({ network, address }: { network: Network
     isLoading: isLoading || status === "pending",
     isFetching,
     data: {
-      total_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.total_rewards }),
+      total_rewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.total_rewards }),
       last_cycle_rewards: getCoinValueFromDenom({
-        network: network || "celestia",
+        network: castedNetwork,
         amount: data?.data?.last_cycle_rewards,
       }),
-      daily_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.daily_rewards }),
-      accrued_rewards: getCoinValueFromDenom({ network: network || "celestia", amount: data?.data?.accrued_rewards }),
+      daily_rewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.daily_rewards }),
+      accrued_rewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.accrued_rewards }),
     },
     refetch,
   };
@@ -213,17 +222,19 @@ export const useCosmosAddressRewardsHistory = ({
   filterKey,
 }: T.AddressRewardsHistoryPaginationParams & { network: Network | null; address?: string }) => {
   const queryClient = useQueryClient();
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
 
   const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
     T.AddressRewardsHistoryResponse | null,
     T.AddressRewardsHistoryResponse
   >({
-    enabled: !!address && getIsCosmosNetwork(network || ""),
+    enabled: !!address && !!isCosmosNetwork,
     queryKey: ["addressRewardsHistory", address, offset, limit, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressRewardsHistory({
-        apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
+        apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
         address,
         offset,
         limit,
@@ -243,7 +254,7 @@ export const useCosmosAddressRewardsHistory = ({
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressRewardsHistory({
-            apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
+            apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
             address,
             offset: nextOffset,
             limit,
@@ -265,7 +276,7 @@ export const useCosmosAddressRewardsHistory = ({
     data: data?.data,
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
-      amount: getCoinValueFromDenom({ network: network || "celestia", amount: entry.amount }),
+      amount: getCoinValueFromDenom({ network: castedNetwork, amount: entry.amount }),
     })),
     totalEntries,
     lastOffset,

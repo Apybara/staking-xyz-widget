@@ -1,6 +1,6 @@
 import type { IndexedTx } from "@cosmjs/stargate";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
-import type { CosmosNetwork, CosmosWalletType } from "../../types";
+import type { Network, WalletType, CosmosNetwork, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
 import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
@@ -9,13 +9,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { getStakeFees } from "../../_utils/transaction";
 import { setMonitorTx, setMonitorGrantTx } from "../stakingOperator/cosmos/";
 import { useCosmosAddressAuthCheck } from "../stakingOperator/cosmos/hooks";
-import {
-  cosmosNetworkVariants,
-  networkInfo,
-  feeReceiverByNetwork,
-  defaultNetwork,
-  stakingOperatorUrlByNetwork,
-} from "../../consts";
+import { cosmosNetworkVariants, networkInfo, feeReceiverByNetwork, stakingOperatorUrlByNetwork } from "../../consts";
 import { getIsCosmosKitWalletType } from "./cosmosKit/utils";
 import {
   useCosmosKitConnectors,
@@ -26,7 +20,7 @@ import {
 } from "./cosmosKit/hooks";
 import { getGrazWalletTypeEnum, getIsGrazWalletType } from "./graz/utils";
 import { useGrazConnectors, useGrazDisconnector, useGrazWalletBalance, useGrazWalletStates } from "./graz/hooks";
-import { getDenomValueFromCoin, getIsCosmosNetwork } from "./utils";
+import { getDenomValueFromCoin, getIsCosmosNetwork, getIsCosmosWalletType } from "./utils";
 import type { CosmosTxParams, CosmosTxStep } from "./types";
 import { getSigningClient, getGrantingMessages, getEstimatedGas, getFee } from ".";
 import Tooltip from "@/app/_components/Tooltip";
@@ -34,11 +28,13 @@ import { Icon } from "@/app/_components/Icon";
 import { CosmosStakingMsgType } from "../stakingOperator/types";
 import { getOperatorMessage, getOperatorValidatorMessages } from "../stakingOperator/cosmos/";
 
+const defaultNetwork = "celestia";
+
 export const useCosmosTxProcedures = ({
   amount,
   network,
+  wallet,
   address,
-  client,
   type,
   authStep,
   signStep,
@@ -48,6 +44,7 @@ export const useCosmosTxProcedures = ({
   signStep: CosmosTxStep;
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
+
   // const {
   //   data: authCheck,
   //   isLoading,
@@ -67,8 +64,8 @@ export const useCosmosTxProcedures = ({
 
   const cosmosTx = useCosmosBroadcastTx({
     type,
-    client: client || null,
-    network: network && isCosmosNetwork ? network : undefined,
+    network: network || null,
+    wallet: wallet || null,
     address: address || undefined,
     amount,
     onPreparing: signStep.onPreparing,
@@ -117,8 +114,8 @@ export const useCosmosTxProcedures = ({
 };
 
 const useCosmosBroadcastAuthzTx = ({
-  client,
   network,
+  wallet,
   address,
   onPreparing,
   onLoading,
@@ -126,6 +123,10 @@ const useCosmosBroadcastAuthzTx = ({
   onSuccess,
   onError,
 }: CosmosTxParams & CosmosTxStep) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : defaultNetwork) as CosmosNetwork;
+  const { data: client } = useCosmosSigningClient({ network, wallet });
+
   const { error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosAuthzTx", address, network],
     mutationFn: async () => {
@@ -137,7 +138,7 @@ const useCosmosBroadcastAuthzTx = ({
 
       const grantingMsgs = getGrantingMessages({
         granter: address,
-        grantee: granteeAddress[network || defaultNetwork],
+        grantee: granteeAddress[castedNetwork],
       });
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: grantingMsgs });
       const fee = getFee({
@@ -195,9 +196,9 @@ const useCosmosBroadcastAuthzTx = ({
 
 const useCosmosBroadcastTx = ({
   type,
-  client,
   amount,
   network,
+  wallet,
   address,
   onPreparing,
   onLoading,
@@ -206,6 +207,9 @@ const useCosmosBroadcastTx = ({
   onError,
 }: CosmosTxParams & CosmosTxStep & { type: TxProcedureType }) => {
   const { mutationKey, operatorUrl, typeUrl } = broadcastTxMap[type];
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const castedNetwork = (isCosmosNetwork ? network : defaultNetwork) as CosmosNetwork;
+  const { data: client } = useCosmosSigningClient({ network, wallet });
 
   const { error, mutate, reset } = useMutation({
     mutationKey: [mutationKey, address, amount, network],
@@ -216,15 +220,15 @@ const useCosmosBroadcastTx = ({
 
       onPreparing?.();
 
-      const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
+      const denomAmount = getDenomValueFromCoin({ network: castedNetwork, amount });
       const { unsignedMessage, uuid } = await getOperatorMessage({
-        apiUrl: `${stakingOperatorUrlByNetwork[network || defaultNetwork]}${operatorUrl}`,
+        apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
         address,
         amount: Number(denomAmount),
       });
       const operatorValues = getOperatorValidatorMessages(unsignedMessage, typeUrl);
-      // const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
+      // const feeReceiver = feeReceiverByNetwork[castedNetwork];
+      // const feeAmount = getStakeFees({ amount: denomAmount, network: castedNetwork, floorResult: true });
 
       if (!operatorValues.length) {
         throw new Error("Missing parameter: validatorAddress");
@@ -420,23 +424,22 @@ export const useCosmosWalletSupports = () => {
   } as Record<CosmosWalletType, boolean>;
 };
 
-export const useCosmosSigningClient = ({
-  network,
-  wallet,
-}: {
-  network?: CosmosNetwork;
-  wallet: CosmosWalletType | null;
-}) => {
-  const offlineSignerGetter = useOfflineSignerGetter({ network, wallet });
+export const useCosmosSigningClient = ({ network, wallet }: { network: Network | null; wallet: WalletType | null }) => {
+  const isCosmosNetwork = getIsCosmosNetwork(network || "");
+  const isCosmosWallet = !!wallet && getIsCosmosWalletType(wallet);
+  const castedNetwork = (isCosmosNetwork ? network : defaultNetwork) as CosmosNetwork;
+  const castedWallet = isCosmosWallet ? (wallet as CosmosWalletType) : null;
+
+  const offlineSignerGetter = useOfflineSignerGetter({ network: castedNetwork, wallet: castedWallet });
 
   const {
     data: signingClient,
     isLoading,
     error,
   } = useQuery({
-    enabled: !!network && !!wallet,
+    enabled: !!network && !!wallet && isCosmosNetwork,
     queryKey: ["cosmosSigningClient", network, wallet, !!offlineSignerGetter],
-    queryFn: () => getSigningClient({ network, getOfflineSigner: offlineSignerGetter }),
+    queryFn: () => getSigningClient({ network: network || undefined, getOfflineSigner: offlineSignerGetter }),
   });
 
   return { data: signingClient, isLoading, error };

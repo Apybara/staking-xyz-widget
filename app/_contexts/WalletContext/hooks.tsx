@@ -8,12 +8,15 @@ import {
   useCosmosWalletSupports,
   useCosmosWalletHasStoredConnection,
 } from "../../_services/cosmos/hooks";
+import { getIsAleoNetwork } from "../../_services/aleo/utils";
+import { useAleoWalletSupports, useAleoWalletStates } from "../../_services/aleo/hooks";
 
 export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const cosmosWalletsSupport = useCosmosWalletSupports();
+  const aleoWalletsSupport = useAleoWalletSupports();
 
   useEffect(() => {
-    setStates({ walletsSupport: { ...cosmosWalletsSupport } });
+    setStates({ walletsSupport: { ...cosmosWalletsSupport, ...aleoWalletsSupport } });
   }, [
     cosmosWalletsSupport.keplr,
     cosmosWalletsSupport.keplrMobile,
@@ -21,6 +24,7 @@ export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setS
     cosmosWalletsSupport.leapMobile,
     cosmosWalletsSupport.okx,
     cosmosWalletsSupport.walletConnect,
+    aleoWalletsSupport.leoWallet,
   ]);
 
   return null;
@@ -28,12 +32,20 @@ export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setS
 
 export const useActiveWalletStates = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const { network } = useShell();
+
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
   const cosmosWalletStates = useCosmosWalletStates({ network: isCosmosNetwork ? network : undefined });
+
+  const isAleoNetwork = network && getIsAleoNetwork(network);
+  const aleoWalletStates = useAleoWalletStates();
 
   useEffect(() => {
     if (isCosmosNetwork) {
       setStates(cosmosWalletStates);
+      return;
+    }
+    if (isAleoNetwork) {
+      setStates(aleoWalletStates);
       return;
     }
   }, [
@@ -41,10 +53,17 @@ export const useActiveWalletStates = ({ setStates }: { setStates: WalletStates["
     cosmosWalletStates.activeWallet,
     cosmosWalletStates.connectionStatus,
     cosmosWalletStates.address,
+    isAleoNetwork,
+    aleoWalletStates?.activeWallet,
+    aleoWalletStates?.connectionStatus,
+    aleoWalletStates?.address,
   ]);
 
   if (isCosmosNetwork) {
     return cosmosWalletStates;
+  }
+  if (isAleoNetwork) {
+    return aleoWalletStates;
   }
 };
 

@@ -29,8 +29,8 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   });
   const { procedures, resetStates } = useTxProcedure({
     address,
-    client: cosmosSigningClient,
     network: network || defaultNetwork,
+    wallet: activeWallet,
     amount: states.coinAmountInput || "",
     type: "undelegate",
   });

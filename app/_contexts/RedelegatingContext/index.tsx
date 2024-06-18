@@ -32,8 +32,8 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
   });
   const { procedures, resetStates } = useTxProcedure({
     address,
-    client: cosmosSigningClient,
     network: network || defaultNetwork,
+    wallet: activeWallet,
     amount,
     type: "redelegate",
   });

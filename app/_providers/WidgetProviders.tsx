@@ -8,6 +8,7 @@ import { WalletProvider } from "../_contexts/WalletContext";
 import { UIContextProvider } from "../_contexts/UIContext";
 import { WidgetProvider } from "../_contexts/WidgetContext";
 import { CosmosProviders } from "./Cosmos";
+import { AleoProviders } from "./Aleo";
 import { PostHogProvider } from "./PostHog";
 
 const PostHogPageView = dynamic(
@@ -36,14 +37,16 @@ export const WidgetProviders = ({
       <QueryClientProvider client={queryClient}>
         <ShellProvider initialCoinPrice={initialCoinPrice} isOnMobileDevice={isOnMobileDevice}>
           <CosmosProviders walletConnectAPIKey={walletConnectAPIKey}>
-            <WalletProvider>
-              <UIContextProvider>
-                <WidgetProvider>
-                  <PostHogPageView />
-                  {children}
-                </WidgetProvider>
-              </UIContextProvider>
-            </WalletProvider>
+            <AleoProviders>
+              <WalletProvider>
+                <UIContextProvider>
+                  <WidgetProvider>
+                    <PostHogPageView />
+                    {children}
+                  </WidgetProvider>
+                </UIContextProvider>
+              </WalletProvider>
+            </AleoProviders>
           </CosmosProviders>
         </ShellProvider>
       </QueryClientProvider>

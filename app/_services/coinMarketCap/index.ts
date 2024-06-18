@@ -9,12 +9,17 @@ export const getAllCoinPrices = async ({
 }: Omit<GetCoinPriceProps, "network">) => {
   const celestiaPrice = await getCoinPriceByNetwork({ network: "celestia", amount, currency });
   const cosmoshubPrice = await getCoinPriceByNetwork({ network: "cosmoshub", amount, currency });
+  const aleoPrice = {
+    USD: 1,
+    EUR: 1,
+  }; // TODO: Add Aleo price
 
   return {
     celestia: celestiaPrice.formatted,
     celestiatestnet3: celestiaPrice.formatted,
     cosmoshub: cosmoshubPrice.formatted,
     cosmoshubtestnet: cosmoshubPrice.formatted,
+    aleo: aleoPrice,
   };
 };
 
