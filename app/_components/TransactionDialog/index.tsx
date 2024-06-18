@@ -11,6 +11,7 @@ import StakeIcon from "./stakeIcon.svg";
 import UnstakeIcon from "./unstakeIcon.svg";
 import RedelegateIcon from "./redelegateIcon.svg";
 import * as S from "./delegationDialog.css";
+import { TxType } from "@/app/types";
 
 export const Shell = ({ dialog, children }: ShellProps) => {
   return (
@@ -137,7 +138,7 @@ export type ShellProps = {
   children: ReactNode;
 };
 export type TopBoxProps = {
-  type: "stake" | "unstake" | "redelegate" | "claim";
+  type: TxType;
 };
 export type StepItemProps = {
   state: "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";

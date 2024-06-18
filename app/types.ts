@@ -52,4 +52,6 @@ export type RouterStruct = {
   };
 };
 
+export type TxType = "stake" | "unstake" | "redelegate" | "claim";
+
 type Device = "mobile" | "desktop";
