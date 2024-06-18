@@ -163,7 +163,10 @@ const getCheckedProcedures = (procedures: Array<RedelegateProcedure>) => {
   return procedures.filter((procedure) => procedure.state === "success");
 };
 const getHasLoadingProcedures = (procedures: Array<RedelegateProcedure>) => {
-  return procedures.some((procedure) => procedure.state === "loading");
+  return procedures.some(
+    (procedure) =>
+      procedure.state === "preparing" || procedure.state === "loading" || procedure.state === "broadcasting",
+  );
 };
 const getActiveProcedure = (procedures: Array<RedelegateProcedure>) => {
   return procedures.find((procedure) => procedure.state !== "success");
