@@ -1,27 +1,13 @@
-import type { IndexedTx, SigningStargateClient } from "@cosmjs/stargate";
-import type { BaseStakeProcedure } from "../stake/types";
-import type { BaseUnstakeProcedure } from "../unstake/types";
-import type { BaseRedelegateProcedure } from "../redelegate/types";
-import type { BaseClaimProcedure } from "../rewards/types";
-import type { CosmosNetwork, Network, CosmosWalletType } from "../../types";
+import type { IndexedTx } from "@cosmjs/stargate";
+import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
+import type { CosmosNetwork, CosmosWalletType } from "../../types";
 import { useEffect } from "react";
 import useLocalStorage from "use-local-storage";
 import { useChain } from "@cosmos-kit/react-lite";
 import { getOfflineSigners } from "graz";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getStakeFees } from "../../_utils/transaction";
-import {
-  getDelegateMessage,
-  getDelegateValidatorMessages,
-  getUndelegateMessage,
-  getUndelegateValidatorMessages,
-  setMonitorTx,
-  setMonitorGrantTx,
-  getRedelegateMessage,
-  getRedelegateValidatorMessages,
-  getWithdrawRewardsMessage,
-  getWithdrawRewardsValidatorMessages,
-} from "../stakingOperator/cosmos";
+import { setMonitorTx, setMonitorGrantTx } from "../stakingOperator/cosmos/";
 import { useCosmosAddressAuthCheck } from "../stakingOperator/cosmos/hooks";
 import {
   cosmosNetworkVariants,
@@ -41,234 +27,25 @@ import {
 import { getGrazWalletTypeEnum, getIsGrazWalletType } from "./graz/utils";
 import { useGrazConnectors, useGrazDisconnector, useGrazWalletBalance, useGrazWalletStates } from "./graz/hooks";
 import { getDenomValueFromCoin, getIsCosmosNetwork } from "./utils";
+import type { CosmosTxParams, CosmosTxStep } from "./types";
 import { getSigningClient, getGrantingMessages, getEstimatedGas, getFee } from ".";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
+import { CosmosStakingMsgType } from "../stakingOperator/types";
+import { getOperatorMessage, getOperatorValidatorMessages } from "../stakingOperator/cosmos/";
 
-export const useCosmosUnstakingProcedures = ({
+export const useCosmosTxProcedures = ({
   amount,
   network,
   address,
-  cosmosSigningClient,
-  authStep,
-  undelegateStep,
-}: {
-  amount: string;
-  network: Network | null;
-  address: string | null;
-  cosmosSigningClient?: SigningStargateClient;
-  authStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error) => void;
-  };
-  undelegateStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error) => void;
-  };
-}) => {
-  const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  // const {
-  //   data: authCheck,
-  //   isLoading,
-  //   refetch,
-  // } = useCosmosAddressAuthCheck({ network, address: address || undefined });
-
-  // const authTx = useCosmosBroadcastAuthzTx({
-  //   client: cosmosSigningClient || null,
-  //   network: network && isCosmosNetwork ? network : undefined,
-  //   address: address || undefined,
-  //   onPreparing: authStep.onPreparing,
-  //   onLoading: authStep.onLoading,
-  //   onBroadcasting: authStep.onBroadcasting,
-  //   onSuccess: authStep.onSuccess,
-  //   onError: authStep.onError,
-  // });
-
-  const undelegateTx = useCosmosUndelegate({
-    client: cosmosSigningClient || null,
-    network: network && isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    amount,
-    onPreparing: undelegateStep.onPreparing,
-    onLoading: undelegateStep.onLoading,
-    onBroadcasting: undelegateStep.onBroadcasting,
-    onSuccess: undelegateStep.onSuccess,
-    onError: undelegateStep.onError,
-  });
-
-  if (!isCosmosNetwork || !address) return null;
-
-  const procedures = [
-    // {
-    //   step: "auth",
-    //   stepName: "Approval in wallet",
-    //   send: authTx.send,
-    //   tooltip: (
-    //     <Tooltip
-    //       className={StakeStyle.approvalTooltip}
-    //       trigger={<Icon name="info" />}
-    //       content={
-    //         <>
-    //           This approval lets Staking.xyz manage only staking actions on your behalf. You will always have full
-    //           control of your funds. <a href={process.env.NEXT_PUBLIC_AUTHORIZATION_DOC_LINK}>(Read more)</a>
-    //         </>
-    //       }
-    //     />
-    //   ),
-    // },
-    {
-      step: "undelegate",
-      stepName: "Sign in wallet",
-      send: undelegateTx.send,
-    } as BaseUnstakeProcedure,
-  ];
-
-  return {
-    baseProcedures: procedures,
-    // isAuthApproved: authCheck?.granted,
-    // authTxHash: authCheck?.txnHash,
-    // refetchAuthCheck: refetch,
-    isAuthApproved: true,
-    authTxHash: undefined,
-    refetchAuthCheck: () => null,
-  };
-};
-
-export const useCosmosUndelegate = ({
   client,
-  amount,
-  network,
-  address,
-  onPreparing,
-  onLoading,
-  onBroadcasting,
-  onSuccess,
-  onError,
-}: {
-  client: SigningStargateClient | null;
-  amount: string;
-  network?: CosmosNetwork;
-  address?: string;
-  onPreparing?: () => void;
-  onLoading?: () => void;
-  onBroadcasting?: () => void;
-  onSuccess?: (txHash: string) => void;
-  onError?: (e: Error) => void;
-}) => {
-  const { error, mutate, reset } = useMutation({
-    mutationKey: ["signUndelegateCosmosMessage", address, amount, network],
-    mutationFn: async () => {
-      if (!client || !address) {
-        throw new Error("Missing parameter: client, address");
-      }
-      onPreparing?.();
-
-      const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
-      const { unsignedMessage, uuid } = await getUndelegateMessage({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        address,
-        amount: Number(denomAmount),
-      });
-      const undelegateValues = getUndelegateValidatorMessages(unsignedMessage);
-
-      if (!undelegateValues.length) {
-        throw new Error("Missing parameter: validatorAddress");
-      }
-
-      const undelegateMsgs = undelegateValues.map((val) => ({
-        typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
-        value: {
-          delegatorAddress: address,
-          validatorAddress: val.validator,
-          amount: val.amount,
-        },
-      }));
-
-      const estimatedGas = await getEstimatedGas({ client, address, msgArray: undelegateMsgs });
-      const fee = getFee({
-        gasLimit: estimatedGas,
-        networkDenom: networkInfo[network || defaultNetwork].denom,
-      });
-
-      onLoading?.();
-      const txHash = await client.signAndBroadcastSync(address, undelegateMsgs, fee);
-
-      onBroadcasting?.();
-      let txResult = null;
-      const getTxResult = async (txHash: string) => {
-        while (txHash) {
-          const res = await client.getTx(txHash);
-          if (res) {
-            return res;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      };
-      txResult = await getTxResult(txHash);
-
-      return {
-        tx: {
-          ...txResult,
-          transactionHash: txHash,
-        },
-        uuid,
-      };
-    },
-    onSuccess: ({ tx, uuid }) => {
-      onSuccess?.(tx.transactionHash);
-      setMonitorTx({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        txHash: tx.transactionHash,
-        uuid,
-      });
-    },
-    onError: (error) => onError?.(error),
-  });
-
-  useEffect(() => {
-    if (error) {
-      onError?.(error);
-    }
-  }, [error]);
-
-  return {
-    reset,
-    send: mutate,
-  };
-};
-
-export const useCosmosStakingProcedures = ({
-  amount,
-  network,
-  address,
-  cosmosSigningClient,
+  type,
   authStep,
-  delegateStep,
-}: {
-  amount: string;
-  network: Network | null;
-  address: string | null;
-  cosmosSigningClient?: SigningStargateClient;
-  authStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error, txHash?: string) => void;
-  };
-  delegateStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error, txHash?: string) => void;
-  };
+  signStep,
+}: CosmosTxParams & {
+  type: TxProcedureType;
+  authStep?: CosmosTxStep;
+  signStep: CosmosTxStep;
 }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
   // const {
@@ -278,30 +55,32 @@ export const useCosmosStakingProcedures = ({
   // } = useCosmosAddressAuthCheck({ network, address: address || undefined });
 
   // const cosmosAuthTx = useCosmosBroadcastAuthzTx({
-  //   client: cosmosSigningClient || null,
+  //   client: client || null,
   //   network: network && isCosmosNetwork ? network : undefined,
   //   address: address || undefined,
-  //   onPreparing: authStep.onPreparing,
-  //   onLoading: authStep.onLoading,
-  //   onBroadcasting: authStep.onBroadcasting,
-  //   onSuccess: authStep.onSuccess,
-  //   onError: authStep.onError,
+  //   onPreparing: authStep?.onPreparing,
+  //   onLoading: authStep?.onLoading,
+  //   onBroadcasting: authStep?.onBroadcasting,
+  //   onSuccess: authStep?.onSuccess,
+  //   onError: authStep?.onError,
   // });
-  const cosmosDelegateTx = useCosmosBroadcastDelegateTx({
-    client: cosmosSigningClient || null,
+
+  const cosmosTx = useCosmosBroadcastTx({
+    type,
+    client: client || null,
     network: network && isCosmosNetwork ? network : undefined,
     address: address || undefined,
     amount,
-    onPreparing: delegateStep.onPreparing,
-    onLoading: delegateStep.onLoading,
-    onBroadcasting: delegateStep.onBroadcasting,
-    onSuccess: delegateStep.onSuccess,
-    onError: delegateStep.onError,
+    onPreparing: signStep.onPreparing,
+    onLoading: signStep.onLoading,
+    onBroadcasting: signStep.onBroadcasting,
+    onSuccess: signStep.onSuccess,
+    onError: signStep.onError,
   });
 
   if (!isCosmosNetwork || !address) return null;
 
-  const baseProcedures: Array<BaseStakeProcedure> = [
+  const baseProcedures: Array<BaseTxProcedure> = [
     // {
     //   step: "auth",
     //   stepName: "Approval in wallet",
@@ -320,10 +99,10 @@ export const useCosmosStakingProcedures = ({
     //   ),
     // },
     {
-      step: "delegate",
+      step: "sign",
       stepName: "Sign in wallet",
-      send: cosmosDelegateTx.send,
-    } as BaseStakeProcedure,
+      send: cosmosTx.send,
+    } as BaseTxProcedure,
   ];
 
   return {
@@ -346,16 +125,7 @@ const useCosmosBroadcastAuthzTx = ({
   onBroadcasting,
   onSuccess,
   onError,
-}: {
-  client: SigningStargateClient | null;
-  network?: CosmosNetwork;
-  address?: string;
-  onPreparing?: () => void;
-  onLoading?: () => void;
-  onBroadcasting?: () => void;
-  onSuccess?: (txHash: string) => void;
-  onError?: (e: Error, txHash?: string) => void;
-}) => {
+}: CosmosTxParams & CosmosTxStep) => {
   const { error, mutate, reset } = useMutation({
     mutationKey: ["broadcastCosmosAuthzTx", address, network],
     mutationFn: async () => {
@@ -423,7 +193,8 @@ const useCosmosBroadcastAuthzTx = ({
   };
 };
 
-const useCosmosBroadcastDelegateTx = ({
+const useCosmosBroadcastTx = ({
+  type,
   client,
   amount,
   network,
@@ -433,19 +204,11 @@ const useCosmosBroadcastDelegateTx = ({
   onBroadcasting,
   onSuccess,
   onError,
-}: {
-  client: SigningStargateClient | null;
-  amount: string;
-  network?: CosmosNetwork;
-  address?: string;
-  onPreparing?: () => void;
-  onLoading?: () => void;
-  onBroadcasting?: () => void;
-  onSuccess?: (txHash: string) => void;
-  onError?: (e: Error, txHash?: string) => void;
-}) => {
+}: CosmosTxParams & CosmosTxStep & { type: TxProcedureType }) => {
+  const { mutationKey, operatorUrl, typeUrl } = broadcastTxMap[type];
+
   const { error, mutate, reset } = useMutation({
-    mutationKey: ["broadcastCosmosDelegateTx", address, amount, network],
+    mutationKey: [mutationKey, address, amount, network],
     mutationFn: async () => {
       if (!client || !address) {
         throw new Error("Missing parameter: client, address");
@@ -454,387 +217,24 @@ const useCosmosBroadcastDelegateTx = ({
       onPreparing?.();
 
       const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
-      const { unsignedMessage, uuid } = await getDelegateMessage({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
+      const { unsignedMessage, uuid } = await getOperatorMessage({
+        apiUrl: `${stakingOperatorUrlByNetwork[network || defaultNetwork]}${operatorUrl}`,
         address,
         amount: Number(denomAmount),
       });
-      const delegateValues = getDelegateValidatorMessages(unsignedMessage);
+      const operatorValues = getOperatorValidatorMessages(unsignedMessage, typeUrl);
       // const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
       // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
 
-      if (!delegateValues.length) {
+      if (!operatorValues.length) {
         throw new Error("Missing parameter: validatorAddress");
       }
 
-      const delegateMsgs = delegateValues.map((val) => ({
-        typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+      const operatorMsgs = operatorValues.map((val) => ({
+        typeUrl,
         value: {
           delegatorAddress: address,
           validatorAddress: val.validator,
-          amount: val.amount,
-        },
-      }));
-      // const feeCollectMsgs = [
-      //   {
-      //     typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-      //     value: {
-      //       fromAddress: address,
-      //       toAddress: feeReceiver,
-      //       amount: [
-      //         {
-      //           denom: networkInfo[network || defaultNetwork].denom,
-      //           amount: feeAmount,
-      //         },
-      //       ],
-      //     },
-      //   },
-      // ];
-      // const msgs = [...delegateMsgs, ...feeCollectMsgs];
-      const msgs = delegateMsgs;
-
-      const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
-      const fee = getFee({
-        gasLimit: estimatedGas,
-        networkDenom: networkInfo[network || defaultNetwork].denom,
-      });
-
-      onLoading?.();
-      const txHash = await client.signAndBroadcastSync(address, msgs, fee);
-
-      onBroadcasting?.();
-      let txResult = null;
-      const getTxResult = async (txHash: string) => {
-        while (txHash) {
-          const res = await client.getTx(txHash);
-          if (res) {
-            return res;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      };
-      txResult = (await getTxResult(txHash)) as unknown as IndexedTx;
-
-      return {
-        tx: {
-          ...txResult,
-          transactionHash: txHash,
-        },
-        uuid,
-      };
-    },
-    onSuccess: ({ tx, uuid }) => {
-      if (tx?.code) {
-        const error = new Error("Sign in wallet failed");
-        onError?.(error, tx.transactionHash);
-      } else {
-        onSuccess?.(tx.transactionHash);
-        setMonitorTx({
-          apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-          txHash: tx.transactionHash,
-          uuid,
-        });
-      }
-    },
-    onError: (error) => onError?.(error),
-  });
-
-  useEffect(() => {
-    if (error) {
-      onError?.(error);
-    }
-  }, [error]);
-
-  return {
-    reset,
-    send: mutate,
-  };
-};
-
-export const useCosmosWithdrawRewardsProcedures = ({
-  network,
-  address,
-  cosmosSigningClient,
-  withdrawRewardsStep,
-}: {
-  network: Network | null;
-  address: string | null;
-  cosmosSigningClient?: SigningStargateClient;
-  withdrawRewardsStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error, txHash?: string) => void;
-  };
-}) => {
-  const isCosmosNetwork = getIsCosmosNetwork(network || "");
-
-  const undelegateTx = useCosmosWithdrawRewards({
-    client: cosmosSigningClient || null,
-    network: network && isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    onPreparing: withdrawRewardsStep.onPreparing,
-    onLoading: withdrawRewardsStep.onLoading,
-    onBroadcasting: withdrawRewardsStep.onBroadcasting,
-    onSuccess: withdrawRewardsStep.onSuccess,
-    onError: withdrawRewardsStep.onError,
-  });
-
-  if (!isCosmosNetwork || !address) return null;
-
-  const procedures = [
-    {
-      step: "claim",
-      stepName: "Sign in wallet",
-      send: undelegateTx.send,
-    } as BaseClaimProcedure,
-  ];
-
-  return {
-    baseProcedures: procedures,
-  };
-};
-
-export const useCosmosWithdrawRewards = ({
-  client,
-  network,
-  address,
-  onPreparing,
-  onLoading,
-  onBroadcasting,
-  onSuccess,
-  onError,
-}: {
-  client: SigningStargateClient | null;
-  network?: CosmosNetwork;
-  address?: string;
-  onPreparing?: () => void;
-  onLoading?: () => void;
-  onBroadcasting?: () => void;
-  onSuccess?: (txHash: string) => void;
-  onError?: (e: Error) => void;
-}) => {
-  const { error, mutate, reset } = useMutation({
-    mutationKey: ["signWithdrawRewardsCosmosMessage", address, network],
-    mutationFn: async () => {
-      if (!client || !address) {
-        throw new Error("Missing parameter: client, address");
-      }
-      onPreparing?.();
-
-      const { unsignedMessage, uuid } = await getWithdrawRewardsMessage({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        address,
-      });
-      const withdrawRewardsValues = getWithdrawRewardsValidatorMessages(unsignedMessage);
-
-      if (!withdrawRewardsValues.length) {
-        throw new Error("Missing parameter: validatorAddress");
-      }
-
-      const undelegateMsgs = withdrawRewardsValues.map((val) => ({
-        typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-        value: {
-          delegatorAddress: address,
-          validatorAddress: val.validator,
-        },
-      }));
-
-      const estimatedGas = await getEstimatedGas({ client, address, msgArray: undelegateMsgs });
-      const fee = getFee({
-        gasLimit: estimatedGas,
-        networkDenom: networkInfo[network || defaultNetwork].denom,
-      });
-
-      onLoading?.();
-      const txHash = await client.signAndBroadcastSync(address, undelegateMsgs, fee);
-
-      onBroadcasting?.();
-      let txResult = null;
-      const getTxResult = async (txHash: string) => {
-        while (txHash) {
-          const res = await client.getTx(txHash);
-          if (res) {
-            return res;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      };
-      txResult = await getTxResult(txHash);
-
-      return {
-        tx: {
-          ...txResult,
-          transactionHash: txHash,
-        },
-        uuid,
-      };
-    },
-    onSuccess: ({ tx, uuid }) => {
-      onSuccess?.(tx.transactionHash);
-      setMonitorTx({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        txHash: tx.transactionHash,
-        uuid,
-      });
-    },
-    onError: (error) => onError?.(error),
-  });
-
-  useEffect(() => {
-    if (error) {
-      onError?.(error);
-    }
-  }, [error]);
-
-  return {
-    reset,
-    send: mutate,
-  };
-};
-
-export const useCosmosRedelegatingProcedures = ({
-  amount,
-  network,
-  address,
-  cosmosSigningClient,
-  authStep,
-  redelegateStep,
-}: {
-  amount: string;
-  network: Network | null;
-  address: string | null;
-  cosmosSigningClient?: SigningStargateClient;
-  authStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error) => void;
-  };
-  redelegateStep: {
-    onPreparing: () => void;
-    onLoading: () => void;
-    onBroadcasting: () => void;
-    onSuccess: (txHash?: string) => void;
-    onError: (e: Error) => void;
-  };
-}) => {
-  const isCosmosNetwork = getIsCosmosNetwork(network || "");
-  // const {
-  //   data: authCheck,
-  //   isLoading,
-  //   refetch,
-  // } = useCosmosAddressAuthCheck({ network, address: address || undefined });
-
-  // const cosmosAuthTx = useCosmosBroadcastAuthzTx({
-  //   client: cosmosSigningClient || null,
-  //   network: network && isCosmosNetwork ? network : undefined,
-  //   address: address || undefined,
-  //   onLoading: authStep.onLoading,
-  //   onSuccess: authStep.onSuccess,
-  //   onError: authStep.onError,
-  // });
-  const cosmosRedelegateTx = useCosmosBroadcastRedelegateTx({
-    client: cosmosSigningClient || null,
-    network: network && isCosmosNetwork ? network : undefined,
-    address: address || undefined,
-    amount,
-    onPreparing: redelegateStep.onPreparing,
-    onLoading: redelegateStep.onLoading,
-    onBroadcasting: redelegateStep.onBroadcasting,
-    onSuccess: redelegateStep.onSuccess,
-    onError: redelegateStep.onError,
-  });
-
-  // TODO: handle error state
-  if (!isCosmosNetwork || !address) return null;
-
-  const baseProcedures: Array<BaseRedelegateProcedure> = [
-    // {
-    //   step: "auth",
-    //   stepName: "Approval in wallet",
-    //   send: cosmosAuthTx.send,
-    //   tooltip: (
-    //     <Tooltip
-    //       className={StakeStyle.approvalTooltip}
-    //       trigger={<Icon name="info" />}
-    //       content={
-    //         <>
-    //           This approval lets Staking.xyz manage staking operations on your behalf. You always have full control of
-    //           your funds. <a href="#">(more)</a>
-    //         </>
-    //       }
-    //     />
-    //   ),
-    // },
-    {
-      step: "redelegate",
-      stepName: "Sign in wallet",
-      send: cosmosRedelegateTx.send,
-    } as BaseRedelegateProcedure,
-  ];
-
-  return {
-    baseProcedures,
-    // isAuthApproved: authCheck?.granted,
-    // authTxHash: authCheck?.txnHash,
-    // refetchAuthCheck: refetch,
-    isAuthApproved: true,
-    authTxHash: undefined,
-    refetchAuthCheck: () => null,
-  };
-};
-
-const useCosmosBroadcastRedelegateTx = ({
-  client,
-  amount,
-  network,
-  address,
-  onPreparing,
-  onLoading,
-  onBroadcasting,
-  onSuccess,
-  onError,
-}: {
-  client: SigningStargateClient | null;
-  amount: string;
-  network?: CosmosNetwork;
-  address?: string;
-  onPreparing?: () => void;
-  onLoading?: () => void;
-  onBroadcasting?: () => void;
-  onSuccess?: (txHash: string) => void;
-  onError?: (e: Error, txHash?: string) => void;
-}) => {
-  const { error, mutate, reset } = useMutation({
-    mutationKey: ["broadcastCosmosRedelegateTx", address, amount, network],
-    mutationFn: async () => {
-      if (!client || !address) {
-        throw new Error("Missing parameter: client, address");
-      }
-
-      onPreparing?.();
-
-      const denomAmount = getDenomValueFromCoin({ network: network || defaultNetwork, amount });
-      const { unsignedMessage, uuid } = await getRedelegateMessage({
-        apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        address,
-        amount: Number(denomAmount),
-      });
-      const redelegateValues = getRedelegateValidatorMessages(unsignedMessage);
-      // const feeReceiver = feeReceiverByNetwork[network || defaultNetwork];
-      // const feeAmount = getStakeFees({ amount: denomAmount, network: network || defaultNetwork, floorResult: true });
-
-      if (!redelegateValues.length) {
-        throw new Error("Missing parameter: validatorAddress, feeReceiver");
-      }
-
-      const redelegateMsgs = redelegateValues.map((val) => ({
-        typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
-        value: {
-          delegatorAddress: address,
           validatorSrcAddress: val.validatorSrc,
           validatorDstAddress: val.validatorDst,
           amount: val.amount,
@@ -855,8 +255,8 @@ const useCosmosBroadcastRedelegateTx = ({
       //     },
       //   },
       // ];
-      // const msgs = [...redelegateMsgs, ...feeCollectMsgs];
-      const msgs = redelegateMsgs;
+      // const msgs = [...operatorMsgs, ...feeCollectMsgs];
+      const msgs = operatorMsgs;
 
       const estimatedGas = await getEstimatedGas({ client, address, msgArray: msgs });
       const fee = getFee({
@@ -1040,6 +440,32 @@ export const useCosmosSigningClient = ({
   });
 
   return { data: signingClient, isLoading, error };
+};
+
+const broadcastTxMap: Record<
+  TxProcedureType,
+  { mutationKey: string; operatorUrl: string; typeUrl: CosmosStakingMsgType }
+> = {
+  delegate: {
+    mutationKey: "broadcastCosmosDelegateTx",
+    operatorUrl: "stake/user/delegate",
+    typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+  },
+  undelegate: {
+    mutationKey: "signUndelegateCosmosMessage",
+    operatorUrl: "stake/user/undelegate",
+    typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
+  },
+  claim: {
+    mutationKey: "signWithdrawRewardsCosmosMessage",
+    operatorUrl: "stake/user/claim",
+    typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+  },
+  redelegate: {
+    mutationKey: "broadcastCosmosRedelegateTx",
+    operatorUrl: "stake/user/redelegate",
+    typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+  },
 };
 
 const granteeAddress: Record<CosmosNetwork, string> = {

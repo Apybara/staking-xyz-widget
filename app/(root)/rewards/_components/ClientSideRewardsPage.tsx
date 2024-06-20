@@ -6,8 +6,8 @@ import { TxProcedureDialog } from "../../_components/TxProcedureDialog";
 import { RewardsSummary } from "./RewardsSummary";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { useWallet } from "@/app/_contexts/WalletContext";
-import { useCosmosSigningClient } from "@/app/_services/cosmos/hooksV2";
-import { useClaimingProcedures } from "@/app/_services/rewards/hooksv2";
+import { useCosmosSigningClient } from "@/app/_services/cosmos/hooks";
+import { useClaimingProcedures } from "@/app/_services/rewards/hooks";
 import { defaultNetwork } from "@/app/consts";
 
 export const ClientSideRewardsPage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {

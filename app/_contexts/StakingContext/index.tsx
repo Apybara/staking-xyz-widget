@@ -2,7 +2,7 @@ import * as T from "./types";
 import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useStakingProcedures } from "../../_services/stake/hooks";
+import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
@@ -22,11 +22,12 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
     network: network || defaultNetwork,
     wallet: activeWallet,
   });
-  const { procedures, resetStates } = useStakingProcedures({
+  const { procedures, resetStates } = useTxProcedure({
     address,
-    cosmosSigningClient,
+    client: cosmosSigningClient,
     network: network || defaultNetwork,
-    amount: states.coinAmountInput,
+    amount: states.coinAmountInput || "",
+    type: "delegate",
   });
   const amountInputPad = useInputStates();
 

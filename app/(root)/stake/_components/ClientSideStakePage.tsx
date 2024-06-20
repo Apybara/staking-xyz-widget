@@ -6,9 +6,9 @@ import { PageViewTop } from "../../_components/WidgetTop";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
 import { StakeAmountInputPad } from "./StakeAmountInputPad";
 import { StakeInfoBox } from "./StakeInfoBox";
-import { StakingProcedureDialog } from "./StakingProcedureDialog";
 import { StakeCTA } from "./StakeCTA";
 import { WidgetContent } from "@/app/_components/WidgetContent";
+import { StakingProcedureDialog } from "./StakingProcedureDialog";
 
 export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
   return (
@@ -21,6 +21,7 @@ export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStru
       <WidgetBottomBox>
         <StakeCTA />
       </WidgetBottomBox>
+
       <StakingProcedureDialog />
     </StakingProvider>
   );

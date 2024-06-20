@@ -1,8 +1,6 @@
 import type { Network } from "../../../types";
-import type { UnbondingDelegation } from "../../unstake/types";
 import type * as T from "../types";
 import { useEffect, useState } from "react";
-import BigNumber from "bignumber.js";
 import { fromUnixTime } from "date-fns";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
@@ -20,7 +18,7 @@ import {
   getNetworkStatus,
   getServerStatus,
   getExternalDelegations,
-} from ".";
+} from "./";
 
 export const useCosmosAddressAuthCheck = ({ address, network }: { address?: string; network: Network | null }) => {
   const { data, isLoading, error, refetch } = useQuery({
@@ -303,8 +301,8 @@ export const useCosmosServerStatus = ({ network }: { network: Network | null }) 
 
 const useFormattedUnbondingDelegations = (
   delegations?: Array<T.UnbondingDelegationResponseItem>,
-): Array<UnbondingDelegation> => {
-  const formattedDelegations: Array<UnbondingDelegation> = [];
+): Array<T.UnbondingDelegation> => {
+  const formattedDelegations: Array<T.UnbondingDelegation> = [];
 
   delegations?.forEach((delegation) => {
     delegation.entries.forEach((entry) => {

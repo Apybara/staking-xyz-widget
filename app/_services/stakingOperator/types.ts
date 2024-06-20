@@ -8,6 +8,32 @@ export type AuthCheckResponse = {
   txnHash?: string;
 };
 
+export type OperatorMessageResponse = {
+  unsigned_txn: string;
+  uuid: string;
+};
+
+export type DecodedOperatorMessageResponse = {
+  body: {
+    messages: Array<CosmosStakingMsg | CosmosStakingMsg>;
+    memo?: string;
+    timeout_height?: string;
+    extension_options?: any[];
+    non_critical_extension_options?: any[];
+  };
+  auth_info?: {
+    signer_infos: any[];
+    fee: {
+      amount: any[];
+      gas_limit: string;
+      payer: string;
+      granter: string;
+    };
+    tip: null;
+  };
+  signatures?: any[];
+};
+
 export type DelegateMessageResponse = {
   unsigned_txn: string;
   uuid: string;
@@ -97,6 +123,24 @@ export type DecodedRedelegateMessageResponse = {
   signatures: any[];
 };
 
+export type CosmosStakingMsgType =
+  | "/cosmos.staking.v1beta1.MsgDelegate"
+  | "/cosmos.staking.v1beta1.MsgUndelegate"
+  | "/cosmos.staking.v1beta1.MsgBeginRedelegate"
+  | "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward";
+
+export type CosmosStakingMsg = {
+  "@type": CosmosStakingMsgType;
+  delegator_address: string;
+  validator_address?: string;
+  validator_src_address?: string;
+  validator_dst_address?: string;
+  amount: {
+    denom: string;
+    amount: string;
+  };
+};
+
 export type CosmosStakingMsgDelegate = {
   "@type": "/cosmos.staking.v1beta1.MsgDelegate";
   delegator_address: string;
@@ -142,6 +186,17 @@ export type CosmosBankMsgSend = {
     denom: string;
     amount: string;
   }>;
+};
+
+export type UnbondingDelegation = {
+  validatorAddress: string;
+  remainingTime?: {
+    d: number | undefined;
+    h: number | undefined;
+    m: number | undefined;
+    s: number | undefined;
+  };
+  amount: string;
 };
 
 export type UnbondingDelegationsResponse = {

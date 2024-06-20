@@ -4,9 +4,13 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
 import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
-import { useStakeMaxAmountBuffer } from "@/app/_services/stake/hooks";
+import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
 
-export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: StakingStates["coinAmountInput"] }) => {
+export const useStakeAmountInputValidation = ({
+  inputAmount = "0",
+}: {
+  inputAmount: StakingStates["coinAmountInput"];
+}) => {
   const { network } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
@@ -26,4 +30,17 @@ export const useStakeAmountInputValidation = ({ inputAmount }: { inputAmount: St
   });
 
   return { amountValidation, ctaValidation };
+};
+
+export const useStakeMaxAmountBuffer = ({ amount }: { amount: string }) => {
+  const { network } = useShell();
+  const castedNetwork = network || defaultNetwork;
+
+  const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
+  // const collectedFee = getStakeFees({ amount, network: castedNetwork, floorResult: true });
+  const collectedFee = 0;
+
+  return BigNumber(requiredBalance)
+    .plus(collectedFee || 0)
+    .toString();
 };

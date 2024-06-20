@@ -23,6 +23,7 @@ export const ClientSideUnstakePage = ({ searchParams }: { searchParams: RouterSt
       <WidgetBottomBox>
         <UnstakeCTA />
       </WidgetBottomBox>
+
       <UnstakingProcedureDialog />
     </UnstakingProvider>
   );

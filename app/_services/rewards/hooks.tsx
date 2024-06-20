@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
 import type { SigningStargateClient } from "@cosmjs/stargate";
 import type { Network } from "../../types";
-import type { ClaimProcedure, ClaimProcedureState } from "./types";
-import { useEffect, useState } from "react";
-import { useCosmosWithdrawRewardsProcedures } from "../cosmos/hooks";
+import type { TxProcedure, TxProcedureState } from "../txProcedure/types";
+import { useCosmosTxProcedures } from "../cosmos/hooks";
+import { ClaimingStates } from "./types";
 
 export const useClaimingProcedures = ({
   address,
@@ -12,16 +13,17 @@ export const useClaimingProcedures = ({
   address: string | null;
   network: Network;
   cosmosSigningClient?: SigningStargateClient;
-}) => {
-  const [procedures, setProcedures] = useState<Array<ClaimProcedure> | undefined>(undefined);
+}): ClaimingStates => {
+  const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
   const claimState = useProcedureStates();
 
   const { baseProcedures: cosmosBaseProcedures } =
-    useCosmosWithdrawRewardsProcedures({
+    useCosmosTxProcedures({
+      type: "claim",
       network,
       address,
-      cosmosSigningClient,
-      withdrawRewardsStep: {
+      client: cosmosSigningClient,
+      signStep: {
         onPreparing: () => {
           claimState.setState("preparing");
           claimState.setTxHash(undefined);
@@ -77,7 +79,7 @@ export const useClaimingProcedures = ({
     if (cosmosBaseProcedures?.length) {
       const proceduresArray = cosmosBaseProcedures
         .map((procedure) => {
-          if (procedure.step === "claim") {
+          if (procedure.step === "sign") {
             return {
               ...procedure,
               state: claimState.state,
@@ -89,13 +91,13 @@ export const useClaimingProcedures = ({
         })
         .filter((procedure) => procedure !== undefined);
 
-      setProcedures(proceduresArray as Array<ClaimProcedure>);
+      setProcedures(proceduresArray as Array<TxProcedure>);
     }
   }, [cosmosBaseProcedures?.length, claimState.state, claimState.txHash, claimState.error]);
 
   return {
     procedures,
-    resetStates: async () => {
+    resetProceduresStates: async () => {
       if (cosmosBaseProcedures?.length) {
         updateStates();
       }
@@ -104,7 +106,7 @@ export const useClaimingProcedures = ({
 };
 
 const useProcedureStates = () => {
-  const [state, setState] = useState<ClaimProcedureState | null>(null);
+  const [state, setState] = useState<TxProcedureState | null>(null);
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [error, setError] = useState<Error | null>(null);
 
