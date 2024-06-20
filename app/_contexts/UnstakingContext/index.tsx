@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
-import { useUnstakingProcedures } from "../../_services/unstake/hooks";
+import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
 import { useStakedBalance } from "../../_services/stakingOperator/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
@@ -27,11 +27,12 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
     inputAmount: states.coinAmountInput,
     stakedBalance: stakedBalance?.stakedBalance,
   });
-  const { procedures, resetStates } = useUnstakingProcedures({
+  const { procedures, resetStates } = useTxProcedure({
     address,
-    cosmosSigningClient,
+    client: cosmosSigningClient,
     network: network || defaultNetwork,
-    amount: states.coinAmountInput,
+    amount: states.coinAmountInput || "",
+    type: "undelegate",
   });
   const amountInputPad = useInputStates();
 

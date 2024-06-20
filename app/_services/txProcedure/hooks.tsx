@@ -1,7 +1,7 @@
 import type { TxProcedure, TxProcedureState, TxProcedureType } from "./types";
 import { useEffect, useState } from "react";
 import BigNumber from "bignumber.js";
-import { useCosmosTxProcedures } from "../cosmos/hooksV2";
+import { useCosmosTxProcedures } from "../cosmos/hooks";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
 import type { CosmosTxParams } from "../cosmos/types";
@@ -181,17 +181,4 @@ const useProcedureStates = () => {
     setTxHash,
     setError,
   };
-};
-
-export const useStakeMaxAmountBuffer = ({ amount }: { amount: string }) => {
-  const { network } = useShell();
-  const castedNetwork = network || defaultNetwork;
-
-  const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
-  // const collectedFee = getStakeFees({ amount, network: castedNetwork, floorResult: true });
-  const collectedFee = 0;
-
-  return BigNumber(requiredBalance)
-    .plus(collectedFee || 0)
-    .toString();
 };

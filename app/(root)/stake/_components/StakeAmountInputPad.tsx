@@ -4,7 +4,7 @@ import { useWallet } from "../../../_contexts/WalletContext";
 import { useWalletBalance } from "../../../_services/wallet/hooks";
 import { AmountInputPad } from "../../../_components/AmountInputPad";
 import { useStaking } from "../../../_contexts/StakingContext";
-import { useStakeMaxAmountBuffer } from "@/app/_services/stake/hooks";
+import { useStakeMaxAmountBuffer } from "@/app/_contexts/StakingContext/hooks";
 
 export const StakeAmountInputPad = () => {
   const { network } = useShell();

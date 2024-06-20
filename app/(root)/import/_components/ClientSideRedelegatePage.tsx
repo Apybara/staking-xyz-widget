@@ -61,7 +61,8 @@ export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: Route
         <RedelegateInfoBox />
       </WidgetContent>
       <RedelegateAgreement />
-      <RedelegatingProcedureDialog />
+
+      <RedelegatingProcedureDialog amount={redelegationAmount as string} />
     </RedelegatingProvider>
   );
 };

@@ -10,7 +10,7 @@ export type GetBalanceProps = {
 
 export type CosmosTxParams = {
   client?: SigningStargateClient | null;
-  amount: string;
+  amount?: string;
   network?: CosmosNetwork;
   address?: string | null;
 };

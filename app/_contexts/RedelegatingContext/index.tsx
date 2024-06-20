@@ -2,7 +2,7 @@ import * as T from "./types";
 import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
-import { useRedelegatingProcedures } from "../../_services/redelegate/hooks";
+import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { defaultNetwork } from "../../consts";
 import { useRedelegateValidation } from "./hooks";
@@ -24,17 +24,18 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
   const { redelegationAmount } = externalDelegations?.data || {};
   const amount = redelegationAmount || "0";
   const { ctaValidation } = useRedelegateValidation({
-    isAgreementChecked: states.isAgreementChecked,
+    isAgreementChecked: !!states.isAgreementChecked,
   });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
     wallet: activeWallet,
   });
-  const { procedures, resetStates } = useRedelegatingProcedures({
+  const { procedures, resetStates } = useTxProcedure({
     address,
-    cosmosSigningClient,
+    client: cosmosSigningClient,
     network: network || defaultNetwork,
     amount,
+    type: "redelegate",
   });
 
   return (

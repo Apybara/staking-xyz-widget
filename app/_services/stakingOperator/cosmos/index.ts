@@ -45,8 +45,8 @@ export const getAddressRewardsHistory = async ({
   return res;
 };
 
-export const getDelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
-  const res: T.DelegateMessageResponse = await fetchData(`${apiUrl}stake/user/delegate`, {
+export const getOperatorMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.OperatorMessageResponse = await fetchData(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -54,9 +54,107 @@ export const getDelegateMessage = async ({ apiUrl, address, amount }: { amount: 
     body: JSON.stringify({ address, amount }),
   });
   return {
-    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedDelegateMessageResponse,
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedOperatorMessageResponse,
     uuid: res.uuid,
   };
+};
+
+export const getOperatorValidatorMessages = (
+  operatorMessage: T.DecodedOperatorMessageResponse,
+  typeUrl: T.CosmosStakingMsgType,
+) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === typeUrl)
+    .map((msg: T.CosmosStakingMsg) => ({
+      validator: msg.validator_address,
+      validatorSrc: msg.validator_src_address,
+      validatorDst: msg.validator_dst_address,
+      amount: msg.amount,
+    }));
+};
+
+export const getDelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.OperatorMessageResponse = await fetchData(`${apiUrl}stake/user/delegate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address, amount }),
+  });
+  return {
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedOperatorMessageResponse,
+    uuid: res.uuid,
+  };
+};
+
+export const getDelegateValidatorMessages = (operatorMessage: T.DecodedOperatorMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgDelegate")
+    .map((msg: T.CosmosStakingMsg) => ({ validator: msg.validator_address, amount: msg.amount }));
+};
+
+export const getUndelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.OperatorMessageResponse = await fetchData(`${apiUrl}stake/user/undelegate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address, amount }),
+  });
+  return {
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedOperatorMessageResponse,
+    uuid: res.uuid,
+  };
+};
+
+export const getUndelegateValidatorMessages = (operatorMessage: T.DecodedOperatorMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgUndelegate")
+    .map((msg: T.CosmosStakingMsg) => ({ validator: msg.validator_address, amount: msg.amount }));
+};
+
+export const getWithdrawRewardsMessage = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.OperatorMessageResponse = await fetchData(`${apiUrl}stake/user/claim`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address }),
+  });
+  return {
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedOperatorMessageResponse,
+    uuid: res.uuid,
+  };
+};
+
+export const getWithdrawRewardsValidatorMessages = (operatorMessage: T.DecodedOperatorMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward")
+    .map((msg: T.CosmosStakingMsg) => ({ validator: msg.validator_address }));
+};
+
+export const getRedelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
+  const res: T.OperatorMessageResponse = await fetchData(`${apiUrl}stake/user/redelegate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address, amount }),
+  });
+  return {
+    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedOperatorMessageResponse,
+    uuid: res.uuid,
+  };
+};
+
+export const getRedelegateValidatorMessages = (operatorMessage: T.DecodedOperatorMessageResponse) => {
+  return operatorMessage.body.messages
+    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgBeginRedelegate")
+    .map((msg: T.CosmosStakingMsg) => ({
+      validatorSrc: msg.validator_src_address,
+      validatorDst: msg.validator_dst_address,
+      amount: msg.amount,
+    }));
 };
 
 export const setMonitorTx = async ({ apiUrl, txHash, uuid }: { apiUrl: string; txHash: string; uuid: string }) => {
@@ -71,52 +169,6 @@ export const setMonitorGrantTx = async ({ apiUrl, txHash }: { apiUrl: string; tx
     method: "PUT",
   });
   return res;
-};
-
-export const getDelegateValidatorMessages = (operatorMessage: T.DecodedDelegateMessageResponse) => {
-  return operatorMessage.body.messages
-    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgDelegate")
-    .map((msg: T.CosmosStakingMsgDelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
-};
-
-export const getUndelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
-  const res: T.UndelegateMessageResponse = await fetchData(`${apiUrl}stake/user/undelegate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ address, amount }),
-  });
-  return {
-    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedUndelegateMessageResponse,
-    uuid: res.uuid,
-  };
-};
-
-export const getWithdrawRewardsMessage = async ({ apiUrl, address }: T.BaseParams) => {
-  const res: T.WithdrawRewardsMessageResponse = await fetchData(`${apiUrl}stake/user/claim`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ address }),
-  });
-  return {
-    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedWithdrawRewardsMessageResponse,
-    uuid: res.uuid,
-  };
-};
-
-export const getWithdrawRewardsValidatorMessages = (operatorMessage: T.DecodedWithdrawRewardsMessageResponse) => {
-  return operatorMessage.body.messages
-    .filter((msg) => msg["@type"] === "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward")
-    .map((msg: T.CosmosDistributionMsgWithdrawDelegatorReward) => ({ validator: msg.validator_address }));
-};
-
-export const getUndelegateValidatorMessages = (operatorMessage: T.DecodedUndelegateMessageResponse) => {
-  return operatorMessage.body.messages
-    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgUndelegate")
-    .map((msg: T.CosmosStakingMsgUndelegate) => ({ validator: msg.validator_address, amount: msg.amount }));
 };
 
 export const getUnbondingDelegations = async ({ apiUrl, address }: T.BaseParams) => {
@@ -147,29 +199,6 @@ export const getNetworkStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">
 export const getServerStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
   const res: T.ServerStatusResponse = await fetchData(`${apiUrl}status`);
   return res;
-};
-export const getRedelegateMessage = async ({ apiUrl, address, amount }: { amount: number } & T.BaseParams) => {
-  const res: T.RedelegateMessageResponse = await fetchData(`${apiUrl}stake/user/redelegate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ address, amount }),
-  });
-  return {
-    unsignedMessage: JSON.parse(atob(res.unsigned_txn)) as T.DecodedRedelegateMessageResponse,
-    uuid: res.uuid,
-  };
-};
-
-export const getRedelegateValidatorMessages = (operatorMessage: T.DecodedRedelegateMessageResponse) => {
-  return operatorMessage.body.messages
-    .filter((msg) => msg["@type"] === "/cosmos.staking.v1beta1.MsgBeginRedelegate")
-    .map((msg: T.CosmosStakingMsgBeginRedelegate) => ({
-      validatorSrc: msg.validator_src_address,
-      validatorDst: msg.validator_dst_address,
-      amount: msg.amount,
-    }));
 };
 
 export const getIsCelestia = (network: Network | null) => network === "celestia" || network === "celestiatestnet3";

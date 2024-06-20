@@ -8,8 +8,8 @@ export const UnstakeAmountInputPad = () => {
   return (
     <AmountInputPad
       type="unstake"
-      availableValue={stakedBalance.data}
-      isAvailableValueLoading={stakedBalance.isLoading}
+      availableValue={stakedBalance?.data}
+      isAvailableValueLoading={stakedBalance?.isLoading}
       onValueChange={(val) => {
         setStates({ coinAmountInput: val });
       }}
