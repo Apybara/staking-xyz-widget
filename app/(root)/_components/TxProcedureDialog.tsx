@@ -138,7 +138,10 @@ const getCheckedProcedures = (procedures: Array<TxProcedure>) => {
   return procedures.filter((procedure) => procedure.state === "success");
 };
 const getHasLoadingProcedures = (procedures: Array<TxProcedure>) => {
-  return procedures.some((procedure) => procedure.state === "loading");
+  return procedures.some(
+    (procedure) =>
+      procedure.state === "preparing" || procedure.state === "loading" || procedure.state === "broadcasting",
+  );
 };
 const getActiveProcedure = (procedures: Array<TxProcedure>) => {
   return procedures.find((procedure) => procedure.state !== "success");
