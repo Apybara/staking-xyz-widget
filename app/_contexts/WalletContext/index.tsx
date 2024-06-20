@@ -48,6 +48,7 @@ const initialStates: T.WalletContext = {
     okx: null,
     walletConnect: null,
     leoWallet: null,
+    puzzle: null,
   },
   activeWallet: null,
   address: null,

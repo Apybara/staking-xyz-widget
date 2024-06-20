@@ -74,7 +74,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
   },
   aleo: {
     id: "aleo",
-    name: "Aleo",
+    name: "Aleo Testnet",
     logo: AleoLogo,
     currency: networkCurrency.aleo,
     denom: "",
@@ -161,7 +161,7 @@ export const defaultGlobalCurrency = networkCurrency[defaultNetwork];
 export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
 
-export const AleoWalletVariants = ["leoWallet"] as const;
+export const AleoWalletVariants = ["leoWallet", "puzzle"] as const;
 export const aleoWalletVariants = [...AleoWalletVariants];
 
 export const WalletVariants = [...cosmosWalletVariants, ...aleoWalletVariants] as const;
@@ -225,6 +225,13 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     downloadLink: "https://www.leo.app/download",
     devicesSupport: ["desktop", "mobile"],
   },
+  puzzle: {
+    id: "puzzle",
+    name: "Puzzle",
+    logo: "/wallets/puzzle.svg",
+    downloadLink: "https://puzzle.online/",
+    devicesSupport: ["desktop", "mobile"],
+  },
 };
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
   celestia: [
@@ -245,7 +252,7 @@ export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
     walletsInfo.walletConnect,
   ],
   cosmoshubtestnet: [walletsInfo.keplr, walletsInfo.leap, walletsInfo.keplrMobile, walletsInfo.leapMobile],
-  aleo: [walletsInfo.leoWallet],
+  aleo: [walletsInfo.leoWallet, walletsInfo.puzzle],
 };
 
 export const feeRatioByNetwork: Record<Network, number> = {
