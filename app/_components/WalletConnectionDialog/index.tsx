@@ -107,7 +107,6 @@ export const WalletConnectionDialog = () => {
             await connectors[wallet.id]();
             setError(null);
           } catch (e) {
-            console.error(e);
             setError(e as Error);
             captureWalletConnectFailed({ wallet: wallet.id, address: "" });
           }

@@ -9,7 +9,11 @@ import {
   useCosmosWalletHasStoredConnection,
 } from "../../_services/cosmos/hooks";
 import { getIsAleoNetwork } from "../../_services/aleo/utils";
-import { useAleoWalletSupports, useAleoWalletStates } from "../../_services/aleo/hooks";
+import {
+  useAleoWalletSupports,
+  useAleoWalletStates,
+  useAleoWalletHasStoredConnection,
+} from "../../_services/aleo/hooks";
 
 export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const cosmosWalletsSupport = useCosmosWalletSupports();
@@ -25,6 +29,7 @@ export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setS
     cosmosWalletsSupport.okx,
     cosmosWalletsSupport.walletConnect,
     aleoWalletsSupport.leoWallet,
+    aleoWalletsSupport.puzzle,
   ]);
 
   return null;
@@ -54,9 +59,9 @@ export const useActiveWalletStates = ({ setStates }: { setStates: WalletStates["
     cosmosWalletStates.connectionStatus,
     cosmosWalletStates.address,
     isAleoNetwork,
-    aleoWalletStates?.activeWallet,
-    aleoWalletStates?.connectionStatus,
-    aleoWalletStates?.address,
+    aleoWalletStates.activeWallet,
+    aleoWalletStates.connectionStatus,
+    aleoWalletStates.address,
   ]);
 
   if (isCosmosNetwork) {
@@ -74,19 +79,24 @@ export const useIsWalletConnectingEagerly = ({
 }: Pick<WalletStates, "connectionStatus" | "activeWallet" | "setStates">) => {
   const { network } = useShell();
   const { open } = useDialog("walletConnection");
+  const [isConnectingEagerly, setIsConnectingEagerly] = useState<WalletStates["isEagerlyConnecting"]>(undefined);
+
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
   const isCosmosWalletStored = useCosmosWalletHasStoredConnection();
-  const [isConnectingEagerly, setIsConnectingEagerly] = useState<WalletStates["isEagerlyConnecting"]>(undefined);
+  const isAleoNetwork = network && getIsAleoNetwork(network);
+  const isAleoWalletStored = useAleoWalletHasStoredConnection();
 
   useEffect(() => {
     if (!open && connectionStatus === "connecting" && activeWallet && !isConnectingEagerly) {
       if (isCosmosNetwork && isCosmosWalletStored) {
         setIsConnectingEagerly(true);
+      } else if (isAleoNetwork && isAleoWalletStored) {
+        setIsConnectingEagerly(true);
       }
     } else {
       setIsConnectingEagerly(false);
     }
-  }, [activeWallet, connectionStatus, open, isCosmosWalletStored, isCosmosNetwork]);
+  }, [activeWallet, connectionStatus, open, isCosmosWalletStored, isCosmosNetwork, isAleoNetwork, isAleoWalletStored]);
 
   useEffect(() => {
     if (connectionStatus === "connected" && isConnectingEagerly) {

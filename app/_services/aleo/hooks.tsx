@@ -1,36 +1,61 @@
+import type { WalletStates } from "../../_contexts/WalletContext/types";
 import type { AleoWalletType, AleoNetwork } from "../../types";
-import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
-import { useIsLeoWalletInstalled, useLeoWalletStates, useLeoWalletConnector } from "./leoWallet/hooks";
+import {
+  useIsLeoWalletInstalled,
+  useLeoWalletStates,
+  useLeoWalletConnector,
+  useLeoWalletDisconnector,
+  useLeoWalletHasStoredConnection,
+} from "./leoWallet/hooks";
+import {
+  usePuzzleStates,
+  usePuzzleConnector,
+  usePuzzleDisconnector,
+  usePuzzleBalance,
+  usePuzzleHasStoredConnection,
+} from "./puzzle/hooks";
 import { getMicroCreditsToCredits } from "./utils";
 
-export const useAleoWalletSupports = () => {
+export const useAleoWalletSupports = (): Record<AleoWalletType, boolean> => {
   const isLeoWalletInstalled = useIsLeoWalletInstalled();
 
   return {
     leoWallet: isLeoWalletInstalled,
-  } as Record<AleoWalletType, boolean>;
+    puzzle: true,
+  };
 };
 
-export const useAleoWalletConnectors = ({ network = "aleo" }: { network?: AleoNetwork }) => {
+export const useAleoWalletConnectors = () => {
   const leoWalletConnector = useLeoWalletConnector();
+  const puzzleWalletConnect = usePuzzleConnector();
 
   return {
     leoWallet: leoWalletConnector,
+    puzzle: puzzleWalletConnect,
   };
 };
 
 export const useAleoWalletDisconnectors = () => {
-  const { disconnect } = useLeoWallet();
+  const disconnect = useLeoWalletDisconnector();
+  const puzzleWalletDisconnect = usePuzzleDisconnector();
 
   return {
     leoWallet: disconnect,
+    puzzle: puzzleWalletDisconnect,
   };
 };
 
 export const useAleoWalletStates = () => {
   const leoWalletStates = useLeoWalletStates();
+  const puzzleStates = usePuzzleStates();
 
-  return leoWalletStates;
+  if (leoWalletStates.connectionStatus !== "disconnected") return leoWalletStates;
+  if (puzzleStates.connectionStatus !== "disconnected") return puzzleStates;
+  return {
+    activeWallet: null,
+    address: null,
+    connectionStatus: "disconnected" as WalletStates["connectionStatus"],
+  };
 };
 
 export const useAleoWalletBalance = ({
@@ -43,9 +68,11 @@ export const useAleoWalletBalance = ({
   activeWallet: AleoWalletType | null;
 }) => {
   const leoWalletBalance = useAleoBalanceFromStakingOperator({ address, network });
+  const puzzleBalance = usePuzzleBalance({ address });
 
   if (!activeWallet) return null;
   if (activeWallet === "leoWallet") return leoWalletBalance;
+  if (activeWallet === "puzzle") return puzzleBalance;
   return null;
 };
 
@@ -66,4 +93,11 @@ const useAleoBalanceFromStakingOperator = ({
     error: null,
     data: getMicroCreditsToCredits(balanceFromStakingOperator).toString(),
   };
+};
+
+export const useAleoWalletHasStoredConnection = () => {
+  const hasLeoWalletStoredConnection = useLeoWalletHasStoredConnection();
+  const hasPuzzleStoredConnection = usePuzzleHasStoredConnection();
+
+  return hasLeoWalletStoredConnection || hasPuzzleStoredConnection;
 };

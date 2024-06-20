@@ -10,10 +10,7 @@ export const useWalletConnectors: UseWalletConnectors = (network) => {
   const cosmosConnectors = useCosmosWalletConnectors({
     network: isCosmosNetwork ? (network as CosmosNetwork) : undefined,
   });
-  const isAleoNetwork = getIsAleoNetwork(network);
-  const aleoConnectors = useAleoWalletConnectors({
-    network: isAleoNetwork ? (network as AleoNetwork) : undefined,
-  });
+  const aleoConnectors = useAleoWalletConnectors();
 
   return {
     ...cosmosConnectors,
