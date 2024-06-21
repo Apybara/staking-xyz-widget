@@ -171,11 +171,6 @@ export const setMonitorGrantTx = async ({ apiUrl, txHash }: { apiUrl: string; tx
   return res;
 };
 
-export const getUnbondingDelegations = async ({ apiUrl, address }: T.BaseParams) => {
-  const res: T.UnbondingDelegationsResponse = await fetchData(`${apiUrl}address/fetch/undelegate/${address}`);
-  return res.response.unbonding_responses;
-};
-
 export const getDelegations = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.DelegationsResponse = await fetchData(`${apiUrl}address/fetch/delegate/${address}`);
   return res;
