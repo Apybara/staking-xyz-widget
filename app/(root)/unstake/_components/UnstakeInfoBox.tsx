@@ -7,41 +7,28 @@ import * as InfoCard from "../../../_components/InfoCard";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
-import { useActivity } from "../../../_services/stakingOperator/hooks";
+import { useUnbondingDelegations } from "../../../_services/stakingOperator/hooks";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
   const { currency, coinPrice, network } = useShell();
 
-  const { query: unstakeActivityTotalQuery } =
-    useActivity({
-      filterKey: "transactions_unstake",
-      offset: 0,
-      limit: 999,
-    }) || {};
-  const { totalEntries } = unstakeActivityTotalQuery || {};
-  const { query: unstakeActivityQuery } =
-    useActivity({
-      filterKey: "transactions_unstake",
-      offset: 0,
-      limit: totalEntries || 999,
-    }) || {};
-  const { formattedEntries } = unstakeActivityQuery || {};
+  const { data: unbondingDelegations } = useUnbondingDelegations() || {};
 
   const totalUnbondingAmount = useMemo(() => {
-    if (!formattedEntries?.length) return undefined;
+    if (!unbondingDelegations?.length) return undefined;
 
     const sumDenom =
-      formattedEntries
+      unbondingDelegations
         ?.reduce((acc, { amount }) => {
           return acc.plus(amount);
         }, BigNumber(0))
         .toString() || "0";
 
     return getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: sumDenom });
-  }, [formattedEntries, currency]);
+  }, [unbondingDelegations, currency]);
 
-  if (!formattedEntries?.length) return null;
+  if (!unbondingDelegations?.length) return null;
 
   return (
     <AccordionInfoCard.Root>
@@ -49,14 +36,14 @@ export const UnstakeInfoBox = () => {
         <AccordionInfoCard.Trigger>
           <div className={cn(S.triggerTexts)}>
             <p className={cn(S.triggerProgressText)}>
-              In progress <span className={cn(S.triggerCountText)}>{formattedEntries?.length}</span>
+              In progress <span className={cn(S.triggerCountText)}>{unbondingDelegations?.length}</span>
             </p>
             <span className={cn(S.triggerAmountText)}>{totalUnbondingAmount}</span>
           </div>
         </AccordionInfoCard.Trigger>
         <AccordionInfoCard.Content>
           <AccordionInfoCard.Stack>
-            {formattedEntries?.map((item, index) => {
+            {unbondingDelegations?.map((item, index) => {
               const times = item.completionTime && getTimeUnitStrings(item.completionTime);
 
               return (

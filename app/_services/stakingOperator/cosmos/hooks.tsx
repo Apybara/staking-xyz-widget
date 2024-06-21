@@ -10,7 +10,6 @@ import { getCalculatedRewards, getLastOffset } from "../utils";
 import {
   getAddressAuthCheck,
   getDelegations,
-  getUnbondingDelegations,
   getAddressActivity,
   getAddressRewardsHistory,
   getNetworkReward,
@@ -44,24 +43,6 @@ export const useCosmosDelegations = ({ address, network }: { address?: string; n
   const stakedBalance = getCoinValueFromDenom({ network: network || "celestia", amount: data?.total.toString() });
 
   return { data, stakedBalance: !isLoading && !error ? stakedBalance : undefined, isLoading, error, refetch };
-};
-
-export const useCosmosUnbondingDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
-  const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && getIsCosmosNetwork(network || ""),
-    queryKey: ["cosmosUnbondingDelegations", address, network],
-    queryFn: () =>
-      getUnbondingDelegations({
-        apiUrl: stakingOperatorUrlByNetwork[network || "celestia"],
-        address: address || "",
-      }),
-    refetchInterval: 90000,
-    refetchOnWindowFocus: true,
-  });
-
-  const formatted = useFormattedUnbondingDelegations(data);
-
-  return { data, formatted, isLoading, error, refetch };
 };
 
 export const useCosmosExternalDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
@@ -158,6 +139,37 @@ export const useCosmosAddressActivity = ({
     totalEntries,
     lastOffset,
     refetch,
+  };
+};
+
+export const useCosmosUnbondingDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+  const {
+    totalEntries,
+    isLoading: initialIsLoading,
+    error: initialIsError,
+  } = useCosmosAddressActivity({
+    network,
+    address,
+    filterKey: "transactions_unstake",
+    offset: 0,
+    limit: 999,
+  }) || {};
+  const { formattedEntries, isLoading, error } =
+    useCosmosAddressActivity({
+      network,
+      address,
+      filterKey: "transactions_unstake",
+      offset: 0,
+      limit: totalEntries || 999,
+    }) || {};
+
+  const inProgressUnbondingEntries = formattedEntries?.filter((entry) => entry.inProgress) || [];
+  const unbondingEntries = formattedEntries?.filter((entry) => !entry.inProgress && !!entry.completionTime) || [];
+
+  return {
+    data: [...inProgressUnbondingEntries, ...unbondingEntries],
+    isLoading: initialIsLoading || isLoading,
+    error: initialIsError || error,
   };
 };
 
