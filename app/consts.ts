@@ -2,9 +2,13 @@ import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType } fr
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 
-export const NetworkVariants = ["celestia", "celestiatestnet3", "cosmoshub", "cosmoshubtestnet"] as const;
+export const MainnetNetworkVariants = ["celestia", "cosmoshub"] as const;
+export const TestnetNetworkVariants = ["celestiatestnet3", "cosmoshubtestnet"] as const;
+
+export const NetworkVariants = [...MainnetNetworkVariants, ...TestnetNetworkVariants] as const;
 export const networkVariants = [...NetworkVariants];
-export const defaultNetwork = "celestia" as Network;
+
+export const defaultNetwork = MainnetNetworkVariants[MainnetNetworkVariants.length - 1] as Network;
 
 export const CoinVariants = ["TIA", "ATOM"] as const;
 export const coinVariants = [...CoinVariants];
