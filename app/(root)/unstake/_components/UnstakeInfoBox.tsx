@@ -8,6 +8,7 @@ import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { useUnbondingDelegations } from "../../../_services/stakingOperator/hooks";
+import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
@@ -50,7 +51,9 @@ export const UnstakeInfoBox = () => {
                 <AccordionInfoCard.StackItem key={"unbonding-delegations" + network + index}>
                   <InfoCard.TitleBox>
                     <p className={cn(S.remainingDays)}>
-                      {times ? `${times.time} ${times?.unit} left` : "21 days left"}
+                      {times
+                        ? `${times.time} ${times?.unit} left`
+                        : `${unstakingPeriodByNetwork[network || defaultNetwork]} left`}
                     </p>
                   </InfoCard.TitleBox>
                   <InfoCard.Content>
