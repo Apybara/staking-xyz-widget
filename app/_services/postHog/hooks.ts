@@ -84,8 +84,6 @@ export const useTxPostHogEvents = ({
 
   useEffect(() => {
     if (!hasAuthApproval && type !== "claim") {
-      console.log("here");
-
       if (authProcedure?.state === "success") {
         captureAuthSuccess({});
       } else if (authProcedure?.state === "error") {
