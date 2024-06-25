@@ -19,3 +19,11 @@ export type TxProcedureType = "delegate" | "undelegate" | "redelegate" | "claim"
 export type TxProcedureStep = "auth" | "sign";
 
 export type TxProcedureState = "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";
+
+export type TxStepCallbacks = {
+  onPreparing?: () => void;
+  onLoading?: () => void;
+  onBroadcasting?: () => void;
+  onSuccess?: (txHash?: string) => void;
+  onError?: (e: Error, txHash?: string) => void;
+};
