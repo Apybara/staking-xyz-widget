@@ -158,6 +158,17 @@ export const fiatCurrencyMap = {
 };
 export const defaultGlobalCurrency = networkCurrency[defaultNetwork];
 
+export const StakingTypeVariants = ["native", "liquid"] as const;
+export const stakingTypeVariants = [...StakingTypeVariants];
+
+export const stakingTypeRegex = /\b(native|liquid)\b/i;
+export const stakingTypeMap = {
+  native: "Native staking",
+  liquid: "Liquid staking",
+};
+
+export const defaultStakingType = "native";
+
 export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;
 export const cosmosWalletVariants = [...CosmosWalletVariants];
 

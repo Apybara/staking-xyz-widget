@@ -9,6 +9,7 @@ export const Header = () => {
 
   return (
     <RootHeader
+      activeNetwork={activeNetwork}
       currencyTabs={{
         activeCurrency: activeCurrency,
         activeNetworkCurrency,

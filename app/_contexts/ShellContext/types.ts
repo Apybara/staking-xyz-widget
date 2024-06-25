@@ -1,9 +1,10 @@
 import type { Dispatch, Reducer, ReactNode } from "react";
-import type { Currency, CoinPrice, Network } from "../../types";
+import type { Currency, CoinPrice, Network, StakingType } from "../../types";
 
 export type ShellContext = ShellStates & {};
 
 export type ShellStates = {
+  stakingType: StakingType | null;
   network: Network | null;
   currency: Currency | null;
   coinPrice: CoinPrice | null;
