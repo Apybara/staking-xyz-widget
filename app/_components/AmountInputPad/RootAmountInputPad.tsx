@@ -5,6 +5,8 @@ import cn from "classnames";
 import { Skeleton } from "../Skeleton";
 import { MaxButton } from "./MaxButton";
 import * as S from "./amountInputPad.css";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
+import { useShell } from "@/app/_contexts/ShellContext";
 
 export type RootAmountInputPadProps = {
   availableValue?: string;
@@ -27,6 +29,9 @@ export const RootAmountInputPad = ({
   maxTooltip,
   isMaxDisabled,
 }: RootAmountInputPadProps) => {
+  const { network } = useShell();
+  const isAleoNetwork = network && getIsAleoNetwork(network);
+
   return (
     <div className={cn(S.amountInputPad)}>
       {isAvailableValueLoading && (
@@ -45,7 +50,7 @@ export const RootAmountInputPad = ({
       )}
       <div className={cn(S.mainControlBox)}>
         <InputField {...inputField} />
-        <CurrencyConversionTool {...currencyConversionTool} />
+        {!isAleoNetwork && <CurrencyConversionTool {...currencyConversionTool} />}
       </div>
     </div>
   );

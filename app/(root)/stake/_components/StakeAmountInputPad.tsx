@@ -17,7 +17,7 @@ export const StakeAmountInputPad = () => {
   return (
     <AmountInputPad
       type="stake"
-      availableValue={balanceData}
+      availableValue={"200"}
       isAvailableValueLoading={isBalanceLoading}
       onValueChange={(val) => {
         setStates({ coinAmountInput: val });

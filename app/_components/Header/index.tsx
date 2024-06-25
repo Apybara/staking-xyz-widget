@@ -2,14 +2,16 @@
 
 import { RootHeader } from "./RootHeader";
 import { useNetworkChange, useCurrencyChange } from "../../_contexts/ShellContext/hooks";
+import { useShell } from "@/app/_contexts/ShellContext";
 
 export const Header = () => {
+  const { network } = useShell();
   const { activeNetwork, onUpdateRouter: onNetworkRouterUpdate } = useNetworkChange();
   const { activeCurrency, activeNetworkCurrency, onUpdateRouter: onCurrencyRouterUpdate } = useCurrencyChange();
 
   return (
     <RootHeader
-      activeNetwork={activeNetwork}
+      network={network}
       currencyTabs={{
         activeCurrency: activeCurrency,
         activeNetworkCurrency,
