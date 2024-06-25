@@ -1,8 +1,7 @@
-import type { FiatCurrency, CoinPrice, Currency, Network } from "../../types";
+import type { FiatCurrency, CoinPrice, Currency, Network, StakingType } from "../../types";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
 import { fiatCurrencyMap, networkCurrency, defaultGlobalCurrency, defaultNetwork } from "../../consts";
-import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 const numbroDefaultOptions: numbro.Format = {
   mantissa: 2,
@@ -10,6 +9,7 @@ const numbroDefaultOptions: numbro.Format = {
 numbroDefaultOptions.roundingFunction = Math.floor;
 
 export const getDynamicAssetValueFromCoin = ({
+  stakingType,
   network,
   coinVal,
   coinPrice,
@@ -17,7 +17,6 @@ export const getDynamicAssetValueFromCoin = ({
   minValue,
   formatOptions,
 }: GetDynamicAssetValueFromCoinProps) => {
-  const isAleoNetwork = network && getIsAleoNetwork(network);
   const castedCurrency = currency || defaultGlobalCurrency;
 
   if (!coinVal && coinVal !== 0) return undefined;
@@ -42,7 +41,7 @@ export const getDynamicAssetValueFromCoin = ({
     val: BigNumber(coinVal).toNumber(),
     formatOptions: {
       ...formatOptions,
-      currencySymbol: isAleoNetwork ? "Credits" : networkCurrency[network || defaultNetwork],
+      currencySymbol: !!stakingType ? "Credits" : networkCurrency[network || defaultNetwork],
     },
     minValue,
   });
@@ -181,6 +180,7 @@ type TokenNumberProps = {
   minValue?: number;
 };
 type GetDynamicAssetValueFromCoinProps = {
+  stakingType?: StakingType | null;
   network: Network | null;
   coinVal?: string | number;
   coinPrice: CoinPrice | null;

@@ -12,17 +12,15 @@ import { UnstakeSecondaryInfoBox } from "./UnstakeSecondaryInfoBox";
 import { UnstakeCTA } from "./UnstakeCTA";
 import { UnstakingProcedureDialog } from "./UnstakingProcedureDialog";
 import { useShell } from "@/app/_contexts/ShellContext";
-import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 export const ClientSideUnstakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
-  const { network } = useShell();
-  const isAleoNetwork = network && getIsAleoNetwork(network);
+  const { stakingType } = useShell();
 
   return (
     <UnstakingProvider>
       <PageViewTop page="Unstake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <WidgetContent>
-        {isAleoNetwork && <StakingTypeTabs />}
+        {!!stakingType && <StakingTypeTabs />}
         <UnstakeAmountInputPad />
         <UnstakeInfoBox />
         <UnstakeSecondaryInfoBox />

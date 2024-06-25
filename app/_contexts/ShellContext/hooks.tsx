@@ -13,7 +13,7 @@ import {
   defaultNetwork,
   CoinVariants,
   stakingTypeRegex,
-  defaultStakingType,
+  StakingTypeEnabledNetwork,
 } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
@@ -36,11 +36,18 @@ export const useNetworkChange = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { onUpdateRouter: onStakingTypeUpdate } = useStakingTypeChange();
 
   const onUpdateRouter = (net: Network) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     const activeCurrency = current.get("currency");
+    const stakingType = StakingTypeEnabledNetwork[net || defaultNetwork];
+
     current.set("network", networkIdToUrlParamAlias[net]);
+
+    stakingType && current.set("stakingType", stakingType);
+    onStakingTypeUpdate(stakingType);
+
     if (CoinVariants.includes(activeCurrency as NetworkCurrency)) {
       // activate currency when network is changed and the previous active currency is not FIAT
       current.set("currency", networkCurrency[net]);
@@ -96,26 +103,25 @@ export const useActiveStakingType = ({ setStates }: { setStates: ShellContext["s
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const stakingType = searchParams.get("stakingType");
-    if (!stakingType || !stakingTypeRegex.test(stakingType)) {
-      // The redirect operation is handled in the page component
-      return;
-    }
-    setStates({ stakingType: stakingType as StakingType });
+    const stakingType = searchParams.get("stakingType") as StakingType;
+    const isStakingTypeValid = stakingType && stakingTypeRegex.test(stakingType);
+
+    setStates({ stakingType: isStakingTypeValid ? stakingType : null });
   }, [searchParams]);
 
   return null;
 };
 
 export const useStakingTypeChange = () => {
-  const { stakingType } = useShell();
+  const { stakingType, network } = useShell();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const defaultStakingType = StakingTypeEnabledNetwork[network || defaultNetwork];
 
-  const onUpdateRouter = (stakingT: StakingType) => {
+  const onUpdateRouter = (stakingT: StakingType | null) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set("stakingType", stakingT);
+    stakingT && current.set("stakingType", stakingT);
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);

@@ -11,17 +11,15 @@ import { StakeCTA } from "./StakeCTA";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { StakingProcedureDialog } from "./StakingProcedureDialog";
 import { useShell } from "@/app/_contexts/ShellContext";
-import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
-  const { network } = useShell();
-  const isAleoNetwork = network && getIsAleoNetwork(network);
+  const { stakingType } = useShell();
 
   return (
     <StakingProvider>
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <WidgetContent>
-        {isAleoNetwork && <StakingTypeTabs />}
+        {!!stakingType && <StakingTypeTabs />}
         <StakeAmountInputPad />
         <StakeInfoBox />
       </WidgetContent>
