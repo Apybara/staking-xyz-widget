@@ -1,7 +1,8 @@
-import type { TxProcedure, TxProcedureState, TxProcedureType } from "./types";
+import type { TxProcedure, TxProcedureState, TxProcedureType, TxStepCallbacks } from "./types";
+import type { CosmosTxParams } from "../cosmos/types";
 import { useEffect, useState } from "react";
 import { useCosmosTxProcedures } from "../cosmos/hooks";
-import type { CosmosTxParams } from "../cosmos/types";
+import { useAleoTxProcedures } from "../aleo/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 
 export const useTxProcedure = ({
@@ -14,8 +15,7 @@ export const useTxProcedure = ({
   type: TxProcedureType;
 }) => {
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
-  const authState = useProcedureStates();
-  const signState = useProcedureStates();
+  const { authState, signState, authStep, signStep } = useTxProcedureStates();
 
   const {
     baseProcedures: cosmosBaseProcedures,
@@ -28,62 +28,19 @@ export const useTxProcedure = ({
     wallet,
     address,
     type,
-    authStep: {
-      onPreparing: () => {
-        authState.setState("preparing");
-        authState.setTxHash(undefined);
-        authState.setError(null);
-      },
-      onLoading: () => {
-        authState.setState("loading");
-        authState.setTxHash(undefined);
-        authState.setError(null);
-      },
-      onBroadcasting: () => {
-        authState.setState("broadcasting");
-        authState.setTxHash(undefined);
-        authState.setError(null);
-      },
-      onSuccess: (txHash) => {
-        authState.setState("success");
-        authState.setTxHash(txHash);
-        signState.setState("active");
-      },
-      onError: (e, txHash) => {
-        console.error(e);
-        authState.setState("error");
-        authState.setTxHash(txHash);
-        authState.setError(e);
-      },
-    },
-    signStep: {
-      onPreparing: () => {
-        signState.setState("preparing");
-        signState.setTxHash(undefined);
-        signState.setError(null);
-      },
-      onLoading: () => {
-        signState.setState("loading");
-        signState.setTxHash(undefined);
-        signState.setError(null);
-      },
-      onBroadcasting: () => {
-        signState.setState("broadcasting");
-        signState.setTxHash(undefined);
-        signState.setError(null);
-      },
-      onSuccess: (txHash) => {
-        signState.setState("success");
-        signState.setTxHash(txHash);
-      },
-      onError: (e, txHash) => {
-        console.error(e);
-        signState.setState("error");
-        signState.setTxHash(txHash);
-        signState.setError(e);
-      },
-    },
+    authStep,
+    signStep,
   }) || {};
+
+  const { baseProcedures: aleoBaseProcedures } =
+    useAleoTxProcedures({
+      amount,
+      network,
+      wallet,
+      address,
+      type,
+      signStep,
+    }) || {};
 
   const updateStates = () => {
     if (cosmosBaseProcedures?.length) {
@@ -91,6 +48,14 @@ export const useTxProcedure = ({
       authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
       authState.setError(null);
       signState.setState(!isAuthApproved ? "idle" : "active");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    }
+    if (aleoBaseProcedures?.length) {
+      authState.setState("success");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+      signState.setState("active");
       signState.setTxHash(undefined);
       signState.setError(null);
     }
@@ -144,8 +109,20 @@ export const useTxProcedure = ({
 
       setProcedures(proceduresArray as Array<TxProcedure>);
     }
+    if (aleoBaseProcedures?.length) {
+      setProcedures([
+        {
+          ...aleoBaseProcedures[0],
+          state: signState.state,
+          txHash: signState.txHash,
+          error: signState.error,
+          setState: signState.setState,
+        },
+      ]);
+    }
   }, [
     cosmosBaseProcedures?.length,
+    aleoBaseProcedures?.length,
     authState.state,
     authState.txHash,
     authState.error,
@@ -157,11 +134,81 @@ export const useTxProcedure = ({
   return {
     procedures,
     resetStates: async () => {
+      updateStates();
+
       if (cosmosBaseProcedures?.length) {
-        updateStates();
         await refetchAuthCheck?.();
       }
     },
+  };
+};
+
+const useTxProcedureStates = () => {
+  const authState = useProcedureStates();
+  const signState = useProcedureStates();
+
+  const authStep: TxStepCallbacks = {
+    onPreparing: () => {
+      authState.setState("preparing");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
+    onLoading: () => {
+      authState.setState("loading");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
+    onBroadcasting: () => {
+      authState.setState("broadcasting");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
+    onSuccess: (txHash) => {
+      authState.setState("success");
+      authState.setTxHash(txHash);
+      signState.setState("active");
+    },
+    onError: (e, txHash) => {
+      console.error(e);
+      authState.setState("error");
+      authState.setTxHash(txHash);
+      authState.setError(e);
+    },
+  };
+
+  const signStep: TxStepCallbacks = {
+    onPreparing: () => {
+      signState.setState("preparing");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    },
+    onLoading: () => {
+      signState.setState("loading");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    },
+    onBroadcasting: () => {
+      signState.setState("broadcasting");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    },
+    onSuccess: (txHash) => {
+      signState.setState("success");
+      signState.setTxHash(txHash);
+    },
+    onError: (e, txHash) => {
+      console.error(e);
+      signState.setState("error");
+      signState.setTxHash(txHash);
+      signState.setError(e);
+    },
+  };
+
+  return {
+    authState,
+    signState,
+    authStep,
+    signStep,
   };
 };
 

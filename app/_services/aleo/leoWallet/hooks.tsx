@@ -1,8 +1,107 @@
 import type { WalletName } from "@demox-labs/aleo-wallet-adapter-base";
+import type { AleoTxStatus } from "../types";
+import type * as T from "./types";
 import type { WalletStates } from "../../../_contexts/WalletContext/types";
 import { useEffect, useMemo, useState } from "react";
 import useLocalStorage from "use-local-storage";
+import { useQuery } from "@tanstack/react-query";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
+import { getLeoWalletTxStatus, leoWalletStake, leoWalletUnstake, leoWalletWithdraw } from ".";
+
+export const useLeoWalletStake = () => {
+  const { wallet, publicKey } = useLeoWallet();
+
+  return async ({ validatorAddress, amount, chainId }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
+    try {
+      if (!publicKey || !wallet || !validatorAddress || !amount) {
+        const error = new Error("Staking fails: missing wallet, publicKey, validatorAddress or amount");
+        throw error;
+      }
+      return await leoWalletStake({ amount, validatorAddress, wallet, address: publicKey, chainId });
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error("Staking fails");
+      throw err;
+    }
+  };
+};
+
+export const useLeoWalletUnstake = () => {
+  const { wallet, publicKey } = useLeoWallet();
+
+  return async ({ amount, chainId }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
+    try {
+      if (!publicKey || !wallet || !amount) {
+        const error = new Error("Unstaking fails: missing wallet, publicKey, or stakeAmount");
+        throw error;
+      }
+
+      return await leoWalletUnstake({ amount, wallet, address: publicKey, chainId });
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error("Unstaking fails");
+      throw err;
+    }
+  };
+};
+
+export const useLeoWalletWithdraw = () => {
+  const { wallet, publicKey } = useLeoWallet();
+
+  return async ({ chainId }: Omit<T.LeoWalletWithdrawProps, "wallet" | "address">) => {
+    try {
+      if (!publicKey || !wallet) {
+        const error = new Error("Withdraw fails: missing wallet or publicKey");
+        throw error;
+      }
+
+      return await leoWalletWithdraw({ wallet, address: publicKey, chainId });
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error("Withdraw fails");
+      throw err;
+    }
+  };
+};
+
+export const useLeoWalletTxStatus = ({ txId }: { txId?: string }) => {
+  const { wallet } = useLeoWallet();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["leoWalletTxStatus", txId],
+    queryFn: () => {
+      if (!txId || !wallet) return Promise.resolve(null);
+      return getLeoWalletTxStatus({ txId, wallet });
+    },
+    enabled: !!txId && !!wallet,
+    refetchInterval: !!txId && !!wallet ? 10000 : false,
+    refetchOnWindowFocus: true,
+  });
+
+  const txStatus: AleoTxStatus | null = useMemo(() => {
+    if (!txId) return null;
+
+    // Proving stage
+    if (error) {
+      return "error";
+    }
+    if (isLoading || !(data === "Completed" || data === "Finalized" || data === "Failed")) {
+      return "loading";
+    }
+
+    // Completed stage
+    if (data === "Completed" || data === "Finalized") {
+      return "success";
+    }
+
+    // Failed tx
+    return "error";
+  }, [data, error, isLoading, txId]);
+
+  return {
+    txStatus,
+    data,
+    isLoading,
+    error,
+  };
+};
 
 export const useLeoWalletStates = () => {
   const { connecting, connected, disconnecting, publicKey } = useLeoWallet();
