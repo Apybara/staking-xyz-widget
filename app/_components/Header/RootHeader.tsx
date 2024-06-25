@@ -3,19 +3,16 @@ import cn from "classnames";
 import * as S from "./header.css";
 import { type CurrencyTabsProps, CurrencyTabs } from "../CurrencyTabs";
 import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
-import type { Network } from "@/app/types";
+import type { StakingType } from "@/app/types";
 import { WalletCapsule } from "../WalletCapsule";
-import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 export type RootHeaderProps = {
-  network: Network | null;
+  stakingType: StakingType | null;
   currencyTabs: CurrencyTabsProps;
   networkSelect: NetworkSelectProps;
 };
 
-export const RootHeader = ({ network, currencyTabs, networkSelect }: RootHeaderProps) => {
-  const isAleoNetwork = network && getIsAleoNetwork(network);
-
+export const RootHeader = ({ stakingType, currencyTabs, networkSelect }: RootHeaderProps) => {
   return (
     <header className={cn(S.header)}>
       <Link href="/" className={cn(S.logo)}>
@@ -38,7 +35,7 @@ export const RootHeader = ({ network, currencyTabs, networkSelect }: RootHeaderP
         </svg>
       </Link>
       <ul className={cn(S.endBox)}>
-        {!isAleoNetwork && <CurrencyTabs {...currencyTabs} />}
+        {!stakingType && <CurrencyTabs {...currencyTabs} />}
         <NetworkSelect {...networkSelect} />
         <WalletCapsule />
       </ul>

@@ -5,13 +5,13 @@ import { useNetworkChange, useCurrencyChange } from "../../_contexts/ShellContex
 import { useShell } from "@/app/_contexts/ShellContext";
 
 export const Header = () => {
-  const { network } = useShell();
+  const { stakingType } = useShell();
   const { activeNetwork, onUpdateRouter: onNetworkRouterUpdate } = useNetworkChange();
   const { activeCurrency, activeNetworkCurrency, onUpdateRouter: onCurrencyRouterUpdate } = useCurrencyChange();
 
   return (
     <RootHeader
-      network={network}
+      stakingType={stakingType}
       currencyTabs={{
         activeCurrency: activeCurrency,
         activeNetworkCurrency,

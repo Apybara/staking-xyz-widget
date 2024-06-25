@@ -55,6 +55,7 @@ export type RouterStruct = {
     network?: string;
     currency?: string;
     device?: Device;
+    stakingType?: string;
   };
 };
 
