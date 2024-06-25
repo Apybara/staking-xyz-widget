@@ -1,4 +1,4 @@
-import type { Currency, Network, NetworkCurrency } from "../../types";
+import type { Currency, Network, NetworkCurrency, StakingType } from "../../types";
 import type { ShellContext } from "./types";
 import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -12,6 +12,8 @@ import {
   defaultGlobalCurrency,
   defaultNetwork,
   CoinVariants,
+  stakingTypeRegex,
+  defaultStakingType,
 } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
@@ -86,6 +88,41 @@ export const useCurrencyChange = () => {
   return {
     activeCurrency: currency || defaultGlobalCurrency,
     activeNetworkCurrency: network && networkCurrency[network],
+    onUpdateRouter,
+  };
+};
+
+export const useActiveStakingType = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const stakingType = searchParams.get("stakingType");
+    if (!stakingType || !stakingTypeRegex.test(stakingType)) {
+      // The redirect operation is handled in the page component
+      return;
+    }
+    setStates({ stakingType: stakingType as StakingType });
+  }, [searchParams]);
+
+  return null;
+};
+
+export const useStakingTypeChange = () => {
+  const { stakingType } = useShell();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const onUpdateRouter = (stakingT: StakingType) => {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set("stakingType", stakingT);
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    router.push(`${pathname}${query}`);
+  };
+
+  return {
+    activeStakingType: stakingType || defaultStakingType,
     onUpdateRouter,
   };
 };

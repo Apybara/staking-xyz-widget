@@ -5,6 +5,7 @@ import { UnstakingProvider } from "../../../_contexts/UnstakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
+import { StakingTypeTabs } from "../../_components/StakingTabs";
 import { UnstakeAmountInputPad } from "./UnstakeAmountInputPad";
 import { UnstakeInfoBox } from "./UnstakeInfoBox";
 import { UnstakeSecondaryInfoBox } from "./UnstakeSecondaryInfoBox";
@@ -16,6 +17,7 @@ export const ClientSideUnstakePage = ({ searchParams }: { searchParams: RouterSt
     <UnstakingProvider>
       <PageViewTop page="Unstake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <WidgetContent>
+        <StakingTypeTabs />
         <UnstakeAmountInputPad />
         <UnstakeInfoBox />
         <UnstakeSecondaryInfoBox />

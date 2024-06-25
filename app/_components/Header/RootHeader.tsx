@@ -3,14 +3,16 @@ import cn from "classnames";
 import * as S from "./header.css";
 import { type CurrencyTabsProps, CurrencyTabs } from "../CurrencyTabs";
 import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
+import type { Network } from "@/app/types";
 import { WalletCapsule } from "../WalletCapsule";
 
 export type RootHeaderProps = {
+  activeNetwork: Network;
   currencyTabs: CurrencyTabsProps;
   networkSelect: NetworkSelectProps;
 };
 
-export const RootHeader = ({ currencyTabs, networkSelect }: RootHeaderProps) => {
+export const RootHeader = ({ activeNetwork, currencyTabs, networkSelect }: RootHeaderProps) => {
   return (
     <header className={cn(S.header)}>
       <Link href="/" className={cn(S.logo)}>
