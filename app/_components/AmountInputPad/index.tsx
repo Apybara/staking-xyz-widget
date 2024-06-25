@@ -24,6 +24,7 @@ import Tooltip from "../Tooltip";
 import { Icon } from "../Icon";
 
 import * as S from "./amountInputPad.css";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 export type BaseAmountInputPadProps = {
   primaryValue: string;
@@ -60,6 +61,8 @@ export const AmountInputPad = ({
   const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
+
+  const isAleoNetwork = network && getIsAleoNetwork(network);
 
   useEffect(() => {
     if (primaryValue === "") {
@@ -151,7 +154,7 @@ export const AmountInputPad = ({
         );
       }}
       maxTooltip={
-        type === "stake" ? (
+        type === "stake" && !isAleoNetwork ? (
           <Tooltip
             className={S.topBarTooltip}
             trigger={<Icon name="info" />}
@@ -178,6 +181,7 @@ const AvailabilityElement = ({
   "availableValue" | "type"
 >) => {
   const { network, coinPrice } = useShell();
+  const isAleoNetwork = network && getIsAleoNetwork(network);
 
   const prefix = type === "stake" ? "Available" : "Staked";
 
@@ -202,7 +206,7 @@ const AvailabilityElement = ({
         <AvailabilityText.Primary>
           {prefix}: {primaryValue}
         </AvailabilityText.Primary>{" "}
-        <AvailabilityText.Secondary>({secondaryValue})</AvailabilityText.Secondary>
+        {!isAleoNetwork && <AvailabilityText.Secondary>({secondaryValue})</AvailabilityText.Secondary>}
       </p>
       {!!tooltip && tooltip}
     </div>

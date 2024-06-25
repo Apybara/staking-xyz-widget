@@ -5,14 +5,17 @@ import { type CurrencyTabsProps, CurrencyTabs } from "../CurrencyTabs";
 import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
 import type { Network } from "@/app/types";
 import { WalletCapsule } from "../WalletCapsule";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 export type RootHeaderProps = {
-  activeNetwork: Network;
+  network: Network | null;
   currencyTabs: CurrencyTabsProps;
   networkSelect: NetworkSelectProps;
 };
 
-export const RootHeader = ({ activeNetwork, currencyTabs, networkSelect }: RootHeaderProps) => {
+export const RootHeader = ({ network, currencyTabs, networkSelect }: RootHeaderProps) => {
+  const isAleoNetwork = network && getIsAleoNetwork(network);
+
   return (
     <header className={cn(S.header)}>
       <Link href="/" className={cn(S.logo)}>
@@ -35,7 +38,7 @@ export const RootHeader = ({ activeNetwork, currencyTabs, networkSelect }: RootH
         </svg>
       </Link>
       <ul className={cn(S.endBox)}>
-        <CurrencyTabs {...currencyTabs} />
+        {!isAleoNetwork && <CurrencyTabs {...currencyTabs} />}
         <NetworkSelect {...networkSelect} />
         <WalletCapsule />
       </ul>
