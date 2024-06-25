@@ -5,7 +5,7 @@ import { UnstakingProvider } from "../../../_contexts/UnstakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { WidgetBottomBox } from "@/app/_components/WidgetBottomBox";
-import { StakingTypeTabs } from "../../_components/StakingTabs";
+import { StakingTypeTabs } from "../../_components/StakingTypeTabs";
 import { UnstakeAmountInputPad } from "./UnstakeAmountInputPad";
 import { UnstakeInfoBox } from "./UnstakeInfoBox";
 import { UnstakeSecondaryInfoBox } from "./UnstakeSecondaryInfoBox";
