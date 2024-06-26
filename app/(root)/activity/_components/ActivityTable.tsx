@@ -66,11 +66,11 @@ export const ActivityTable = () => {
             state: filterKey === "transactions_rewards" ? "highlighted" : "default",
             onClick: () => setFilterKey("transactions_rewards"),
           },
-          // {
-          //   children: "Import",
-          //   state: filterKey === "transactions_redelegate" ? "highlighted" : "default",
-          //   onClick: () => setFilterKey("transactions_redelegate"),
-          // },
+          {
+            children: "Import",
+            state: filterKey === "transactions_redelegate" ? "highlighted" : "default",
+            onClick: () => setFilterKey("transactions_redelegate"),
+          },
         ]}
       />
       {formattedEntries?.length ? (

@@ -21,7 +21,6 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
 
   const isNetworkInvalid = !network || !networkUrlParamRegex.test(network);
   const isCurrencyInvalid = !currencyRegex.test(currency || "");
-  const isImportPage = page === "import";
 
   if (isNetworkInvalid) {
     const targetParamFromAlias = getNetworkParamFromValidAlias(network || "");
@@ -31,10 +30,10 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   if (isCurrencyInvalid) {
     current.set("currency", networkCurrency[defaultNetwork]);
   }
-  if (isNetworkInvalid || isCurrencyInvalid || isImportPage) {
+  if (isNetworkInvalid || isCurrencyInvalid) {
     const search = current.toString();
     const query = search ? `?${search}` : "";
-    redirect(`/${isImportPage ? "" : page}${query}`);
+    redirect(`/${page}${query}`);
   }
 }
 
