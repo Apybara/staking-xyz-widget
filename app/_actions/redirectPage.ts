@@ -8,15 +8,16 @@ import {
   networkIdToUrlParamAlias,
   currencyRegex,
   networkCurrency,
-  StakingTypeEnabledNetwork,
+  networkDefaultStakingType,
 } from "../consts";
 import { getCurrentSearchParams } from "../_utils/routes";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
   const { network, currency, stakingType } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
-  const defaultStakingType = StakingTypeEnabledNetwork[(network as Network) || defaultNetwork];
+  const defaultStakingType = networkDefaultStakingType[(network as Network) || defaultNetwork];
   const isStakingTypeInvalid = stakingType && !defaultStakingType;
+  const isStakingTypeExpected = !stakingType && !!defaultStakingType;
 
   // if (network?.toLowerCase() === "aleo") {
   //   redirect("https://aleo.staking.xyz");
@@ -37,7 +38,11 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   if (isStakingTypeInvalid) {
     current.delete("stakingType");
   }
-  if (isNetworkInvalid || isCurrencyInvalid || isImportPage || isStakingTypeInvalid) {
+  if (isStakingTypeExpected) {
+    current.set("stakingType", defaultStakingType);
+  }
+
+  if (isNetworkInvalid || isCurrencyInvalid || isImportPage || isStakingTypeInvalid || isStakingTypeExpected) {
     const search = current.toString();
     const query = search ? `?${search}` : "";
     redirect(`/${isImportPage ? "" : page}${query}`);

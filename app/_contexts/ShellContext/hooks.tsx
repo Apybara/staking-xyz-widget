@@ -13,7 +13,7 @@ import {
   defaultNetwork,
   CoinVariants,
   stakingTypeRegex,
-  StakingTypeEnabledNetwork,
+  networkDefaultStakingType,
 } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
@@ -41,7 +41,7 @@ export const useNetworkChange = () => {
   const onUpdateRouter = (net: Network) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     const activeCurrency = current.get("currency");
-    const stakingType = StakingTypeEnabledNetwork[net || defaultNetwork];
+    const stakingType = networkDefaultStakingType[net || defaultNetwork];
 
     current.set("network", networkIdToUrlParamAlias[net]);
 
@@ -117,7 +117,7 @@ export const useStakingTypeChange = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const defaultStakingType = StakingTypeEnabledNetwork[network || defaultNetwork];
+  const defaultStakingType = networkDefaultStakingType[network || defaultNetwork];
 
   const onUpdateRouter = (stakingT: StakingType | null) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));

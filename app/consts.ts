@@ -167,8 +167,7 @@ export const stakingTypeMap = {
   liquid: "Liquid staking",
 };
 
-export const defaultStakingType = "native";
-export const StakingTypeEnabledNetwork: Record<Network, StakingType | null> = {
+export const networkDefaultStakingType: Record<Network, StakingType | null> = {
   celestia: null,
   celestiatestnet3: null,
   cosmoshub: null,
