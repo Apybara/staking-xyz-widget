@@ -7,12 +7,12 @@ import type { StakingType } from "@/app/types";
 import { WalletCapsule } from "../WalletCapsule";
 
 export type RootHeaderProps = {
-  stakingType: StakingType | null;
+  showCurrencyTool: boolean;
   currencyTabs: CurrencyTabsProps;
   networkSelect: NetworkSelectProps;
 };
 
-export const RootHeader = ({ stakingType, currencyTabs, networkSelect }: RootHeaderProps) => {
+export const RootHeader = ({ showCurrencyTool, currencyTabs, networkSelect }: RootHeaderProps) => {
   return (
     <header className={cn(S.header)}>
       <Link href="/" className={cn(S.logo)}>
@@ -35,7 +35,7 @@ export const RootHeader = ({ stakingType, currencyTabs, networkSelect }: RootHea
         </svg>
       </Link>
       <ul className={cn(S.endBox)}>
-        {!stakingType && <CurrencyTabs {...currencyTabs} />}
+        {showCurrencyTool && <CurrencyTabs {...currencyTabs} />}
         <NetworkSelect {...networkSelect} />
         <WalletCapsule />
       </ul>
