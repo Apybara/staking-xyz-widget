@@ -9,7 +9,7 @@ import { useStakeMaxAmountBuffer } from "@/app/_contexts/StakingContext/hooks";
 export const StakeAmountInputPad = () => {
   const { network } = useShell();
   const { activeWallet, address } = useWallet();
-  const { amountInputPad, setStates } = useStaking();
+  const { amountInputPad, setStates, inputErrorMessage } = useStaking();
   const { data: balanceData, isLoading: isBalanceLoading } = useWalletBalance({ address, network, activeWallet }) || {};
 
   const maxAmountBuffer = useStakeMaxAmountBuffer({ amount: balanceData || "0" });
@@ -23,6 +23,7 @@ export const StakeAmountInputPad = () => {
         setStates({ coinAmountInput: val });
       }}
       maxAmountBuffer={maxAmountBuffer}
+      error={inputErrorMessage}
       {...amountInputPad}
     />
   );
