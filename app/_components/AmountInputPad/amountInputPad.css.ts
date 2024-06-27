@@ -57,18 +57,28 @@ export const mainControlBox = style({
   inlineSize: "100%",
 });
 
-export const amountInputPad = style({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: pxToRem(20),
-  backgroundColor: colors.black700,
-  border: `1px solid ${colors.black800}`,
-  borderRadius: pxToRem(8),
-  paddingInline: pxToRem(20),
-  paddingBlockStart: pxToRem(30),
-  paddingBlockEnd: pxToRem(30),
+export const amountInputPad = recipe({
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: pxToRem(20),
+    backgroundColor: colors.black700,
+    border: `1px solid ${colors.black800}`,
+    borderRadius: pxToRem(8),
+    paddingInline: pxToRem(20),
+    paddingBlockStart: pxToRem(30),
+    paddingBlockEnd: pxToRem(30),
+  },
+  variants: {
+    hasErrorMessage: {
+      true: {
+        paddingBlockEnd: pxToRem(40),
+      },
+      false: {},
+    },
+  },
 });
 
 export const topBar = style({
@@ -130,4 +140,13 @@ export const secondaryAvailabilityText = style({
   fontSize: pxToRem(12),
   color: colors.black300,
   lineHeight: 1,
+});
+
+export const errorMessage = style({
+  fontSize: pxToRem(12),
+  color: colors.yellow900,
+  textAlign: "center",
+  whiteSpace: "nowrap",
+  display: "block",
+  marginBlockEnd: pxToRem(-16),
 });

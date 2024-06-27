@@ -2,6 +2,7 @@ import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, Sta
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
+import { BasicAmountValidationResult } from "./_utils/transaction";
 
 export const NetworkVariants = ["cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3", "aleo"] as const;
 export const networkVariants = [...NetworkVariants];
@@ -358,7 +359,7 @@ export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
       : 0.1,
 };
 
-export const minimumStakingAmountByNetwork: Record<Network, Record<StakingType, number | null>> = {
+export const minInitialStakingAmountByNetwork: Record<Network, Record<StakingType, number | null>> = {
   celestia: {
     native: null,
     liquid: null,
@@ -377,6 +378,29 @@ export const minimumStakingAmountByNetwork: Record<Network, Record<StakingType, 
   },
   aleo: {
     native: 10000,
+    liquid: null,
+  },
+};
+
+export const minSubsequentStakingAmountByNetwork: Record<Network, Record<StakingType, number | null>> = {
+  celestia: {
+    native: null,
+    liquid: null,
+  },
+  celestiatestnet3: {
+    native: null,
+    liquid: null,
+  },
+  cosmoshub: {
+    native: null,
+    liquid: null,
+  },
+  cosmoshubtestnet: {
+    native: null,
+    liquid: null,
+  },
+  aleo: {
+    native: 1,
     liquid: null,
   },
 };

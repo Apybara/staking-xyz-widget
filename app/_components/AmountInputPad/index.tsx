@@ -34,6 +34,7 @@ export type BaseAmountInputPadProps = {
   onSwap: () => void;
   maxAmountBuffer?: string;
   onMax: (maxVal?: string | undefined) => void;
+  error?: string;
 };
 
 export type AmountInputPadProps = BaseAmountInputPadProps & {
@@ -56,8 +57,9 @@ export const AmountInputPad = ({
   onSwap,
   maxAmountBuffer,
   onMax,
+  error,
 }: AmountInputPadProps) => {
-  const { network, stakingType } = useShell();
+  const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
 
@@ -151,7 +153,7 @@ export const AmountInputPad = ({
         );
       }}
       maxTooltip={
-        type === "stake" && !stakingType ? (
+        type === "stake" ? (
           <Tooltip
             className={S.topBarTooltip}
             trigger={<Icon name="info" />}
@@ -163,6 +165,7 @@ export const AmountInputPad = ({
         type === "stake" &&
         BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalanceStakingByNetwork[castedNetwork])
       }
+      error={error}
     />
   );
 };

@@ -22,7 +22,7 @@ export const getBasicAmountValidation = ({
   if (parsedAmount.isNaN() || parsedAmount.isNegative() || parsedAmount.isZero()) {
     return "invalid";
   }
-  if (min && parsedAmount.isLessThanOrEqualTo(min)) {
+  if (min && parsedAmount.isLessThan(min)) {
     return "insufficient";
   }
   if (max && parsedAmount.isGreaterThan(max)) {
