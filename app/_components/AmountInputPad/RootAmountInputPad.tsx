@@ -6,8 +6,10 @@ import { Skeleton } from "../Skeleton";
 import { MaxButton } from "./MaxButton";
 import * as S from "./amountInputPad.css";
 import { useShell } from "@/app/_contexts/ShellContext";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 export type RootAmountInputPadProps = {
+  className?: string;
   availableValue?: string;
   availabilityElement?: ReactNode;
   isAvailableValueLoading?: boolean;
@@ -16,9 +18,11 @@ export type RootAmountInputPadProps = {
   onClickMax: () => void;
   maxTooltip?: ReactNode;
   isMaxDisabled?: boolean;
+  error?: string;
 };
 
 export const RootAmountInputPad = ({
+  className,
   availableValue,
   availabilityElement,
   isAvailableValueLoading,
@@ -27,11 +31,13 @@ export const RootAmountInputPad = ({
   onClickMax,
   maxTooltip,
   isMaxDisabled,
+  error,
 }: RootAmountInputPadProps) => {
-  const { stakingType } = useShell();
+  const { network, stakingType } = useShell();
+  const isAleoNetwork = network && getIsAleoNetwork(network);
 
   return (
-    <div className={cn(S.amountInputPad)}>
+    <div className={cn(className, S.amountInputPad)}>
       {isAvailableValueLoading && (
         <div className={cn(S.topBar)}>
           <Skeleton height={24} width={100} />
@@ -48,8 +54,9 @@ export const RootAmountInputPad = ({
       )}
       <div className={cn(S.mainControlBox)}>
         <InputField {...inputField} />
-        {!stakingType && <CurrencyConversionTool {...currencyConversionTool} />}
+        {!isAleoNetwork && <CurrencyConversionTool {...currencyConversionTool} />}
       </div>
+      {!!stakingType && !!error && <span className={S.errorMessage}>{error}</span>}
     </div>
   );
 };

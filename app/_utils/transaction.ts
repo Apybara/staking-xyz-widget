@@ -3,12 +3,14 @@ import BigNumber from "bignumber.js";
 import { feeRatioByNetwork } from "../consts";
 
 export const getBasicAmountValidation = ({
+  isFirstTime,
   amount,
   min,
   max,
   bufferValidationAmount,
   bufferValidationMax,
 }: {
+  isFirstTime?: boolean;
   amount?: string;
   min?: string;
   max?: string;
@@ -23,7 +25,7 @@ export const getBasicAmountValidation = ({
     return "invalid";
   }
   if (min && parsedAmount.isLessThanOrEqualTo(min)) {
-    return "insufficient";
+    return isFirstTime ? "ineligible" : "insufficient";
   }
   if (max && parsedAmount.isGreaterThan(max)) {
     return "exceeded";
@@ -88,16 +90,20 @@ export type BasicAmountValidationResult =
   | "valid"
   | "empty"
   | "invalid"
+  | "ineligible"
   | "insufficient"
   | "exceeded"
-  | "bufferExceeded";
+  | "bufferExceeded"
+  | "aboveBalance";
 
 export type BasicTxCtaValidationResult =
   | "empty"
   | "invalid"
+  | "ineligible"
   | "insufficient"
   | "exceeded"
   | "bufferExceeded"
+  | "aboveBalance"
   | "disconnected"
   | "connecting"
   | "submittable";

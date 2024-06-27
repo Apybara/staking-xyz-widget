@@ -4,22 +4,33 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
 import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
-import { defaultNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
+import { defaultNetwork, minimumStakingAmountByNetwork, requiredBalanceStakingByNetwork } from "@/app/consts";
+import { useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
 }: {
   inputAmount: StakingStates["coinAmountInput"];
 }) => {
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
+  const { stakedBalance } = useStakedBalance() || {};
 
+  const castedNetwork = network || defaultNetwork;
+
+  const isFirstTime = !stakedBalance || stakedBalance === "0";
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
+  const minAmount = stakingType
+    ? isFirstTime
+      ? minimumStakingAmountByNetwork[castedNetwork][stakingType] || 1
+      : 1
+    : 0;
 
   const amountValidation = getBasicAmountValidation({
+    isFirstTime,
     amount: inputAmount,
-    min: "0",
+    min: minAmount.toString(),
     max: balanceData,
     bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
     bufferValidationMax: balanceData,

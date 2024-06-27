@@ -30,8 +30,10 @@ export const UnstakeCTA = () => {
 const textMap: Record<UnstakingStates["ctaState"], string> = {
   empty: "Enter amount",
   invalid: "Invalid amount",
+  ineligible: "Below minimum",
   insufficient: "Below minimum",
   exceeded: "Insufficient balance",
+  aboveBalance: "Insufficient balance",
   bufferExceeded: "Insufficient amount for fees",
   disconnected: "Connect wallet",
   connecting: "Connecting",
@@ -41,8 +43,10 @@ const textMap: Record<UnstakingStates["ctaState"], string> = {
 const buttonState: Record<UnstakingStates["ctaState"], CTAButtonProps["state"]> = {
   empty: "disabled",
   invalid: "disabled",
+  ineligible: "disabled",
   insufficient: "disabled",
   exceeded: "disabled",
+  aboveBalance: "disabled",
   bufferExceeded: "disabled",
   disconnected: "default",
   connecting: "loading",
@@ -52,8 +56,10 @@ const buttonState: Record<UnstakingStates["ctaState"], CTAButtonProps["state"]> 
 const buttonVariant: Record<UnstakingStates["ctaState"], CTAButtonProps["variant"]> = {
   empty: "tertiary",
   invalid: "tertiary",
+  ineligible: "tertiary",
   insufficient: "tertiary",
   exceeded: "tertiary",
+  aboveBalance: "tertiary",
   bufferExceeded: "tertiary",
   disconnected: "primary",
   connecting: "primary",

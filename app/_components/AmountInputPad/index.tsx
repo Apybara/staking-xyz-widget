@@ -1,4 +1,5 @@
 "use client";
+import cn from "classnames";
 import type { Currency } from "../../types";
 import type { ReactNode } from "react";
 import { useEffect, useMemo } from "react";
@@ -34,6 +35,8 @@ export type BaseAmountInputPadProps = {
   onSwap: () => void;
   maxAmountBuffer?: string;
   onMax: (maxVal?: string | undefined) => void;
+  isStakingType?: boolean;
+  error?: string;
 };
 
 export type AmountInputPadProps = BaseAmountInputPadProps & {
@@ -56,6 +59,8 @@ export const AmountInputPad = ({
   onSwap,
   maxAmountBuffer,
   onMax,
+  isStakingType,
+  error,
 }: AmountInputPadProps) => {
   const { network, stakingType } = useShell();
   const castedNetwork = network || defaultNetwork;
@@ -102,6 +107,7 @@ export const AmountInputPad = ({
 
   return (
     <RootAmountInputPad
+      className={cn({ [S.stakingTypeWithNoError]: isStakingType && !error })}
       availableValue={availableValue}
       availabilityElement={
         <AvailabilityElement
@@ -151,7 +157,7 @@ export const AmountInputPad = ({
         );
       }}
       maxTooltip={
-        type === "stake" && !stakingType ? (
+        type === "stake" ? (
           <Tooltip
             className={S.topBarTooltip}
             trigger={<Icon name="info" />}
@@ -163,6 +169,7 @@ export const AmountInputPad = ({
         type === "stake" &&
         BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalanceStakingByNetwork[castedNetwork])
       }
+      error={error}
     />
   );
 };

@@ -71,6 +71,10 @@ export const amountInputPad = style({
   paddingBlockEnd: pxToRem(30),
 });
 
+export const stakingTypeWithNoError = style({
+  paddingBlockEnd: pxToRem(40),
+});
+
 export const topBar = style({
   display: "flex",
   justifyContent: "space-between",
@@ -130,4 +134,13 @@ export const secondaryAvailabilityText = style({
   fontSize: pxToRem(12),
   color: colors.black300,
   lineHeight: 1,
+});
+
+export const errorMessage = style({
+  fontSize: pxToRem(12),
+  color: colors.yellow900,
+  textAlign: "center",
+  whiteSpace: "nowrap",
+  display: "block",
+  marginBlockEnd: pxToRem(-16),
 });

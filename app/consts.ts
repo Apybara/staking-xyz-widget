@@ -2,6 +2,7 @@ import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, Sta
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
+import { BasicAmountValidationResult } from "./_utils/transaction";
 
 export const NetworkVariants = ["cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3", "aleo"] as const;
 export const networkVariants = [...NetworkVariants];
@@ -173,6 +174,17 @@ export const networkDefaultStakingType: Record<Network, StakingType | null> = {
   cosmoshub: null,
   cosmoshubtestnet: null,
   aleo: "native",
+};
+
+export const stakingTypeErrorMap: Record<BasicAmountValidationResult, string> = {
+  empty: "",
+  invalid: "",
+  valid: "",
+  ineligible: "You need to stake at least 10,000 Credits to begin.",
+  insufficient: "You need to stake at least 1 Credit.",
+  exceeded: "Insufficient balance",
+  aboveBalance: "You are unstaking more than your staked balance.",
+  bufferExceeded: "Insufficient balance for fee",
 };
 
 export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;
@@ -348,6 +360,29 @@ export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
       ? Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_UNSTAKING)
       : 0.03,
   aleo: 0, // TODO: Add Aleo required balance unstaking
+};
+
+export const minimumStakingAmountByNetwork: Record<Network, Record<StakingType, number | null>> = {
+  celestia: {
+    native: null,
+    liquid: null,
+  },
+  celestiatestnet3: {
+    native: null,
+    liquid: null,
+  },
+  cosmoshub: {
+    native: null,
+    liquid: null,
+  },
+  cosmoshubtestnet: {
+    native: null,
+    liquid: null,
+  },
+  aleo: {
+    native: 10000,
+    liquid: null,
+  },
 };
 
 export const unstakingPeriodByNetwork: Record<Network, string> = {
