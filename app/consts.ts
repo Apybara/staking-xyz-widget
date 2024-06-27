@@ -326,7 +326,11 @@ export const requiredBalanceStakingByNetwork: Record<Network, number> = {
     !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_STAKING))
       ? Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_STAKING)
       : 0.05,
-  aleo: 0, // TODO: Add Aleo required balance staking
+  aleo:
+    process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_STAKING &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_STAKING))
+      ? Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_STAKING)
+      : 0.1,
 };
 
 export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
@@ -350,7 +354,34 @@ export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
     !isNaN(Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_UNSTAKING))
       ? Number(process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REQUIRED_BALANCE_UNSTAKING)
       : 0.03,
-  aleo: 0, // TODO: Add Aleo required balance unstaking
+  aleo:
+    process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_UNSTAKING &&
+    !isNaN(Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_UNSTAKING))
+      ? Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_UNSTAKING)
+      : 0.1,
+};
+
+export const minimumStakingAmountByNetwork: Record<Network, Record<StakingType, number | null>> = {
+  celestia: {
+    native: null,
+    liquid: null,
+  },
+  celestiatestnet3: {
+    native: null,
+    liquid: null,
+  },
+  cosmoshub: {
+    native: null,
+    liquid: null,
+  },
+  cosmoshubtestnet: {
+    native: null,
+    liquid: null,
+  },
+  aleo: {
+    native: 10000,
+    liquid: null,
+  },
 };
 
 export const unstakingPeriodByNetwork: Record<Network, string> = {
