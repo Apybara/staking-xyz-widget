@@ -15,7 +15,7 @@ export const footer = style({
 
   "@media": {
     "screen and (max-width: 768px)": {
-      paddingBlockStart: pxToRem(30),
+      paddingBlockStart: pxToRem(70),
       paddingBlockEnd: pxToRem(20),
       paddingInline: pxToRem(20),
       flexDirection: "column",
@@ -72,7 +72,7 @@ export const blockHeight = recipe({
     "@media": {
       "screen and (max-width: 768px)": {
         position: "absolute",
-        top: pxToRem(27),
+        top: pxToRem(67),
         right: pxToRem(20),
       },
     },
