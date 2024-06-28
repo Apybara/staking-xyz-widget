@@ -11,6 +11,7 @@ export const base = style({
 export const main = style({
   margin: "auto",
   paddingInline: pxToRem(10),
+  position: "relative",
 });
 
 export const nav = style({

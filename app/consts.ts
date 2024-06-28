@@ -390,3 +390,6 @@ export const SITE_WALLET_CONNECT_LOGO = "https://www.staking.xyz/favicons/favico
 
 export const TWITTER_URL = "https://twitter.com/staking_xyz";
 export const TELEGRAM_URL = "https://t.me/staking_xyz";
+
+export const PONDO_URL = "https://pondo.xyz";
+export const VERIDISE_URL = "https://veridise.com";
