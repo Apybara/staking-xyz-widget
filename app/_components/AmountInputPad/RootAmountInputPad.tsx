@@ -8,6 +8,7 @@ import * as S from "./amountInputPad.css";
 import { useShell } from "@/app/_contexts/ShellContext";
 
 export type RootAmountInputPadProps = {
+  className?: string;
   availableValue?: string;
   availabilityElement?: ReactNode;
   isAvailableValueLoading?: boolean;
@@ -16,9 +17,11 @@ export type RootAmountInputPadProps = {
   onClickMax: () => void;
   maxTooltip?: ReactNode;
   isMaxDisabled?: boolean;
+  error?: string;
 };
 
 export const RootAmountInputPad = ({
+  className,
   availableValue,
   availabilityElement,
   isAvailableValueLoading,
@@ -27,11 +30,12 @@ export const RootAmountInputPad = ({
   onClickMax,
   maxTooltip,
   isMaxDisabled,
+  error,
 }: RootAmountInputPadProps) => {
   const { stakingType } = useShell();
 
   return (
-    <div className={cn(S.amountInputPad)}>
+    <div className={cn(className, S.amountInputPad({ hasErrorMessage: !!error }))}>
       {isAvailableValueLoading && (
         <div className={cn(S.topBar)}>
           <Skeleton height={24} width={100} />
@@ -50,6 +54,7 @@ export const RootAmountInputPad = ({
         <InputField {...inputField} />
         {!stakingType && <CurrencyConversionTool {...currencyConversionTool} />}
       </div>
+      {!!error && <span className={S.errorMessage}>{error}</span>}
     </div>
   );
 };

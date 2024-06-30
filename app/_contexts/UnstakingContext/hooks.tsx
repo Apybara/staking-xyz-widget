@@ -2,7 +2,11 @@ import type { UnstakingStates } from "./types";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useWalletBalance } from "@/app/_services/wallet/hooks";
-import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
+import {
+  BasicAmountValidationResult,
+  getBasicAmountValidation,
+  getBasicTxCtaValidation,
+} from "../../_utils/transaction";
 import { defaultNetwork, requiredBalanceUnstakingByNetwork } from "../../consts";
 
 export const useUnstakeAmountInputValidation = ({
@@ -29,4 +33,37 @@ export const useUnstakeAmountInputValidation = ({
   });
 
   return { amountValidation, ctaValidation };
+};
+
+export const useUnstakeInputErrorMessage = ({
+  amountValidation,
+}: {
+  amountValidation: BasicAmountValidationResult;
+}) => {
+  const { network } = useShell();
+  const defaultMessage = getDefaultInputErrorMessage({ amountValidation });
+
+  switch (network) {
+    case "celestia":
+    case "celestiatestnet3":
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return undefined;
+    case "aleo":
+      return defaultMessage;
+  }
+};
+
+const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: BasicAmountValidationResult }) => {
+  switch (amountValidation) {
+    case "valid":
+    case "empty":
+    case "invalid":
+    case "insufficient":
+      return undefined;
+    case "exceeded":
+      return "You are unstaking more than your staked balance.";
+    case "bufferExceeded":
+      return "Insufficient balance for fee";
+  }
 };

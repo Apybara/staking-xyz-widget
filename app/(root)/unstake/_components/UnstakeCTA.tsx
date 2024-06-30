@@ -27,12 +27,14 @@ export const UnstakeCTA = () => {
   );
 };
 
+const validAmountText = "Please input a valid amount";
+
 const textMap: Record<UnstakingStates["ctaState"], string> = {
   empty: "Enter amount",
-  invalid: "Invalid amount",
-  insufficient: "Below minimum",
-  exceeded: "Insufficient balance",
-  bufferExceeded: "Insufficient amount for fees",
+  invalid: validAmountText,
+  insufficient: validAmountText,
+  exceeded: validAmountText,
+  bufferExceeded: validAmountText,
   disconnected: "Connect wallet",
   connecting: "Connecting",
   submittable: "Unstake",
