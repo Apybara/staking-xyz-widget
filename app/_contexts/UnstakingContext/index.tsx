@@ -7,7 +7,7 @@ import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
 import { useStakedBalance } from "../../_services/stakingOperator/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
-import { useUnstakeAmountInputValidation } from "./hooks";
+import { useUnstakeAmountInputValidation, useUnstakeInputErrorMessage } from "./hooks";
 
 const UnstakingContext = createContext({} as T.UnstakingContext);
 
@@ -27,6 +27,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
     inputAmount: states.coinAmountInput,
     stakedBalance: stakedBalance?.stakedBalance,
   });
+  const inputErrorMessage = useUnstakeInputErrorMessage({ amountValidation });
   const { procedures, resetStates } = useTxProcedure({
     address,
     network: network || defaultNetwork,
@@ -42,6 +43,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
         ...states,
         inputState: amountValidation,
         ctaState: ctaValidation,
+        inputErrorMessage,
         procedures,
         amountInputPad,
         stakedBalance: {
@@ -63,6 +65,7 @@ const initialStates: T.UnstakingContext = {
   coinAmountInput: "",
   inputState: "empty",
   ctaState: "empty",
+  inputErrorMessage: undefined,
   procedures: undefined,
   stakedBalance: {
     data: undefined,
