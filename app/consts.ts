@@ -206,6 +206,7 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     logo: "/wallets/keplr.svg",
     downloadLink: undefined,
     devicesSupport: ["mobile"],
+    comingSoon: ["mobile"],
   },
   leap: {
     id: "leap",
@@ -220,6 +221,7 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     logo: "/wallets/leap.svg",
     downloadLink: undefined,
     devicesSupport: ["mobile"],
+    comingSoon: ["mobile"],
   },
   okx: {
     id: "okx",
@@ -241,6 +243,7 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     logo: "/wallets/leoWallet.svg",
     downloadLink: "https://www.leo.app/download",
     devicesSupport: ["desktop", "mobile"],
+    comingSoon: ["mobile"],
   },
   puzzle: {
     id: "puzzle",

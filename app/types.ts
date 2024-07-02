@@ -41,6 +41,7 @@ export type WalletInfo = {
   logo: string;
   downloadLink?: string;
   devicesSupport: Array<Device>;
+  comingSoon?: Array<Device>;
 };
 export type NetworkWalletType = {
   celestia: CosmosWalletType[];
