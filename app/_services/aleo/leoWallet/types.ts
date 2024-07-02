@@ -23,5 +23,5 @@ export type LeoWalletWithdrawProps = AleoWithdrawProps & {
 
 export type LeoWalletTxStatusProps = {
   txId: string;
-  wallet: Wallet;
+  wallet: Wallet | null;
 };

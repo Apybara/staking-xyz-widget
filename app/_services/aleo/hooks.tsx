@@ -1,10 +1,14 @@
 import type { WalletStates } from "../../_contexts/WalletContext/types";
-import type { AleoWalletType, AleoNetwork } from "../../types";
+import type { AleoWalletType, AleoNetwork, StakingType } from "../../types";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
-import type { AleoTxParams, AleoTxStep } from "./types";
+import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { WalletAdapterNetwork } from "@demox-labs/aleo-wallet-adapter-base";
+import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
+import { stakingOperatorUrlByNetwork } from "../../consts";
+import { getPuzzleTxStatus } from "./puzzle";
+import { getLeoWalletTxStatus } from "./leoWallet";
+import { getOperatorValidator, setMonitorTx } from "../stakingOperator/aleo";
 import {
   useIsLeoWalletInstalled,
   useLeoWalletStates,
@@ -73,6 +77,7 @@ export const useAleoTxProcedures = ({
 
 const useAleoBroadcastTx = ({
   type,
+  stakingType = "native",
   amount,
   network,
   wallet,
@@ -82,9 +87,12 @@ const useAleoBroadcastTx = ({
   onBroadcasting,
   onSuccess,
   onError,
-}: AleoTxParams & AleoTxStep & { type: TxProcedureType }) => {
-  const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
+}: AleoTxParams & AleoTxStep & { type: TxProcedureType; stakingType?: StakingType }) => {
+  const { operatorUrl } = broadcastTxMap[type];
+  const { wallet: leoWallet } = useLeoWallet();
   const isAleoNetwork = getIsAleoNetwork(network || "");
+  const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
+  const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
 
   const { error, mutate, reset } = useMutation({
     mutationKey: ["aleoTx", type, amount, wallet, network, address],
@@ -95,40 +103,66 @@ const useAleoBroadcastTx = ({
 
       onPreparing?.();
 
-      // TODO: integrate with staking operator
-      // const { validatorAddress, uuid } = await getOperatorMessage({
-      //   apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
-      //   address,
-      //   amount: Number(denomAmount),
-      // });
-      const validatorAddress = "aleo1l2a3lakq9pz9w9hyre7rk9zmk64wzr62z0q26wglr8tmf8w5cyqqxtt364";
-      const uuid = "uuid";
+      const { validatorAddress, uuid } = await getOperatorValidator({
+        apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
+        address,
+        amount,
+        stakingOption: stakingType,
+      });
       if (!validatorAddress || !uuid) {
         throw new Error("Failed to broadcast transaction: missing validatorAddress or uuid");
       }
 
       onLoading?.();
-      onBroadcasting?.();
-
       // TODO: use dynamic chainId
       const txId = await txMethodByWallet({ amount, validatorAddress, address, chainId: "aleo" });
+
+      onBroadcasting?.();
+
+      let txRes: AleoTxStatusResponse | undefined = undefined;
+      const getTxResult = async (txId: string) => {
+        while (txId) {
+          switch (wallet) {
+            case "leoWallet":
+              const leoWalletTxStatus = await getLeoWalletTxStatus({ txId, wallet: leoWallet });
+              if (leoWalletTxStatus.status !== "loading") return leoWalletTxStatus;
+              break;
+            case "puzzle":
+              const puzzleWalletTxStatus = await getPuzzleTxStatus({ id: txId, address, chainId: castedNetwork });
+              if (puzzleWalletTxStatus.status !== "loading") return puzzleWalletTxStatus;
+              break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      };
+      txRes = await getTxResult(txId);
+
+      if (!txRes || txRes.status === "error") {
+        return {
+          txId: txRes?.txId || txId,
+          uuid,
+          isError: true,
+        };
+      }
+
       return {
-        txId,
+        txId: txRes.txId || txId,
         uuid,
       };
     },
-    onSuccess: ({ txId, uuid }) => {
-      if (txId) {
+    onSuccess: ({ txId, uuid, isError }) => {
+      const validTxId = wallet === "leoWallet" ? undefined : txId;
+
+      if (isError) {
         const error = new Error("Sign in wallet failed");
-        onError?.(error, txId);
+        onError?.(error, validTxId);
       } else {
-        onSuccess?.(txId);
-        // TODO: integrate with staking operator
-        // setMonitorTx({
-        //   apiUrl: stakingOperatorUrlByNetwork[network || defaultNetwork],
-        //   txHash: txId,
-        //   uuid,
-        // });
+        onSuccess?.(validTxId);
+        setMonitorTx({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          txHash: txId,
+          uuid,
+        });
       }
     },
     onError: (error) => onError?.(error),
@@ -256,4 +290,19 @@ export const useAleoWalletHasStoredConnection = () => {
   const hasPuzzleStoredConnection = usePuzzleHasStoredConnection();
 
   return hasLeoWalletStoredConnection || hasPuzzleStoredConnection;
+};
+
+const broadcastTxMap: Record<TxProcedureType, { operatorUrl: string }> = {
+  delegate: {
+    operatorUrl: "stake/user/delegate",
+  },
+  undelegate: {
+    operatorUrl: "stake/user/undelegate",
+  },
+  claim: {
+    operatorUrl: "stake/user/claim",
+  },
+  redelegate: {
+    operatorUrl: "",
+  },
 };

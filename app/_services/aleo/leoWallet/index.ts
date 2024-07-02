@@ -1,16 +1,47 @@
 import type { LeoWalletAdapter } from "@demox-labs/aleo-wallet-adapter-leo";
+import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import type * as T from "./types";
-import { Transaction, WalletAdapterNetwork } from "@demox-labs/aleo-wallet-adapter-base";
+import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits } from "../utils";
 
-export const getLeoWalletTxStatus = async ({ txId, wallet }: T.LeoWalletTxStatusProps) => {
+export const getLeoWalletTxStatus = async ({
+  txId,
+  wallet,
+}: T.LeoWalletTxStatusProps): Promise<AleoTxStatusResponse> => {
   try {
-    const status = await (wallet.adapter as LeoWalletAdapter).transactionStatus(txId);
-    return status as T.LeoWalletTxStatus;
+    if (!wallet) {
+      return {
+        status: "error",
+        txId: undefined,
+      };
+    }
+
+    const res = (await (wallet.adapter as LeoWalletAdapter).transactionStatus(txId)) as T.LeoWalletTxStatus;
+    return {
+      status: getLeoWalletFormattedStatus({ status: res }),
+      txId: undefined,
+    };
   } catch (error) {
-    throw error;
+    return {
+      status: "error",
+      txId: undefined,
+    };
   }
+};
+const getLeoWalletFormattedStatus = ({ status }: { status: T.LeoWalletTxStatus }): AleoTxStatus => {
+  // Proving stage
+  if (!(status === "Completed" || status === "Finalized" || status === "Failed")) {
+    return "loading";
+  }
+
+  // Completed stage
+  if (status === "Completed" || status === "Finalized") {
+    return "success";
+  }
+
+  // Failed tx
+  return "error";
 };
 
 export const leoWalletStake = async ({

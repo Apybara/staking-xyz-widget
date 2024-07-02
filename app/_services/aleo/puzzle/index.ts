@@ -1,15 +1,33 @@
 import type * as T from "./types";
-import { requestCreateEvent, getEvent, EventType } from "@puzzlehq/sdk";
+import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
+import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/sdk";
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits } from "../utils";
 
-export const getPuzzleTxStatus = async ({ id, address, chainId = "aleo" }: T.PuzzleTxStatusProps) => {
+export const getPuzzleTxStatus = async ({
+  id,
+  address,
+  chainId = "aleo",
+}: T.PuzzleTxStatusProps): Promise<AleoTxStatusResponse> => {
   try {
-    const status = await getEvent({ id, address, network: aleoNetworkIdByWallet[chainId].puzzle });
-    return status;
+    const res = await getEvent({ id, address, network: aleoNetworkIdByWallet[chainId].puzzle });
+    return {
+      status: getPuzzleFormattedStatus({ status: res.event?.status }),
+      txId: res.event?.transactionId,
+    };
   } catch (error) {
-    throw error;
+    return {
+      status: "error",
+      txId: undefined,
+    };
   }
+};
+const getPuzzleFormattedStatus = ({ status }: { status?: EventStatus }): AleoTxStatus => {
+  if (status === "Creating" || status === "Pending") return "loading";
+  if (status === "Settled") return "success";
+
+  // Failed tx
+  return "error";
 };
 
 export const puzzleStake = async ({ amount, validatorAddress, address, chainId = "aleo" }: T.PuzzleStakeProps) => {

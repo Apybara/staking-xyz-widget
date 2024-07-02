@@ -11,7 +11,7 @@ import { getPercentagedNumber } from "../../../_utils/number";
 import { getUTCStringFromUnixTimestamp, getUTCStringFromUnixTimeString } from "../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 import { useActivity } from "../../../_services/stakingOperator/hooks";
-import { networkExplorer, defaultNetwork } from "../../../consts";
+import { networkExplorerTx, defaultNetwork } from "../../../consts";
 import * as S from "./activity.css";
 
 export const ActivityTable = () => {
@@ -116,7 +116,7 @@ const ListItem = ({
     activity.type === "rewards" && activity.inProgress && activity.amount === "0"
       ? "Collecting.."
       : formattedAmount || "-";
-  const href = `${networkExplorer[network || defaultNetwork]}tx/${activity.id}`;
+  const href = `${networkExplorerTx[network || defaultNetwork]}${activity.id}`;
 
   return (
     <ListTable.Item>

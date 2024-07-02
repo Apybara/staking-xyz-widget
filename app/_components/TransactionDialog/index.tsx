@@ -43,8 +43,8 @@ export const StepsBox = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: StepItemProps) => {
-  const hasExplorerLink = !!explorerLink?.url;
+export const StepItem = ({ state, successLabel, explorerLink, tooltip, children, onCancel }: StepItemProps) => {
+  const hasExplorerLink = !!explorerLink;
 
   return (
     <InfoCard.StackItem className={S.item}>
@@ -60,7 +60,7 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
 
         {state === "error" &&
           (hasExplorerLink ? (
-            <a href={explorerLink?.url} target="_blank" rel="noopener noreferrer">
+            <a href={explorerLink} target="_blank" rel="noopener noreferrer">
               <MessageTag className={S.explorerTag} variant="warning">
                 Failed <Icon className={S.explorerTagIcon} name="externalLink" size={10} />
               </MessageTag>
@@ -71,10 +71,15 @@ export const StepItem = ({ state, explorerLink, tooltip, children, onCancel }: S
             </MessageTag>
           ))}
 
-        {explorerLink && state === "success" && (
-          <a href={explorerLink.url} target="_blank" rel="noopener noreferrer">
+        {state === "success" && !explorerLink && (
+          <MessageTag className={S.explorerTag} variant="success">
+            {successLabel}
+          </MessageTag>
+        )}
+        {state === "success" && explorerLink && (
+          <a href={explorerLink} target="_blank" rel="noopener noreferrer">
             <MessageTag className={S.explorerTag} variant="success">
-              {explorerLink.label} <Icon className={S.explorerTagIcon} name="externalLink" size={10} />
+              {successLabel} <Icon className={S.explorerTagIcon} name="externalLink" size={10} />
             </MessageTag>
           </a>
         )}
@@ -142,10 +147,8 @@ export type TopBoxProps = {
 };
 export type StepItemProps = {
   state: "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";
-  explorerLink?: {
-    url: string;
-    label: string;
-  };
+  successLabel?: string;
+  explorerLink?: string;
   tooltip?: ReactNode;
   children: ReactNode;
   onCancel?: () => void;

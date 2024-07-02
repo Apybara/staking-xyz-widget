@@ -8,7 +8,7 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import * as TransactionDialog from "../../_components/TransactionDialog";
 import { useLinkWithSearchParams } from "../../_utils/routes";
-import { networkExplorer, defaultNetwork } from "../../consts";
+import { networkExplorerTx, defaultNetwork } from "../../consts";
 import { UnstakingStates } from "@/app/_contexts/UnstakingContext/types";
 import { StakingStates } from "@/app/_contexts/StakingContext/types";
 import { RedelegatingStates } from "@/app/_contexts/RedelegatingContext/types";
@@ -93,14 +93,8 @@ export const TxProcedureDialog = ({
                 : undefined
             }
             tooltip={procedure.tooltip}
-            explorerLink={
-              procedure?.txHash
-                ? {
-                    label: explorerLabelMap[procedure.step],
-                    url: procedure?.txHash && `${networkExplorer[network || defaultNetwork]}tx/${procedure?.txHash}`,
-                  }
-                : undefined
-            }
+            successLabel={explorerLabelMap[procedure.step]}
+            explorerLink={procedure?.txHash && `${networkExplorerTx[network || defaultNetwork]}${procedure?.txHash}`}
           >
             {procedure.stepName}
           </TransactionDialog.StepItem>

@@ -61,48 +61,6 @@ export const useLeoWalletWithdraw = () => {
   };
 };
 
-export const useLeoWalletTxStatus = ({ txId }: { txId?: string }) => {
-  const { wallet } = useLeoWallet();
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["leoWalletTxStatus", txId],
-    queryFn: () => {
-      if (!txId || !wallet) return Promise.resolve(null);
-      return getLeoWalletTxStatus({ txId, wallet });
-    },
-    enabled: !!txId && !!wallet,
-    refetchInterval: !!txId && !!wallet ? 10000 : false,
-    refetchOnWindowFocus: true,
-  });
-
-  const txStatus: AleoTxStatus | null = useMemo(() => {
-    if (!txId) return null;
-
-    // Proving stage
-    if (error) {
-      return "error";
-    }
-    if (isLoading || !(data === "Completed" || data === "Finalized" || data === "Failed")) {
-      return "loading";
-    }
-
-    // Completed stage
-    if (data === "Completed" || data === "Finalized") {
-      return "success";
-    }
-
-    // Failed tx
-    return "error";
-  }, [data, error, isLoading, txId]);
-
-  return {
-    txStatus,
-    data,
-    isLoading,
-    error,
-  };
-};
-
 export const useLeoWalletStates = () => {
   const { connecting, connected, disconnecting, publicKey } = useLeoWallet();
 

@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { getIsCelestia, getIsCosmosHub } from "./cosmos";
+import { getIsAleoNetwork } from "../aleo/utils";
 import * as cosmos from "../stakingOperator/cosmos/hooks";
+import * as aleo from "../stakingOperator/aleo/hooks";
 
 export const useUnbondingDelegations = () => {
   const { network } = useShell();
@@ -307,6 +309,7 @@ export const useServerStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
   const celestiaStatus = cosmos.useCosmosServerStatus({ network: getIsCelestia(network) ? network : null });
   const cosmoshubStatus = cosmos.useCosmosServerStatus({ network: getIsCosmosHub(network) ? network : null });
+  const aleoStatus = aleo.useAleoServerStatus({ network: getIsAleoNetwork(network) ? network : null });
 
   switch (defaultNetwork || network) {
     case "celestia":
@@ -315,6 +318,8 @@ export const useServerStatus = (defaultNetwork?: string) => {
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshubStatus;
+    case "aleo":
+      return aleoStatus;
     default:
       return undefined;
   }
