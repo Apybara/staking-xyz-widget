@@ -29,7 +29,8 @@ export type RootWalletConnectionDialogProps = {
 
 export type WalletCardButtonProps = {
   wallet: Wallet;
-  isAgreementChecked: boolean;
+  disabled: boolean;
+  comingSoon?: boolean;
 };
 
 export const RootWalletConnectionDialog = ({
@@ -75,21 +76,27 @@ export const RootWalletConnectionDialog = ({
           />
 
           <ul className={cn(S.list)}>
-            {filteredWalletsByDevice.map((wallet) => (
-              <li key={"walletDialog-" + wallet.id} className={cn(S.walletItem)}>
-                {wallet.isSupported ? (
-                  <WalletCardButton
-                    connection={connection}
-                    wallet={wallet}
-                    isOnMobileDevice={isOnMobileDevice}
-                    isAgreementChecked={isAgreementChecked}
-                    onCancelConnection={onCancelConnection}
-                  />
-                ) : (
-                  <WalletInstallButton wallet={wallet} isAgreementChecked={isAgreementChecked} />
-                )}
-              </li>
-            ))}
+            {filteredWalletsByDevice.map((wallet) => {
+              const comingSoon = wallet.comingSoon?.includes(isOnMobileDevice ? "mobile" : "desktop");
+              const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting) || !!comingSoon;
+
+              return (
+                <li key={"walletDialog-" + wallet.id} className={cn(S.walletItem)}>
+                  {wallet.isSupported || comingSoon ? (
+                    <WalletCardButton
+                      disabled={disabled}
+                      comingSoon={comingSoon}
+                      connection={connection}
+                      wallet={wallet}
+                      isOnMobileDevice={isOnMobileDevice}
+                      onCancelConnection={onCancelConnection}
+                    />
+                  ) : (
+                    <WalletInstallButton disabled={!isAgreementChecked} wallet={wallet} />
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </Dialog.Content>
       </Dialog.Main>
@@ -98,16 +105,15 @@ export const RootWalletConnectionDialog = ({
 };
 
 const WalletCardButton = ({
+  disabled,
+  comingSoon,
   connection,
   wallet,
   isOnMobileDevice,
-  isAgreementChecked,
   onCancelConnection,
 }: Pick<RootWalletConnectionDialogProps, "connection" | "isOnMobileDevice" | "onCancelConnection"> &
   WalletCardButtonProps) => {
   const connecting = connection.isLoading && wallet.isConnecting;
-  const temporarilyDisabled = isOnMobileDevice;
-  const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting) || temporarilyDisabled;
   const showCancel = (isOnMobileDevice || wallet.id === "okx") && connection.isLoading && wallet.isConnecting;
   const state = useMemo(() => {
     if (connecting) return "loading";
@@ -129,7 +135,7 @@ const WalletCardButton = ({
         {connecting && <LoadingSpinner />}
         {connection.error?.walletId === wallet.id && <MessageTag variant="warning">Failed</MessageTag>}
         {wallet.isConnected && <MessageTag variant="success">Connected</MessageTag>}
-        {temporarilyDisabled && <p className={cn(S.disabledText)}>Coming soon</p>}
+        {comingSoon && <p className={cn(S.disabledText)}>Coming soon</p>}
       </button>
       {showCancel && (
         <button onClick={() => onCancelConnection?.(wallet)} className={cn(S.cancelButton)}>
@@ -140,10 +146,10 @@ const WalletCardButton = ({
   );
 };
 
-const WalletInstallButton = ({ wallet, isAgreementChecked }: WalletCardButtonProps) => {
+const WalletInstallButton = ({ wallet, disabled }: WalletCardButtonProps) => {
   return (
     <a
-      className={cn(S.walletCardButton({ state: isAgreementChecked ? "default" : "disabled" }))}
+      className={cn(S.walletCardButton({ state: disabled ? "disabled" : "default" }))}
       href={wallet.downloadLink}
       target="_blank"
       rel="noopener noreferrer"
