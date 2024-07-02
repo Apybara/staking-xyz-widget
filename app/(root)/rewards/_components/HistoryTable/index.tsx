@@ -12,7 +12,7 @@ import { getPercentagedNumber } from "../../../../_utils/number";
 import { getUTCStringFromUnixTimestamp, getUTCStringFromUnixTimeString } from "../../../../_utils/time";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useRewardsHistory } from "../../../../_services/stakingOperator/hooks";
-import { networkExplorer, defaultNetwork } from "../../../../consts";
+import { networkExplorerTx, defaultNetwork } from "../../../../consts";
 // import { HistoryEmptyState } from "./EmptyState";
 import * as S from "./historyTable.css";
 
@@ -90,7 +90,7 @@ const ListItem = ({
     minValue: !isAmountSmall ? undefined : 0.000001,
     formatOptions: !isAmountSmall ? undefined : { mantissa: 6 },
   });
-  const href = `${networkExplorer[network || defaultNetwork]}tx/${rewardsHistory.id}`;
+  const href = `${networkExplorerTx[network || defaultNetwork]}${rewardsHistory.id}`;
 
   return (
     <ListTable.Item>

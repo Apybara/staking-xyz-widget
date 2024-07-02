@@ -1,3 +1,5 @@
+import type { StakingType } from "@/app/types";
+
 export type BaseParams = {
   address: string;
   apiUrl: string;
@@ -12,6 +14,13 @@ export type OperatorMessageResponse = {
   unsigned_txn: string;
   uuid: string;
 };
+
+export type OperatorDelegateResponse = {
+  validator: string;
+  uuid: string;
+};
+
+export type DelegateStakingOption = StakingType;
 
 export type DecodedOperatorMessageResponse = {
   body: {

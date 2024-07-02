@@ -1,12 +1,10 @@
 import type { WalletStates } from "../../../_contexts/WalletContext/types";
-import type { AleoTxStatus } from "../types";
 import type * as T from "./types";
 import { useCallback, useEffect, useMemo } from "react";
 import useLocalStorage from "use-local-storage";
-import { useQuery } from "@tanstack/react-query";
 import { useAccount, useBalance, useConnect, useDisconnect } from "@puzzlehq/sdk";
 import { usePuzzleStates as useGlobalPuzzleStates } from "@/app/_providers/Aleo/Puzzle/PuzzleStatesContext";
-import { getPuzzleTxStatus, puzzleStake, puzzleUnstake, puzzleWithdraw } from ".";
+import { puzzleStake, puzzleUnstake, puzzleWithdraw } from ".";
 
 export const usePuzzleStake = () => {
   const { account } = useAccount();
@@ -52,49 +50,17 @@ export const usePuzzleWithdraw = () => {
   };
 };
 
-export const usePuzzleTxStatus = ({ txId }: { txId?: string }) => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["puzzleTxStatus", txId],
-    queryFn: () => {
-      if (!txId) return Promise.resolve(null);
-      return getPuzzleTxStatus({ id: txId });
-    },
-    enabled: !!txId,
-    refetchInterval: !!txId ? 10000 : false,
-    refetchOnWindowFocus: true,
-  });
-
-  const txStatus: AleoTxStatus | null = useMemo(() => {
-    if (!txId || data === null) return null;
-
-    if (isLoading) return "loading";
-    if (error || !data?.event?.status || data?.error) return "error";
-
-    const { status } = data.event;
-    if (status === "Creating") return "loading";
-    if (status === "Pending") return "success";
-
-    return "error";
-  }, [data, error, isLoading, txId]);
-
-  return {
-    txStatus,
-    data,
-    isLoading,
-    error,
-  };
-};
-
 export const usePuzzleStates = () => {
   const { account } = useAccount();
   const { isConnected } = useConnect();
   const { connectionStatus, setStates } = useGlobalPuzzleStates();
+  const { data: balance } = usePuzzleBalance({ address: account?.address || null }) || {};
 
   useEffect(() => {
-    if (!isConnected || !account?.address) {
+    if (!isConnected || !account?.address || (isConnected && balance === undefined)) {
       setStates({ connectionStatus: "disconnected" });
     }
-  }, [account?.address, isConnected]);
+  }, [account?.address, isConnected, balance]);
 
   return useMemo(
     () => ({
@@ -110,6 +76,7 @@ export const usePuzzleConnector = () => {
   const { setStates } = useGlobalPuzzleStates();
   const { account } = useAccount();
   const { isConnected, connect: puzzleConnect } = useConnect();
+  const { data: balance } = usePuzzleBalance({ address: account?.address || null }) || {};
 
   const connect = useCallback(async () => {
     setStates({ connectionStatus: "connecting" });
@@ -124,10 +91,10 @@ export const usePuzzleConnector = () => {
   }, [puzzleConnect]);
 
   useEffect(() => {
-    if (isConnected && account?.address) {
+    if (isConnected && account?.address && balance !== undefined) {
       setStates({ connectionStatus: "connected" });
     }
-  }, [isConnected, account?.address]);
+  }, [isConnected, account?.address, balance]);
 
   return connect;
 };

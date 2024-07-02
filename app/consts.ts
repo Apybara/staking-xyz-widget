@@ -2,7 +2,6 @@ import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, Sta
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
-import { BasicAmountValidationResult } from "./_utils/transaction";
 
 export const NetworkVariants = ["cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3", "aleo"] as const;
 export const networkVariants = [...NetworkVariants];
@@ -95,7 +94,16 @@ export const networkExplorer: Record<Network, string> = {
   celestiatestnet3: "https://www.mintscan.io/celestia-testnet/",
   cosmoshub: "https://www.mintscan.io/cosmos/",
   cosmoshubtestnet: "https://www.mintscan.io/cosmoshub-testnet/",
-  aleo: "https://explorer.aleo.org/",
+  // TODO: use dynamic Aleo network
+  aleo: "https://testnet.aleoscan.io/",
+};
+
+export const networkExplorerTx: Record<Network, string> = {
+  celestia: `${networkExplorer.celestia}tx/`,
+  celestiatestnet3: `${networkExplorer.celestiatestnet3}tx/`,
+  cosmoshub: `${networkExplorer.cosmoshub}tx/`,
+  cosmoshubtestnet: `${networkExplorer.cosmoshubtestnet}tx/`,
+  aleo: `${networkExplorer.aleo}transaction?id=`,
 };
 
 export const CosmosNetworkVariants = ["celestia", "celestiatestnet3", "cosmoshub", "cosmoshubtestnet"] as const;
@@ -429,7 +437,8 @@ export const stakingOperatorUrlByNetwork: Record<Network, string> = {
   celestiatestnet3: process.env.NEXT_PUBLIC_STAKING_API_CELESTIA_TESTNET || "",
   cosmoshub: process.env.NEXT_PUBLIC_STAKING_API_COSMOSHUB || "",
   cosmoshubtestnet: process.env.NEXT_PUBLIC_STAKING_API_COSMOSHUB_TESTNET || "",
-  aleo: process.env.NEXT_PUBLIC_STAKING_API_ALEO || "",
+  // TODO: use dynamic Aleo network
+  aleo: process.env.NEXT_PUBLIC_STAKING_API_ALEO_TESTNET || "",
 };
 
 export const serverUrlByNetwork: Record<Network, string> = {
@@ -437,7 +446,8 @@ export const serverUrlByNetwork: Record<Network, string> = {
   celestiatestnet3: process.env.NEXT_PUBLIC_SERVER_API_CELESTIA_TESTNET || "",
   cosmoshub: process.env.NEXT_PUBLIC_SERVER_API_COSMOSHUB || "",
   cosmoshubtestnet: process.env.NEXT_PUBLIC_SERVER_API_COSMOSHUB_TESTNET || "",
-  aleo: process.env.NEXT_PUBLIC_SERVER_API_ALEO || "",
+  // TODO: use dynamic Aleo network
+  aleo: process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET || "",
 };
 
 export const SITE_TITLE = "Staking.xyz";

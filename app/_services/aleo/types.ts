@@ -4,6 +4,11 @@ import { LeoWalletNetworkIds, PuzzleNetworkIds } from "./consts";
 
 export type AleoTxStatus = "loading" | "error" | "success";
 
+export type AleoTxStatusResponse = {
+  status: AleoTxStatus;
+  txId?: string;
+};
+
 export type AleoWalletNetworkIds = LeoWalletNetworkId | PuzzleNetworkId;
 
 export type AleoTxParams = {

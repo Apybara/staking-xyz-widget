@@ -2,7 +2,7 @@ import type { AleoNetwork, AleoWalletType } from "@/app/types";
 import BigNumber from "bignumber.js";
 import { aleoNetworkVariants, aleoWalletVariants } from "@/app/consts";
 
-export const getIsAleoNetwork = (network: string): network is AleoNetwork => {
+export const getIsAleoNetwork = (network: string | null): network is AleoNetwork => {
   return aleoNetworkVariants.includes(network as AleoNetwork);
 };
 
