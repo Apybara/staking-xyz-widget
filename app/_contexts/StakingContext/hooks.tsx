@@ -75,9 +75,9 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
               return undefined;
             case "insufficient":
               if (!!minInitialAmount) {
-                return "You need to stake at least 10,000 Credits to begin.";
+                return "You need to stake at least 10,000 ALEO to begin.";
               } else {
-                return "You need to stake at least 1 Credit.";
+                return "You need to stake at least 1 ALEO.";
               }
             case "exceeded":
               return "Insufficient balance";
