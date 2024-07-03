@@ -9,6 +9,7 @@ import {
   AleoWalletVariants,
   AleoNetworkVariants,
   StakingTypeVariants,
+  stakingTypeMap,
 } from "./consts";
 
 export type Network = (typeof NetworkVariants)[number];
@@ -30,6 +31,12 @@ export type Currency = FiatCurrency | NetworkCurrency;
 export type CoinPrice = Record<Network, Record<FiatCurrency, number>>;
 
 export type StakingType = (typeof StakingTypeVariants)[number];
+export type StakingTypeLabel = (typeof stakingTypeMap)[StakingType];
+export type StakingTypeTab = {
+  label: StakingTypeLabel;
+  value: StakingType;
+  disabled?: boolean;
+};
 
 export type CosmosWalletType = (typeof CosmosWalletVariants)[number];
 export type AleoWalletType = (typeof AleoWalletVariants)[number];

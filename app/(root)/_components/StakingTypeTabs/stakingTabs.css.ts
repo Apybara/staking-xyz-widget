@@ -25,6 +25,10 @@ export const tabButton = recipe({
     borderRadius: pxToRem(4),
     fontSize: pxToRem(14),
     fontWeight: weights.semibold,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: pxToRem(4),
   },
   variants: {
     state: {
@@ -41,9 +45,17 @@ export const tabButton = recipe({
         color: colors.black000,
         backgroundColor: colors.black750,
       },
+      disabled: {
+        color: colors.black600,
+        cursor: "not-allowed",
+      },
     },
   },
   defaultVariants: {
     state: "default",
   },
+});
+
+export const tooltip = style({
+  maxInlineSize: pxToRem(300),
 });
