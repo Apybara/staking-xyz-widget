@@ -110,7 +110,6 @@ export const AmountInputPad = ({
           type={type}
           availableValue={availableValue}
           primaryCurrency={primaryCurrency}
-          secondaryCurrency={secondaryCurrency}
           tooltip={
             type === "unstake" && (
               <Tooltip
@@ -172,14 +171,10 @@ export const AmountInputPad = ({
 
 const AvailabilityElement = ({
   primaryCurrency,
-  secondaryCurrency,
   availableValue,
   type,
   tooltip,
-}: { primaryCurrency: Currency; secondaryCurrency: Currency; tooltip: ReactNode } & Pick<
-  AmountInputPadProps,
-  "availableValue" | "type"
->) => {
+}: { primaryCurrency: Currency; tooltip: ReactNode } & Pick<AmountInputPadProps, "availableValue" | "type">) => {
   const { network, coinPrice, stakingType } = useShell();
 
   const prefix = type === "stake" ? "Available" : "Staked";
@@ -191,12 +186,6 @@ const AvailabilityElement = ({
     coinPrice,
     currency: primaryCurrency,
   });
-  const secondaryValue = getDynamicAssetValueFromCoin({
-    network,
-    coinVal: availableValue,
-    coinPrice,
-    currency: secondaryCurrency,
-  });
 
   if (!availableValue?.length) return null;
 
@@ -205,8 +194,7 @@ const AvailabilityElement = ({
       <p style={{ lineHeight: 0 }}>
         <AvailabilityText.Primary>
           {prefix}: {primaryValue}
-        </AvailabilityText.Primary>{" "}
-        {!stakingType && <AvailabilityText.Secondary>({secondaryValue})</AvailabilityText.Secondary>}
+        </AvailabilityText.Primary>
       </p>
       {!!tooltip && tooltip}
     </div>
