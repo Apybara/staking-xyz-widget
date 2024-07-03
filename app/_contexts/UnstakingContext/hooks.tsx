@@ -48,7 +48,6 @@ export const useUnstakeInputErrorMessage = ({
     case "celestiatestnet3":
     case "cosmoshub":
     case "cosmoshubtestnet":
-      return undefined;
     case "aleo":
       return defaultMessage;
   }
