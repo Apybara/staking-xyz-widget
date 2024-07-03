@@ -41,7 +41,7 @@ export const getDynamicAssetValueFromCoin = ({
     val: BigNumber(coinVal).toNumber(),
     formatOptions: {
       ...formatOptions,
-      currencySymbol: !!stakingType ? "Credits" : networkCurrency[network || defaultNetwork],
+      currencySymbol: networkCurrency[network || defaultNetwork],
     },
     minValue,
   });

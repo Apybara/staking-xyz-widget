@@ -63,6 +63,8 @@ export const AmountInputPad = ({
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
 
+  const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
+
   useEffect(() => {
     if (primaryValue === "") {
       onValueChange("");
@@ -157,14 +159,11 @@ export const AmountInputPad = ({
           <Tooltip
             className={S.topBarTooltip}
             trigger={<Icon name="info" />}
-            content={`0.05 ${networkCurrency} will be kept as a buffer on your balance to pay for future stake and unstake transactions.`}
+            content={`${requiredBalance} ${networkCurrency} will be kept as a buffer on your balance to pay for future stake and unstake transactions.`}
           />
         ) : null
       }
-      isMaxDisabled={
-        type === "stake" &&
-        BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalanceStakingByNetwork[castedNetwork])
-      }
+      isMaxDisabled={type === "stake" && BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalance)}
       error={error}
     />
   );
