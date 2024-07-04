@@ -10,7 +10,7 @@ import { WidgetContent } from "@/app/_components/WidgetContent";
 
 export default async function Activity({ searchParams }: RouterStruct) {
   const { network } = searchParams || {};
-  await redirectPage(searchParams, "Activity");
+  await redirectPage(searchParams, "activity");
   await revalidatePageQueries(network);
 
   return (

@@ -23,11 +23,11 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
       return;
     }
 
-    // Redirect to the home page if the user is not connected and the page is the activity or rewards page
+    // Redirect to the home page if the user is not connected and the page is the unstake, import, activity or rewards page
     if (
       connectionStatus === "disconnected" &&
       status !== "loading" &&
-      (pathname === "/activity" || pathname.includes("/rewards"))
+      ["/unstake", "/import", "/activity", "/rewards", "rewards/history"].includes(pathname)
     ) {
       router.push(homePageLink);
       return;
