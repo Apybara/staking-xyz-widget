@@ -10,16 +10,18 @@ import { StakeInfoBox } from "./StakeInfoBox";
 import { StakeCTA } from "./StakeCTA";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { StakingProcedureDialog } from "./StakingProcedureDialog";
-import { useShell } from "@/app/_contexts/ShellContext";
 
 export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
-  const { stakingType } = useShell();
+  const { validator, stakingType } = searchParams || {};
+
+  // dummy
+  const isValidatorValid = !!validator;
 
   return (
     <StakingProvider>
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <WidgetContent>
-        {!!stakingType && <StakingTypeTabs />}
+        {!!stakingType && !isValidatorValid && <StakingTypeTabs />}
         <StakeAmountInputPad />
         <StakeInfoBox />
       </WidgetContent>

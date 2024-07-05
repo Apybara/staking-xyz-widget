@@ -106,6 +106,7 @@ export const AmountInputPad = ({
 
   return (
     <RootAmountInputPad
+      type={type}
       availableValue={availableValue}
       availabilityElement={
         <AvailabilityElement

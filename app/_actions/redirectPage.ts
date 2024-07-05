@@ -7,10 +7,10 @@ import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } 
 import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
-  const { network, currency, stakingType } = searchParams || {};
+  const { network, currency, stakingType, validator } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
   const defaultStakingType = networkDefaultStakingType[(network as Network) || defaultNetwork];
-  const isStakingTypeInvalid = stakingType && !defaultStakingType;
+  const isStakingTypeInvalid = (stakingType || validator) && !defaultStakingType;
   const isStakingTypeExpected = !stakingType && !!defaultStakingType;
 
   // if (network?.toLowerCase() === "aleo") {
@@ -31,6 +31,7 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   }
   if (isStakingTypeInvalid) {
     current.delete("stakingType");
+    current.delete("validator");
   }
   if (isStakingTypeExpected) {
     current.set("stakingType", defaultStakingType);

@@ -1,23 +1,27 @@
 "use client";
+import { useRouter } from "next/navigation";
 import type { StakingStates } from "../../../_contexts/StakingContext/types";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import { type CTAButtonProps, CTAButton } from "../../../_components/CTAButton";
-import { useShell } from "@/app/_contexts/ShellContext";
+import { useLinkWithSearchParams } from "@/app/_utils/routes";
 
 export const StakeCTA = () => {
-  const { stakingType } = useShell();
-  const { ctaState, inputState } = useStaking();
+  const router = useRouter();
+  const unstakePageLink = useLinkWithSearchParams("unstake");
+  const { ctaState } = useStaking();
   const { toggleOpen: toggleWalletConnectionDialog } = useDialog("walletConnection");
   const { toggleOpen: toggleStakingProcedureDialog } = useDialog("stakingProcedure");
-
-  const hasStakingTypeError = inputState !== "empty" && inputState !== "valid";
 
   return (
     <CTAButton
       state={buttonState[ctaState]}
       variant={buttonVariant[ctaState]}
       onClick={() => {
+        if (ctaState === "differentValidator") {
+          router.push(unstakePageLink);
+        }
+
         if (ctaState === "disconnected") {
           toggleWalletConnectionDialog(true);
         }
@@ -26,7 +30,7 @@ export const StakeCTA = () => {
         }
       }}
     >
-      {stakingType ? (hasStakingTypeError ? validAmountText : textMap[ctaState]) : textMap[ctaState]}
+      {textMap[ctaState]}
     </CTAButton>
   );
 };
@@ -39,6 +43,7 @@ const textMap: Record<StakingStates["ctaState"], string> = {
   insufficient: validAmountText,
   exceeded: validAmountText,
   bufferExceeded: validAmountText,
+  differentValidator: "Go to Unstake",
   disconnected: "Connect wallet",
   connecting: "Connecting",
   submittable: "Stake",
@@ -50,6 +55,7 @@ const buttonState: Record<StakingStates["ctaState"], CTAButtonProps["state"]> = 
   insufficient: "disabled",
   exceeded: "disabled",
   bufferExceeded: "disabled",
+  differentValidator: "default",
   disconnected: "default",
   connecting: "loading",
   submittable: "default",
@@ -61,6 +67,7 @@ const buttonVariant: Record<StakingStates["ctaState"], CTAButtonProps["variant"]
   insufficient: "tertiary",
   exceeded: "tertiary",
   bufferExceeded: "tertiary",
+  differentValidator: "primary",
   disconnected: "primary",
   connecting: "primary",
   submittable: "primary",
