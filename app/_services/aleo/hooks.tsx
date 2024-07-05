@@ -8,6 +8,7 @@ import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react
 import { stakingOperatorUrlByNetwork } from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
+import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
 import { getOperatorValidator, setMonitorTx } from "../stakingOperator/aleo";
 import {
   useIsLeoWalletInstalled,
@@ -139,7 +140,7 @@ const useAleoBroadcastTx = ({
 
       if (!txRes || txRes.status === "error") {
         return {
-          txId: txRes?.txId || txId,
+          txId: txRes?.txId,
           uuid,
           isError: true,
         };
@@ -158,11 +159,13 @@ const useAleoBroadcastTx = ({
         onError?.(error, validTxId);
       } else {
         onSuccess?.(validTxId);
-        setMonitorTx({
-          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-          txHash: txId,
-          uuid,
-        });
+        if (txId) {
+          setMonitorTx({
+            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            txHash: txId,
+            uuid,
+          });
+        }
       }
     },
     onError: (error) => onError?.(error),
@@ -269,19 +272,25 @@ export const useAleoWalletBalance = ({
 const useAleoBalanceFromStakingOperator = ({
   address,
   network,
-  refetchInterval = 15000,
 }: {
   address: string | null;
   network: AleoNetwork | null;
-  refetchInterval?: number;
 }) => {
-  const balanceFromStakingOperator = undefined;
+  const {
+    data: balanceFromStakingOperator,
+    isLoading,
+    error,
+  } = useAleoAddressBalance({
+    network,
+    address: address || "",
+  });
 
-  if (!address || !balanceFromStakingOperator) return null;
+  if (!address || balanceFromStakingOperator?.balance === undefined) return null;
+
   return {
-    isLoading: false,
-    error: null,
-    data: getMicroCreditsToCredits(balanceFromStakingOperator).toString(),
+    data: getMicroCreditsToCredits(balanceFromStakingOperator.balance).toString(),
+    isLoading,
+    error,
   };
 };
 

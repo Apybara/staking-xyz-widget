@@ -1,12 +1,10 @@
 import type { WalletName } from "@demox-labs/aleo-wallet-adapter-base";
-import type { AleoTxStatus } from "../types";
 import type * as T from "./types";
 import type { WalletStates } from "../../../_contexts/WalletContext/types";
 import { useEffect, useMemo, useState } from "react";
 import useLocalStorage from "use-local-storage";
-import { useQuery } from "@tanstack/react-query";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
-import { getLeoWalletTxStatus, leoWalletStake, leoWalletUnstake, leoWalletWithdraw } from ".";
+import { leoWalletStake, leoWalletUnstake, leoWalletWithdraw } from ".";
 
 export const useLeoWalletStake = () => {
   const { wallet, publicKey } = useLeoWallet();

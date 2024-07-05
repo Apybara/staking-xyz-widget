@@ -59,22 +59,28 @@ export const useExternalDelegations = () => {
 export const useStakedBalance = () => {
   const { network } = useShell();
   const { address } = useWallet();
-  const celestia = cosmos.useCosmosDelegations({
+  const celestiaData = cosmos.useCosmosDelegations({
     network,
     address: address && getIsCelestia(network) ? address : undefined,
   });
-  const cosmoshub = cosmos.useCosmosDelegations({
+  const cosmoshubData = cosmos.useCosmosDelegations({
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
+  });
+  const aleoData = aleo.useAleoAddressStakedBalance({
+    network: getIsAleoNetwork(network) ? network : null,
+    address: address || "",
   });
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
-      return celestia;
+      return celestiaData;
     case "cosmoshub":
     case "cosmoshubtestnet":
-      return cosmoshub;
+      return cosmoshubData;
+    case "aleo":
+      return aleoData;
     default:
       return undefined;
   }
@@ -292,6 +298,7 @@ export const useNetworkStatus = (defaultNetwork?: string) => {
   const { network } = useShell();
   const celestiaStatus = cosmos.useCosmosStatus({ network: getIsCelestia(network) ? network : null });
   const cosmoshubStatus = cosmos.useCosmosStatus({ network: getIsCosmosHub(network) ? network : null });
+  const aleoStatus = aleo.useAleoStatus({ network: getIsAleoNetwork(network) ? network : null });
 
   switch (defaultNetwork || network) {
     case "celestia":
@@ -300,6 +307,8 @@ export const useNetworkStatus = (defaultNetwork?: string) => {
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshubStatus;
+    case "aleo":
+      return aleoStatus;
     default:
       return undefined;
   }
