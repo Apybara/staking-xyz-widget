@@ -30,13 +30,22 @@ export const getLeoWalletTxStatus = async ({
   }
 };
 const getLeoWalletFormattedStatus = ({ status }: { status: T.LeoWalletTxStatus }): AleoTxStatus => {
+  // TODO: because Leo Wallet tx is unstable,
+  // unsure if we should use the "Completed" status to determine the success of the tx.
+  // if (!(status === "Completed" || status === "Finalized" || status === "Failed")) {
+  //   return "loading";
+  // }
+  // if (status === "Completed" || status === "Finalized") {
+  //   return "success";
+  // }
+
   // Proving stage
-  if (!(status === "Completed" || status === "Finalized" || status === "Failed")) {
+  if (!(status === "Finalized" || status === "Failed")) {
     return "loading";
   }
 
   // Completed stage
-  if (status === "Completed" || status === "Finalized") {
+  if (status === "Finalized") {
     return "success";
   }
 

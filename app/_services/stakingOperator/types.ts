@@ -326,6 +326,14 @@ export type RewardsHistoryItem = {
   inProgress?: boolean;
 };
 
+export type AddressBalanceResponse = {
+  balance?: number;
+};
+
+export type AddressStakedBalanceResponse = {
+  "total-staked"?: number;
+};
+
 export type PaginationParams = {
   offset: number;
   limit: number;

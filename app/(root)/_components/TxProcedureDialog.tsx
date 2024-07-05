@@ -74,7 +74,10 @@ export const TxProcedureDialog = ({
             return;
           }
 
-          if (open) resetProceduresStates();
+          if (open) {
+            resetProceduresStates();
+            queryClient.refetchQueries();
+          }
           toggleOpen(!open);
         },
       }}
@@ -116,7 +119,7 @@ export const TxProcedureDialog = ({
           onDismissButtonClick={() => {
             amountInputPad?.setPrimaryValue("");
             resetProceduresStates();
-            queryClient.resetQueries();
+            queryClient.refetchQueries();
             toggleOpen(false);
           }}
         />

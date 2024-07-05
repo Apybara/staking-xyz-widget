@@ -6,6 +6,16 @@ export const getServerStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">)
   return res;
 };
 
+export const getAddressBalance = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.AddressBalanceResponse = await fetchData(`${apiUrl}address/${address}/balance`);
+  return res;
+};
+
+export const getAddressStakedBalance = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.AddressStakedBalanceResponse = await fetchData(`${apiUrl}address/${address}/staked-balance`);
+  return res;
+};
+
 export const getOperatorValidator = async ({
   apiUrl,
   address,
@@ -29,5 +39,10 @@ export const setMonitorTx = async ({ apiUrl, txHash, uuid }: { apiUrl: string; t
   const res = await fetchData(`${apiUrl}monitor/hash/${uuid}/${txHash}`, {
     method: "PUT",
   });
+  return res;
+};
+
+export const getNetworkStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
+  const res: T.NetworkStatusResponse = await fetchData(`${apiUrl}network/status`);
   return res;
 };
