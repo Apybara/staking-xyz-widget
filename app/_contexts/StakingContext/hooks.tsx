@@ -1,3 +1,4 @@
+import { useSearchParams } from "next/navigation";
 import type { StakingStates } from "./types";
 import type { BasicAmountValidationResult } from "../../_utils/transaction";
 import BigNumber from "bignumber.js";
@@ -19,10 +20,13 @@ export const useStakeAmountInputValidation = ({
   inputAmount: StakingStates["coinAmountInput"];
 }) => {
   const { network } = useShell();
+  const searchParams = useSearchParams();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
   const { minInitialAmount, minSubsequentAmount } = useStakeMinAmount();
+
+  const validator = searchParams.get("validator");
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -30,6 +34,7 @@ export const useStakeAmountInputValidation = ({
     max: balanceData,
     bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
     bufferValidationMax: balanceData,
+    hasDifferentValidator: !!validator, // dummy
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
@@ -83,6 +88,8 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
               return "Insufficient balance";
             case "bufferExceeded":
               return "Insufficient balance for fee";
+            case "differentValidator":
+              return defaultMessage;
           }
       }
   }
@@ -99,6 +106,8 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
       return "Insufficient balance";
     case "bufferExceeded":
       return "Insufficient balance for fee";
+    case "differentValidator":
+      return "You are already staking with another validator. Please unstake first to stake with this validator.";
   }
 };
 

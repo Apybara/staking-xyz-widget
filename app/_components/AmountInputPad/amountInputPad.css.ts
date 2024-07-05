@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
@@ -55,6 +55,7 @@ export const mainControlBox = style({
   flexDirection: "column",
   gap: pxToRem(4),
   inlineSize: "100%",
+  paddingInline: pxToRem(20),
 });
 
 export const amountInputPad = recipe({
@@ -67,7 +68,6 @@ export const amountInputPad = recipe({
     backgroundColor: colors.black700,
     border: `1px solid ${colors.black800}`,
     borderRadius: pxToRem(8),
-    paddingInline: pxToRem(20),
     paddingBlockStart: pxToRem(30),
     paddingBlockEnd: pxToRem(30),
   },
@@ -75,6 +75,12 @@ export const amountInputPad = recipe({
     hasErrorMessage: {
       true: {
         paddingBlockEnd: pxToRem(40),
+      },
+      false: {},
+    },
+    hasValidator: {
+      true: {
+        paddingBlockEnd: "0",
       },
       false: {},
     },
@@ -87,6 +93,7 @@ export const topBar = style({
   alignItems: "center",
   inlineSize: "100%",
   marginBlockStart: pxToRem(-16),
+  paddingInline: pxToRem(20),
 });
 
 export const topBarInfo = style({
@@ -144,9 +151,58 @@ export const secondaryAvailabilityText = style({
 
 export const errorMessage = style({
   fontSize: pxToRem(12),
+  lineHeight: pxToRem(16),
   color: colors.yellow900,
   textAlign: "center",
-  whiteSpace: "nowrap",
   display: "block",
+  maxInlineSize: "100%",
   marginBlockEnd: pxToRem(-16),
+  paddingInline: pxToRem(20),
+});
+
+export const validator = style({
+  borderTop: `1px solid ${colors.black800}`,
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(10),
+  marginBlockStart: pxToRem(12),
+  paddingBlock: pxToRem(12),
+  paddingInline: pxToRem(20),
+  inlineSize: "100%",
+});
+
+export const validatorDetails = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: pxToRem(8),
+});
+
+export const validatorName = style({
+  fontSize: pxToRem(14),
+  lineHeight: 1,
+  fontWeight: weights.bold,
+  color: colors.black000,
+});
+
+export const validatorAddressContainer = style({
+  display: "flex",
+  alignItems: "flex-start",
+  gap: pxToRem(4),
+  color: colors.black300,
+});
+
+export const validatorAddress = style({
+  fontSize: pxToRem(12),
+  lineHeight: 1,
+});
+
+globalStyle(`${validatorName} span`, {
+  fontSize: pxToRem(14),
+  fontWeight: weights.bold,
+  color: colors.black000,
+});
+
+globalStyle(`${validatorAddress} span`, {
+  color: `${colors.black300}`,
+  fontWeight: `${weights.regular}`,
 });
