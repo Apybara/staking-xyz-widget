@@ -2,15 +2,9 @@
 
 import type { Network, RouterStruct } from "../types";
 import { redirect } from "next/navigation";
-import {
-  defaultNetwork,
-  networkUrlParamRegex,
-  networkIdToUrlParamAlias,
-  currencyRegex,
-  networkCurrency,
-  networkDefaultStakingType,
-} from "../consts";
-import { getCurrentSearchParams } from "../_utils/routes";
+import { defaultNetwork, networkCurrency, networkDefaultStakingType } from "../consts";
+import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } from "../_utils";
+import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
   const { network, currency, stakingType } = searchParams || {};
@@ -23,17 +17,17 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   //   redirect("https://aleo.staking.xyz");
   // }
 
-  const isNetworkInvalid = !network || !networkUrlParamRegex.test(network);
-  const isCurrencyInvalid = !currencyRegex.test(currency || "");
+  const isNetworkInvalid = !getIsNetworkValid(network);
+  const isCurrencyInvalid = !getIsCurrencyValid(currency);
+  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid(network, currency);
   const isImportPage = page === "import";
+  const networkParamAndAlias = getNetworkParamFromValidAlias(network || "");
 
   if (isNetworkInvalid) {
-    const targetParamFromAlias = getNetworkParamFromValidAlias(network || "");
-    const targetNetwork = targetParamFromAlias || defaultNetwork;
-    current.set("network", targetNetwork);
+    current.set("network", networkParamAndAlias.alias);
   }
-  if (isCurrencyInvalid) {
-    current.set("currency", networkCurrency[defaultNetwork]);
+  if (isCurrencyInvalid || isNetworkAndCurrencyPairInvalid) {
+    current.set("currency", networkCurrency[networkParamAndAlias.network]);
   }
   if (isStakingTypeInvalid) {
     current.delete("stakingType");
@@ -42,15 +36,16 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     current.set("stakingType", defaultStakingType);
   }
 
-  if (isNetworkInvalid || isCurrencyInvalid || isImportPage || isStakingTypeInvalid || isStakingTypeExpected) {
+  if (
+    isNetworkInvalid ||
+    isCurrencyInvalid ||
+    isNetworkAndCurrencyPairInvalid ||
+    isImportPage ||
+    isStakingTypeInvalid ||
+    isStakingTypeExpected
+  ) {
     const search = current.toString();
     const query = search ? `?${search}` : "";
     redirect(`/${isImportPage ? "" : page}${query}`);
   }
 }
-
-const getNetworkParamFromValidAlias = (network: string) => {
-  if (/\b(celestiatestnet3|mocha-4|mocha4)\b/.test(network)) return networkIdToUrlParamAlias.celestiatestnet3;
-  if (/\b(cosmoshub|cosmoshub-4)\b/.test(network)) return networkIdToUrlParamAlias.cosmoshub;
-  if (/\b(cosmoshubtestnet|theta-testnet-001)\b/.test(network)) return networkIdToUrlParamAlias.cosmoshubtestnet;
-};

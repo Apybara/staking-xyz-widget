@@ -1,5 +1,7 @@
-import type { RouterStruct } from "../types";
+import type { Network, RouterStruct } from "../types";
 import { useSearchParams } from "next/navigation";
+import { defaultNetwork, networkIdToUrlParamAlias, networkUrlParamToId } from "../consts";
+import { getIsNetworkValid } from ".";
 
 export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"]) => {
   const { network, currency, device } = searchParams || {};
@@ -26,4 +28,37 @@ export const useLinkWithSearchParams = (page: string) => {
   const query = search ? `?${search}` : "";
 
   return `/${page}${query}`;
+};
+
+export const getNetworkParamFromValidAlias = (network: string) => {
+  if (getIsNetworkValid(network)) {
+    return {
+      network: networkUrlParamToId[network],
+      alias: networkIdToUrlParamAlias[network as Network],
+    };
+  }
+
+  if (/\b(celestiatestnet3|mocha-4|mocha4)\b/.test(network)) {
+    return {
+      network: networkUrlParamToId.celestiatestnet3,
+      alias: networkIdToUrlParamAlias.celestiatestnet3,
+    };
+  }
+  if (/\b(cosmoshub|cosmoshub-4)\b/.test(network)) {
+    return {
+      network: networkUrlParamToId.cosmoshub,
+      alias: networkIdToUrlParamAlias.cosmoshub,
+    };
+  }
+  if (/\b(cosmoshubtestnet|theta-testnet-001)\b/.test(network)) {
+    return {
+      network: networkUrlParamToId.cosmoshubtestnet,
+      alias: networkIdToUrlParamAlias.cosmoshubtestnet,
+    };
+  }
+
+  return {
+    network: defaultNetwork,
+    alias: networkIdToUrlParamAlias[defaultNetwork],
+  };
 };
