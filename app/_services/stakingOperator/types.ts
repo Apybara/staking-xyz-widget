@@ -356,3 +356,14 @@ export type NetworkStatusResponse = {
   networkOffline: boolean;
 };
 export type ServerStatusResponse = Omit<CommonResponse<{}, {}>, "data">;
+
+export type ValidatorDetailsResponse = {
+  response: {
+    commission?: number;
+    isOpen?: boolean;
+    logo?: string;
+    name?: string;
+    validatorAddress?: string;
+    message?: string;
+  };
+};

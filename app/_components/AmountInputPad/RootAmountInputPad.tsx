@@ -5,6 +5,7 @@ import { type CurrencyConversionToolProps, CurrencyConversionTool } from "./Curr
 import cn from "classnames";
 import { Skeleton } from "../Skeleton";
 import { MaxButton } from "./MaxButton";
+import { useStaking } from "@/app/_contexts/StakingContext";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 import { InputPadValidator } from "./InputPadValidator";
@@ -39,20 +40,13 @@ export const RootAmountInputPad = ({
   error,
 }: RootAmountInputPadProps) => {
   const { network } = useShell();
+  const { isLoadingValidatorDetails, validatorDetails } = useStaking();
+
   const searchParams = useSearchParams();
+  const hasValidatorURL = searchParams.get("validator");
 
-  const validator = searchParams.get("validator");
   const isAleoNetwork = network && getIsAleoNetwork(network);
-
-  // dummy
-  const isValidatorValid = !!validator;
-
-  const validatorDetails = {
-    name: "Finoa Consensus Services",
-    address: "aleo1pfka50hst70ckhlg3jz5x3nycwzt890v30q9d9vp8p74amds75rsfdwglj",
-  };
-
-  const isValidatorBoxActive = isValidatorValid && type === "stake";
+  const isValidatorBoxActive = !!hasValidatorURL && type === "stake";
 
   return (
     <div className={cn(className, S.amountInputPad({ hasErrorMessage: !!error, hasValidator: isValidatorBoxActive }))}>
@@ -75,7 +69,14 @@ export const RootAmountInputPad = ({
         {!isAleoNetwork && <CurrencyConversionTool {...currencyConversionTool} />}
       </div>
       {!!error && <span className={S.errorMessage}>{error}</span>}
-      {isValidatorBoxActive && <InputPadValidator {...validatorDetails} />}
+      {isValidatorBoxActive && (
+        <InputPadValidator
+          isLoading={isLoadingValidatorDetails}
+          name={validatorDetails?.name}
+          logo={validatorDetails?.logo}
+          address={validatorDetails?.validatorAddress}
+        />
+      )}
     </div>
   );
 };
