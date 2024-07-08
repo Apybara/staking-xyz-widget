@@ -1,4 +1,3 @@
-import { useSearchParams } from "next/navigation";
 import type { StakingStates } from "./types";
 import type { BasicAmountValidationResult } from "../../_utils/transaction";
 import BigNumber from "bignumber.js";
@@ -16,17 +15,16 @@ import {
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
+  validatorDetails,
 }: {
   inputAmount: StakingStates["coinAmountInput"];
+  validatorDetails: StakingStates["validatorDetails"];
 }) => {
   const { network } = useShell();
-  const searchParams = useSearchParams();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
   const { minInitialAmount, minSubsequentAmount } = useStakeMinAmount();
-
-  const validator = searchParams.get("validator");
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -34,7 +32,7 @@ export const useStakeAmountInputValidation = ({
     max: balanceData,
     bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
     bufferValidationMax: balanceData,
-    hasDifferentValidator: !!validator, // dummy
+    hasDifferentValidator: validatorDetails?.isOpen === false,
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,

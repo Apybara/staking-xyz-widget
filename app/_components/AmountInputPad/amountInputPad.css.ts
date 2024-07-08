@@ -196,6 +196,13 @@ export const validatorAddress = style({
   lineHeight: 1,
 });
 
+export const validatorInvalid = style([
+  validatorName,
+  {
+    color: colors.yellow900,
+  },
+]);
+
 globalStyle(`${validatorName} span`, {
   fontSize: pxToRem(14),
   fontWeight: weights.bold,

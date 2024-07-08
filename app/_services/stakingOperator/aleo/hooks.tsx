@@ -2,7 +2,7 @@ import type { Network } from "../../../types";
 import { useQuery } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getIsAleoNetwork, getMicroCreditsToCredits } from "../../aleo/utils";
-import { getServerStatus, getAddressBalance, getAddressStakedBalance, getNetworkStatus } from ".";
+import { getServerStatus, getAddressBalance, getAddressStakedBalance, getNetworkStatus, getValidatorDetails } from ".";
 
 export const useAleoServerStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
@@ -57,4 +57,14 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
   });
 
   return { data, isLoading, isRefetching, error, refetch };
+}
+
+export const useAleoValidatorDetails = ({ network, address }: { network: Network | null; address: string }) => {
+  const { data, isLoading, isRefetching, error } = useQuery({
+    enabled: getIsAleoNetwork(network || ""),
+    queryKey: ["aleoValidatorDetails", network, address],
+    queryFn: () => getValidatorDetails({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+  });
+
+  return { data, isLoading, isRefetching, error };
 };

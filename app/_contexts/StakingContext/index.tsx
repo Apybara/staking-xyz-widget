@@ -7,6 +7,8 @@ import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useStakeAmountInputValidation, useStakeInputErrorMessage } from "./hooks";
+import { useSearchParams } from "next/navigation";
+import { useValidatorDetails } from "@/app/_services/stakingOperator/hooks";
 
 const StakingContext = createContext({} as T.StakingContext);
 
@@ -14,10 +16,18 @@ export const useStaking = () => useContext(StakingContext);
 
 export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseStakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
-
   const { network } = useShell();
+  const searchParams = useSearchParams();
+
+  const validator = searchParams.get("validator");
+
+  const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
+    useValidatorDetails(validator as string) || {};
   const { activeWallet, address } = useWallet();
-  const { amountValidation, ctaValidation } = useStakeAmountInputValidation({ inputAmount: states.coinAmountInput });
+  const { amountValidation, ctaValidation } = useStakeAmountInputValidation({
+    inputAmount: states.coinAmountInput,
+    validatorDetails,
+  });
   const inputErrorMessage = useStakeInputErrorMessage({ amountValidation });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
@@ -42,6 +52,8 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
         procedures,
         amountInputPad,
         cosmosSigningClient: cosmosSigningClient || null,
+        isLoadingValidatorDetails,
+        validatorDetails,
         resetProceduresStates: resetStates,
         setStates,
       }}
@@ -69,4 +81,6 @@ const initialStates: T.StakingContext = {
   },
   resetProceduresStates: () => {},
   setStates: () => {},
+  isLoadingValidatorDetails: undefined,
+  validatorDetails: null,
 };
