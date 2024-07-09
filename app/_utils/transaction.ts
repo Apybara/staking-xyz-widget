@@ -9,6 +9,7 @@ export const getBasicAmountValidation = ({
   bufferValidationAmount,
   bufferValidationMax,
   hasDifferentValidator,
+  isInvalidValidator,
 }: {
   amount?: string;
   min?: string;
@@ -16,9 +17,12 @@ export const getBasicAmountValidation = ({
   bufferValidationAmount?: string;
   bufferValidationMax?: string;
   hasDifferentValidator?: boolean;
+  isInvalidValidator?: boolean;
 }): BasicAmountValidationResult => {
   if (hasDifferentValidator) return "differentValidator";
-  if (!amount || amount === "" || amount === "0") return "empty";
+  if (!amount || amount === "" || amount === "0") {
+    return isInvalidValidator ? "invalidValidator" : "empty";
+  }
 
   const parsedAmount = BigNumber(amount);
 
@@ -94,6 +98,7 @@ export type BasicAmountValidationResult =
   | "insufficient"
   | "exceeded"
   | "bufferExceeded"
+  | "invalidValidator"
   | "differentValidator";
 
 export type BasicTxCtaValidationResult =
@@ -102,6 +107,7 @@ export type BasicTxCtaValidationResult =
   | "insufficient"
   | "exceeded"
   | "bufferExceeded"
+  | "invalidValidator"
   | "differentValidator"
   | "disconnected"
   | "connecting"

@@ -28,39 +28,35 @@ export const InputPadValidator = ({
   const validatorLogo = !!logo && logo !== "not implemented" ? logo : "";
   const validatorUrl = `${networkExplorer[castedNetwork]}address?a=${address}`;
 
+  if (isLoading) {
+    return (
+      <div className={S.validator}>
+        <Skeleton className={S.validatorSkeleton} height={24} />
+      </div>
+    );
+  }
+
   return (
     <div className={S.validator}>
-      {isLoading ? (
-        <Skeleton height={24} width={200} />
-      ) : (
-        <>
-          <Image
-            src={validatorLogo || ValidatorPlaceholderLogo}
-            width={24}
-            height={24}
-            alt={`Validator Logo Placeholder  `}
+      <Image
+        src={validatorLogo || ValidatorPlaceholderLogo}
+        width={24}
+        height={24}
+        alt={`Validator Logo Placeholder  `}
+      />
+
+      <a href={validatorUrl} className={S.validatorDetails} target="_blank" rel="noreferrer">
+        {validatorName && <p className={S.validatorName}>{validatorName}</p>}
+
+        <span className={S.validatorAddressContainer}>
+          <FormattedAddress
+            className={cn(!!validatorName ? S.validatorAddress : S.validatorName)}
+            address={address as string}
+            prefixString={networkWalletPrefixes[castedNetwork]}
           />
-
-          {address ? (
-            <a href={validatorUrl} className={S.validatorDetails} target="_blank" rel="noreferrer">
-              {validatorName && <p className={S.validatorName}>{validatorName}</p>}
-
-              <span className={S.validatorAddressContainer}>
-                <FormattedAddress
-                  className={cn(!!validatorName ? S.validatorAddress : S.validatorName)}
-                  address={address}
-                  prefixString={networkWalletPrefixes[castedNetwork]}
-                />
-                <Icon name="externalLink" size={12} />
-              </span>
-            </a>
-          ) : (
-            <div className={S.validatorDetails}>
-              <p className={S.validatorInvalid}>Invalid validator provided</p>
-            </div>
-          )}
-        </>
-      )}
+          <Icon name="externalLink" size={12} />
+        </span>
+      </a>
     </div>
   );
 };

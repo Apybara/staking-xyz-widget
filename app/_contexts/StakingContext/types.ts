@@ -17,6 +17,7 @@ export type StakingStates = {
   resetProceduresStates: () => void;
   setStates: Dispatch<Partial<StakingStates>>;
   isLoadingValidatorDetails?: boolean;
+  isInvalidValidator?: boolean;
   validatorDetails?: {
     isOpen?: boolean;
     name?: string;

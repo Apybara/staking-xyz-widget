@@ -39,14 +39,11 @@ export const RootAmountInputPad = ({
   isMaxDisabled,
   error,
 }: RootAmountInputPadProps) => {
-  const { network } = useShell();
-  const { isLoadingValidatorDetails, validatorDetails } = useStaking();
-
-  const searchParams = useSearchParams();
-  const hasValidatorURL = searchParams.get("validator");
+  const { network, validator } = useShell();
+  const { isLoadingValidatorDetails, validatorDetails, isInvalidValidator } = useStaking();
 
   const isAleoNetwork = network && getIsAleoNetwork(network);
-  const isValidatorBoxActive = !!hasValidatorURL && type === "stake";
+  const isValidatorBoxActive = !!validator && type === "stake" && !isInvalidValidator;
 
   return (
     <div className={cn(className, S.amountInputPad({ hasErrorMessage: !!error, hasValidator: isValidatorBoxActive }))}>

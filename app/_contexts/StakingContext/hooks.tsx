@@ -11,16 +11,20 @@ import {
   requiredBalanceStakingByNetwork,
   minInitialStakingAmountByNetwork,
   minSubsequentStakingAmountByNetwork,
+  networkWalletPrefixes,
 } from "@/app/consts";
+import { getAddressChunks } from "@/app/_utils/address";
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
   delegatedValidator,
   validatorDetails,
+  isInvalidValidator,
 }: {
   inputAmount: StakingStates["coinAmountInput"];
   delegatedValidator: StakingStates["validatorDetails"];
   validatorDetails: StakingStates["validatorDetails"];
+  isInvalidValidator: boolean;
 }) => {
   const { network } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
@@ -34,6 +38,7 @@ export const useStakeAmountInputValidation = ({
     max: balanceData,
     bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
     bufferValidationMax: balanceData,
+    isInvalidValidator,
     hasDifferentValidator: !!(
       delegatedValidator?.validatorAddress &&
       delegatedValidator?.validatorAddress !== validatorDetails?.validatorAddress
@@ -61,9 +66,17 @@ export const useStakeMaxAmountBuffer = ({ amount }: { amount: string }) => {
 };
 
 export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidation: BasicAmountValidationResult }) => {
-  const { network, stakingType } = useShell();
+  const { network, stakingType, validator } = useShell();
   const { minInitialAmount } = useStakeMinAmount();
   const defaultMessage = getDefaultInputErrorMessage({ amountValidation });
+
+  const castedNetwork = network || defaultNetwork;
+
+  const { start, end, ellipsis } = getAddressChunks({
+    address: (validator as string) || "",
+    prefixString: networkWalletPrefixes[castedNetwork],
+  });
+  const formattedValidatorAddress = `${start}${ellipsis}${end}`;
 
   switch (network) {
     case "celestia":
@@ -87,6 +100,8 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
               } else {
                 return "You need to stake at least 1 ALEO.";
               }
+            case "invalidValidator":
+              return `${formattedValidatorAddress} is an invalid validator address`;
             case "exceeded":
               return "Insufficient balance";
             case "bufferExceeded":

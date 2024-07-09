@@ -132,3 +132,15 @@ export const useStakingTypeChange = () => {
     onUpdateRouter,
   };
 };
+
+export const useActiveValidator = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const validator = searchParams.get("validator");
+
+    setStates({ validator });
+  }, [searchParams]);
+
+  return null;
+};

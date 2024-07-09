@@ -12,16 +12,11 @@ import { WidgetContent } from "@/app/_components/WidgetContent";
 import { StakingProcedureDialog } from "./StakingProcedureDialog";
 
 export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
-  const { validator, stakingType } = searchParams || {};
-
-  // dummy
-  const isValidatorValid = !!validator;
-
   return (
     <StakingProvider>
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />
       <WidgetContent>
-        {!!stakingType && !isValidatorValid && <StakingTypeTabs />}
+        <StakingTypeTabs />
         <StakeAmountInputPad />
         <StakeInfoBox />
       </WidgetContent>
