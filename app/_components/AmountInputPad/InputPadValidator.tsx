@@ -1,7 +1,7 @@
 import Image from "next/image";
 import cn from "classnames";
 
-import { defaultNetwork, networkWalletPrefixes } from "@/app/consts";
+import { defaultNetwork, networkExplorer, networkWalletPrefixes } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { Icon } from "../Icon";
 import { Skeleton } from "../Skeleton";
@@ -22,9 +22,11 @@ export const InputPadValidator = ({
   address?: string;
 }) => {
   const { network } = useShell();
+  const castedNetwork = network || defaultNetwork;
 
   const validatorName = !!name && name !== "not implemented" ? name : "";
   const validatorLogo = !!logo && logo !== "not implemented" ? logo : "";
+  const validatorUrl = `${networkExplorer[castedNetwork]}address?a=${address}`;
 
   return (
     <div className={S.validator}>
@@ -39,22 +41,24 @@ export const InputPadValidator = ({
             alt={`Validator Logo Placeholder  `}
           />
 
-          <div className={S.validatorDetails}>
-            {validatorName && <p className={S.validatorName}>{validatorName}</p>}
+          {address ? (
+            <a href={validatorUrl} className={S.validatorDetails} target="_blank" rel="noreferrer">
+              {validatorName && <p className={S.validatorName}>{validatorName}</p>}
 
-            {address ? (
               <span className={S.validatorAddressContainer}>
                 <FormattedAddress
                   className={cn(!!validatorName ? S.validatorAddress : S.validatorName)}
                   address={address}
-                  prefixString={networkWalletPrefixes[network || defaultNetwork]}
+                  prefixString={networkWalletPrefixes[castedNetwork]}
                 />
                 <Icon name="externalLink" size={12} />
               </span>
-            ) : (
+            </a>
+          ) : (
+            <div className={S.validatorDetails}>
               <p className={S.validatorInvalid}>Invalid validator provided</p>
-            )}
-          </div>
+            </div>
+          )}
         </>
       )}
     </div>

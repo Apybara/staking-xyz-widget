@@ -334,6 +334,26 @@ export const useServerStatus = (defaultNetwork?: string) => {
   }
 };
 
+export const useDelegatedValidator = (address: string, defaultNetwork?: string) => {
+  const { network } = useShell();
+  const aleoDelegatedValidator = aleo.useAleoDelegatedValidator({
+    network: getIsAleoNetwork(network) ? network : null,
+    address,
+  });
+
+  switch (defaultNetwork || network) {
+    case "celestia":
+    case "celestiatestnet3":
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return undefined;
+    case "aleo":
+      return aleoDelegatedValidator;
+    default:
+      return undefined;
+  }
+};
+
 export const useValidatorDetails = (address: string, defaultNetwork?: string) => {
   const { network } = useShell();
   const aleoValidatorDetails = aleo.useAleoValidatorDetails({

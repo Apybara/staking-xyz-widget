@@ -15,9 +15,11 @@ import {
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
+  delegatedValidator,
   validatorDetails,
 }: {
   inputAmount: StakingStates["coinAmountInput"];
+  delegatedValidator: StakingStates["validatorDetails"];
   validatorDetails: StakingStates["validatorDetails"];
 }) => {
   const { network } = useShell();
@@ -32,7 +34,10 @@ export const useStakeAmountInputValidation = ({
     max: balanceData,
     bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
     bufferValidationMax: balanceData,
-    hasDifferentValidator: validatorDetails?.isOpen === false,
+    hasDifferentValidator: !!(
+      delegatedValidator?.validatorAddress &&
+      delegatedValidator?.validatorAddress !== validatorDetails?.validatorAddress
+    ),
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
