@@ -7,7 +7,6 @@ import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useStakeAmountInputValidation, useStakeInputErrorMessage } from "./hooks";
-import { useDelegatedValidator, useValidatorDetails } from "@/app/_services/stakingOperator/hooks";
 
 const StakingContext = createContext({} as T.StakingContext);
 
@@ -15,21 +14,13 @@ export const useStaking = () => useContext(StakingContext);
 
 export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseStakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
-  const { network, validator } = useShell();
+  const { network } = useShell();
   const { activeWallet, address } = useWallet();
 
   const castedNetwork = network || defaultNetwork;
 
-  const { data: delegatedValidator } = useDelegatedValidator(address as string) || {};
-  const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
-    useValidatorDetails(validator as string) || {};
-
-  const isInvalidValidator = !!validator && isLoadingValidatorDetails === false && !validatorDetails?.validatorAddress;
   const { amountValidation, ctaValidation } = useStakeAmountInputValidation({
     inputAmount: states.coinAmountInput,
-    delegatedValidator,
-    validatorDetails,
-    isInvalidValidator,
   });
   const inputErrorMessage = useStakeInputErrorMessage({ amountValidation });
   const { data: cosmosSigningClient } = useCosmosSigningClient({
@@ -55,9 +46,6 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
         procedures,
         amountInputPad,
         cosmosSigningClient: cosmosSigningClient || null,
-        isLoadingValidatorDetails,
-        isInvalidValidator,
-        validatorDetails,
         resetProceduresStates: resetStates,
         setStates,
       }}
@@ -85,7 +73,4 @@ const initialStates: T.StakingContext = {
   },
   resetProceduresStates: () => {},
   setStates: () => {},
-  isLoadingValidatorDetails: undefined,
-  isInvalidValidator: undefined,
-  validatorDetails: null,
 };

@@ -19,6 +19,7 @@ export type NetworkInfo = {
   logo: string;
   currency: NetworkCurrency;
   denom: string;
+  supportsValidatorSelection: boolean;
 };
 
 export type CosmosNetwork = (typeof CosmosNetworkVariants)[number];

@@ -16,14 +16,6 @@ export type StakingStates = {
   cosmosSigningClient: SigningStargateClient | null;
   resetProceduresStates: () => void;
   setStates: Dispatch<Partial<StakingStates>>;
-  isLoadingValidatorDetails?: boolean;
-  isInvalidValidator?: boolean;
-  validatorDetails?: {
-    isOpen?: boolean;
-    name?: string;
-    logo?: string;
-    validatorAddress?: string;
-  } | null;
 };
 
 export type StakingProviderProps = {

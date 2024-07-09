@@ -10,6 +10,14 @@ export const getIsAleoWalletType = (walletType: string): walletType is AleoWalle
   return aleoWalletVariants.includes(walletType as AleoWalletType);
 };
 
+export const getIsAleoAddressFormat = (address: string): boolean => {
+  if (typeof address !== "string") return false;
+  if (!address) return false;
+  if (address.length !== 63 || !address.startsWith("aleo")) return false;
+
+  return getIsBech32(address);
+};
+
 export const getMicroCreditsToCredits = (microCredits: string | number) => {
   return BigNumber(microCredits).div(TOKEN_CONVERSION_FACTOR).toNumber();
 };
@@ -19,3 +27,32 @@ export const getCreditsToMicroCredits = (credits: string | number) => {
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
+
+const getIsBech32 = (address?: string) => {
+  if (!address) return false;
+
+  const charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+  const separator = "1";
+
+  // Length Check
+  if (address.length < 14 || address.length > 74) return false;
+
+  // Lowercase/Uppercase Check
+  if (address !== address.toLowerCase() && address !== address.toUpperCase()) return false;
+
+  // Find Separator
+  const separatorIndex = address.lastIndexOf(separator);
+  if (separatorIndex === -1) return false;
+
+  // Check Human-Readable Part
+  const hrp = address.slice(0, separatorIndex);
+  if (!hrp) return false;
+
+  // Check Data Part
+  const data = address.slice(separatorIndex + 1);
+  for (let i = 0; i < data.length; i++) {
+    if (charset.indexOf(data[i]?.toLowerCase() as string) === -1) return false;
+  }
+
+  return true;
+};

@@ -138,9 +138,32 @@ export const useActiveValidator = ({ setStates }: { setStates: ShellContext["set
 
   useEffect(() => {
     const validator = searchParams.get("validator");
-
     setStates({ validator });
   }, [searchParams]);
 
   return null;
+};
+
+export const useValidatorChange = () => {
+  const { validator } = useShell();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const onUpdateRouter = (val: string | null) => {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    if (val) {
+      current.set("validator", val);
+    } else {
+      current.delete("validator");
+    }
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    router.push(`${pathname}${query}`);
+  };
+
+  return {
+    activeValidator: validator,
+    onUpdateRouter,
+  };
 };
