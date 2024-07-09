@@ -8,20 +8,15 @@ export const getBasicAmountValidation = ({
   max,
   bufferValidationAmount,
   bufferValidationMax,
-  hasDifferentValidator,
-  isInvalidValidator,
 }: {
   amount?: string;
   min?: string;
   max?: string;
   bufferValidationAmount?: string;
   bufferValidationMax?: string;
-  hasDifferentValidator?: boolean;
-  isInvalidValidator?: boolean;
 }): BasicAmountValidationResult => {
-  if (hasDifferentValidator) return "differentValidator";
   if (!amount || amount === "" || amount === "0") {
-    return isInvalidValidator ? "invalidValidator" : "empty";
+    return "empty";
   }
 
   const parsedAmount = BigNumber(amount);
@@ -49,10 +44,16 @@ export const getBasicAmountValidation = ({
 export const getBasicTxCtaValidation = ({
   amountValidation,
   walletConnectionStatus,
+  invalidValidator,
+  differentValidator,
 }: {
   amountValidation: BasicAmountValidationResult;
   walletConnectionStatus: WalletConnectionStatus;
+  invalidValidator?: boolean;
+  differentValidator?: boolean;
 }): BasicTxCtaValidationResult => {
+  if (invalidValidator) return "invalidValidator";
+  if (differentValidator) return "differentValidator";
   if (amountValidation !== "valid") return amountValidation;
   if (walletConnectionStatus === "disconnected") return "disconnected";
   if (walletConnectionStatus === "connecting") return "connecting";
@@ -97,9 +98,7 @@ export type BasicAmountValidationResult =
   | "invalid"
   | "insufficient"
   | "exceeded"
-  | "bufferExceeded"
-  | "invalidValidator"
-  | "differentValidator";
+  | "bufferExceeded";
 
 export type BasicTxCtaValidationResult =
   | "empty"

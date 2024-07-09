@@ -1,13 +1,9 @@
 import type { ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
 import { type InputFieldProps, InputField } from "./InputField";
 import { type CurrencyConversionToolProps, CurrencyConversionTool } from "./CurrencyConversionTool";
 import cn from "classnames";
 import { Skeleton } from "../Skeleton";
 import { MaxButton } from "./MaxButton";
-import { useStaking } from "@/app/_contexts/StakingContext";
-import { useShell } from "@/app/_contexts/ShellContext";
-import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 import { InputPadValidator } from "./InputPadValidator";
 
 import * as S from "./amountInputPad.css";
@@ -24,6 +20,13 @@ export type RootAmountInputPadProps = {
   maxTooltip?: ReactNode;
   isMaxDisabled?: boolean;
   error?: string;
+  hideCurrencyConversion?: boolean;
+  validatorInfo?: {
+    isLoading: boolean;
+    name: string;
+    logo: string;
+    address: string;
+  };
 };
 
 export const RootAmountInputPad = ({
@@ -38,15 +41,11 @@ export const RootAmountInputPad = ({
   maxTooltip,
   isMaxDisabled,
   error,
+  hideCurrencyConversion = false,
+  validatorInfo,
 }: RootAmountInputPadProps) => {
-  const { network, validator } = useShell();
-  const { isLoadingValidatorDetails, validatorDetails, isInvalidValidator } = useStaking();
-
-  const isAleoNetwork = network && getIsAleoNetwork(network);
-  const isValidatorBoxActive = !!validator && type === "stake" && !isInvalidValidator;
-
   return (
-    <div className={cn(className, S.amountInputPad({ hasErrorMessage: !!error, hasValidator: isValidatorBoxActive }))}>
+    <div className={cn(className, S.amountInputPad({ hasErrorMessage: !!error, hasValidator: !!validatorInfo }))}>
       {isAvailableValueLoading && (
         <div className={cn(S.topBar)}>
           <Skeleton height={24} width={100} />
@@ -63,15 +62,15 @@ export const RootAmountInputPad = ({
       )}
       <div className={cn(S.mainControlBox)}>
         <InputField {...inputField} />
-        {!isAleoNetwork && <CurrencyConversionTool {...currencyConversionTool} />}
+        {!hideCurrencyConversion && <CurrencyConversionTool {...currencyConversionTool} />}
       </div>
       {!!error && <span className={S.errorMessage}>{error}</span>}
-      {isValidatorBoxActive && (
+      {!!validatorInfo && (
         <InputPadValidator
-          isLoading={isLoadingValidatorDetails}
-          name={validatorDetails?.name}
-          logo={validatorDetails?.logo}
-          address={validatorDetails?.validatorAddress}
+          isLoading={validatorInfo.isLoading}
+          name={validatorInfo?.name}
+          logo={validatorInfo?.logo}
+          address={validatorInfo?.address}
         />
       )}
     </div>

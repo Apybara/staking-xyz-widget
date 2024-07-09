@@ -50,6 +50,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     logo: CelestiaLogo,
     currency: networkCurrency.celestia,
     denom: "u" + networkCurrency.celestia.toLowerCase(),
+    supportsValidatorSelection: false,
   },
   celestiatestnet3: {
     id: "celestiatestnet3",
@@ -57,6 +58,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     logo: CelestiaLogo,
     currency: networkCurrency.celestiatestnet3,
     denom: "u" + networkCurrency.celestiatestnet3.toLowerCase(),
+    supportsValidatorSelection: false,
   },
   cosmoshub: {
     id: "cosmoshub",
@@ -64,6 +66,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     logo: CosmosHubLogo,
     currency: networkCurrency.cosmoshub,
     denom: "u" + networkCurrency.cosmoshub.toLowerCase(),
+    supportsValidatorSelection: false,
   },
   cosmoshubtestnet: {
     id: "cosmoshubtestnet",
@@ -71,6 +74,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     logo: CosmosHubLogo,
     currency: networkCurrency.cosmoshubtestnet,
     denom: "u" + networkCurrency.cosmoshubtestnet.toLowerCase(),
+    supportsValidatorSelection: false,
   },
   aleo: {
     id: "aleo",
@@ -78,6 +82,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
     logo: AleoLogo,
     currency: networkCurrency.aleo,
     denom: "",
+    supportsValidatorSelection: true,
   },
 };
 
@@ -104,6 +109,14 @@ export const networkExplorerTx: Record<Network, string> = {
   cosmoshub: `${networkExplorer.cosmoshub}tx/`,
   cosmoshubtestnet: `${networkExplorer.cosmoshubtestnet}tx/`,
   aleo: `${networkExplorer.aleo}transaction?id=`,
+};
+
+export const networkExplorerAddress: Record<Network, string> = {
+  celestia: `${networkExplorer.celestia}address/`,
+  celestiatestnet3: `${networkExplorer.celestiatestnet3}address/`,
+  cosmoshub: `${networkExplorer.cosmoshub}address/`,
+  cosmoshubtestnet: `${networkExplorer.cosmoshubtestnet}address/`,
+  aleo: `${networkExplorer.aleo}address?a=`,
 };
 
 export const CosmosNetworkVariants = ["celestia", "celestiatestnet3", "cosmoshub", "cosmoshubtestnet"] as const;

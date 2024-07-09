@@ -1,12 +1,10 @@
 import Image from "next/image";
 import cn from "classnames";
-
-import { defaultNetwork, networkExplorer, networkWalletPrefixes } from "@/app/consts";
+import { defaultNetwork, networkExplorerAddress, networkWalletPrefixes } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { Icon } from "../Icon";
 import { Skeleton } from "../Skeleton";
 import { FormattedAddress } from "../FormattedAddress";
-
 import ValidatorPlaceholderLogo from "../../_assets/validators/validator-placeholder-logo.svg";
 import * as S from "./amountInputPad.css";
 
@@ -26,7 +24,7 @@ export const InputPadValidator = ({
 
   const validatorName = !!name && name !== "not implemented" ? name : "";
   const validatorLogo = !!logo && logo !== "not implemented" ? logo : "";
-  const validatorUrl = `${networkExplorer[castedNetwork]}address?a=${address}`;
+  const validatorUrl = `${networkExplorerAddress[castedNetwork]}${address}`;
 
   if (isLoading) {
     return (
@@ -42,9 +40,8 @@ export const InputPadValidator = ({
         src={validatorLogo || ValidatorPlaceholderLogo}
         width={24}
         height={24}
-        alt={`Validator Logo Placeholder  `}
+        alt={`Validator Logo Placeholder`}
       />
-
       <a href={validatorUrl} className={S.validatorDetails} target="_blank" rel="noreferrer">
         {validatorName && <p className={S.validatorName}>{validatorName}</p>}
 

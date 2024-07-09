@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { getIsCelestia, getIsCosmosHub } from "./cosmos";
-import { getIsAleoNetwork } from "../aleo/utils";
+import { getIsAleoNetwork, getIsAleoAddressFormat } from "../aleo/utils";
 import * as cosmos from "../stakingOperator/cosmos/hooks";
 import * as aleo from "../stakingOperator/aleo/hooks";
 
@@ -334,7 +334,7 @@ export const useServerStatus = (defaultNetwork?: string) => {
   }
 };
 
-export const useDelegatedValidator = (address: string, defaultNetwork?: string) => {
+export const useDelegatedValidator = ({ address, defaultNetwork }: { address: string; defaultNetwork?: string }) => {
   const { network } = useShell();
   const aleoDelegatedValidator = aleo.useAleoDelegatedValidator({
     network: getIsAleoNetwork(network) ? network : null,
@@ -354,11 +354,11 @@ export const useDelegatedValidator = (address: string, defaultNetwork?: string) 
   }
 };
 
-export const useValidatorDetails = (address: string, defaultNetwork?: string) => {
+export const useValidatorDetails = ({ address, defaultNetwork }: { address?: string; defaultNetwork?: string }) => {
   const { network } = useShell();
   const aleoValidatorDetails = aleo.useAleoValidatorDetails({
     network: getIsAleoNetwork(network) ? network : null,
-    address,
+    address: getIsAleoAddressFormat(address || "") ? address : undefined,
   });
 
   switch (defaultNetwork || network) {

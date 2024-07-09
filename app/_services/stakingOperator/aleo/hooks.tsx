@@ -2,7 +2,14 @@ import type { Network } from "../../../types";
 import { useQuery } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getIsAleoNetwork, getMicroCreditsToCredits } from "../../aleo/utils";
-import { getServerStatus, getAddressBalance, getAddressStakedBalance, getNetworkStatus, getDelegatedValidator, getValidatorDetails } from ".";
+import {
+  getServerStatus,
+  getAddressBalance,
+  getAddressStakedBalance,
+  getNetworkStatus,
+  getAddressDelegation,
+  getValidatorDetails,
+} from ".";
 
 export const useAleoServerStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
@@ -57,23 +64,24 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
   });
 
   return { data, isLoading, isRefetching, error, refetch };
-}
+};
 
 export const useAleoDelegatedValidator = ({ network, address }: { network: Network | null; address: string }) => {
   const { data, isLoading, isRefetching, error } = useQuery({
-    enabled: getIsAleoNetwork(network || ""),
+    enabled: getIsAleoNetwork(network || "") && !!address,
     queryKey: ["aleoDelegatedValidator", network, address],
-    queryFn: () => getDelegatedValidator({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    queryFn: () => getAddressDelegation({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
   });
 
   return { data, isLoading, isRefetching, error };
 };
 
-export const useAleoValidatorDetails = ({ network, address }: { network: Network | null; address: string }) => {
+export const useAleoValidatorDetails = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, isLoading, isRefetching, error } = useQuery({
-    enabled: getIsAleoNetwork(network || ""),
+    enabled: getIsAleoNetwork(network || "") && !!address,
     queryKey: ["aleoValidatorDetails", network, address],
-    queryFn: () => getValidatorDetails({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    queryFn: () =>
+      getValidatorDetails({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
   });
 
   return { data, isLoading, isRefetching, error };

@@ -21,7 +21,6 @@ export const StakeCTA = () => {
         if (ctaState === "differentValidator") {
           router.push(unstakePageLink);
         }
-
         if (ctaState === "disconnected") {
           toggleWalletConnectionDialog(true);
         }

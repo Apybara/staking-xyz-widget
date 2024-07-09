@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
-import { useStakedBalance } from "../../_services/stakingOperator/hooks";
+import { useStakedBalance, useDelegatedValidator, useValidatorDetails } from "../../_services/stakingOperator/hooks";
 import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
 import {
   defaultNetwork,
@@ -12,25 +12,21 @@ import {
   minInitialStakingAmountByNetwork,
   minSubsequentStakingAmountByNetwork,
   networkWalletPrefixes,
+  networkCurrency,
 } from "@/app/consts";
 import { getAddressChunks } from "@/app/_utils/address";
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
-  delegatedValidator,
-  validatorDetails,
-  isInvalidValidator,
 }: {
   inputAmount: StakingStates["coinAmountInput"];
-  delegatedValidator: StakingStates["validatorDetails"];
-  validatorDetails: StakingStates["validatorDetails"];
-  isInvalidValidator: boolean;
 }) => {
   const { network } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
   const { minInitialAmount, minSubsequentAmount } = useStakeMinAmount();
+  const { state: validatorState } = useStakeSpecificValidator();
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -38,15 +34,12 @@ export const useStakeAmountInputValidation = ({
     max: balanceData,
     bufferValidationAmount: BigNumber(inputAmount).plus(buffer).toString(),
     bufferValidationMax: balanceData,
-    isInvalidValidator,
-    hasDifferentValidator: !!(
-      delegatedValidator?.validatorAddress &&
-      delegatedValidator?.validatorAddress !== validatorDetails?.validatorAddress
-    ),
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
     walletConnectionStatus: connectionStatus,
+    invalidValidator: validatorState === "invalidValidator",
+    differentValidator: validatorState === "differentValidator",
   });
 
   return { amountValidation, ctaValidation };
@@ -66,17 +59,11 @@ export const useStakeMaxAmountBuffer = ({ amount }: { amount: string }) => {
 };
 
 export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidation: BasicAmountValidationResult }) => {
-  const { network, stakingType, validator } = useShell();
+  const { network, stakingType } = useShell();
   const { minInitialAmount } = useStakeMinAmount();
   const defaultMessage = getDefaultInputErrorMessage({ amountValidation });
-
-  const castedNetwork = network || defaultNetwork;
-
-  const { start, end, ellipsis } = getAddressChunks({
-    address: (validator as string) || "",
-    prefixString: networkWalletPrefixes[castedNetwork],
-  });
-  const formattedValidatorAddress = `${start}${ellipsis}${end}`;
+  const { state: validatorState } = useStakeSpecificValidator();
+  const formattedValidatorAddress = useFormattedInvalidValidatorAddress();
 
   switch (network) {
     case "celestia":
@@ -89,6 +76,12 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
         case "liquid":
           return defaultMessage;
         case "native":
+          if (validatorState === "invalidValidator") {
+            return `${formattedValidatorAddress} is an invalid validator address`;
+          }
+          if (validatorState === "differentValidator") {
+            return "You are already staking with another validator. Please unstake first to stake with this validator.";
+          }
           switch (amountValidation) {
             case "valid":
             case "empty":
@@ -96,18 +89,14 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
               return undefined;
             case "insufficient":
               if (!!minInitialAmount) {
-                return "You need to stake at least 10,000 ALEO to begin.";
+                return `You need to stake at least 10,000 ${networkCurrency.aleo} to begin.`;
               } else {
-                return "You need to stake at least 1 ALEO.";
+                return `You need to stake at least 1 ${networkCurrency.aleo}.`;
               }
-            case "invalidValidator":
-              return `${formattedValidatorAddress} is an invalid validator address`;
             case "exceeded":
               return "Insufficient balance";
             case "bufferExceeded":
               return "Insufficient balance for fee";
-            case "differentValidator":
-              return defaultMessage;
           }
       }
   }
@@ -124,8 +113,6 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
       return "Insufficient balance";
     case "bufferExceeded":
       return "Insufficient balance for fee";
-    case "differentValidator":
-      return "You are already staking with another validator. Please unstake first to stake with this validator.";
   }
 };
 
@@ -143,4 +130,60 @@ const useStakeMinAmount = () => {
     minInitialAmount: minInitialAmount || 0,
     minSubsequentAmount: minSubsequentAmount || 0,
   };
+};
+
+export const useStakeSpecificValidator = () => {
+  const { validator } = useShell();
+  const { address } = useWallet();
+  const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
+    useValidatorDetails({ address: validator || undefined }) || {};
+  const { data: delegatedValidator } = useDelegatedValidator({ address: address || "" }) || {};
+
+  if (!validator) {
+    return {
+      state: "empty",
+      validatorDetails: undefined,
+    };
+  }
+  if (!!validator && isLoadingValidatorDetails === false && !validatorDetails?.validatorAddress) {
+    return {
+      state: "invalidValidator",
+      validatorDetails: undefined,
+    };
+  }
+
+  const validatorInfo = {
+    ...validatorDetails,
+    isLoading: isLoadingValidatorDetails,
+  };
+
+  if (!delegatedValidator?.validatorAddress) {
+    return {
+      state: "success",
+      validatorDetails: validatorInfo,
+    };
+  }
+  if (validator !== delegatedValidator.validatorAddress) {
+    return {
+      state: "differentValidator",
+      validatorDetails: validatorInfo,
+    };
+  }
+  return {
+    state: "success",
+    validatorDetails: validatorInfo,
+  };
+};
+
+const useFormattedInvalidValidatorAddress = () => {
+  const { network, validator } = useShell();
+
+  const castedNetwork = network || defaultNetwork;
+  const isAddressFormat = validator?.startsWith(networkWalletPrefixes[castedNetwork]);
+  const { start, end, ellipsis } = getAddressChunks({
+    address: validator || "",
+    prefixString: networkWalletPrefixes[castedNetwork],
+  });
+
+  return isAddressFormat ? `${start}${ellipsis}${end}` : validator;
 };

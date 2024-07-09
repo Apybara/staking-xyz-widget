@@ -1,12 +1,10 @@
+import type { StakingTypeTab } from "@/app/types";
 import cn from "classnames";
-
+import { useShell } from "@/app/_contexts/ShellContext";
 import { useStakingTypeChange } from "@/app/_contexts/ShellContext/hooks";
 import { stakingTypeMap } from "@/app/consts";
-import type { StakingTypeTab } from "@/app/types";
-import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
-import { useStaking } from "@/app/_contexts/StakingContext";
-import { useShell } from "@/app/_contexts/ShellContext";
+import Tooltip from "@/app/_components/Tooltip";
 
 import * as S from "./stakingTabs.css";
 
@@ -24,11 +22,11 @@ const tabs: Array<StakingTypeTab> = [
 
 export const StakingTypeTabs = () => {
   const { stakingType, validator } = useShell();
-  const { isInvalidValidator } = useStaking();
   const { activeStakingType, onUpdateRouter } = useStakingTypeChange();
 
   return (
-    ((stakingType && !validator) || (stakingType && isInvalidValidator)) && (
+    stakingType &&
+    !validator && (
       <ul className={cn(S.tabs)}>
         {tabs.map(({ label, value, disabled }) => (
           <li key={`staking-tab-${value}`} className={cn(S.tab)}>

@@ -3,7 +3,6 @@ import cn from "classnames";
 import * as S from "./header.css";
 import { type CurrencyTabsProps, CurrencyTabs } from "../CurrencyTabs";
 import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
-import type { StakingType } from "@/app/types";
 import { WalletCapsule } from "../WalletCapsule";
 
 export type RootHeaderProps = {

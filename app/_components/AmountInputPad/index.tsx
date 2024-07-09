@@ -42,6 +42,13 @@ export type AmountInputPadProps = BaseAmountInputPadProps & {
   availableValue?: string;
   isAvailableValueLoading?: boolean;
   onValueChange: (value: string) => void;
+  hideCurrencyConversion?: boolean;
+  validatorInfo?: {
+    isLoading: boolean;
+    name: string;
+    logo: string;
+    address: string;
+  };
 };
 
 export const AmountInputPad = ({
@@ -58,6 +65,8 @@ export const AmountInputPad = ({
   maxAmountBuffer,
   onMax,
   error,
+  hideCurrencyConversion,
+  validatorInfo,
 }: AmountInputPadProps) => {
   const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
@@ -165,6 +174,8 @@ export const AmountInputPad = ({
       }
       isMaxDisabled={type === "stake" && BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalance)}
       error={error}
+      hideCurrencyConversion={hideCurrencyConversion}
+      validatorInfo={validatorInfo}
     />
   );
 };
