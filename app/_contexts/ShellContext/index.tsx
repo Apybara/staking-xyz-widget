@@ -1,7 +1,7 @@
 import type * as T from "./types";
 
 import { createContext, useContext, useReducer } from "react";
-import { useActiveCurrency, useActiveNetwork, useActiveStakingType } from "./hooks";
+import { useActiveCurrency, useActiveNetwork, useActiveStakingType, useActiveValidator } from "./hooks";
 
 const ShellContext = createContext({} as T.ShellContext);
 
@@ -13,6 +13,7 @@ export const ShellProvider = ({ initialCoinPrice, isOnMobileDevice, children }: 
   useActiveCurrency({ setStates });
   useActiveNetwork({ setStates });
   useActiveStakingType({ setStates });
+  useActiveValidator({ setStates });
 
   return (
     <ShellContext.Provider
@@ -33,6 +34,7 @@ const initialStates: T.ShellContext = {
   network: null,
   currency: null,
   coinPrice: null,
+  validator: null,
   isOnMobileDevice: undefined,
   isScrollActive: false,
   setStates: () => {},

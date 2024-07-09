@@ -171,6 +171,10 @@ export const validator = style({
   inlineSize: "100%",
 });
 
+export const validatorSkeleton = style({
+  inlineSize: "100%",
+});
+
 export const validatorDetails = style({
   display: "flex",
   flexDirection: "column",

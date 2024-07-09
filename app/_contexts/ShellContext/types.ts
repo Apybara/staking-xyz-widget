@@ -8,6 +8,7 @@ export type ShellStates = {
   network: Network | null;
   currency: Currency | null;
   coinPrice: CoinPrice | null;
+  validator?: string | null;
   isOnMobileDevice?: boolean;
   isScrollActive?: boolean;
   setStates: Dispatch<Partial<ShellStates>>;
