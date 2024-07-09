@@ -8,7 +8,7 @@ import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useStakeAmountInputValidation, useStakeInputErrorMessage } from "./hooks";
 import { useSearchParams } from "next/navigation";
-import { useValidatorDetails } from "@/app/_services/stakingOperator/hooks";
+import { useDelegatedValidator, useValidatorDetails } from "@/app/_services/stakingOperator/hooks";
 
 const StakingContext = createContext({} as T.StakingContext);
 
@@ -18,14 +18,17 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseStakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
   const { network } = useShell();
   const searchParams = useSearchParams();
+  const { activeWallet, address } = useWallet();
 
   const validator = searchParams.get("validator");
 
+  const { data: delegatedValidator } = useDelegatedValidator(address as string) || {};
   const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
     useValidatorDetails(validator as string) || {};
-  const { activeWallet, address } = useWallet();
+
   const { amountValidation, ctaValidation } = useStakeAmountInputValidation({
     inputAmount: states.coinAmountInput,
+    delegatedValidator,
     validatorDetails,
   });
   const inputErrorMessage = useStakeInputErrorMessage({ amountValidation });

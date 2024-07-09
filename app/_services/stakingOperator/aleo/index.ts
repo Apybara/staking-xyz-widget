@@ -16,6 +16,11 @@ export const getAddressStakedBalance = async ({ apiUrl, address }: T.BaseParams)
   return res;
 };
 
+export const getDelegatedValidator = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.ValidatorDetailsResponse = await fetchData(`${apiUrl}address/${address}/delegation`);
+  return res.response;
+};
+
 export const getValidatorDetails = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.ValidatorDetailsResponse = await fetchData(`${apiUrl}network/validator/${address}`);
   return res.response;
