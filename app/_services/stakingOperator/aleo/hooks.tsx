@@ -3,7 +3,7 @@ import type * as T from "../types";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getIsAleoNetwork, getCoinValueFromDenom, getMicroCreditsToCredits } from "../../aleo/utils";
-import { getAddressActivity, getAddressBalance, getAddressStakedBalance, getNetworkStatus, getServerStatus } from ".";
+import { getAddressActivity, getAddressBalance, getAddressStakedBalance, getNetworkStatus, getServerStatus, getWithdrawableAmount } from ".";
 import { useEffect, useState } from "react";
 import { getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
@@ -96,7 +96,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
   } = useAleoAddressActivity({
     network,
     address,
-    filterKey: "transactions_unstake",
+    filterKey: "unstake",
     offset: 0,
     limit: 999,
   }) || {};
@@ -104,7 +104,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
     useAleoAddressActivity({
       network,
       address,
-      filterKey: "transactions_unstake",
+      filterKey: "unstake",
       offset: 0,
       limit: totalEntries || 999,
     }) || {};
@@ -116,6 +116,28 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
     data: [...inProgressUnbondingEntries, ...unbondingEntries],
     isLoading: initialIsLoading || isLoading,
     error: initialIsError || error,
+  };
+};
+
+export const useAleoWithdrawableAmount = ({ address, network }: { address?: string; network: Network | null }) => {
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
+
+  const { data, isLoading, error, refetch } = useQuery({
+    enabled: !!address && !!isAleoNetwork,
+    queryKey: ["aleoWithdrawableAmount", address, network],
+    queryFn: () =>
+      getWithdrawableAmount({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
+    refetchOnWindowFocus: true,
+  });
+
+  return {
+    data: {
+      withdrawableAmount: getCoinValueFromDenom({ network: castedNetwork, amount: data?.amount.toString() }),
+    },
+    isLoading,
+    error,
+    refetch,
   };
 };
 

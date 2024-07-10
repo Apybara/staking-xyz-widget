@@ -92,6 +92,28 @@ export const useStakedBalance = () => {
   }
 };
 
+export const useWithdrawableAmount = () => {
+  const { network } = useShell();
+  const { address } = useWallet();
+
+  const aleoData = aleo.useAleoWithdrawableAmount({
+    network,
+    address: address && getIsAleoNetwork(network) ? address : undefined,
+  });
+
+  switch (network) {
+    case "celestia":
+    case "celestiatestnet3":
+    case "cosmoshub":
+    case "cosmoshubtestnet":
+      return undefined;
+    case "aleo":
+      return aleoData;
+    default:
+      return undefined;
+  }
+};
+
 export const useAddressActivityQueryParams = (defaultParams: T.AddressActivityPaginationParams | null) => {
   const [offset, setOffset] = useState(defaultParams?.offset || 0);
   const [limit, setLimit] = useState(defaultParams?.limit || 6);

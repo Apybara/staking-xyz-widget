@@ -262,6 +262,10 @@ export type DelegationResponseItem = {
   };
 };
 
+export type WithdrawableAmountResponse = {
+  amount: string;
+};
+
 export type AddressActivityResponse = CommonEntriesResponse<
   AddressActivityPaginationParams & { address: string },
   ActivityItem

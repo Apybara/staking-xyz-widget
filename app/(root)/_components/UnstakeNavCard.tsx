@@ -2,17 +2,31 @@
 import { useMemo } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { useUnbondingDelegations, useStakedBalance } from "../../_services/stakingOperator/hooks";
+import {
+  useUnbondingDelegations,
+  useStakedBalance,
+  useWithdrawableAmount,
+} from "../../_services/stakingOperator/hooks";
 import * as NavCard from "../_components/NavCard";
 import { Skeleton } from "../../_components/Skeleton";
 import { getTimeUnitStrings } from "../../_utils/time";
 import { unstakingPeriodByNetwork, defaultNetwork } from "../../consts";
+import BigNumber from "bignumber.js";
 
 export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
   const { connectionStatus } = useWallet();
   const { stakedBalance } = useStakedBalance() || {};
   const { data: unbondingDelegations, isLoading } = useUnbondingDelegations() || {};
+  const { data: withdrawableData } = useWithdrawableAmount() || {};
+
+  const { withdrawableAmount } = withdrawableData || {};
+  const hasWithdrawableAmount = !!withdrawableAmount && withdrawableAmount !== "0";
   const fallbackTime = useFallbackTime();
+
+  const hasPendingItems = unbondingDelegations?.length || hasWithdrawableAmount;
+  const totalPendingItems = BigNumber(unbondingDelegations?.length || 0)
+    .plus(hasWithdrawableAmount ? 1 : 0)
+    .toString();
 
   const isDisabled =
     connectionStatus !== "connected" || ((!stakedBalance || stakedBalance === "0") && !unbondingDelegations?.length);
@@ -34,13 +48,13 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         ),
       };
     }
-    if (unbondingDelegations?.length) {
+    if (hasPendingItems) {
       const times =
-        unbondingDelegations[0].completionTime && getTimeUnitStrings(unbondingDelegations[0].completionTime);
+        unbondingDelegations?.[0]?.completionTime && getTimeUnitStrings(unbondingDelegations[0].completionTime);
 
       return {
-        title: <NavCard.SecondaryText>Pending {unbondingDelegations.length}</NavCard.SecondaryText>,
-        value: (
+        title: <NavCard.SecondaryText>Pending {totalPendingItems}</NavCard.SecondaryText>,
+        value: !!unbondingDelegations?.length && (
           <NavCard.PrimaryText>
             {times?.time || fallbackTime.time}{" "}
             <NavCard.SecondaryText>{times?.unit || fallbackTime.unit} left</NavCard.SecondaryText>
