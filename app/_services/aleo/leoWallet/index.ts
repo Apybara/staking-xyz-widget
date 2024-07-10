@@ -90,6 +90,7 @@ export const leoWalletUnstake = async ({ amount, wallet, address, chainId = "ale
       1_233_777,
       false,
     );
+
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
   } catch (error) {
     console.error(error);

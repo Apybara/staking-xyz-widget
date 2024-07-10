@@ -3,7 +3,14 @@ import type * as T from "../types";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getIsAleoNetwork, getCoinValueFromDenom, getMicroCreditsToCredits } from "../../aleo/utils";
-import { getAddressActivity, getAddressBalance, getAddressStakedBalance, getNetworkStatus, getServerStatus, getWithdrawableAmount } from ".";
+import {
+  getAddressActivity,
+  getAddressBalance,
+  getAddressStakedBalance,
+  getNetworkStatus,
+  getServerStatus,
+  getWithdrawableAmount,
+} from ".";
 import { useEffect, useState } from "react";
 import { getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
@@ -133,7 +140,7 @@ export const useAleoWithdrawableAmount = ({ address, network }: { address?: stri
 
   return {
     data: {
-      withdrawableAmount: getCoinValueFromDenom({ network: castedNetwork, amount: data?.amount.toString() }),
+      withdrawableAmount: getCoinValueFromDenom({ network: castedNetwork, amount: data?.amount?.toString() }),
     },
     isLoading,
     error,
