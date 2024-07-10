@@ -6,11 +6,14 @@ import { useActiveWalletStates } from "../../_contexts/WalletContext/hooks";
 import { useProceduralStates } from "../../_utils/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
+import { useRouter } from "next/navigation";
+import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import { useFormattedNetworkValue } from "../../_utils/conversions/hooks";
 import { walletsInfo, defaultNetwork } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
 
 export const WalletAccountDialog = () => {
+  const router = useRouter();
   const { network } = useShell();
   const { activeWallet, address, setStates } = useWallet();
   const {
@@ -22,6 +25,7 @@ export const WalletAccountDialog = () => {
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
   const disconnectors = useWalletDisconnectors(network || defaultNetwork);
+  const homePageLink = useLinkWithSearchParams("");
 
   // NOTE: triggering this hook here to ensure CosmosKit wallet status are updated.
   // The `useCosmosWalletStates` hook triggered in WalletContext doesn't update the status for unknown reasons.
@@ -65,6 +69,7 @@ export const WalletAccountDialog = () => {
           } finally {
             setIsLoading(false);
             toggleOpen(false);
+            router.push(homePageLink);
           }
         },
       }}
