@@ -2,6 +2,7 @@ import type { Network } from "../../../types";
 import { useQuery } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getIsAleoNetwork, getMicroCreditsToCredits } from "../../aleo/utils";
+import { getCalculatedRewards } from "../utils";
 import {
   getServerStatus,
   getAddressBalance,
@@ -9,6 +10,7 @@ import {
   getNetworkStatus,
   getAddressDelegation,
   getValidatorDetails,
+  getNetworkReward,
 } from ".";
 
 export const useAleoServerStatus = ({ network }: { network: Network | null }) => {
@@ -64,6 +66,20 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
   });
 
   return { data, isLoading, isRefetching, error, refetch };
+};
+
+export const useAleoReward = ({ network, amount }: { network: Network | null; amount: string }) => {
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    enabled: getIsAleoNetwork(network || ""),
+    queryKey: ["aleoReward", network],
+    queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"] }),
+    refetchOnWindowFocus: true,
+    refetchInterval: 600000, // 10 minutes
+  });
+
+  const rewards = getCalculatedRewards(amount, data || 0);
+
+  return { data, rewards, isLoading, isRefetching, error, refetch };
 };
 
 export const useAleoDelegatedValidator = ({ network, address }: { network: Network | null; address: string }) => {

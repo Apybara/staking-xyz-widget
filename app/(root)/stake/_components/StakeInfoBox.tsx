@@ -8,6 +8,7 @@ import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
+import { useStakeSpecificValidator } from "@/app/_contexts/StakingContext/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 import * as S from "./stake.css";
 
@@ -15,11 +16,13 @@ export const StakeInfoBox = () => {
   const { network } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
+  const { validatorDetails } = useStakeSpecificValidator();
   // const stakeFees = getStakeFees({ amount: coinAmountInput, network: network || defaultNetwork });
   // const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
   const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
+  const hasCommission = validatorDetails?.commission !== undefined;
 
   return (
     <InfoCard.Card>
@@ -48,6 +51,14 @@ export const StakeInfoBox = () => {
             <InfoCard.Content>{formattedStakeFees}</InfoCard.Content>
           </InfoCard.StackItem>
         )} */}
+        {hasCommission && (
+          <InfoCard.StackItem>
+            <InfoCard.TitleBox>
+              <InfoCard.Title>Commission rate</InfoCard.Title>
+            </InfoCard.TitleBox>
+            <InfoCard.Content>{validatorDetails?.commission}%</InfoCard.Content>
+          </InfoCard.StackItem>
+        )}
         {hasInput && (
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
