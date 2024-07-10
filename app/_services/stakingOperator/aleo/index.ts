@@ -56,3 +56,8 @@ export const getNetworkStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">
   const res: T.NetworkStatusResponse = await fetchData(`${apiUrl}network/status`);
   return res;
 };
+
+export const getNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
+  const res: T.NetworkRewardResponse = await fetchData(`${apiUrl}network/reward`);
+  return res;
+};

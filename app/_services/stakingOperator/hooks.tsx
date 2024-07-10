@@ -281,6 +281,10 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
     network: getIsCosmosHub(castedNetwork) ? castedNetwork : null,
     amount: amount || "0",
   });
+  const aleoRewards = aleo.useAleoReward({
+    network: getIsAleoNetwork(castedNetwork) ? castedNetwork : null,
+    amount: amount || "0",
+  });
 
   switch (castedNetwork) {
     case "celestia":
@@ -289,6 +293,8 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshubRewards;
+    case "aleo":
+      return aleoRewards;
     default:
       return undefined;
   }
