@@ -147,4 +147,5 @@ const titleKey = {
   unstake: "Unstake",
   rewards: "Claim",
   redelegate: "Import",
+  withdraw: "Withdraw",
 };

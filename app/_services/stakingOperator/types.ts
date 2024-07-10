@@ -283,7 +283,7 @@ export type AddressActivityPaginationParams = PaginationParams & {
 };
 export type ActivityItem = {
   id: string;
-  type: "stake" | "unstake" | "rewards" | "redelegate";
+  type: "stake" | "unstake" | "rewards" | "redelegate" | "withdraw";
   amount: number;
   rewardRate: number;
   timestamp: number;

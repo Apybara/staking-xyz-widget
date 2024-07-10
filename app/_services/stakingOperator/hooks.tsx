@@ -19,6 +19,10 @@ export const useUnbondingDelegations = () => {
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
   });
+  const aleoData = aleo.useAleoUnbondingDelegations({
+    network,
+    address: address && getIsAleoNetwork(network) ? address : undefined,
+  });
 
   switch (network) {
     case "celestia":
@@ -27,6 +31,8 @@ export const useUnbondingDelegations = () => {
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshub;
+    case "aleo":
+      return aleoData;
     default:
       return undefined;
   }

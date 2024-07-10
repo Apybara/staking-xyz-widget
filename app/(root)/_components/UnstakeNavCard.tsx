@@ -39,7 +39,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         unbondingDelegations[0].completionTime && getTimeUnitStrings(unbondingDelegations[0].completionTime);
 
       return {
-        title: <NavCard.SecondaryText>In progress {unbondingDelegations.length}</NavCard.SecondaryText>,
+        title: <NavCard.SecondaryText>Pending {unbondingDelegations.length}</NavCard.SecondaryText>,
         value: (
           <NavCard.PrimaryText>
             {times?.time || fallbackTime.time}{" "}
