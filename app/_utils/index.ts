@@ -1,4 +1,4 @@
-import type { Network, Currency } from "../types";
+import type { Network } from "../types";
 import { networkCurrency, networkUrlParamRegex, currencyRegex } from "../consts";
 
 export const removeLeadingAndTrailingZeros = (val: string) => {
@@ -29,17 +29,18 @@ export const getIsNetworkValid = (network?: string) => network && networkUrlPara
 export const getIsCurrencyValid = (currency?: string) => currencyRegex.test(currency || "");
 
 export const getIsNetworkCurrencyPairValid = (network?: string, currency?: string) => {
-  const isNetworkValid = getIsNetworkValid(network);
+  const isNetworkValid = getIsNetworkValid(network) || networkUrlParamRegex.test(network || "");
   const isCurrencyValid = getIsCurrencyValid(currency);
 
   if (!isNetworkValid || !isCurrencyValid) return false;
 
   const upperCaseCurrency = (currency || "").toUpperCase();
 
-  switch (network as Network) {
+  switch (network as Network | (string & {})) {
     case "celestia":
       return networkCurrency.celestia === upperCaseCurrency;
     case "celestiatestnet3":
+    case "celestiatestnet":
       return networkCurrency.celestiatestnet3 === upperCaseCurrency;
     case "cosmoshub":
       return networkCurrency.cosmoshub === upperCaseCurrency;
