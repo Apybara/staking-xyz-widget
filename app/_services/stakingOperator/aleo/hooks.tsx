@@ -6,13 +6,16 @@ import { getIsAleoNetwork, getCoinValueFromDenom, getMicroCreditsToCredits } fro
 import {
   getAddressActivity,
   getAddressBalance,
+  getAddressDelegation,
   getAddressStakedBalance,
+  getNetworkReward,
   getNetworkStatus,
   getServerStatus,
+  getValidatorDetails,
   getWithdrawableAmount,
 } from ".";
 import { useEffect, useState } from "react";
-import { getLastOffset } from "../utils";
+import { getCalculatedRewards, getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
 import { fromUnixTime } from "date-fns";
 
