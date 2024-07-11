@@ -138,6 +138,8 @@ const useAleoBroadcastTx = ({
       };
       txRes = await getTxResult(txId);
 
+      console.log(txRes);
+
       if (!txRes || txRes.status === "error") {
         return {
           txId: txRes?.txId,

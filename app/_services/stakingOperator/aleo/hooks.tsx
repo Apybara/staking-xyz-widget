@@ -36,7 +36,7 @@ export const useAleoAddressActivity = ({
     T.AddressActivityResponse
   >({
     enabled: !!address && !!isAleoNetwork,
-    queryKey: ["addressActivity", address, offset, limit, filterKey, network],
+    queryKey: ["aleoAddressActivityKey", address, offset, limit, filterKey, network],
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressActivity({
@@ -57,7 +57,7 @@ export const useAleoAddressActivity = ({
     if (!isPlaceholderData && data?.hasMore) {
       const nextOffset = offset + 1;
       queryClient.prefetchQuery({
-        queryKey: ["addressActivity", address, limit, filterKey, nextOffset, network],
+        queryKey: ["aleoAddressActivityKey", address, limit, filterKey, nextOffset, network],
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressActivity({
