@@ -24,14 +24,14 @@ export const usePuzzleStake = () => {
 };
 
 export const usePuzzleUnstake = () => {
-  return async ({ amount, chainId }: T.PuzzleUnstakeProps) => {
+  return async ({ address, amount, chainId }: T.PuzzleUnstakeProps) => {
     try {
       if (!amount) {
         const error = new Error("Unstaking fails: missing stakeAmount");
         throw error;
       }
 
-      return await puzzleUnstake({ amount, chainId });
+      return await puzzleUnstake({ address, amount, chainId });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;
