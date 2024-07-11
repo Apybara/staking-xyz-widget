@@ -1,4 +1,4 @@
-import type { AleoNetwork, Network } from "../../../types";
+import type { AleoNetwork, Network, StakingType } from "../../../types";
 import type * as T from "../types";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
@@ -25,7 +25,7 @@ export const useAleoAddressActivity = ({
   offset,
   limit,
   filterKey,
-}: T.AddressActivityPaginationParams & { network: Network | null; address?: string; refetchInterval?: number }) => {
+}: T.AleoAddressActivityPaginationParams & { network: Network | null; address?: string; refetchInterval?: number }) => {
   const queryClient = useQueryClient();
   const [hasInProgress, setHasInProgress] = useState(false);
   const isAleoNetwork = getIsAleoNetwork(network || "");
@@ -40,6 +40,7 @@ export const useAleoAddressActivity = ({
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressActivity({
+        tsType: "aleo",
         apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
         address,
         offset,
@@ -60,6 +61,7 @@ export const useAleoAddressActivity = ({
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressActivity({
+            tsType: "aleo",
             apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
             address,
             offset: nextOffset,
@@ -104,6 +106,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
     isLoading: initialIsLoading,
     error: initialIsError,
   } = useAleoAddressActivity({
+    tsType: "aleo",
     network,
     address,
     filterKey: "unstake",
@@ -112,6 +115,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
   }) || {};
   const { formattedEntries, isLoading, error } =
     useAleoAddressActivity({
+      tsType: "aleo",
       network,
       address,
       filterKey: "unstake",

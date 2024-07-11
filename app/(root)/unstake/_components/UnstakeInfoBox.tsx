@@ -13,7 +13,7 @@ import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
-  const { currency, coinPrice, network } = useShell();
+  const { currency, coinPrice, network, stakingType } = useShell();
 
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
   const { data: withdrawableData } = useWithdrawableAmount() || {};

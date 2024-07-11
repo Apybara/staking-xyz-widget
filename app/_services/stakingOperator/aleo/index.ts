@@ -7,7 +7,7 @@ export const getAddressActivity = async ({
   offset,
   limit,
   filterKey,
-}: T.AddressActivityPaginationParams & T.BaseParams) => {
+}: T.AleoAddressActivityPaginationParams & T.BaseParams) => {
   const filterQuery = !!filterKey ? `&filterBy=type&filterKey=${filterKey}` : "";
 
   const res: T.AddressActivityResponse = await fetchData(

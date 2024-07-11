@@ -75,7 +75,11 @@ export const useCosmosAddressActivity = ({
   offset,
   limit,
   filterKey,
-}: T.AddressActivityPaginationParams & { network: Network | null; address?: string; refetchInterval?: number }) => {
+}: T.StandardAddressActivityPaginationParams & {
+  network: Network | null;
+  address?: string;
+  refetchInterval?: number;
+}) => {
   const queryClient = useQueryClient();
   const [hasInProgress, setHasInProgress] = useState(false);
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
@@ -90,6 +94,7 @@ export const useCosmosAddressActivity = ({
     queryFn: () => {
       if (!address) return Promise.resolve(null);
       return getAddressActivity({
+        tsType: "standard",
         apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
         address,
         offset,
@@ -110,6 +115,7 @@ export const useCosmosAddressActivity = ({
         queryFn: () => {
           if (!address) return Promise.resolve(null);
           return getAddressActivity({
+            tsType: "standard",
             apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
             address,
             offset: nextOffset,
@@ -154,6 +160,7 @@ export const useCosmosUnbondingDelegations = ({ address, network }: { address?: 
     isLoading: initialIsLoading,
     error: initialIsError,
   } = useCosmosAddressActivity({
+    tsType: "standard",
     network,
     address,
     filterKey: "transactions_unstake",
@@ -162,6 +169,7 @@ export const useCosmosUnbondingDelegations = ({ address, network }: { address?: 
   }) || {};
   const { formattedEntries, isLoading, error } =
     useCosmosAddressActivity({
+      tsType: "standard",
       network,
       address,
       filterKey: "transactions_unstake",

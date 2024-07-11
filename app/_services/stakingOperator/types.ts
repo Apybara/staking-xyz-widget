@@ -273,8 +273,13 @@ export type AddressActivityResponse = CommonEntriesResponse<
   hasMore?: boolean | null;
   totalEntries?: number | null;
 };
-export type AddressActivityPaginationParams = PaginationParams & {
-  filterKey:
+export type AddressActivityPaginationParams =
+  | StandardAddressActivityPaginationParams
+  | AleoAddressActivityPaginationParams;
+
+export type StandardAddressActivityPaginationParams = {
+  tsType: "standard";
+  filterKey?:
     | "stake"
     | "unstake"
     | "redelegate"
@@ -284,7 +289,23 @@ export type AddressActivityPaginationParams = PaginationParams & {
     | "transactions_rewards"
     | "transactions_redelegate"
     | null;
-};
+} & PaginationParams;
+
+export type AleoAddressActivityPaginationParams = {
+  tsType: "aleo";
+  filterKey?:
+    | "stake"
+    | "unstake"
+    | "claim"
+    | "native_stake"
+    | "native_unstake"
+    | "native_claim"
+    | "liquid_stake"
+    | "liquid_unstake"
+    | "liquid_claim"
+    | null;
+} & PaginationParams;
+
 export type ActivityItem = {
   id: string;
   type: "stake" | "unstake" | "rewards" | "redelegate" | "withdraw";
