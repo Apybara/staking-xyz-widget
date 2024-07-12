@@ -49,11 +49,9 @@ export const UnstakeInfoBox = () => {
     });
   }, [unbondingDelegations, currency]);
 
-  const totalPendingItems = BigNumber(unbondingDelegations?.length || 0)
-    .plus(hasWithdrawableAmount ? 1 : 0)
-    .toString();
+  const totalPendingItems = (unbondingDelegations?.length || 0) + (hasWithdrawableAmount ? 1 : 0);
 
-  if (totalPendingItems === "0") return null;
+  if (!totalPendingItems) return null;
 
   return (
     <AccordionInfoCard.Root>

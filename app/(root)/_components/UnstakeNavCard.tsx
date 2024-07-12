@@ -24,9 +24,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
   const fallbackTime = useFallbackTime();
 
   const hasPendingItems = unbondingDelegations?.length || hasWithdrawableAmount;
-  const totalPendingItems = BigNumber(unbondingDelegations?.length || 0)
-    .plus(hasWithdrawableAmount ? 1 : 0)
-    .toString();
+  const totalPendingItems = (unbondingDelegations?.length || 0) + (hasWithdrawableAmount ? 1 : 0);
 
   const isDisabled =
     connectionStatus !== "connected" || ((!stakedBalance || stakedBalance === "0") && !unbondingDelegations?.length);

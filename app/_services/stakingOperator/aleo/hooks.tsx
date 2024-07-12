@@ -113,7 +113,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
     tsType: "aleo",
     network,
     address,
-    filterKey: `${castedStakingType}_stake`,
+    filterKey: `${castedStakingType}_unstake`,
     offset: 0,
     limit: 999,
   }) || {};
@@ -122,13 +122,13 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
       tsType: "aleo",
       network,
       address,
-      filterKey: `${castedStakingType}_stake`,
+      filterKey: `${castedStakingType}_unstake`,
       offset: 0,
       limit: totalEntries || 999,
     }) || {};
 
   const inProgressUnbondingEntries = formattedEntries?.filter((entry) => entry.inProgress) || [];
-  const unbondingEntries = formattedEntries?.filter((entry) => !entry.inProgress && !!entry.completionTime) || [];
+  const unbondingEntries = formattedEntries?.filter((entry) => entry.status === "UNDELEGATE_IN_PROGRESS") || [];
 
   return {
     data: [...inProgressUnbondingEntries, ...unbondingEntries],

@@ -319,6 +319,7 @@ export type ActivityItem = {
   completionTime?: number;
   txHash: string;
   inProgress?: boolean;
+  status: string;
   result?: "success" | "failed";
 };
 
