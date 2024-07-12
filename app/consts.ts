@@ -434,7 +434,7 @@ export const unstakingPeriodByNetwork: Record<Network, string> = {
   celestiatestnet3: "21 days",
   cosmoshub: "21 days",
   cosmoshubtestnet: "21 days",
-  aleo: "in 1 hour",
+  aleo: "1 hour",
 };
 
 export const rewardsFrequencyByNetwork: Record<Network, string> = {
