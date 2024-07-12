@@ -8,15 +8,17 @@ import Tooltip from "@/app/_components/Tooltip";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
+import { useDialog } from "@/app/_contexts/UIContext";
 import { useUnbondingDelegations, useWithdrawableAmount } from "../../../_services/stakingOperator/hooks";
 import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
-  const { currency, coinPrice, network, stakingType } = useShell();
+  const { currency, coinPrice, network } = useShell();
 
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
   const { data: withdrawableData } = useWithdrawableAmount() || {};
+  const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
   const { withdrawableAmount } = withdrawableData || {};
   const hasWithdrawableAmount = !!withdrawableAmount && withdrawableAmount !== "0";
@@ -102,7 +104,9 @@ export const UnstakeInfoBox = () => {
             {!!hasWithdrawableAmount && (
               <AccordionInfoCard.StackItem>
                 <InfoCard.TitleBox>
-                  <button className={S.withdrawButton}>Withdraw</button>
+                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
+                    Withdraw
+                  </button>
                 </InfoCard.TitleBox>
                 <InfoCard.Content>{formattedWithdrawableAmount}</InfoCard.Content>
               </AccordionInfoCard.StackItem>

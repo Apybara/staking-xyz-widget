@@ -1,7 +1,7 @@
 import type { AleoNetwork, Network, StakingType } from "../../../types";
 import type * as T from "../types";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
+import { networkDefaultStakingType, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import { getIsAleoNetwork, getCoinValueFromDenom, getMicroCreditsToCredits } from "../../aleo/utils";
 import {
   getAddressActivity,
@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { getCalculatedRewards, getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
 import { fromUnixTime } from "date-fns";
+import { useShell } from "@/app/_contexts/ShellContext";
 
 export const useAleoAddressActivity = ({
   network,
@@ -101,6 +102,9 @@ export const useAleoAddressActivity = ({
 };
 
 export const useAleoUnbondingDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+  const { stakingType } = useShell();
+  const castedStakingType = (stakingType || networkDefaultStakingType["aleo"]) as StakingType;
+
   const {
     totalEntries,
     isLoading: initialIsLoading,
@@ -109,7 +113,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
     tsType: "aleo",
     network,
     address,
-    filterKey: "unstake",
+    filterKey: `${castedStakingType}_stake`,
     offset: 0,
     limit: 999,
   }) || {};
@@ -118,7 +122,7 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
       tsType: "aleo",
       network,
       address,
-      filterKey: "unstake",
+      filterKey: `${castedStakingType}_stake`,
       offset: 0,
       limit: totalEntries || 999,
     }) || {};
