@@ -9,7 +9,7 @@ import { stakingOperatorUrlByNetwork } from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
-import { getOperatorValidator, setMonitorTx } from "../stakingOperator/aleo";
+import { getOperatorResponseQuery, setMonitorTx } from "../stakingOperator/aleo";
 import {
   useIsLeoWalletInstalled,
   useLeoWalletStates,
@@ -94,6 +94,7 @@ const useAleoBroadcastTx = ({
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
+  const operatorResponseQuery = getOperatorResponseQuery({ type });
 
   const { error, mutate, reset } = useMutation({
     mutationKey: ["aleoTx", type, amount, wallet, network, address],
@@ -104,19 +105,24 @@ const useAleoBroadcastTx = ({
 
       onPreparing?.();
 
-      const { validatorAddress, uuid } = await getOperatorValidator({
+      const { validatorAddress, uuid } = await operatorResponseQuery({
         apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
         address,
         amount,
         stakingOption: stakingType,
       });
-      if (!validatorAddress || !uuid) {
-        throw new Error("Failed to broadcast transaction: missing validatorAddress or uuid");
+      if (!uuid) {
+        throw new Error("Failed to broadcast transaction: missing uuid");
       }
 
       onLoading?.();
       // TODO: use dynamic chainId
-      const txId = await txMethodByWallet({ amount, validatorAddress, address, chainId: "aleo" });
+      const txId = await txMethodByWallet({
+        amount,
+        validatorAddress: validatorAddress || "",
+        address,
+        chainId: "aleo",
+      });
 
       onBroadcasting?.();
 

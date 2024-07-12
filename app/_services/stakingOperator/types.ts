@@ -15,8 +15,11 @@ export type OperatorMessageResponse = {
   uuid: string;
 };
 
-export type OperatorDelegateResponse = {
+export type OperatorValidatorResponse = {
   validator: string;
+  uuid: string;
+};
+export type OperatorUUIDResponse = {
   uuid: string;
 };
 

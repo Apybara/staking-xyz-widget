@@ -1,4 +1,6 @@
 import type * as T from "../types";
+import type { TxProcedureType } from "../../txProcedure/types";
+import { getCreditsToMicroCredits } from "../../aleo/utils";
 import { fetchData } from "@/app/_utils/fetch";
 
 export const getAddressActivity = async ({
@@ -48,21 +50,45 @@ export const getValidatorDetails = async ({ apiUrl, address }: T.BaseParams) => 
   return res.response;
 };
 
+export const getOperatorResponseQuery = ({ type }: { type: TxProcedureType }) => {
+  if (type === "claim") return getOperatorUUID;
+  return getOperatorValidator;
+};
+
 export const getOperatorValidator = async ({
   apiUrl,
   address,
   amount,
   stakingOption,
 }: { amount: string; stakingOption: T.DelegateStakingOption } & T.BaseParams) => {
-  const res: T.OperatorDelegateResponse = await fetchData(apiUrl, {
+  const formattedAmount = getCreditsToMicroCredits(amount).toString();
+  const res: T.OperatorValidatorResponse = await fetchData(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ address, amount, stakingOption }),
+    body: JSON.stringify({ address, amount: formattedAmount, stakingOption }),
   });
   return {
     validatorAddress: res.validator,
+    uuid: res.uuid,
+  };
+};
+
+export const getOperatorUUID = async ({
+  apiUrl,
+  address,
+  stakingOption,
+}: { stakingOption: T.DelegateStakingOption } & T.BaseParams) => {
+  const res: T.OperatorUUIDResponse = await fetchData(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ address, stakingOption }),
+  });
+  return {
+    validatorAddress: null,
     uuid: res.uuid,
   };
 };
