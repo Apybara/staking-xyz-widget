@@ -12,7 +12,6 @@ import {
   getNetworkStatus,
   getServerStatus,
   getValidatorDetails,
-  getWithdrawableAmount,
 } from ".";
 import { useEffect, useState } from "react";
 import { getCalculatedRewards, getLastOffset } from "../utils";
@@ -134,30 +133,6 @@ export const useAleoUnbondingDelegations = ({ address, network }: { address?: st
     data: [...inProgressUnbondingEntries, ...unbondingEntries],
     isLoading: initialIsLoading || isLoading,
     error: initialIsError || error,
-  };
-};
-
-export const useAleoWithdrawableAmount = ({ address, network }: { address?: string; network: Network | null }) => {
-  const isAleoNetwork = getIsAleoNetwork(network || "");
-  const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
-
-  const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && !!isAleoNetwork,
-    queryKey: ["aleoWithdrawableAmount", address, network],
-    queryFn: () =>
-      getWithdrawableAmount({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
-    refetchOnWindowFocus: true,
-  });
-
-  return {
-    data,
-    withdrawableAmount: getCoinValueFromDenom({
-      network: castedNetwork,
-      amount: data?.["withdrawable-amount"]?.result?.toString(),
-    }),
-    isLoading,
-    error,
-    refetch,
   };
 };
 

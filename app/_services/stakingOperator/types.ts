@@ -265,16 +265,6 @@ export type DelegationResponseItem = {
   };
 };
 
-export type WithdrawableAmountResponse = {
-  address: string;
-  message: string;
-  "withdrawable-amount": {
-    id: number;
-    jsonrpc: string;
-    result: string;
-  };
-};
-
 export type AddressActivityResponse = CommonEntriesResponse<
   AddressActivityPaginationParams & { address: string },
   ActivityItem
@@ -317,7 +307,7 @@ export type AleoAddressActivityPaginationParams = {
 
 export type ActivityItem = {
   id: string;
-  type: "stake" | "unstake" | "rewards" | "redelegate" | "withdraw";
+  type: "stake" | "unstake" | "rewards" | "redelegate" | "claim";
   amount: number;
   rewardRate: number;
   timestamp: number;

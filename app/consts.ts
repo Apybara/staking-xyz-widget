@@ -463,6 +463,9 @@ export const serverUrlByNetwork: Record<Network, string> = {
   aleo: process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET || "",
 };
 
+// TODO: use dynamic Aleo network
+export const aleoRestUrl = "https://api.explorer.aleo.org/v1/testnet/";
+
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking.";
 export const SITE_URL = "https://staking.xyz";
