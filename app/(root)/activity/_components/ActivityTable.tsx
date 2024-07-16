@@ -149,7 +149,7 @@ const useTabs = ({
         onClick: () => setFilterKey("unstake"),
       },
       {
-        children: "Withdraw",
+        children: "Claim",
         state: filterKey === "claim" ? "highlighted" : "default",
         onClick: () => setFilterKey("claim"),
       },
@@ -191,5 +191,5 @@ const titleKey = {
   unstake: "Unstake",
   rewards: "Claim",
   redelegate: "Import",
-  claim: "Withdraw",
+  claim: "Claim",
 };

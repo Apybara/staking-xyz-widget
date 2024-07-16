@@ -39,7 +39,7 @@ export const unstakingStatus = style({
   gap: pxToRem(4),
 });
 
-export const withdrawableStatus = style({
+export const claimableStatus = style({
   display: "block",
   blockSize: pxToRem(6),
   inlineSize: pxToRem(6),
@@ -47,7 +47,7 @@ export const withdrawableStatus = style({
   backgroundColor: colors.yellow900,
 });
 
-export const withdrawableTooltip = style({
+export const claimableTooltip = style({
   maxInlineSize: pxToRem(170),
   padding: pxToRem(16),
   backgroundColor: colors.yellow100,
@@ -56,7 +56,7 @@ export const withdrawableTooltip = style({
   textAlign: "center",
 });
 
-export const withdrawButton = style({
+export const claimButton = style({
   backgroundColor: colors.yellow100,
   border: 0,
   borderRadius: pxToRem(4),

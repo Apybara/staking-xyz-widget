@@ -20,7 +20,7 @@ export const UnstakingProcedureDialog = () => {
   return (
     <>
       <TxProcedureDialog data={unstakingData} type="unstake" dialog="unstakingProcedure" />
-      <TxProcedureDialog title="Steps to withdraw" data={claimingData} type="claim" dialog="claimingProcedure" />
+      <TxProcedureDialog data={claimingData} type="claim" dialog="claimingProcedure" />
     </>
   );
 };
