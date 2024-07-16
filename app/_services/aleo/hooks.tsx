@@ -50,7 +50,7 @@ export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: 
 
   return {
     amount: getMicroCreditsToCredits(data.amount).toString(),
-    isWithdrawable: data.isWithdrawable,
+    isClaimable: data.isClaimable,
     completionTime: data.completionTime,
     isLoading,
     error,

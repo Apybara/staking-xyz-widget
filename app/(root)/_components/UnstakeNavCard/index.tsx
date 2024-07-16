@@ -57,18 +57,18 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
       });
 
       return {
-        title: !aleoUnstakeStatus?.isWithdrawable ? (
+        title: !aleoUnstakeStatus?.isClaimable ? (
           <NavCard.SecondaryText>Pending {totalPendingItems}</NavCard.SecondaryText>
         ) : (
           <Tooltip
-            className={S.withdrawableTooltip}
+            className={S.claimableTooltip}
             trigger={
-              <NavCard.SecondaryText className={S.withdrawableText}>Pending {totalPendingItems}</NavCard.SecondaryText>
+              <NavCard.SecondaryText className={S.claimableText}>Pending {totalPendingItems}</NavCard.SecondaryText>
             }
-            content={`You can withdraw ${aleoUnbondingAmount} now!`}
+            content={`You can claim ${aleoUnbondingAmount} now!`}
           />
         ),
-        value: !aleoUnstakeStatus?.isWithdrawable && (
+        value: !aleoUnstakeStatus?.isClaimable && (
           <NavCard.PrimaryText>
             {times?.time || fallbackTime.time}{" "}
             <NavCard.SecondaryText>{times?.unit || fallbackTime.unit} left</NavCard.SecondaryText>

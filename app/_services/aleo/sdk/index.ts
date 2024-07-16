@@ -8,13 +8,13 @@ export const getAleoAddressUnbondingStatus = async ({ apiUrl, address }: { apiUr
   if (!unbondingPosition || !unbondingPosition.microCredits) return null;
 
   const amount = unbondingPosition.microCredits;
-  const isWithdrawable = latestBlockHeight >= unbondingPosition.height;
-  const estWaitTimeInSecs = isWithdrawable ? undefined : (unbondingPosition.height - latestBlockHeight) * 5;
+  const isClaimable = latestBlockHeight >= unbondingPosition.height;
+  const estWaitTimeInSecs = isClaimable ? undefined : (unbondingPosition.height - latestBlockHeight) * 5;
   const estCompletionTimestamp = !estWaitTimeInSecs ? undefined : new Date(Date.now() + estWaitTimeInSecs * 1000);
 
   return {
     amount,
-    isWithdrawable,
+    isClaimable,
     completionTime: getTimeDiffInSingleUnits(estCompletionTimestamp),
   };
 };

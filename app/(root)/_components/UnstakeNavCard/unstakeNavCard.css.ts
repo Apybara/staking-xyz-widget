@@ -2,7 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { colors } from "../../../../theme/theme.css";
 import { pxToRem } from "../../../../theme/utils";
 
-export const withdrawableTooltip = style({
+export const claimableTooltip = style({
   maxInlineSize: pxToRem(170),
   padding: pxToRem(16),
   backgroundColor: `${colors.yellow100} !important`,
@@ -11,7 +11,7 @@ export const withdrawableTooltip = style({
   textAlign: "center",
 });
 
-export const withdrawableText = style({
+export const claimableText = style({
   position: "relative",
 
   selectors: {
