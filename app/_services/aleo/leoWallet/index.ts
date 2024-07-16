@@ -105,7 +105,7 @@ export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo" }: T
       aleoNetworkIdByWallet[chainId].leoWallet,
       "credits.aleo",
       "claim_unbond_public",
-      [],
+      [address],
       167_230,
       false,
     );

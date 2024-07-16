@@ -6,16 +6,17 @@ import { ClaimingStates } from "./types";
 import { useAleoTxProcedures } from "../aleo/hooks";
 
 export const useClaimingProcedures = ({
+  amount,
   address,
   network,
   wallet,
 }: {
+  amount?: string;
   address: string | null;
   network: Network;
   wallet: WalletType | null;
 }): ClaimingStates => {
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
-  const claimState = useProcedureStates();
   const { signState, signStep } = useTxProcedureStates();
 
   const { baseProcedures: cosmosBaseProcedures } =
@@ -29,6 +30,7 @@ export const useClaimingProcedures = ({
 
   const { baseProcedures: aleoBaseProcedures } =
     useAleoTxProcedures({
+      amount,
       network,
       wallet,
       address,
@@ -38,28 +40,28 @@ export const useClaimingProcedures = ({
 
   const updateStates = () => {
     if (cosmosBaseProcedures?.length) {
-      claimState.setState("active");
-      claimState.setTxHash(undefined);
-      claimState.setError(null);
+      signState.setState("active");
+      signState.setTxHash(undefined);
+      signState.setError(null);
     }
     if (aleoBaseProcedures?.length) {
-      claimState.setState("active");
-      claimState.setTxHash(undefined);
-      claimState.setError(null);
+      signState.setState("active");
+      signState.setTxHash(undefined);
+      signState.setError(null);
     }
   };
 
   useEffect(() => {
     if (!address) {
       setProcedures(undefined);
-      claimState.setState(null);
-      claimState.setTxHash(undefined);
-      claimState.setError(null);
+      signState.setState(null);
+      signState.setTxHash(undefined);
+      signState.setError(null);
     }
   }, [address]);
 
   useEffect(() => {
-    if (cosmosBaseProcedures?.length && claimState.state === null) {
+    if (cosmosBaseProcedures?.length && signState.state === null) {
       updateStates();
     }
   }, [cosmosBaseProcedures?.length]);
@@ -71,10 +73,10 @@ export const useClaimingProcedures = ({
           if (procedure.step === "sign") {
             return {
               ...procedure,
-              state: claimState.state,
-              txHash: claimState.txHash,
-              error: claimState.error,
-              setState: claimState.setState,
+              state: signState.state,
+              txHash: signState.txHash,
+              error: signState.error,
+              setState: signState.setState,
             };
           }
         })
@@ -93,7 +95,7 @@ export const useClaimingProcedures = ({
         },
       ]);
     }
-  }, [cosmosBaseProcedures?.length, aleoBaseProcedures?.length, claimState.state, claimState.txHash, claimState.error]);
+  }, [cosmosBaseProcedures?.length, aleoBaseProcedures?.length, signState.state, signState.txHash, signState.error]);
 
   return {
     procedures,

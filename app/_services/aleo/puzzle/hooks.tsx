@@ -40,9 +40,9 @@ export const usePuzzleUnstake = () => {
 };
 
 export const usePuzzleWithdraw = () => {
-  return async ({ chainId }: T.PuzzleWithdrawProps) => {
+  return async ({ address, chainId }: T.PuzzleWithdrawProps) => {
     try {
-      return await puzzleWithdraw({ chainId });
+      return await puzzleWithdraw({ address, chainId });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Withdraw fails");
       throw err;

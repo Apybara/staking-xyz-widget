@@ -23,14 +23,14 @@ export const Shell = ({ dialog, children }: ShellProps) => {
   );
 };
 
-export const TopBox = ({ type }: TopBoxProps) => {
+export const TopBox = ({ title, type }: TopBoxProps) => {
   return (
     <div className={cn(S.topBox)}>
       <div className={cn(S.icons)}>
         <Icon name="circleCheck" size={40} />
         <Image src={iconMap[type]} width={40} height={40} alt="Assistive visual" />
       </div>
-      <h2 className={cn(S.title)}>{titleMap[type]}</h2>
+      <h2 className={cn(S.title)}>{title || titleMap[type]}</h2>
     </div>
   );
 };
@@ -143,6 +143,7 @@ export type ShellProps = {
   children: ReactNode;
 };
 export type TopBoxProps = {
+  title?: string;
   type: TxType;
 };
 export type StepItemProps = {

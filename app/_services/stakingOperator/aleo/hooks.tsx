@@ -150,9 +150,11 @@ export const useAleoWithdrawableAmount = ({ address, network }: { address?: stri
   });
 
   return {
-    data: {
-      withdrawableAmount: getCoinValueFromDenom({ network: castedNetwork, amount: data?.amount?.toString() }),
-    },
+    data,
+    withdrawableAmount: getCoinValueFromDenom({
+      network: castedNetwork,
+      amount: data?.["withdrawable-amount"]?.result?.toString(),
+    }),
     isLoading,
     error,
     refetch,

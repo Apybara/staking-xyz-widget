@@ -17,10 +17,9 @@ export const UnstakeInfoBox = () => {
   const { currency, coinPrice, network } = useShell();
 
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
-  const { data: withdrawableData } = useWithdrawableAmount() || {};
+  const { withdrawableAmount } = useWithdrawableAmount() || {};
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
-  const { withdrawableAmount } = withdrawableData || {};
   const hasWithdrawableAmount = !!withdrawableAmount && withdrawableAmount !== "0";
   const formattedWithdrawableAmount = getDynamicAssetValueFromCoin({
     currency,

@@ -266,7 +266,13 @@ export type DelegationResponseItem = {
 };
 
 export type WithdrawableAmountResponse = {
-  amount: string;
+  address: string;
+  message: string;
+  "withdrawable-amount": {
+    id: number;
+    jsonrpc: string;
+    result: string;
+  };
 };
 
 export type AddressActivityResponse = CommonEntriesResponse<

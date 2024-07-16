@@ -11,15 +11,13 @@ import * as NavCard from "../_components/NavCard";
 import { Skeleton } from "../../_components/Skeleton";
 import { getTimeUnitStrings } from "../../_utils/time";
 import { unstakingPeriodByNetwork, defaultNetwork } from "../../consts";
-import BigNumber from "bignumber.js";
 
 export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
   const { connectionStatus } = useWallet();
   const { stakedBalance } = useStakedBalance() || {};
   const { data: unbondingDelegations, isLoading } = useUnbondingDelegations() || {};
-  const { data: withdrawableData } = useWithdrawableAmount() || {};
+  const { withdrawableAmount } = useWithdrawableAmount() || {};
 
-  const { withdrawableAmount } = withdrawableData || {};
   const hasWithdrawableAmount = !!withdrawableAmount && withdrawableAmount !== "0";
   const fallbackTime = useFallbackTime();
 

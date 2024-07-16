@@ -77,7 +77,7 @@ export const puzzleUnstake = async ({ address, amount, chainId = "aleo" }: T.Puz
   }
 };
 
-export const puzzleWithdraw = async ({ chainId = "aleo" }: T.PuzzleWithdrawProps) => {
+export const puzzleWithdraw = async ({ address, chainId = "aleo" }: T.PuzzleWithdrawProps) => {
   try {
     const { eventId, error } = await requestCreateEvent(
       {
@@ -85,7 +85,7 @@ export const puzzleWithdraw = async ({ chainId = "aleo" }: T.PuzzleWithdrawProps
         programId: "credits.aleo",
         functionId: "claim_unbond_public",
         fee: 0.16723,
-        inputs: [],
+        inputs: [address],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
     );

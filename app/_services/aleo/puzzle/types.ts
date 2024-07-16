@@ -9,4 +9,4 @@ export type PuzzleStakeProps = AleoStakeProps;
 
 export type PuzzleUnstakeProps = AleoUnstakeProps;
 
-export type PuzzleWithdrawProps = Omit<AleoWithdrawProps, "address">;
+export type PuzzleWithdrawProps = AleoWithdrawProps;
