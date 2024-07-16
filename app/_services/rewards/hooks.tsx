@@ -6,12 +6,10 @@ import { ClaimingStates } from "./types";
 import { useAleoTxProcedures } from "../aleo/hooks";
 
 export const useClaimingProcedures = ({
-  amount,
   address,
   network,
   wallet,
 }: {
-  amount?: string;
   address: string | null;
   network: Network;
   wallet: WalletType | null;
@@ -30,7 +28,6 @@ export const useClaimingProcedures = ({
 
   const { baseProcedures: aleoBaseProcedures } =
     useAleoTxProcedures({
-      amount,
       network,
       wallet,
       address,

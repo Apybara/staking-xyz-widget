@@ -4,7 +4,6 @@ import type { TabButtonProps } from "../../../_components/TabButton";
 import type {
   ActivityItem,
   AddressActivityPaginationParams,
-  AleoAddressActivityPaginationParams,
   StandardAddressActivityPaginationParams,
 } from "../../../_services/stakingOperator/types";
 import BigNumber from "bignumber.js";
@@ -192,5 +191,5 @@ const titleKey = {
   unstake: "Unstake",
   rewards: "Claim",
   redelegate: "Import",
-  withdraw: "Withdraw",
+  claim: "Withdraw",
 };

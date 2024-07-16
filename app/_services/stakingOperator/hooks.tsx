@@ -1,4 +1,4 @@
-import type { Network, StakingType } from "../../types";
+import type { Network } from "../../types";
 import * as T from "./types";
 import { useEffect, useState } from "react";
 import { useShell } from "../../_contexts/ShellContext";
@@ -19,10 +19,13 @@ export const useUnbondingDelegations = () => {
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
   });
-  const aleoData = aleo.useAleoUnbondingDelegations({
-    network,
-    address: address && getIsAleoNetwork(network) ? address : undefined,
-  });
+  // Note:
+  // Aleo's unbonding item is uniquely using `useAleoAddressUnbondingStatus` hook in "_services/aleo/hooks".
+  // Unsure if liquid staking will identically use the same hook at the moment.
+  // const aleoData = aleo.useAleoUnbondingDelegations({
+  //   network,
+  //   address: address && getIsAleoNetwork(network) ? address : undefined,
+  // });
 
   switch (network) {
     case "celestia":
@@ -32,7 +35,7 @@ export const useUnbondingDelegations = () => {
     case "cosmoshubtestnet":
       return cosmoshub;
     case "aleo":
-      return aleoData;
+      return undefined;
     default:
       return undefined;
   }
@@ -85,28 +88,6 @@ export const useStakedBalance = () => {
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshubData;
-    case "aleo":
-      return aleoData;
-    default:
-      return undefined;
-  }
-};
-
-export const useWithdrawableAmount = () => {
-  const { network } = useShell();
-  const { address } = useWallet();
-
-  const aleoData = aleo.useAleoWithdrawableAmount({
-    network,
-    address: address && getIsAleoNetwork(network) ? address : undefined,
-  });
-
-  switch (network) {
-    case "celestia":
-    case "celestiatestnet3":
-    case "cosmoshub":
-    case "cosmoshubtestnet":
-      return undefined;
     case "aleo":
       return aleoData;
     default:

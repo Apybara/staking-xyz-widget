@@ -3,78 +3,97 @@ import { useMemo } from "react";
 import cn from "classnames";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
+import { useWallet } from "../../../_contexts/WalletContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import Tooltip from "@/app/_components/Tooltip";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { useDialog } from "@/app/_contexts/UIContext";
-import { useUnbondingDelegations, useWithdrawableAmount } from "../../../_services/stakingOperator/hooks";
+import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
+import { useUnbondingDelegations } from "../../../_services/stakingOperator/hooks";
 import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
+  const { address } = useWallet();
   const { currency, coinPrice, network } = useShell();
-
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
-  const { withdrawableAmount } = useWithdrawableAmount() || {};
+  const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
+    address: address || undefined,
+    network,
+  });
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
-  const hasWithdrawableAmount = !!withdrawableAmount && withdrawableAmount !== "0";
-  const formattedWithdrawableAmount = getDynamicAssetValueFromCoin({
-    currency,
-    coinPrice,
-    network,
-    coinVal: withdrawableAmount,
-  });
-
+  const hasPendingItems = unbondingDelegations?.length || aleoUnstakeStatus !== null;
+  const totalPendingItems = aleoUnstakeStatus !== null ? 1 : unbondingDelegations?.length || 0;
   const totalPendingAmount = useMemo(() => {
-    if (!unbondingDelegations?.length) return undefined;
+    if (!hasPendingItems) return undefined;
 
     const sumDenom =
+      aleoUnstakeStatus?.amount ||
       unbondingDelegations
         ?.reduce((acc, { amount }) => {
           return acc.plus(amount);
         }, BigNumber(0))
-        .toString() || "0";
+        .toString() ||
+      "0";
 
     return getDynamicAssetValueFromCoin({
       currency,
       coinPrice,
       network,
-      coinVal: BigNumber(sumDenom)
-        .plus(withdrawableAmount || 0)
-        .toString(),
+      coinVal: sumDenom,
     });
-  }, [unbondingDelegations, currency]);
+  }, [unbondingDelegations, currency, hasPendingItems]);
 
-  const totalPendingItems = (unbondingDelegations?.length || 0) + (hasWithdrawableAmount ? 1 : 0);
+  if (!hasPendingItems) return null;
 
-  if (!totalPendingItems) return null;
+  if (aleoUnstakeStatus !== null) {
+    const aleoUnbondingAmount = getDynamicAssetValueFromCoin({
+      currency,
+      coinPrice,
+      network,
+      coinVal: aleoUnstakeStatus.amount,
+    });
+    const times = aleoUnstakeStatus.completionTime && getTimeUnitStrings(aleoUnstakeStatus.completionTime);
+
+    return (
+      <InfoCard.Card>
+        <InfoCard.StackItem>
+          <InfoCard.TitleBox>
+            {aleoUnstakeStatus.isWithdrawable ? (
+              <Tooltip
+                className={S.withdrawableTooltip}
+                trigger={
+                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
+                    Withdraw
+                  </button>
+                }
+                content={`You can withdraw ${aleoUnbondingAmount} now!`}
+              />
+            ) : (
+              <p className={cn(S.remainingDays)}>
+                {times
+                  ? `${times.time} ${times?.unit} left`
+                  : `${unstakingPeriodByNetwork[network || defaultNetwork]} left`}
+              </p>
+            )}
+          </InfoCard.TitleBox>
+          <InfoCard.Content>{aleoUnbondingAmount}</InfoCard.Content>
+        </InfoCard.StackItem>
+      </InfoCard.Card>
+    );
+  }
 
   return (
     <AccordionInfoCard.Root>
       <AccordionInfoCard.Item value="unbonding-delegations">
         <AccordionInfoCard.Trigger>
           <div className={cn(S.triggerTexts)}>
-            {hasWithdrawableAmount ? (
-              <Tooltip
-                className={S.withdrawableTooltip}
-                trigger={
-                  <div className={S.unstakingStatus}>
-                    <p className={cn(S.triggerProgressText)}>
-                      Pending <span className={cn(S.triggerCountText)}>{totalPendingItems}</span>
-                    </p>
-                    <span className={S.withdrawableStatus}></span>
-                  </div>
-                }
-                content={`You can withdraw ${formattedWithdrawableAmount} now!`}
-              />
-            ) : (
-              <p className={cn(S.triggerProgressText)}>
-                Pending <span className={cn(S.triggerCountText)}>{totalPendingItems}</span>
-              </p>
-            )}
+            <p className={cn(S.triggerProgressText)}>
+              Pending <span className={cn(S.triggerCountText)}>{totalPendingItems}</span>
+            </p>
             <span className={cn(S.triggerAmountText)}>{totalPendingAmount}</span>
           </div>
         </AccordionInfoCard.Trigger>
@@ -98,16 +117,6 @@ export const UnstakeInfoBox = () => {
                 </AccordionInfoCard.StackItem>
               );
             })}
-            {!!hasWithdrawableAmount && (
-              <AccordionInfoCard.StackItem>
-                <InfoCard.TitleBox>
-                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
-                    Withdraw
-                  </button>
-                </InfoCard.TitleBox>
-                <InfoCard.Content>{formattedWithdrawableAmount}</InfoCard.Content>
-              </AccordionInfoCard.StackItem>
-            )}
           </AccordionInfoCard.Stack>
         </AccordionInfoCard.Content>
       </AccordionInfoCard.Item>

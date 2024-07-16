@@ -9,8 +9,8 @@ import * as S from "./navCard.css";
 export const PrimaryText = ({ children }: { children: ReactNode }) => {
   return <span className={cn(S.primaryText)}>{children}</span>;
 };
-export const SecondaryText = ({ children }: { children: ReactNode }) => {
-  return <span className={cn(S.secondaryText)}>{children}</span>;
+export const SecondaryText = ({ children, className }: { children: ReactNode; className?: string }) => {
+  return <span className={cn(S.secondaryText, className)}>{children}</span>;
 };
 export const ValueTextBox = ({ children }: { children: ReactNode }) => {
   return <div className={cn(S.valueTextBox)}>{children}</div>;

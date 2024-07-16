@@ -19,12 +19,6 @@ export const getAddressActivity = async ({
   return res;
 };
 
-export const getWithdrawableAmount = async ({ apiUrl, address }: T.BaseParams) => {
-  const res: T.WithdrawableAmountResponse = await fetchData(`${apiUrl}address/${address}/withdrawable-amount`);
-
-  return res;
-};
-
 export const getServerStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
   const res: T.ServerStatusResponse = await fetchData(`${apiUrl}status`);
   return res;
