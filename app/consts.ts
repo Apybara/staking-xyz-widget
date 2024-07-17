@@ -352,7 +352,7 @@ export const requiredBalanceStakingByNetwork: Record<Network, number> = {
     process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_STAKING &&
     !isNaN(Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_STAKING))
       ? Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_STAKING)
-      : 0.1,
+      : 1,
 };
 
 export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
@@ -380,7 +380,7 @@ export const requiredBalanceUnstakingByNetwork: Record<Network, number> = {
     process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_UNSTAKING &&
     !isNaN(Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_UNSTAKING))
       ? Number(process.env.NEXT_PUBLIC_ALEO_REQUIRED_BALANCE_UNSTAKING)
-      : 0.1,
+      : 1,
 };
 
 export const minInitialStakingAmountByNetwork: Record<Network, Record<StakingType, number | null>> = {
