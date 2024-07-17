@@ -53,7 +53,7 @@ export const puzzleStake = async ({ amount, validatorAddress, address, chainId =
   }
 };
 
-export const puzzleUnstake = async ({ amount, chainId = "aleo" }: T.PuzzleUnstakeProps) => {
+export const puzzleUnstake = async ({ address, amount, chainId = "aleo" }: T.PuzzleUnstakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
 
   try {
@@ -63,7 +63,7 @@ export const puzzleUnstake = async ({ amount, chainId = "aleo" }: T.PuzzleUnstak
         programId: "credits.aleo",
         functionId: "unbond_public",
         fee: 1.233777,
-        inputs: [transactionAmount],
+        inputs: [address, transactionAmount],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
     );
@@ -77,7 +77,7 @@ export const puzzleUnstake = async ({ amount, chainId = "aleo" }: T.PuzzleUnstak
   }
 };
 
-export const puzzleWithdraw = async ({ chainId = "aleo" }: T.PuzzleWithdrawProps) => {
+export const puzzleWithdraw = async ({ address, chainId = "aleo" }: T.PuzzleWithdrawProps) => {
   try {
     const { eventId, error } = await requestCreateEvent(
       {
@@ -85,7 +85,7 @@ export const puzzleWithdraw = async ({ chainId = "aleo" }: T.PuzzleWithdrawProps
         programId: "credits.aleo",
         functionId: "claim_unbond_public",
         fee: 0.16723,
-        inputs: [],
+        inputs: [address],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
     );

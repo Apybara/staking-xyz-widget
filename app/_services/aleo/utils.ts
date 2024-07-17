@@ -1,6 +1,8 @@
 import type { AleoNetwork, AleoWalletType } from "@/app/types";
 import BigNumber from "bignumber.js";
-import { aleoNetworkVariants, aleoWalletVariants } from "@/app/consts";
+import { aleoNetworkVariants, aleoWalletVariants, networkCurrency } from "@/app/consts";
+import { assets } from "chain-registry";
+import { Asset, AssetList } from "@chain-registry/types";
 
 export const getIsAleoNetwork = (network: string | null): network is AleoNetwork => {
   return aleoNetworkVariants.includes(network as AleoNetwork);
@@ -16,6 +18,26 @@ export const getIsAleoAddressFormat = (address: string): boolean => {
   if (address.length !== 63 || !address.startsWith("aleo")) return false;
 
   return getIsBech32(address);
+}
+
+export const getCoinValueFromDenom = ({ network, amount }: { network: AleoNetwork; amount?: string | number }) => {
+  const exponent = getExponent(network);
+  return new BigNumber(amount || 0).multipliedBy(10 ** -exponent).toString();
+};
+
+export const getChainAssets = (network: AleoNetwork) => {
+  return assets.find((chain) => chain.chain_name === network) as AssetList;
+};
+
+const getExponent = (network: AleoNetwork) => {
+  const coin = getCoin(network);
+  return coin?.denom_units?.find((unit) => unit.denom === coin.display)?.exponent || 0;
+};
+
+const getCoin = (network: AleoNetwork) => {
+  const chainAssets = getChainAssets(network);
+  const denomDisplayName = networkCurrency[network].toLowerCase();
+  return chainAssets?.assets.find((asset) => asset.display === denomDisplayName) as Asset;
 };
 
 export const getMicroCreditsToCredits = (microCredits: string | number) => {

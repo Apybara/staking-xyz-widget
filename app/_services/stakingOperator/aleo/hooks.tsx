@@ -1,17 +1,140 @@
-import type { Network } from "../../../types";
-import { useQuery } from "@tanstack/react-query";
-import { serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
-import { getIsAleoNetwork, getMicroCreditsToCredits } from "../../aleo/utils";
-import { getCalculatedRewards } from "../utils";
+import type { AleoNetwork, Network, StakingType } from "../../../types";
+import type * as T from "../types";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { networkDefaultStakingType, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
+import { getIsAleoNetwork, getCoinValueFromDenom, getMicroCreditsToCredits } from "../../aleo/utils";
 import {
-  getServerStatus,
+  getAddressActivity,
   getAddressBalance,
-  getAddressStakedBalance,
-  getNetworkStatus,
   getAddressDelegation,
-  getValidatorDetails,
+  getAddressStakedBalance,
   getNetworkReward,
+  getNetworkStatus,
+  getServerStatus,
+  getValidatorDetails,
 } from ".";
+import { useEffect, useState } from "react";
+import { getCalculatedRewards, getLastOffset } from "../utils";
+import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
+import { fromUnixTime } from "date-fns";
+import { useShell } from "@/app/_contexts/ShellContext";
+
+export const useAleoAddressActivity = ({
+  network,
+  address,
+  offset,
+  limit,
+  filterKey,
+}: T.AleoAddressActivityPaginationParams & { network: Network | null; address?: string; refetchInterval?: number }) => {
+  const queryClient = useQueryClient();
+  const [hasInProgress, setHasInProgress] = useState(false);
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
+
+  const { data, error, isPlaceholderData, status, isLoading, isFetching, refetch } = useQuery<
+    T.AddressActivityResponse | null,
+    T.AddressActivityResponse
+  >({
+    enabled: !!address && !!isAleoNetwork,
+    queryKey: ["aleoAddressActivityKey", address, offset, limit, filterKey, network],
+    queryFn: () => {
+      if (!address) return Promise.resolve(null);
+      return getAddressActivity({
+        tsType: "aleo",
+        apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
+        address,
+        offset,
+        limit,
+        filterKey,
+      });
+    },
+    refetchInterval: hasInProgress ? 5000 : 180000,
+    placeholderData: keepPreviousData,
+  });
+
+  // Prefetch the next page
+  useEffect(() => {
+    if (!isPlaceholderData && data?.hasMore) {
+      const nextOffset = offset + 1;
+      queryClient.prefetchQuery({
+        queryKey: ["aleoAddressActivityKey", address, limit, filterKey, nextOffset, network],
+        queryFn: () => {
+          if (!address) return Promise.resolve(null);
+          return getAddressActivity({
+            tsType: "aleo",
+            apiUrl: stakingOperatorUrlByNetwork[castedNetwork],
+            address,
+            offset: nextOffset,
+            limit,
+            filterKey,
+          });
+        },
+      });
+    }
+  }, [queryClient, address, data?.hasMore, isPlaceholderData, limit, offset, filterKey]);
+
+  const totalEntries = data?.totalEntries || 0;
+  const lastOffset = getLastOffset({ totalEntries, limit });
+
+  useEffect(() => {
+    const hasInProgressEntry = data?.data?.entries?.some((entry) => entry.inProgress);
+    setHasInProgress(hasInProgressEntry || false);
+  }, [data?.data?.entries]);
+
+  return {
+    error,
+    isLoading: isLoading || status === "pending",
+    isFetching,
+    disableNextPage: isPlaceholderData || lastOffset === offset,
+    data: data?.data,
+    formattedEntries: data?.data?.entries?.map((entry) => ({
+      ...entry,
+      amount: getCoinValueFromDenom({ network: castedNetwork, amount: entry.amount }),
+      completionTime: entry.completionTime
+        ? getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0))
+        : undefined,
+    })),
+    totalEntries,
+    lastOffset,
+    refetch,
+  };
+};
+
+export const useAleoUnbondingDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
+  const { stakingType } = useShell();
+  const castedStakingType = (stakingType || networkDefaultStakingType["aleo"]) as StakingType;
+
+  const {
+    totalEntries,
+    isLoading: initialIsLoading,
+    error: initialIsError,
+  } = useAleoAddressActivity({
+    tsType: "aleo",
+    network,
+    address,
+    filterKey: `${castedStakingType}_unstake`,
+    offset: 0,
+    limit: 999,
+  }) || {};
+  const { formattedEntries, isLoading, error } =
+    useAleoAddressActivity({
+      tsType: "aleo",
+      network,
+      address,
+      filterKey: `${castedStakingType}_unstake`,
+      offset: 0,
+      limit: totalEntries || 999,
+    }) || {};
+
+  const inProgressUnbondingEntries = formattedEntries?.filter((entry) => entry.inProgress) || [];
+  const unbondingEntries = formattedEntries?.filter((entry) => entry.status === "UNDELEGATE_IN_PROGRESS") || [];
+
+  return {
+    data: [...inProgressUnbondingEntries, ...unbondingEntries],
+    isLoading: initialIsLoading || isLoading,
+    error: initialIsError || error,
+  };
+};
 
 export const useAleoServerStatus = ({ network }: { network: Network | null }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({

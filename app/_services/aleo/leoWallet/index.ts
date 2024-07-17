@@ -86,10 +86,11 @@ export const leoWalletUnstake = async ({ amount, wallet, address, chainId = "ale
       aleoNetworkIdByWallet[chainId].leoWallet,
       "credits.aleo",
       "unbond_public",
-      [transactionAmount],
+      [address, transactionAmount],
       1_233_777,
       false,
     );
+
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
   } catch (error) {
     console.error(error);
@@ -104,7 +105,7 @@ export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo" }: T
       aleoNetworkIdByWallet[chainId].leoWallet,
       "credits.aleo",
       "claim_unbond_public",
-      [],
+      [address],
       167_230,
       false,
     );

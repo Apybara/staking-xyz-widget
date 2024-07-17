@@ -1,15 +1,16 @@
 import type { WalletStates } from "../../_contexts/WalletContext/types";
-import type { AleoWalletType, AleoNetwork, StakingType } from "../../types";
+import type { AleoWalletType, AleoNetwork, Network, StakingType } from "../../types";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
 import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import { useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import { stakingOperatorUrlByNetwork } from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
-import { getOperatorValidator, setMonitorTx } from "../stakingOperator/aleo";
+import { getOperatorResponseQuery, setMonitorTx } from "../stakingOperator/aleo";
+import { getAleoAddressUnbondingStatus } from "./sdk";
 import {
   useIsLeoWalletInstalled,
   useLeoWalletStates,
@@ -30,7 +31,31 @@ import {
   usePuzzleUnstake,
   usePuzzleWithdraw,
 } from "./puzzle/hooks";
-import { getMicroCreditsToCredits, getIsAleoNetwork, getIsAleoWalletType } from "./utils";
+import { getIsAleoAddressFormat, getMicroCreditsToCredits, getIsAleoNetwork, getIsAleoWalletType } from "./utils";
+import { aleoRestUrl } from "@/app/consts";
+
+export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
+
+  const { data, error, isLoading } = useQuery({
+    enabled: !!address && isAleoNetwork && isAleoAddressFormat,
+    queryKey: ["aleoAddressUnbondingStatus", address, network],
+    queryFn: () => getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "" }),
+    refetchInterval: 30000,
+    refetchOnWindowFocus: true,
+  });
+
+  if (!address || !data) return null;
+
+  return {
+    amount: getMicroCreditsToCredits(data.amount).toString(),
+    isClaimable: data.isClaimable,
+    completionTime: data.completionTime,
+    isLoading,
+    error,
+  };
+};
 
 export const useAleoTxProcedures = ({
   amount,
@@ -79,7 +104,7 @@ export const useAleoTxProcedures = ({
 const useAleoBroadcastTx = ({
   type,
   stakingType = "native",
-  amount,
+  amount = "",
   network,
   wallet,
   address,
@@ -94,29 +119,35 @@ const useAleoBroadcastTx = ({
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
+  const operatorResponseQuery = getOperatorResponseQuery({ type });
 
   const { error, mutate, reset } = useMutation({
     mutationKey: ["aleoTx", type, amount, wallet, network, address],
     mutationFn: async () => {
-      if (!address || !amount || !txMethodByWallet) {
-        throw new Error("Failed to broadcast transaction: missing address, amount, or txMethodByWallet");
+      if (!address || !txMethodByWallet) {
+        throw new Error("Failed to broadcast transaction: missing address or txMethodByWallet");
       }
 
       onPreparing?.();
 
-      const { validatorAddress, uuid } = await getOperatorValidator({
+      const { validatorAddress, uuid } = await operatorResponseQuery({
         apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
         address,
         amount,
         stakingOption: stakingType,
       });
-      if (!validatorAddress || !uuid) {
-        throw new Error("Failed to broadcast transaction: missing validatorAddress or uuid");
+      if (!uuid) {
+        throw new Error("Failed to broadcast transaction: missing uuid");
       }
 
       onLoading?.();
       // TODO: use dynamic chainId
-      const txId = await txMethodByWallet({ amount, validatorAddress, address, chainId: "aleo" });
+      const txId = await txMethodByWallet({
+        amount,
+        validatorAddress: validatorAddress || "",
+        address,
+        chainId: "aleo",
+      });
 
       onBroadcasting?.();
 

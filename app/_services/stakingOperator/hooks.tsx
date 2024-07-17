@@ -19,6 +19,13 @@ export const useUnbondingDelegations = () => {
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
   });
+  // Note:
+  // Aleo's unbonding item is uniquely using `useAleoAddressUnbondingStatus` hook in "_services/aleo/hooks".
+  // Unsure if liquid staking will identically use the same hook at the moment.
+  // const aleoData = aleo.useAleoUnbondingDelegations({
+  //   network,
+  //   address: address && getIsAleoNetwork(network) ? address : undefined,
+  // });
 
   switch (network) {
     case "celestia":
@@ -27,6 +34,8 @@ export const useUnbondingDelegations = () => {
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshub;
+    case "aleo":
+      return undefined;
     default:
       return undefined;
   }
@@ -114,21 +123,42 @@ export const useAddressActivityQueryParams = (defaultParams: T.AddressActivityPa
 export const useActivity = (defaultParams: T.AddressActivityPaginationParams | null) => {
   const { network } = useShell();
   const { address } = useWallet();
-
   const { offset, setOffset, limit, filterKey, setFilterKey } = useAddressActivityQueryParams(defaultParams);
+
+  const isAleo = getIsAleoNetwork(network);
+  const tsType = isAleo ? "aleo" : "standard";
+  const aleoFilterKey =
+    tsType === "aleo"
+      ? filterKey === "transactions"
+        ? undefined
+        : (filterKey as T.AleoAddressActivityPaginationParams["filterKey"])
+      : null;
+
   const celestia = cosmos.useCosmosAddressActivity({
+    tsType: "standard",
     network,
     address: address && getIsCelestia(network) ? address : undefined,
     offset,
     limit,
-    filterKey,
+    filterKey:
+      tsType === "standard" ? (filterKey as T.StandardAddressActivityPaginationParams["filterKey"]) : undefined,
   });
   const cosmoshub = cosmos.useCosmosAddressActivity({
+    tsType: "standard",
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
     offset,
     limit,
-    filterKey,
+    filterKey:
+      tsType === "standard" ? (filterKey as T.StandardAddressActivityPaginationParams["filterKey"]) : undefined,
+  });
+  const aleoActivity = aleo.useAleoAddressActivity({
+    tsType: "aleo",
+    network,
+    address: address && isAleo ? address : undefined,
+    offset,
+    limit,
+    filterKey: aleoFilterKey,
   });
 
   switch (network) {
@@ -144,6 +174,11 @@ export const useActivity = (defaultParams: T.AddressActivityPaginationParams | n
         params: { offset, setOffset, limit, filterKey, setFilterKey },
         query: cosmoshub,
       };
+    case "aleo":
+      return {
+        params: { offset, setOffset, limit, filterKey, setFilterKey },
+        query: aleoActivity,
+      };
     default:
       return {
         params: { offset, setOffset, limit, filterKey, setFilterKey },
@@ -156,22 +191,38 @@ export const useLastOffsetActivity = ({
   limit,
   filterKey,
   lastOffset,
-}: Omit<T.AddressActivityPaginationParams, "offset"> & { lastOffset: number }) => {
+}: Omit<T.AddressActivityPaginationParams, "offset" | "tsType"> & { lastOffset: number }) => {
   const { network } = useShell();
   const { address } = useWallet();
+
+  const isAleo = getIsAleoNetwork(network);
+  const tsType = isAleo ? "aleo" : "standard";
+
   const celestia = cosmos.useCosmosAddressActivity({
+    tsType: "standard",
     network,
     address: address && getIsCelestia(network) ? address : undefined,
     offset: lastOffset,
     limit,
-    filterKey,
+    filterKey:
+      tsType === "standard" ? (filterKey as T.StandardAddressActivityPaginationParams["filterKey"]) : undefined,
   });
   const cosmoshub = cosmos.useCosmosAddressActivity({
+    tsType: "standard",
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
     offset: lastOffset,
     limit,
-    filterKey,
+    filterKey:
+      tsType === "standard" ? (filterKey as T.StandardAddressActivityPaginationParams["filterKey"]) : undefined,
+  });
+  const aleoActivity = aleo.useAleoAddressActivity({
+    tsType: "aleo",
+    network,
+    address: address && getIsAleoNetwork(network) ? address : undefined,
+    offset: lastOffset,
+    limit,
+    filterKey: tsType === "aleo" ? (filterKey as T.AleoAddressActivityPaginationParams["filterKey"]) : undefined,
   });
 
   switch (network) {
@@ -181,6 +232,8 @@ export const useLastOffsetActivity = ({
     case "cosmoshub":
     case "cosmoshubtestnet":
       return cosmoshub;
+    case "aleo":
+      return aleoActivity;
     default:
       return undefined;
   }

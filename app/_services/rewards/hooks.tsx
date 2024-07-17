@@ -1,8 +1,9 @@
 import type { Network, WalletType } from "../../types";
-import type { TxProcedure, TxProcedureState } from "../txProcedure/types";
+import type { TxProcedure, TxProcedureState, TxStepCallbacks } from "../txProcedure/types";
 import { useEffect, useState } from "react";
 import { useCosmosTxProcedures } from "../cosmos/hooks";
 import { ClaimingStates } from "./types";
+import { useAleoTxProcedures } from "../aleo/hooks";
 
 export const useClaimingProcedures = ({
   address,
@@ -14,7 +15,7 @@ export const useClaimingProcedures = ({
   wallet: WalletType | null;
 }): ClaimingStates => {
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
-  const claimState = useProcedureStates();
+  const { signState, signStep } = useTxProcedureStates();
 
   const { baseProcedures: cosmosBaseProcedures } =
     useCosmosTxProcedures({
@@ -22,54 +23,42 @@ export const useClaimingProcedures = ({
       network,
       wallet,
       address,
-      signStep: {
-        onPreparing: () => {
-          claimState.setState("preparing");
-          claimState.setTxHash(undefined);
-          claimState.setError(null);
-        },
-        onLoading: () => {
-          claimState.setState("loading");
-          claimState.setTxHash(undefined);
-          claimState.setError(null);
-        },
-        onBroadcasting: () => {
-          claimState.setState("broadcasting");
-          claimState.setTxHash(undefined);
-          claimState.setError(null);
-        },
-        onSuccess: (txHash) => {
-          claimState.setState("success");
-          claimState.setTxHash(txHash);
-        },
-        onError: (e, txHash) => {
-          console.error(e);
-          claimState.setState("error");
-          claimState.setTxHash(txHash);
-          claimState.setError(e);
-        },
-      },
+      signStep,
+    }) || {};
+
+  const { baseProcedures: aleoBaseProcedures } =
+    useAleoTxProcedures({
+      network,
+      wallet,
+      address,
+      type: "claim",
+      signStep,
     }) || {};
 
   const updateStates = () => {
     if (cosmosBaseProcedures?.length) {
-      claimState.setState("active");
-      claimState.setTxHash(undefined);
-      claimState.setError(null);
+      signState.setState("active");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    }
+    if (aleoBaseProcedures?.length) {
+      signState.setState("active");
+      signState.setTxHash(undefined);
+      signState.setError(null);
     }
   };
 
   useEffect(() => {
     if (!address) {
       setProcedures(undefined);
-      claimState.setState(null);
-      claimState.setTxHash(undefined);
-      claimState.setError(null);
+      signState.setState(null);
+      signState.setTxHash(undefined);
+      signState.setError(null);
     }
   }, [address]);
 
   useEffect(() => {
-    if (cosmosBaseProcedures?.length && claimState.state === null) {
+    if (cosmosBaseProcedures?.length && signState.state === null) {
       updateStates();
     }
   }, [cosmosBaseProcedures?.length]);
@@ -81,10 +70,10 @@ export const useClaimingProcedures = ({
           if (procedure.step === "sign") {
             return {
               ...procedure,
-              state: claimState.state,
-              txHash: claimState.txHash,
-              error: claimState.error,
-              setState: claimState.setState,
+              state: signState.state,
+              txHash: signState.txHash,
+              error: signState.error,
+              setState: signState.setState,
             };
           }
         })
@@ -92,7 +81,18 @@ export const useClaimingProcedures = ({
 
       setProcedures(proceduresArray as Array<TxProcedure>);
     }
-  }, [cosmosBaseProcedures?.length, claimState.state, claimState.txHash, claimState.error]);
+    if (aleoBaseProcedures?.length) {
+      setProcedures([
+        {
+          ...aleoBaseProcedures[0],
+          state: signState.state,
+          txHash: signState.txHash,
+          error: signState.error,
+          setState: signState.setState,
+        },
+      ]);
+    }
+  }, [cosmosBaseProcedures?.length, aleoBaseProcedures?.length, signState.state, signState.txHash, signState.error]);
 
   return {
     procedures,
@@ -101,6 +101,75 @@ export const useClaimingProcedures = ({
         updateStates();
       }
     },
+  };
+};
+
+const useTxProcedureStates = () => {
+  const authState = useProcedureStates();
+  const signState = useProcedureStates();
+
+  const authStep: TxStepCallbacks = {
+    onPreparing: () => {
+      authState.setState("preparing");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
+    onLoading: () => {
+      authState.setState("loading");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
+    onBroadcasting: () => {
+      authState.setState("broadcasting");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
+    onSuccess: (txHash) => {
+      authState.setState("success");
+      authState.setTxHash(txHash);
+      signState.setState("active");
+    },
+    onError: (e, txHash) => {
+      console.error(e);
+      authState.setState("error");
+      authState.setTxHash(txHash);
+      authState.setError(e);
+    },
+  };
+
+  const signStep: TxStepCallbacks = {
+    onPreparing: () => {
+      signState.setState("preparing");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    },
+    onLoading: () => {
+      signState.setState("loading");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    },
+    onBroadcasting: () => {
+      signState.setState("broadcasting");
+      signState.setTxHash(undefined);
+      signState.setError(null);
+    },
+    onSuccess: (txHash) => {
+      signState.setState("success");
+      signState.setTxHash(txHash);
+    },
+    onError: (e, txHash) => {
+      console.error(e);
+      signState.setState("error");
+      signState.setTxHash(txHash);
+      signState.setError(e);
+    },
+  };
+
+  return {
+    authState,
+    signState,
+    authStep,
+    signStep,
   };
 };
 

@@ -434,7 +434,7 @@ export const unstakingPeriodByNetwork: Record<Network, string> = {
   celestiatestnet3: "21 days",
   cosmoshub: "21 days",
   cosmoshubtestnet: "21 days",
-  aleo: "in 1 hour",
+  aleo: "1 hour",
 };
 
 export const rewardsFrequencyByNetwork: Record<Network, string> = {
@@ -462,6 +462,9 @@ export const serverUrlByNetwork: Record<Network, string> = {
   // TODO: use dynamic Aleo network
   aleo: process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET || "",
 };
+
+// TODO: use dynamic Aleo network
+export const aleoRestUrl = "https://api.explorer.aleo.org/v1/testnet/";
 
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking.";

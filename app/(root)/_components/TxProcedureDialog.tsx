@@ -18,11 +18,13 @@ import type { TxType } from "@/app/types";
 import { useTxPostHogEvents } from "@/app/_services/postHog/hooks";
 
 export const TxProcedureDialog = ({
+  title,
   amount,
   data,
   type,
   dialog,
 }: {
+  title?: string;
   amount?: string;
   data: StakingStates | UnstakingStates | RedelegatingStates | ClaimingStates;
   type: TxType;
@@ -82,7 +84,7 @@ export const TxProcedureDialog = ({
         },
       }}
     >
-      <TransactionDialog.TopBox type={type} />
+      <TransactionDialog.TopBox title={title} type={type} />
       <TransactionDialog.StepsBox>
         {procedures?.map((procedure, index) => (
           <TransactionDialog.StepItem

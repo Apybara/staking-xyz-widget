@@ -34,7 +34,7 @@ dependencies:
     version: 2.10.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
   "@cosmos-kit/keplr-mobile":
     specifier: ^2.9.0
-    version: 2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@walletconnect/sign-client@2.11.3)(@walletconnect/types@2.11.0)
+    version: 2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@walletconnect/sign-client@2.12.2)(@walletconnect/types@2.11.0)
   "@cosmos-kit/leap-extension":
     specifier: ^2.10.0
     version: 2.10.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
@@ -54,13 +54,13 @@ dependencies:
     specifier: ^0.0.22
     version: 0.0.22
   "@demox-labs/aleo-wallet-adapter-leo":
-    specifier: ^0.0.22
-    version: 0.0.22
+    specifier: ^0.0.23
+    version: 0.0.23
   "@demox-labs/aleo-wallet-adapter-react":
     specifier: ^0.0.21
     version: 0.0.21(react@18.2.0)
   "@puzzlehq/sdk":
-    specifier: ^0.4.1
+    specifier: ^0.4.2
     version: 0.4.2(@types/react@18.2.65)(buffer@6.0.3)(react-dom@18.2.0)(react@18.2.0)
   "@radix-ui/react-accordion":
     specifier: ^1.1.2
@@ -1005,7 +1005,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cosmos-kit/keplr-mobile@2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@walletconnect/sign-client@2.11.3)(@walletconnect/types@2.11.0):
+  /@cosmos-kit/keplr-mobile@2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@walletconnect/sign-client@2.12.2)(@walletconnect/types@2.11.0):
     resolution:
       { integrity: sha512-DshITBhM09plONkc21q93Cbv9kCqPC/34RN1x2r4jLsujhpaMW2lQpMJl3YQoXH+MtDSmnPc/1HsujJIlAajsw== }
     peerDependencies:
@@ -1018,7 +1018,7 @@ packages:
       "@cosmos-kit/core": 2.11.0
       "@cosmos-kit/keplr-extension": 2.10.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
       "@cosmos-kit/walletconnect": 2.8.0(@cosmjs/amino@0.32.3)(@walletconnect/types@2.11.0)
-      "@keplr-wallet/wc-client": 0.12.90(@walletconnect/sign-client@2.11.3)(@walletconnect/types@2.11.0)
+      "@keplr-wallet/wc-client": 0.12.90(@walletconnect/sign-client@2.12.2)(@walletconnect/types@2.11.0)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -1323,9 +1323,9 @@ packages:
       eventemitter3: 4.0.7
     dev: false
 
-  /@demox-labs/aleo-wallet-adapter-leo@0.0.22:
+  /@demox-labs/aleo-wallet-adapter-leo@0.0.23:
     resolution:
-      { integrity: sha512-Am1J+n0VQSdv5Fff68jno1zaNp/xA/YE5ivoCuJrkmM73BT+FG7WDS3nOwwNsbHR3HviBCxBksXDP2pA33BA8A== }
+      { integrity: sha512-s9kSNcfjvmwH5yrgB2qVpjNA/g8E59DsPoTGM4j52ys5cTUMFRvjYUwJf+yX/9dWF/v7aCDbjD2Vf0A3fSceMg== }
     dependencies:
       "@demox-labs/aleo-wallet-adapter-base": 0.0.21
       nanoid: 4.0.2
@@ -2205,7 +2205,7 @@ packages:
       utility-types: 3.11.0
     dev: false
 
-  /@keplr-wallet/wc-client@0.12.90(@walletconnect/sign-client@2.11.3)(@walletconnect/types@2.11.0):
+  /@keplr-wallet/wc-client@0.12.90(@walletconnect/sign-client@2.12.2)(@walletconnect/types@2.11.0):
     resolution:
       { integrity: sha512-5az2EIqfZLlBaCXW3ZyeOcwATELgdFKEkKG6MCoZK5WxWeNWiPKLc0379HGrCtkfprzXpZNvNY89ZjoWT2ZzOg== }
     peerDependencies:
@@ -2214,7 +2214,7 @@ packages:
     dependencies:
       "@keplr-wallet/provider": 0.12.90
       "@keplr-wallet/types": 0.12.90
-      "@walletconnect/sign-client": 2.11.3
+      "@walletconnect/sign-client": 2.12.2
       "@walletconnect/types": 2.11.0
       buffer: 6.0.3
       deepmerge: 4.3.1
@@ -2912,8 +2912,8 @@ packages:
     dependencies:
       "@puzzlehq/types": 1.0.22
       "@puzzlehq/walletconnect-modal-sign-html": 0.0.6(@types/react@18.2.65)(react@18.2.0)
-      "@walletconnect/types": 2.11.3
-      "@walletconnect/utils": 2.11.3
+      "@walletconnect/types": 2.12.2
+      "@walletconnect/utils": 2.12.2
       buffer: 6.0.3
       debug: 4.3.4
       events: 3.3.0
@@ -2951,8 +2951,8 @@ packages:
       "@puzzlehq/types": 1.0.22
       "@tanstack/react-query": 4.36.1(react-dom@18.2.0)(react@18.2.0)
       "@trpc/server": 10.45.2
-      "@walletconnect/types": 2.11.3
-      "@walletconnect/utils": 2.11.3
+      "@walletconnect/types": 2.12.2
+      "@walletconnect/utils": 2.12.2
       debug: 4.3.4
       events: 3.3.0
       immer: 9.0.21
@@ -5989,7 +5989,7 @@ packages:
       "@walletconnect/jsonrpc-utils": 1.0.8
       "@walletconnect/jsonrpc-ws-connection": 1.0.14
       "@walletconnect/keyvaluestorage": 1.1.1
-      "@walletconnect/logger": 2.0.1
+      "@walletconnect/logger": 2.1.2
       "@walletconnect/relay-api": 1.0.9
       "@walletconnect/relay-auth": 1.0.4
       "@walletconnect/safe-json": 1.0.2
@@ -6419,7 +6419,7 @@ packages:
       "@walletconnect/events": 1.0.1
       "@walletconnect/heartbeat": 1.2.1
       "@walletconnect/jsonrpc-utils": 1.0.8
-      "@walletconnect/logger": 2.0.1
+      "@walletconnect/logger": 2.1.2
       "@walletconnect/time": 1.0.2
       "@walletconnect/types": 2.11.0
       "@walletconnect/utils": 2.11.0
@@ -6606,7 +6606,7 @@ packages:
       "@walletconnect/jsonrpc-provider": 1.0.13
       "@walletconnect/jsonrpc-types": 1.0.3
       "@walletconnect/jsonrpc-utils": 1.0.8
-      "@walletconnect/logger": 2.0.1
+      "@walletconnect/logger": 2.1.2
       "@walletconnect/sign-client": 2.11.0
       "@walletconnect/types": 2.11.0
       "@walletconnect/utils": 2.11.0

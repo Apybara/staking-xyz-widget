@@ -7,6 +7,6 @@ export type PuzzleTxStatusProps = Omit<GetEventRequest, "network"> & {
 
 export type PuzzleStakeProps = AleoStakeProps;
 
-export type PuzzleUnstakeProps = Omit<AleoUnstakeProps, "address">;
+export type PuzzleUnstakeProps = AleoUnstakeProps;
 
-export type PuzzleWithdrawProps = Omit<AleoWithdrawProps, "address">;
+export type PuzzleWithdrawProps = AleoWithdrawProps;

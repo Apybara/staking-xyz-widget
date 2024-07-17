@@ -32,3 +32,38 @@ export const remainingDays = style({
 export const rewardInfoValue = style({
   color: colors.green900,
 });
+
+export const unstakingStatus = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(4),
+});
+
+export const claimableStatus = style({
+  display: "block",
+  blockSize: pxToRem(6),
+  inlineSize: pxToRem(6),
+  borderRadius: "100%",
+  backgroundColor: colors.yellow900,
+});
+
+export const claimableTooltip = style({
+  maxInlineSize: pxToRem(170),
+  padding: pxToRem(16),
+  backgroundColor: colors.yellow100,
+  border: 0,
+  color: colors.yellow900,
+  textAlign: "center",
+});
+
+export const claimButton = style({
+  backgroundColor: colors.yellow100,
+  border: 0,
+  borderRadius: pxToRem(4),
+  color: colors.yellow900,
+  blockSize: pxToRem(20),
+  paddingInline: pxToRem(6),
+  fontSize: pxToRem(12),
+  lineHeight: 1,
+  fontWeight: weights.bold,
+});
