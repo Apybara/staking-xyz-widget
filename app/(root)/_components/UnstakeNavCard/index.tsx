@@ -62,9 +62,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         ) : (
           <Tooltip
             className={S.claimableTooltip}
-            trigger={
-              <NavCard.SecondaryText className={S.claimableText}>Pending {totalPendingItems}</NavCard.SecondaryText>
-            }
+            trigger={<NavCard.SecondaryText className={S.claimableText}>Pending</NavCard.SecondaryText>}
             content={`You can claim ${aleoUnbondingAmount} now!`}
           />
         ),
