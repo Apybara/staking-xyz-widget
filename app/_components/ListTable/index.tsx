@@ -54,7 +54,7 @@ export type TxInfoPrimaryProps = {
   externalLink?: boolean;
   isProcessing?: boolean;
   isSuccess?: boolean;
-  amount: string;
+  amount?: string;
 };
 export const TxInfoPrimary = ({ title, externalLink, isProcessing, isSuccess, amount }: TxInfoPrimaryProps) => {
   return (
@@ -78,21 +78,21 @@ export const TxInfoPrimary = ({ title, externalLink, isProcessing, isSuccess, am
           )}
         </div>
       </div>
-      <p className={cn(S.txInfoPrimaryAmount)}>{amount}</p>
+      {amount && <p className={cn(S.txInfoPrimaryAmount)}>{amount}</p>}
     </div>
   );
 };
 
 export type TxInfoSecondaryProps = {
   time: string;
-  reward: string;
+  reward?: string;
   isProcessing?: boolean;
 };
 export const TxInfoSecondary = ({ time, reward, isProcessing }: TxInfoSecondaryProps) => {
   return (
     <div className={cn(S.txInfoSecondary({ isProcessing }))}>
       <time className={cn(S.txInfoSecondaryValue)}>{time}</time>
-      <p className={cn(S.txInfoSecondaryValue)}>{reward}</p>
+      {reward && <p className={cn(S.txInfoSecondaryValue)}>{reward}</p>}
     </div>
   );
 };
