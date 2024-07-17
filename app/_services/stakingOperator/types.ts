@@ -319,6 +319,7 @@ export type ActivityItem = {
   inProgress?: boolean;
   status: string;
   result?: "success" | "failed";
+  staking_option?: "native" | "liquid";
 };
 
 export type AddressRewardsResponse = CommonResponse<

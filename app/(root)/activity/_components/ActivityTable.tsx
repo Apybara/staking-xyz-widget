@@ -77,13 +77,7 @@ export const ActivityTable = () => {
   );
 };
 
-const ListItem = ({
-  activity,
-  network,
-}: {
-  activity: Omit<ActivityItem, "amount" | "completionTime"> & { amount: string };
-  network: Network | null;
-}) => {
+const ListItem = ({ activity, network }: { activity: ListItem; network: Network | null }) => {
   const isAmountSmall =
     activity.amount && BigNumber(activity.amount).isLessThan(0.01) && BigNumber(activity.amount).isGreaterThan(0);
   const formattedAmount = useDynamicAssetValueFromCoin({
@@ -91,17 +85,14 @@ const ListItem = ({
     minValue: !isAmountSmall ? undefined : 0.000001,
     formatOptions: !isAmountSmall ? undefined : { mantissa: 6 },
   });
-  const amountValue =
-    activity.type === "rewards" && activity.inProgress && activity.amount === "0"
-      ? "Collecting.."
-      : formattedAmount || "-";
+  const amountValue = getAmountValue({ activity, formattedAmount });
   const href = `${networkExplorerTx[network || defaultNetwork]}${activity.id}`;
 
   return (
     <ListTable.Item>
       <ListTable.ExternalLinkItemWrapper href={activity.id ? href : undefined}>
         <ListTable.TxInfoPrimary
-          title={titleKey[activity.type]}
+          title={getTitleKey(activity)}
           externalLink={!!activity.id}
           amount={amountValue}
           isProcessing={activity.inProgress}
@@ -113,7 +104,7 @@ const ListItem = ({
               ? getUTCStringFromUnixTimestamp(activity.timestamp)
               : getUTCStringFromUnixTimeString(activity.created_at)
           }
-          reward={`Reward ${getPercentagedNumber(activity.rewardRate)}`}
+          reward={activity.type === "claim" ? undefined : `Reward ${getPercentagedNumber(activity.rewardRate)}`}
           isProcessing={activity.inProgress}
         />
       </ListTable.ExternalLinkItemWrapper>
@@ -186,10 +177,31 @@ const useTabs = ({
   ] as Array<TabButtonProps>;
 };
 
-const titleKey = {
-  stake: "Stake",
-  unstake: "Unstake",
-  rewards: "Claim",
-  redelegate: "Import",
-  claim: "Claim",
+const getTitleKey = (activity: ListItem) => {
+  switch (activity.type) {
+    case "stake":
+      if (!activity.staking_option) return "Stake";
+      return activity.staking_option === "native" ? "Stake (Native)" : "Stake (Liquid)";
+    case "unstake":
+      if (!activity.staking_option) return "Unstake";
+      return activity.staking_option === "native" ? "Unstake (Native)" : "Unstake (Liquid)";
+    case "claim":
+      return "Claim";
+    case "rewards":
+      return "Claim";
+    case "redelegate":
+      return "Import";
+  }
 };
+
+const getAmountValue = ({ activity, formattedAmount }: { activity: ListItem; formattedAmount?: string }) => {
+  if (activity.type === "claim") {
+    return undefined;
+  }
+
+  return activity.type === "rewards" && activity.inProgress && activity.amount === "0"
+    ? "Collecting.."
+    : formattedAmount || "-";
+};
+
+type ListItem = Omit<ActivityItem, "amount" | "completionTime"> & { amount: string };
