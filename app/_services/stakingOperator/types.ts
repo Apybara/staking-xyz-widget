@@ -332,6 +332,10 @@ export type AddressRewardsResponse = CommonResponse<
   }
 >;
 
+export type AleoAddressRewardsResponse = {
+  cumulativeRewards: number;
+};
+
 export type AddressRewardsHistoryResponse = CommonEntriesResponse<
   AddressRewardsHistoryPaginationParams & { address: string },
   RewardsHistoryItem

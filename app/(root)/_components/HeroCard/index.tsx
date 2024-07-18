@@ -14,11 +14,11 @@ export const HeroCard = () => {
   const { connectionStatus } = useWallet();
   const { stakedBalance, isLoading: isLoadingStakedBalance, error: stakedBalanceError } = useStakedBalance() || {};
   const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward() || {};
-  const { data: addressRewards } = useAddressRewards()?.query || {};
-  const { daily_rewards } = addressRewards || {};
+  const { data: addressRewards } = useAddressRewards() || {};
+  const { dailyRewards } = addressRewards || {};
 
   const formattedStakedBalance = useDynamicAssetValueFromCoin({ coinVal: stakedBalance });
-  const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: daily_rewards });
+  const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: dailyRewards });
 
   if (connectionStatus === "connected") {
     if (isLoadingStakedBalance) {
@@ -64,7 +64,7 @@ export const HeroCard = () => {
             </>
           }
           title={formattedStakedBalance}
-          subtitle={!!daily_rewards && <span className={S.dailyEarned}>+Daily earned {formattedDailyEarned}</span>}
+          subtitle={!!dailyRewards && <span className={S.dailyEarned}>+Daily earned {formattedDailyEarned}</span>}
         />
       );
     }

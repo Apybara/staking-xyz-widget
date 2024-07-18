@@ -127,7 +127,7 @@ const useTabs = ({
       {
         children: "All",
         state: filterKey === "transactions" ? "highlighted" : "default",
-        onClick: () => setFilterKey(),
+        onClick: () => setFilterKey("transactions"),
       },
       {
         children: "Stake",
