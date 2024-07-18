@@ -263,22 +263,22 @@ export const useAddressRewards = () => {
     network,
     address: address && getIsCosmosHub(network) ? address : undefined,
   });
+  const aleoData = aleo.useAleoAddressRewards({
+    network: getIsAleoNetwork(network) ? network : null,
+    address: address || "",
+  });
 
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
-      return {
-        query: celestia,
-      };
+      return celestia;
     case "cosmoshub":
     case "cosmoshubtestnet":
-      return {
-        query: cosmoshub,
-      };
+      return cosmoshub;
+    case "aleo":
+      return aleoData;
     default:
-      return {
-        query: undefined,
-      };
+      return undefined;
   }
 };
 

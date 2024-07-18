@@ -9,6 +9,7 @@ import {
   getIsAleoAddressFormat,
 } from "../../aleo/utils";
 import {
+  getAddressRewards,
   getAddressActivity,
   getAddressBalance,
   getAddressDelegation,
@@ -23,6 +24,32 @@ import { getCalculatedRewards, getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
 import { fromUnixTime } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
+
+export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    enabled: !!address && isAleoNetwork,
+    queryKey: ["aleoAddressRewards", network, address],
+    queryFn: () => getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
+  });
+
+  return {
+    data: {
+      cumulativeRewards: getMicroCreditsToCredits(data?.cumulativeRewards || 0),
+      // TODO: integrate daily rewards from endpoint
+      dailyRewards: getMicroCreditsToCredits(0),
+      accruedRewards: null,
+      lastCycleRewards: null,
+    },
+    isLoading,
+    isRefetching,
+    error,
+    refetch,
+  };
+};
 
 export const useAleoAddressActivity = ({
   network,
@@ -94,7 +121,7 @@ export const useAleoAddressActivity = ({
     data: data?.data,
     formattedEntries: data?.data?.entries?.map((entry) => ({
       ...entry,
-      amount: getCoinValueFromDenom({ network: castedNetwork, amount: entry.amount }),
+      amount: getCoinValueFromDenom({ network: castedNetwork, amount: getMicroCreditsToCredits(entry.amount) }),
       completionTime: entry.completionTime
         ? getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0))
         : undefined,

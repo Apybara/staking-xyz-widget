@@ -3,6 +3,11 @@ import type { TxProcedureType } from "../../txProcedure/types";
 import { getCreditsToMicroCredits } from "../../aleo/utils";
 import { fetchData } from "@/app/_utils/fetch";
 
+export const getAddressRewards = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.AleoAddressRewardsResponse = await fetchData(`${apiUrl}address/${address}/rewards`);
+  return res;
+};
+
 export const getAddressActivity = async ({
   apiUrl,
   address,

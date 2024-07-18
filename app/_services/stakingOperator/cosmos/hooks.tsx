@@ -210,13 +210,13 @@ export const useCosmosAddressRewards = ({ network, address }: { network: Network
     isLoading: isLoading || status === "pending",
     isFetching,
     data: {
-      total_rewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.total_rewards }),
-      last_cycle_rewards: getCoinValueFromDenom({
+      cumulativeRewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.total_rewards }),
+      lastCycleRewards: getCoinValueFromDenom({
         network: castedNetwork,
         amount: data?.data?.last_cycle_rewards,
       }),
-      daily_rewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.daily_rewards }),
-      accrued_rewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.accrued_rewards }),
+      dailyRewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.daily_rewards }),
+      accruedRewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.accrued_rewards }),
     },
     refetch,
   };

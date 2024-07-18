@@ -16,13 +16,13 @@ export const HistoryEmptyState = () => {
   const { stakedBalance, isLoading: isStakedBalanceLoading } = useStakedBalance() || {};
   const { rewards, isLoading: isNetworkRewardsLoading } = useNetworkReward({ amount: stakedBalance }) || {};
 
-  const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards()?.query || {};
-  const { accrued_rewards } = addressRewards || {};
+  const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards() || {};
+  const { accruedRewards } = addressRewards || {};
 
   const isAccruedRewardsSmall =
-    accrued_rewards && BigNumber(accrued_rewards).isLessThan(1) && BigNumber(accrued_rewards).isGreaterThan(0);
+    accruedRewards && BigNumber(accruedRewards).isLessThan(1) && BigNumber(accruedRewards).isGreaterThan(0);
   const formattedAccruedRewards = useDynamicAssetValueFromCoin({
-    coinVal: accrued_rewards,
+    coinVal: accruedRewards || 0,
     minValue: !isAccruedRewardsSmall ? undefined : 0.000001,
     formatOptions: !isAccruedRewardsSmall ? undefined : { mantissa: 6 },
   });
