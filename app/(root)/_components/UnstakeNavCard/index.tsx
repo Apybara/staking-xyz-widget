@@ -30,8 +30,6 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     connectionStatus !== "connected" || ((!stakedBalance || stakedBalance === "0") && !hasPendingItems);
   const completionTime = aleoUnstakeStatus?.completionTime || unbondingDelegations?.[0]?.completionTime;
 
-  const isClaimable = aleoUnstakeStatus?.isClaimable;
-
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
 
