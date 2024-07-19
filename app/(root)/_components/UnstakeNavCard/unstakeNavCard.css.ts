@@ -26,3 +26,17 @@ export const claimableText = style({
     },
   },
 });
+
+export const pendingText = style({
+  display: "flex",
+  alignItems: "center",
+  gap: pxToRem(4),
+});
+
+export const pendingStatus = style({
+  display: "block",
+  blockSize: pxToRem(6),
+  inlineSize: pxToRem(6),
+  borderRadius: "100%",
+  backgroundColor: colors.yellow900,
+});

@@ -30,6 +30,8 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     connectionStatus !== "connected" || ((!stakedBalance || stakedBalance === "0") && !hasPendingItems);
   const completionTime = aleoUnstakeStatus?.completionTime || unbondingDelegations?.[0]?.completionTime;
 
+  const isClaimable = aleoUnstakeStatus?.isClaimable;
+
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
 
@@ -56,23 +58,24 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         coinVal: aleoUnstakeStatus?.amount,
       });
 
-      return {
-        title: !aleoUnstakeStatus?.isClaimable ? (
-          <NavCard.SecondaryText>Pending {totalPendingItems}</NavCard.SecondaryText>
-        ) : (
-          <Tooltip
-            className={S.claimableTooltip}
-            trigger={<NavCard.SecondaryText className={S.claimableText}>Pending</NavCard.SecondaryText>}
-            content={`You can claim ${aleoUnbondingAmount} now!`}
-          />
-        ),
-        value: !aleoUnstakeStatus?.isClaimable && (
-          <NavCard.PrimaryText>
-            {times?.time || fallbackTime.time}{" "}
-            <NavCard.SecondaryText>{times?.unit || fallbackTime.unit} left</NavCard.SecondaryText>
-          </NavCard.PrimaryText>
-        ),
-      };
+      return aleoUnstakeStatus?.isClaimable
+        ? {
+            title: <NavCard.SecondaryText>Claimable</NavCard.SecondaryText>,
+            value: <NavCard.PrimaryText>{aleoUnbondingAmount}</NavCard.PrimaryText>,
+          }
+        : {
+            title: (
+              <NavCard.SecondaryText className={S.pendingText}>
+                Pending <span className={S.pendingStatus}></span>
+              </NavCard.SecondaryText>
+            ),
+            value: (
+              <NavCard.PrimaryText>
+                {times?.time || fallbackTime.time}{" "}
+                <NavCard.SecondaryText>{times?.unit || fallbackTime.unit} left</NavCard.SecondaryText>
+              </NavCard.PrimaryText>
+            ),
+          };
     }
   }, [
     connectionStatus,
