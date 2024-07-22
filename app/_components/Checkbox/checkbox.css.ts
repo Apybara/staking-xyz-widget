@@ -21,7 +21,7 @@ export const checkbox = recipe({
     state: {
       default: {
         backgroundColor: colors.black900,
-        color: colors.black600,
+        color: colors.black700,
       },
       checked: {
         backgroundColor: colors.black700,
@@ -47,6 +47,7 @@ export const input = style({
 
 export const label = style({
   marginInlineStart: pxToRem(10),
+  color: colors.black000,
 });
 
 globalStyle(`${label} a`, {
