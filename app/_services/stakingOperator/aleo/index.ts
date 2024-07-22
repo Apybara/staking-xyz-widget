@@ -89,13 +89,6 @@ export const getOperatorUUID = async ({
   };
 };
 
-export const setMonitorTx = async ({ apiUrl, txHash, uuid }: { apiUrl: string; txHash: string; uuid: string }) => {
-  const res = await fetchData(`${apiUrl}monitor/hash/${uuid}/${txHash}`, {
-    method: "PUT",
-  });
-  return res;
-};
-
 export const getNetworkStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
   const res: T.NetworkStatusResponse = await fetchData(`${apiUrl}network/status`);
   return res;
