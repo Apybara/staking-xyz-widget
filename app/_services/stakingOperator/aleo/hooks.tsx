@@ -2,7 +2,12 @@ import type { AleoNetwork, Network, StakingType } from "../../../types";
 import type * as T from "../types";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { networkDefaultStakingType, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
-import { getIsAleoNetwork, getCoinValueFromDenom, getMicroCreditsToCredits } from "../../aleo/utils";
+import {
+  getIsAleoNetwork,
+  getCoinValueFromDenom,
+  getMicroCreditsToCredits,
+  getIsAleoAddressFormat,
+} from "../../aleo/utils";
 import {
   getAddressActivity,
   getAddressBalance,
@@ -148,11 +153,12 @@ export const useAleoServerStatus = ({ network }: { network: Network | null }) =>
   return { data, isLoading, isRefetching, error, refetch };
 };
 
-export const useAleoAddressBalance = ({ network, address }: { network: Network | null; address: string }) => {
+export const useAleoAddressBalance = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsAleoNetwork(network || ""),
+    enabled: getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || ""),
     queryKey: ["aleoAddressBalance", network, address],
-    queryFn: () => getAddressBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    queryFn: () =>
+      getAddressBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
     refetchOnWindowFocus: true,
     refetchInterval: 15000,
   });
@@ -160,11 +166,12 @@ export const useAleoAddressBalance = ({ network, address }: { network: Network |
   return { data, isLoading, isRefetching, error, refetch };
 };
 
-export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address: string }) => {
+export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsAleoNetwork(network || ""),
+    enabled: getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || ""),
     queryKey: ["aleoAddressStakedBalance", network, address],
-    queryFn: () => getAddressStakedBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    queryFn: () =>
+      getAddressStakedBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
     refetchOnWindowFocus: true,
     refetchInterval: 15000,
   });
@@ -205,11 +212,12 @@ export const useAleoReward = ({ network, amount }: { network: Network | null; am
   return { data, rewards, isLoading, isRefetching, error, refetch };
 };
 
-export const useAleoDelegatedValidator = ({ network, address }: { network: Network | null; address: string }) => {
+export const useAleoDelegatedValidator = ({ network, address }: { network: Network | null; address?: string }) => {
   const { data, isLoading, isRefetching, error } = useQuery({
-    enabled: getIsAleoNetwork(network || "") && !!address,
+    enabled: getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || ""),
     queryKey: ["aleoDelegatedValidator", network, address],
-    queryFn: () => getAddressDelegation({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    queryFn: () =>
+      getAddressDelegation({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
   });
 
   return { data, isLoading, isRefetching, error };

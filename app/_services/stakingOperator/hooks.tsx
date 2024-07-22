@@ -78,7 +78,7 @@ export const useStakedBalance = () => {
   });
   const aleoData = aleo.useAleoAddressStakedBalance({
     network: getIsAleoNetwork(network) ? network : null,
-    address: address || "",
+    address: address && getIsAleoNetwork(network) ? address : undefined,
   });
 
   switch (network) {
@@ -397,7 +397,7 @@ export const useDelegatedValidator = ({ address, defaultNetwork }: { address: st
   const { network } = useShell();
   const aleoDelegatedValidator = aleo.useAleoDelegatedValidator({
     network: getIsAleoNetwork(network) ? network : null,
-    address,
+    address: getIsAleoAddressFormat(address) ? address : undefined,
   });
 
   switch (defaultNetwork || network) {
