@@ -3,6 +3,8 @@ import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/sdk";
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits } from "../utils";
+import BigNumber from "bignumber.js";
+import { aleoDefaultClaimFee, aleoDefaultStakeFee, aleoDefaultUnstakeFee } from "@/app/consts";
 
 export const getPuzzleTxStatus = async ({
   id,
@@ -30,7 +32,17 @@ const getPuzzleFormattedStatus = ({ status }: { status?: EventStatus }): AleoTxS
   return "error";
 };
 
-export const puzzleStake = async ({ amount, validatorAddress, address, chainId = "aleo" }: T.PuzzleStakeProps) => {
+const getPuzzleFormattedTxFee = (fee: string) => {
+  return BigNumber(fee).dividedBy(1000000).toNumber();
+};
+
+export const puzzleStake = async ({
+  amount,
+  validatorAddress,
+  address,
+  chainId = "aleo",
+  txFee,
+}: T.PuzzleStakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
   try {
     const { eventId, error } = await requestCreateEvent(
@@ -38,7 +50,7 @@ export const puzzleStake = async ({ amount, validatorAddress, address, chainId =
         type: EventType.Execute,
         programId: "credits.aleo",
         functionId: "bond_public",
-        fee: 0.84388,
+        fee: getPuzzleFormattedTxFee(txFee || aleoDefaultStakeFee),
         inputs: [validatorAddress, address, transactionAmount],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
@@ -53,7 +65,7 @@ export const puzzleStake = async ({ amount, validatorAddress, address, chainId =
   }
 };
 
-export const puzzleUnstake = async ({ address, amount, chainId = "aleo" }: T.PuzzleUnstakeProps) => {
+export const puzzleUnstake = async ({ address, amount, chainId = "aleo", txFee }: T.PuzzleUnstakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
 
   try {
@@ -62,7 +74,7 @@ export const puzzleUnstake = async ({ address, amount, chainId = "aleo" }: T.Puz
         type: EventType.Execute,
         programId: "credits.aleo",
         functionId: "unbond_public",
-        fee: 1.233777,
+        fee: getPuzzleFormattedTxFee(txFee || aleoDefaultUnstakeFee),
         inputs: [address, transactionAmount],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
@@ -77,14 +89,14 @@ export const puzzleUnstake = async ({ address, amount, chainId = "aleo" }: T.Puz
   }
 };
 
-export const puzzleWithdraw = async ({ address, chainId = "aleo" }: T.PuzzleWithdrawProps) => {
+export const puzzleWithdraw = async ({ address, chainId = "aleo", txFee }: T.PuzzleWithdrawProps) => {
   try {
     const { eventId, error } = await requestCreateEvent(
       {
         type: EventType.Execute,
         programId: "credits.aleo",
         functionId: "claim_unbond_public",
-        fee: 0.16723,
+        fee: getPuzzleFormattedTxFee(txFee || aleoDefaultClaimFee),
         inputs: [address],
       },
       aleoNetworkIdByWallet[chainId].puzzle,

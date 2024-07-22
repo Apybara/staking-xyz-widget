@@ -9,13 +9,13 @@ import { leoWalletStake, leoWalletUnstake, leoWalletWithdraw } from ".";
 export const useLeoWalletStake = () => {
   const { wallet, publicKey } = useLeoWallet();
 
-  return async ({ validatorAddress, amount, chainId }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
+  return async ({ validatorAddress, amount, chainId, txFee }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet || !validatorAddress || !amount) {
         const error = new Error("Staking fails: missing wallet, publicKey, validatorAddress or amount");
         throw error;
       }
-      return await leoWalletStake({ amount, validatorAddress, wallet, address: publicKey, chainId });
+      return await leoWalletStake({ amount, validatorAddress, wallet, address: publicKey, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Staking fails");
       throw err;
@@ -26,14 +26,14 @@ export const useLeoWalletStake = () => {
 export const useLeoWalletUnstake = () => {
   const { wallet, publicKey } = useLeoWallet();
 
-  return async ({ amount, chainId }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
+  return async ({ amount, chainId, txFee }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet || !amount) {
         const error = new Error("Unstaking fails: missing wallet, publicKey, or stakeAmount");
         throw error;
       }
 
-      return await leoWalletUnstake({ amount, wallet, address: publicKey, chainId });
+      return await leoWalletUnstake({ amount, wallet, address: publicKey, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;
@@ -44,14 +44,14 @@ export const useLeoWalletUnstake = () => {
 export const useLeoWalletWithdraw = () => {
   const { wallet, publicKey } = useLeoWallet();
 
-  return async ({ chainId }: Omit<T.LeoWalletWithdrawProps, "wallet" | "address">) => {
+  return async ({ chainId, txFee }: Omit<T.LeoWalletWithdrawProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet) {
         const error = new Error("Withdraw fails: missing wallet or publicKey");
         throw error;
       }
 
-      return await leoWalletWithdraw({ wallet, address: publicKey, chainId });
+      return await leoWalletWithdraw({ wallet, address: publicKey, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Withdraw fails");
       throw err;

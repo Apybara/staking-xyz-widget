@@ -130,7 +130,7 @@ const useAleoBroadcastTx = ({
 
       onPreparing?.();
 
-      const { validatorAddress, uuid } = await operatorResponseQuery({
+      const { validatorAddress, uuid, txFee } = await operatorResponseQuery({
         apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
         address,
         amount,
@@ -147,6 +147,7 @@ const useAleoBroadcastTx = ({
         validatorAddress: validatorAddress || "",
         address,
         chainId: "aleo",
+        txFee,
       });
 
       onBroadcasting?.();

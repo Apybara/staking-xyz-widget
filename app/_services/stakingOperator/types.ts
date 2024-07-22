@@ -18,9 +18,11 @@ export type OperatorMessageResponse = {
 export type OperatorValidatorResponse = {
   validator: string;
   uuid: string;
+  estimatedTxFee: string;
 };
 export type OperatorUUIDResponse = {
   uuid: string;
+  estimatedTxFee: string;
 };
 
 export type DelegateStakingOption = StakingType;
