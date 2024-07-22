@@ -9,13 +9,13 @@ import { puzzleStake, puzzleUnstake, puzzleWithdraw } from ".";
 export const usePuzzleStake = () => {
   const { account } = useAccount();
 
-  return async ({ validatorAddress, amount, chainId }: T.PuzzleStakeProps) => {
+  return async ({ validatorAddress, amount, chainId, txFee }: T.PuzzleStakeProps) => {
     try {
       if (!validatorAddress || !amount || !account?.address) {
         const error = new Error("Staking fails: missing validatorAddress, address, or amount");
         throw error;
       }
-      return await puzzleStake({ amount, validatorAddress, address: account.address, chainId });
+      return await puzzleStake({ amount, validatorAddress, address: account.address, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Staking fails");
       throw err;
@@ -24,14 +24,14 @@ export const usePuzzleStake = () => {
 };
 
 export const usePuzzleUnstake = () => {
-  return async ({ address, amount, chainId }: T.PuzzleUnstakeProps) => {
+  return async ({ address, amount, chainId, txFee }: T.PuzzleUnstakeProps) => {
     try {
       if (!amount) {
         const error = new Error("Unstaking fails: missing stakeAmount");
         throw error;
       }
 
-      return await puzzleUnstake({ address, amount, chainId });
+      return await puzzleUnstake({ address, amount, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;
@@ -40,9 +40,9 @@ export const usePuzzleUnstake = () => {
 };
 
 export const usePuzzleWithdraw = () => {
-  return async ({ address, chainId }: T.PuzzleWithdrawProps) => {
+  return async ({ address, chainId, txFee }: T.PuzzleWithdrawProps) => {
     try {
-      return await puzzleWithdraw({ address, chainId });
+      return await puzzleWithdraw({ address, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Withdraw fails");
       throw err;

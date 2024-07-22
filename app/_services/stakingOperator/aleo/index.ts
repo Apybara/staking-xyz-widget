@@ -66,6 +66,7 @@ export const getOperatorValidator = async ({
   return {
     validatorAddress: res.validator,
     uuid: res.uuid,
+    txFee: res.estimatedTxFee,
   };
 };
 
@@ -84,6 +85,7 @@ export const getOperatorUUID = async ({
   return {
     validatorAddress: null,
     uuid: res.uuid,
+    txFee: res.estimatedTxFee,
   };
 };
 

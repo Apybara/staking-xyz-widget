@@ -25,17 +25,20 @@ export type AleoStakeProps = {
   address: string;
   chainId?: AleoNetwork;
   validatorAddress: string;
+  txFee: string;
 };
 
 export type AleoUnstakeProps = {
   amount: string;
   address: string;
   chainId?: AleoNetwork;
+  txFee: string;
 };
 
 export type AleoWithdrawProps = {
   address: string;
   chainId?: AleoNetwork;
+  txFee: string;
 };
 
 export type LeoWalletNetworkId = (typeof LeoWalletNetworkIds)[number];

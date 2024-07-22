@@ -1,9 +1,11 @@
+import BigNumber from "bignumber.js";
 import type { LeoWalletAdapter } from "@demox-labs/aleo-wallet-adapter-leo";
 import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import type * as T from "./types";
 import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits } from "../utils";
+import { aleoDefaultClaimFee, aleoDefaultStakeFee, aleoDefaultUnstakeFee } from "@/app/consts";
 
 export const getLeoWalletTxStatus = async ({
   txId,
@@ -53,12 +55,17 @@ const getLeoWalletFormattedStatus = ({ status }: { status: T.LeoWalletTxStatus }
   return "error";
 };
 
+const getLeoWalletFormattedTxFee = (fee: string) => {
+  return BigNumber(fee).toNumber();
+};
+
 export const leoWalletStake = async ({
   amount,
   validatorAddress,
   wallet,
   address,
   chainId = "aleo",
+  txFee,
 }: T.LeoWalletStakeProps) => {
   try {
     const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
@@ -68,7 +75,7 @@ export const leoWalletStake = async ({
       "credits.aleo",
       "bond_public",
       [validatorAddress, address, transactionAmount],
-      843_880,
+      getLeoWalletFormattedTxFee(txFee || aleoDefaultStakeFee),
       false,
     );
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
@@ -78,7 +85,13 @@ export const leoWalletStake = async ({
   }
 };
 
-export const leoWalletUnstake = async ({ amount, wallet, address, chainId = "aleo" }: T.LeoWalletUnstakeProps) => {
+export const leoWalletUnstake = async ({
+  amount,
+  wallet,
+  address,
+  chainId = "aleo",
+  txFee,
+}: T.LeoWalletUnstakeProps) => {
   try {
     const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
     const aleoTransaction = Transaction.createTransaction(
@@ -87,7 +100,7 @@ export const leoWalletUnstake = async ({ amount, wallet, address, chainId = "ale
       "credits.aleo",
       "unbond_public",
       [address, transactionAmount],
-      1_233_777,
+      getLeoWalletFormattedTxFee(txFee || aleoDefaultUnstakeFee),
       false,
     );
 
@@ -98,7 +111,7 @@ export const leoWalletUnstake = async ({ amount, wallet, address, chainId = "ale
   }
 };
 
-export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo" }: T.LeoWalletWithdrawProps) => {
+export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo", txFee }: T.LeoWalletWithdrawProps) => {
   try {
     const aleoTransaction = Transaction.createTransaction(
       address,
@@ -106,7 +119,7 @@ export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo" }: T
       "credits.aleo",
       "claim_unbond_public",
       [address],
-      167_230,
+      getLeoWalletFormattedTxFee(txFee || aleoDefaultClaimFee),
       false,
     );
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
