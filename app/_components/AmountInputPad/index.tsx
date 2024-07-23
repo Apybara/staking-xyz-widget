@@ -34,7 +34,7 @@ export type BaseAmountInputPadProps = {
   onSwap: () => void;
   maxAmountBuffer?: string;
   onMax: (maxVal?: string | undefined) => void;
-  error?: string;
+  error?: ReactNode;
 };
 
 export type AmountInputPadProps = BaseAmountInputPadProps & {

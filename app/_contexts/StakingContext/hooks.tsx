@@ -38,6 +38,7 @@ export const useStakeAmountInputValidation = ({
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
     walletConnectionStatus: connectionStatus,
+    closedValidator: validatorState === "closedValidator",
     invalidValidator: validatorState === "invalidValidator",
     differentValidator: validatorState === "differentValidator",
   });
@@ -76,6 +77,14 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
         case "liquid":
           return defaultMessage;
         case "native":
+          if (validatorState === "closedValidator") {
+            return (
+              <>
+                You cannot stake more to this position. To stake more, you need to unstake first and stake again.{" "}
+                <a href="#">(Learn why)</a>
+              </>
+            );
+          }
           if (validatorState === "invalidValidator") {
             return `${formattedValidatorAddress} is an invalid validator address`;
           }
@@ -145,11 +154,21 @@ export const useStakeSpecificValidator = () => {
       validatorDetails: undefined,
     };
   }
-  if (!!validator && isLoadingValidatorDetails === false && !validatorDetails?.validatorAddress) {
-    return {
-      state: "invalidValidator",
-      validatorDetails: undefined,
-    };
+
+  if (!!validator && isLoadingValidatorDetails === false) {
+    if (!validatorDetails?.validatorAddress) {
+      return {
+        state: "invalidValidator",
+        validatorDetails: undefined,
+      };
+    }
+
+    if (!validatorDetails?.isOpen) {
+      return {
+        state: "closedValidator",
+        validatorDetails: undefined,
+      };
+    }
   }
 
   const validatorInfo = {

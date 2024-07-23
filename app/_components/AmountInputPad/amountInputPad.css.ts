@@ -160,6 +160,10 @@ export const errorMessage = style({
   paddingInline: pxToRem(20),
 });
 
+globalStyle(`${errorMessage} a`, {
+  textDecoration: "underline",
+});
+
 export const validator = style({
   borderTop: `1px solid ${colors.black800}`,
   display: "flex",

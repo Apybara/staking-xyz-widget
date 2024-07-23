@@ -25,7 +25,7 @@ export const StakeAmountInputPad = () => {
       isAvailableValueLoading={isBalanceLoading}
       onValueChange={(val) => {
         setStates({ coinAmountInput: val });
-        if (!!validator && val.length && ctaState === "invalidValidator") {
+        if (!!validator && val.length && (ctaState === "invalidValidator" || ctaState === "closedValidator")) {
           onUpdateRouter(null);
         }
       }}
