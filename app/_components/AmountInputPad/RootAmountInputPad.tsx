@@ -19,7 +19,7 @@ export type RootAmountInputPadProps = {
   onClickMax: () => void;
   maxTooltip?: ReactNode;
   isMaxDisabled?: boolean;
-  error?: string;
+  error?: ReactNode;
   hideCurrencyConversion?: boolean;
   validatorInfo?: {
     isLoading: boolean;

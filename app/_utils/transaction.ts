@@ -44,14 +44,17 @@ export const getBasicAmountValidation = ({
 export const getBasicTxCtaValidation = ({
   amountValidation,
   walletConnectionStatus,
+  closedValidator,
   invalidValidator,
   differentValidator,
 }: {
   amountValidation: BasicAmountValidationResult;
   walletConnectionStatus: WalletConnectionStatus;
+  closedValidator?: boolean;
   invalidValidator?: boolean;
   differentValidator?: boolean;
 }): BasicTxCtaValidationResult => {
+  if (closedValidator) return "closedValidator";
   if (invalidValidator) return "invalidValidator";
   if (differentValidator) return "differentValidator";
   if (amountValidation !== "valid") return amountValidation;
@@ -106,6 +109,7 @@ export type BasicTxCtaValidationResult =
   | "insufficient"
   | "exceeded"
   | "bufferExceeded"
+  | "closedValidator"
   | "invalidValidator"
   | "differentValidator"
   | "disconnected"

@@ -10,7 +10,7 @@ export type StakingStates = {
   coinAmountInput?: string;
   inputState?: BasicAmountValidationResult;
   ctaState: BasicTxCtaValidationResult;
-  inputErrorMessage?: string;
+  inputErrorMessage?: ReactNode;
   amountInputPad: BaseAmountInputPadProps;
   procedures?: Array<TxProcedure>;
   cosmosSigningClient: SigningStargateClient | null;
