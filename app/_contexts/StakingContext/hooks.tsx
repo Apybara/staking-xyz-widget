@@ -26,7 +26,7 @@ export const useStakeAmountInputValidation = ({
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
   const { minInitialAmount, minSubsequentAmount } = useStakeMinAmount();
-  const { state: validatorState } = useStakeSpecificValidator();
+  const { state: validatorState } = useStakeValidatorState();
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -63,7 +63,7 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
   const { network, stakingType } = useShell();
   const { minInitialAmount } = useStakeMinAmount();
   const defaultMessage = getDefaultInputErrorMessage({ amountValidation });
-  const { state: validatorState } = useStakeSpecificValidator();
+  const { state: validatorState } = useStakeValidatorState();
   const formattedValidatorAddress = useFormattedInvalidValidatorAddress();
 
   switch (network) {
@@ -141,12 +141,19 @@ const useStakeMinAmount = () => {
   };
 };
 
-export const useStakeSpecificValidator = () => {
+export const useStakeValidatorState = () => {
   const { validator } = useShell();
   const { address } = useWallet();
   const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
     useValidatorDetails({ address: validator || undefined }) || {};
   const { data: delegatedValidator } = useDelegatedValidator({ address: address || "" }) || {};
+
+  if (!validator && !!delegatedValidator && delegatedValidator.isOpen === false) {
+    return {
+      state: "closedValidator",
+      validatorDetails: undefined,
+    };
+  }
 
   if (!validator) {
     return {
@@ -154,6 +161,11 @@ export const useStakeSpecificValidator = () => {
       validatorDetails: undefined,
     };
   }
+
+  const validatorInfo = {
+    ...validatorDetails,
+    isLoading: isLoadingValidatorDetails,
+  };
 
   if (!!validator && isLoadingValidatorDetails === false) {
     if (!validatorDetails?.validatorAddress) {
@@ -166,15 +178,10 @@ export const useStakeSpecificValidator = () => {
     if (!validatorDetails?.isOpen) {
       return {
         state: "closedValidator",
-        validatorDetails: undefined,
+        validatorDetails: validatorInfo,
       };
     }
   }
-
-  const validatorInfo = {
-    ...validatorDetails,
-    isLoading: isLoadingValidatorDetails,
-  };
 
   if (!delegatedValidator?.validatorAddress) {
     return {
