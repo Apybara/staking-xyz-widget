@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import { Skeleton } from "@/app/_components/Skeleton";
 import Tooltip from "@/app/_components/Tooltip";
@@ -13,12 +14,19 @@ import * as S from "./heroCard.css";
 export const HeroCard = () => {
   const { connectionStatus } = useWallet();
   const { stakedBalance, isLoading: isLoadingStakedBalance, error: stakedBalanceError } = useStakedBalance() || {};
-  const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward() || {};
+  const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward({ amount: stakedBalance }) || {};
   const { data: addressRewards } = useAddressRewards() || {};
   const { dailyRewards } = addressRewards || {};
 
   const formattedStakedBalance = useDynamicAssetValueFromCoin({ coinVal: stakedBalance });
-  const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: dailyRewards });
+  const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: dailyRewards || 0 });
+  const formattedEstDailyReward = useDynamicAssetValueFromCoin({ coinVal: rewards?.daily });
+  const addressRewardsValue = useMemo(() => {
+    if (!stakedBalance || stakedBalance === "0") return undefined;
+    if (dailyRewards && dailyRewards !== "0") return `+Daily earned ${formattedDailyEarned}`;
+    if (formattedEstDailyReward) return `Est. daily rewards ${formattedEstDailyReward}`;
+    return undefined;
+  }, [addressRewards]);
 
   if (connectionStatus === "connected") {
     if (isLoadingStakedBalance) {
@@ -64,7 +72,7 @@ export const HeroCard = () => {
             </>
           }
           title={formattedStakedBalance}
-          subtitle={!!dailyRewards && <span className={S.dailyEarned}>+Daily earned {formattedDailyEarned}</span>}
+          subtitle={!!addressRewardsValue && <span className={S.dailyEarned}>{addressRewardsValue}</span>}
         />
       );
     }
