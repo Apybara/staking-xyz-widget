@@ -8,7 +8,7 @@ import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
-import { useStakeSpecificValidator } from "@/app/_contexts/StakingContext/hooks";
+import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 import * as S from "./stake.css";
 
@@ -16,7 +16,7 @@ export const StakeInfoBox = () => {
   const { network } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
-  const { validatorDetails } = useStakeSpecificValidator();
+  const { validatorDetails } = useStakeValidatorState();
   // const stakeFees = getStakeFees({ amount: coinAmountInput, network: network || defaultNetwork });
   // const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;

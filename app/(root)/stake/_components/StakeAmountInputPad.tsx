@@ -5,7 +5,7 @@ import { useWalletBalance } from "../../../_services/wallet/hooks";
 import { AmountInputPad } from "../../../_components/AmountInputPad";
 import { useStaking } from "../../../_contexts/StakingContext";
 import { useValidatorChange } from "@/app/_contexts/ShellContext/hooks";
-import { useStakeMaxAmountBuffer, useStakeSpecificValidator } from "@/app/_contexts/StakingContext/hooks";
+import { useStakeMaxAmountBuffer, useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 import { getIsAleoNetwork } from "../../../_services/aleo/utils";
 
 export const StakeAmountInputPad = () => {
@@ -15,7 +15,7 @@ export const StakeAmountInputPad = () => {
   const { data: balanceData, isLoading: isBalanceLoading } = useWalletBalance({ address, network, activeWallet }) || {};
   const maxAmountBuffer = useStakeMaxAmountBuffer({ amount: balanceData || "0" });
   const isAleoNetwork = network && getIsAleoNetwork(network);
-  const { validatorDetails } = useStakeSpecificValidator();
+  const { validatorDetails } = useStakeValidatorState();
   const { onUpdateRouter } = useValidatorChange();
 
   return (
