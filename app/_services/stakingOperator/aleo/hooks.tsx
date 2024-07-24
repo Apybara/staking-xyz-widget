@@ -39,8 +39,7 @@ export const useAleoAddressRewards = ({ address, network }: { address: string; n
   return {
     data: {
       cumulativeRewards: getMicroCreditsToCredits(data?.cumulativeRewards || 0),
-      // TODO: integrate daily rewards from endpoint
-      dailyRewards: getMicroCreditsToCredits(0),
+      dailyRewards: null,
       accruedRewards: null,
       lastCycleRewards: null,
     },
@@ -125,6 +124,8 @@ export const useAleoAddressActivity = ({
       completionTime: entry.completionTime
         ? getTimeDiffInSingleUnits(fromUnixTime(entry.completionTime || 0))
         : undefined,
+      // TODO: use real Aleo activity result when staking operator has the data
+      result: undefined,
     })),
     totalEntries,
     lastOffset,
