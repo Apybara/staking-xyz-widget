@@ -46,6 +46,8 @@ export const getBasicTxCtaValidation = ({
   walletConnectionStatus,
   closedValidator,
   closedDelegatedValidator,
+  unbondingValidator,
+  unbondingDelegatedValidator,
   invalidValidator,
   differentValidator,
 }: {
@@ -53,11 +55,15 @@ export const getBasicTxCtaValidation = ({
   walletConnectionStatus: WalletConnectionStatus;
   closedValidator?: boolean;
   closedDelegatedValidator?: boolean;
+  unbondingValidator?: boolean;
+  unbondingDelegatedValidator?: boolean;
   invalidValidator?: boolean;
   differentValidator?: boolean;
 }): BasicTxCtaValidationResult => {
   if (closedValidator) return "closedValidator";
   if (closedDelegatedValidator) return "closedDelegatedValidator";
+  if (unbondingValidator) return "unbondingValidator";
+  if (unbondingDelegatedValidator) return "unbondingDelegatedValidator";
   if (invalidValidator) return "invalidValidator";
   if (differentValidator) return "differentValidator";
   if (amountValidation !== "valid") return amountValidation;
@@ -116,6 +122,8 @@ export type BasicTxCtaValidationResult =
   | "closedDelegatedValidator"
   | "invalidValidator"
   | "differentValidator"
+  | "unbondingValidator"
+  | "unbondingDelegatedValidator"
   | "disconnected"
   | "connecting"
   | "submittable";
