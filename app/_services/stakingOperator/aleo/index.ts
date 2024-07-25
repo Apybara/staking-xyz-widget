@@ -103,3 +103,10 @@ export const getNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">
   const res: T.NetworkRewardResponse = await fetchData(`${apiUrl}network/reward`);
   return res;
 };
+
+export const setMonitorTxByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
+  const res = await fetchData(`${apiUrl}monitor/hash/${address}`, {
+    method: "PUT",
+  });
+  return res;
+};
