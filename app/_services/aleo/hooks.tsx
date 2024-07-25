@@ -9,7 +9,7 @@ import { stakingOperatorUrlByNetwork } from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
-import { getOperatorResponseQuery } from "../stakingOperator/aleo";
+import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
 import { getAleoAddressUnbondingStatus } from "./sdk";
 import {
   useIsLeoWalletInstalled,
@@ -183,7 +183,7 @@ const useAleoBroadcastTx = ({
         uuid,
       };
     },
-    onSuccess: ({ txId, uuid, isError }) => {
+    onSuccess: ({ txId, isError }) => {
       const validTxId = wallet === "leoWallet" ? undefined : txId;
 
       if (isError) {
@@ -191,6 +191,10 @@ const useAleoBroadcastTx = ({
         onError?.(error, validTxId);
       } else {
         onSuccess?.(validTxId);
+        setMonitorTxByAddress({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          address: address || "",
+        });
       }
     },
     onError: (error) => onError?.(error),
