@@ -39,6 +39,7 @@ export const useStakeAmountInputValidation = ({
     amountValidation,
     walletConnectionStatus: connectionStatus,
     closedValidator: validatorState === "closedValidator",
+    closedDelegatedValidator: validatorState === "closedDelegatedValidator",
     invalidValidator: validatorState === "invalidValidator",
     differentValidator: validatorState === "differentValidator",
   });
@@ -80,8 +81,16 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
           if (validatorState === "closedValidator") {
             return (
               <>
-                You cannot stake more to this position. To stake more, you need to unstake first and stake again.{" "}
+                You cannot stake with this validator at the moment. Please try another validator address.{" "}
                 <a href="#">(Learn why)</a>
+              </>
+            );
+          }
+          if (validatorState === "closedDelegatedValidator") {
+            return (
+              <>
+                You cannot stake more to this position at the moment. To stake more, you need to unstake first and stake
+                again. <a href="#">(Learn why)</a>
               </>
             );
           }
@@ -150,7 +159,7 @@ export const useStakeValidatorState = () => {
 
   if (!validator && !!delegatedValidator && delegatedValidator.isOpen === false) {
     return {
-      state: "closedValidator",
+      state: "closedDelegatedValidator",
       validatorDetails: undefined,
     };
   }
@@ -174,16 +183,15 @@ export const useStakeValidatorState = () => {
         validatorDetails: undefined,
       };
     }
+  }
 
+  if (!delegatedValidator?.validatorAddress) {
     if (!validatorDetails?.isOpen) {
       return {
         state: "closedValidator",
         validatorDetails: validatorInfo,
       };
     }
-  }
-
-  if (!delegatedValidator?.validatorAddress) {
     return {
       state: "success",
       validatorDetails: validatorInfo,
@@ -192,6 +200,12 @@ export const useStakeValidatorState = () => {
   if (validator !== delegatedValidator.validatorAddress) {
     return {
       state: "differentValidator",
+      validatorDetails: validatorInfo,
+    };
+  }
+  if (!validatorDetails?.isOpen) {
+    return {
+      state: "closedDelegatedValidator",
       validatorDetails: validatorInfo,
     };
   }
