@@ -4,6 +4,7 @@ import BigNumber from "bignumber.js";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useWalletBalance } from "../../_services/wallet/hooks";
+import { useAleoAddressUnbondingStatus } from "../../_services/aleo/hooks";
 import { useStakedBalance, useDelegatedValidator, useValidatorDetails } from "../../_services/stakingOperator/hooks";
 import { getBasicAmountValidation, getBasicTxCtaValidation } from "../../_utils/transaction";
 import {
@@ -40,6 +41,8 @@ export const useStakeAmountInputValidation = ({
     walletConnectionStatus: connectionStatus,
     closedValidator: validatorState === "closedValidator",
     closedDelegatedValidator: validatorState === "closedDelegatedValidator",
+    unbondingValidator: validatorState === "unbondingValidator",
+    unbondingDelegatedValidator: validatorState === "unbondingDelegatedValidator",
     invalidValidator: validatorState === "invalidValidator",
     differentValidator: validatorState === "differentValidator",
   });
@@ -94,6 +97,28 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
                 You cannot stake more to this position at the moment. To stake more, you need to unstake first and stake
                 again.{" "}
                 <a href={process.env.NEXT_PUBLIC_CLOSED_VALIDATOR_FAQ_LINK} target="_blank" rel="noreferrer">
+                  (Learn why)
+                </a>
+              </>
+            );
+          }
+          if (validatorState === "unbondingValidator") {
+            return (
+              <>
+                The validator is now in an unbonding period. Please try again in an hour.
+                <br />
+                <a href={process.env.NEXT_PUBLIC_UNBONDING_VALIDATOR_INFO_LINK} target="_blank" rel="noreferrer">
+                  (Learn why)
+                </a>
+              </>
+            );
+          }
+          if (validatorState === "unbondingDelegatedValidator") {
+            return (
+              <>
+                Your staking position is temporarily not accepting stakes now. Please try again in an hour.
+                <br />
+                <a href={process.env.NEXT_PUBLIC_UNBONDING_VALIDATOR_INFO_LINK} target="_blank" rel="noreferrer">
                   (Learn why)
                 </a>
               </>
@@ -156,31 +181,43 @@ const useStakeMinAmount = () => {
 };
 
 export const useStakeValidatorState = () => {
-  const { validator } = useShell();
+  const { validator, network } = useShell();
   const { address } = useWallet();
   const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
     useValidatorDetails({ address: validator || undefined }) || {};
   const { data: delegatedValidator } = useDelegatedValidator({ address: address || "" }) || {};
+  const validatorUnbondingStatus = useAleoAddressUnbondingStatus({
+    address: validator || delegatedValidator?.validatorAddress || "",
+    network,
+  });
 
-  if (!validator && !!delegatedValidator && delegatedValidator.isOpen === false) {
-    return {
-      state: "closedDelegatedValidator",
-      validatorDetails: undefined,
-    };
-  }
-
+  // Default staking view
   if (!validator) {
+    if (!!delegatedValidator && delegatedValidator.isOpen === false) {
+      return {
+        state: "closedDelegatedValidator",
+        validatorDetails: undefined,
+      };
+    }
+    if (validatorUnbondingStatus !== null && delegatedValidator !== undefined) {
+      return {
+        state: "unbondingDelegatedValidator",
+        validatorDetails: undefined,
+      };
+    }
     return {
       state: "empty",
       validatorDetails: undefined,
     };
   }
 
+  // Specific-validator view
   const validatorInfo = {
     ...validatorDetails,
     isLoading: isLoadingValidatorDetails,
   };
 
+  //// Invalid validator address
   if (!!validator && isLoadingValidatorDetails === false) {
     if (!validatorDetails?.validatorAddress) {
       return {
@@ -190,10 +227,17 @@ export const useStakeValidatorState = () => {
     }
   }
 
+  //// Address without delegation
   if (!delegatedValidator?.validatorAddress) {
     if (!validatorDetails?.isOpen) {
       return {
         state: "closedValidator",
+        validatorDetails: validatorInfo,
+      };
+    }
+    if (validatorUnbondingStatus !== null) {
+      return {
+        state: "unbondingValidator",
         validatorDetails: validatorInfo,
       };
     }
@@ -202,6 +246,8 @@ export const useStakeValidatorState = () => {
       validatorDetails: validatorInfo,
     };
   }
+
+  //// Address with delegation
   if (validator !== delegatedValidator.validatorAddress) {
     return {
       state: "differentValidator",
@@ -211,6 +257,12 @@ export const useStakeValidatorState = () => {
   if (!validatorDetails?.isOpen) {
     return {
       state: "closedDelegatedValidator",
+      validatorDetails: validatorInfo,
+    };
+  }
+  if (validatorUnbondingStatus !== null) {
+    return {
+      state: "unbondingDelegatedValidator",
       validatorDetails: validatorInfo,
     };
   }
