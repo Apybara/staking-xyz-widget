@@ -62,7 +62,7 @@ export const TxProcedureDialog = ({
   }, [connectionStatus, open, inputState]);
 
   useTxPostHogEvents({
-    type,
+    type: type === "withdraw" ? "claim" : type,
     open,
     amount: amountInputPad?.primaryValue || amount || "0",
     uncheckedProcedures,

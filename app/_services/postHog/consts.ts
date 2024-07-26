@@ -20,6 +20,11 @@ export const EventVariants = [
   "claim_tx_flow_auth_failed",
   "claim_tx_flow_succeeded",
   "claim_tx_flow_failed",
+  "withdraw_tx_flow_started",
+  "withdraw_tx_flow_auth_succeeded",
+  "withdraw_tx_flow_auth_failed",
+  "withdraw_tx_flow_succeeded",
+  "withdraw_tx_flow_failed",
 ] as const;
 
 export const eventVariants = [...EventVariants];
@@ -29,4 +34,5 @@ export const eventActionMap = {
   unstake: "_undelegate",
   redelegate: "_redelegate",
   claim: "",
+  withdraw: "",
 } as const;

@@ -26,6 +26,11 @@ export type EventFunctionTypes = {
   claim_tx_flow_auth_failed: () => void;
   claim_tx_flow_succeeded: () => void;
   claim_tx_flow_failed: () => void;
+  withdraw_tx_flow_started: () => void;
+  withdraw_tx_flow_auth_succeeded: () => void;
+  withdraw_tx_flow_auth_failed: () => void;
+  withdraw_tx_flow_succeeded: () => void;
+  withdraw_tx_flow_failed: () => void;
 };
 
 export type WalletConnectivityProps = {
