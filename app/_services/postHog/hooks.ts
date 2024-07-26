@@ -47,6 +47,11 @@ export function usePostHogEvent<E extends T.Event>(event: E): T.EventFunctionTyp
     case "claim_tx_flow_auth_failed":
     case "claim_tx_flow_succeeded":
     case "claim_tx_flow_failed":
+    case "withdraw_tx_flow_started":
+    case "withdraw_tx_flow_auth_succeeded":
+    case "withdraw_tx_flow_auth_failed":
+    case "withdraw_tx_flow_succeeded":
+    case "withdraw_tx_flow_failed":
       return (() => {
         posthog.capture(event);
       }) as T.EventFunctionTypes[E];

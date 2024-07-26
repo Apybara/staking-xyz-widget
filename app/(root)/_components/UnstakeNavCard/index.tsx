@@ -56,9 +56,9 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
         coinVal: aleoUnstakeStatus?.amount,
       });
 
-      return aleoUnstakeStatus?.isClaimable
+      return aleoUnstakeStatus?.isWithdrawable
         ? {
-            title: <NavCard.SecondaryText>Claimable</NavCard.SecondaryText>,
+            title: <NavCard.SecondaryText>Withdrawable</NavCard.SecondaryText>,
             value: <NavCard.PrimaryText>{aleoUnbondingAmount}</NavCard.PrimaryText>,
           }
         : {

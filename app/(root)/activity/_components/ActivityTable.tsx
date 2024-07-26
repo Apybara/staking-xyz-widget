@@ -140,7 +140,7 @@ const useTabs = ({
         onClick: () => setFilterKey("unstake"),
       },
       {
-        children: "Claim",
+        children: "Withdraw",
         state: filterKey === "claim" ? "highlighted" : "default",
         onClick: () => setFilterKey("claim"),
       },
@@ -186,7 +186,7 @@ const getTitleKey = (activity: ListItem) => {
       if (!activity.staking_option) return "Unstake";
       return activity.staking_option === "native" ? "Unstake (Native)" : "Unstake (Liquid)";
     case "claim":
-      return "Claim";
+      return "Withdraw";
     case "rewards":
       return "Claim";
     case "redelegate":

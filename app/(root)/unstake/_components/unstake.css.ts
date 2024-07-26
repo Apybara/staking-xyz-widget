@@ -47,7 +47,7 @@ export const claimableStatus = style({
   backgroundColor: colors.yellow900,
 });
 
-export const claimableTooltip = style({
+export const withdrawableTooltip = style({
   maxInlineSize: pxToRem(170),
   padding: pxToRem(16),
   backgroundColor: colors.yellow100,
@@ -56,7 +56,7 @@ export const claimableTooltip = style({
   textAlign: "center",
 });
 
-export const claimButton = style({
+export const withdrawButton = style({
   backgroundColor: colors.yellow100,
   border: 0,
   borderRadius: pxToRem(4),

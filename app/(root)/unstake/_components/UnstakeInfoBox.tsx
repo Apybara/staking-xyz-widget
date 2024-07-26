@@ -62,15 +62,15 @@ export const UnstakeInfoBox = () => {
       <InfoCard.Card>
         <InfoCard.StackItem>
           <InfoCard.TitleBox>
-            {aleoUnstakeStatus.isClaimable ? (
+            {aleoUnstakeStatus.isWithdrawable ? (
               <Tooltip
-                className={S.claimableTooltip}
+                className={S.withdrawableTooltip}
                 trigger={
-                  <button className={S.claimButton} onClick={() => toggleClaimingProcedureDialog(true)}>
-                    Claim
+                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
+                    Withdraw
                   </button>
                 }
-                content={`You can claim ${aleoUnbondingAmount} now!`}
+                content={`You can withdraw ${aleoUnbondingAmount} now!`}
               />
             ) : (
               <p className={cn(S.remainingDays)}>
