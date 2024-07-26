@@ -82,7 +82,9 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
             return (
               <>
                 You cannot stake with this validator at the moment. Please try another validator address.{" "}
-                <a href="#">(Learn why)</a>
+                <a href={process.env.NEXT_PUBLIC_CLOSED_VALIDATOR_FAQ_LINK} target="_blank" rel="noreferrer">
+                  (Learn why)
+                </a>
               </>
             );
           }
@@ -90,7 +92,10 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
             return (
               <>
                 You cannot stake more to this position at the moment. To stake more, you need to unstake first and stake
-                again. <a href="#">(Learn why)</a>
+                again.{" "}
+                <a href={process.env.NEXT_PUBLIC_CLOSED_VALIDATOR_FAQ_LINK} target="_blank" rel="noreferrer">
+                  (Learn why)
+                </a>
               </>
             );
           }
