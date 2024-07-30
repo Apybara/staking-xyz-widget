@@ -27,7 +27,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
     inputAmount: states.coinAmountInput,
     stakedBalance: stakedBalance?.stakedBalance,
   });
-  const inputErrorMessage = useUnstakeInputErrorMessage({ amountValidation });
+  const inputErrorMessage = useUnstakeInputErrorMessage({ amountValidation, inputAmount: states.coinAmountInput });
   const { procedures, resetStates } = useTxProcedure({
     address,
     network: network || defaultNetwork,

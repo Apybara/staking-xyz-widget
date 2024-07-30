@@ -154,6 +154,7 @@ export const errorMessage = style({
   lineHeight: pxToRem(16),
   color: colors.yellow900,
   textAlign: "center",
+  textWrap: "pretty",
   display: "block",
   maxInlineSize: "100%",
   marginBlockEnd: pxToRem(-16),
