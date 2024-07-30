@@ -5,7 +5,6 @@ import { useWallet } from "../../../_contexts/WalletContext";
 import { useUnbondingDelegations, useStakedBalance } from "../../../_services/stakingOperator/hooks";
 import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
 import * as NavCard from "../NavCard";
-import Tooltip from "../../../_components/Tooltip";
 import { Skeleton } from "../../../_components/Skeleton";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
@@ -29,6 +28,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
   const isDisabled =
     connectionStatus !== "connected" || ((!stakedBalance || stakedBalance === "0") && !hasPendingItems);
   const completionTime = aleoUnstakeStatus?.completionTime || unbondingDelegations?.[0]?.completionTime;
+  const defaultTitle = useDefaultTitle({ showOneEntryOnly, unbondingDelegationsLength: unbondingDelegations?.length });
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
@@ -62,11 +62,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
             value: <NavCard.PrimaryText>{aleoUnbondingAmount}</NavCard.PrimaryText>,
           }
         : {
-            title: (
-              <NavCard.SecondaryText className={S.pendingText}>
-                Pending <span className={S.pendingStatus}></span>
-              </NavCard.SecondaryText>
-            ),
+            title: defaultTitle,
             value: (
               <NavCard.PrimaryText>
                 {times?.time || fallbackTime.time}{" "}
@@ -83,9 +79,27 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     completionTime,
     showOneEntryOnly,
     aleoUnstakeStatus,
+    defaultTitle,
   ]);
 
   return <NavCard.Card {...props} page="unstake" disabled={isDisabled} endBox={endBoxValue} />;
+};
+
+const useDefaultTitle = ({
+  showOneEntryOnly,
+  unbondingDelegationsLength,
+}: {
+  showOneEntryOnly: boolean;
+  unbondingDelegationsLength?: number;
+}) => {
+  if (showOneEntryOnly) {
+    return (
+      <NavCard.SecondaryText className={S.pendingText}>
+        Pending <span className={S.pendingStatus}></span>
+      </NavCard.SecondaryText>
+    );
+  }
+  return <NavCard.SecondaryText>In progress {unbondingDelegationsLength}</NavCard.SecondaryText>;
 };
 
 const useFallbackTime = () => {
