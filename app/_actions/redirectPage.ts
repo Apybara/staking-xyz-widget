@@ -24,25 +24,33 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const isValidatorSelectionUnsupported =
     !!validator && networkInfo[(network as Network) || defaultNetwork]?.supportsValidatorSelection !== true;
   const networkParamAndAlias = getNetworkParamFromValidAlias(network || "");
+  const isMultipleNetworks = Array.isArray(network);
 
-  if (isNetworkInvalid) {
-    current.set("network", networkParamAndAlias.alias);
-  }
-  if (isCurrencyInvalid || isNetworkAndCurrencyPairInvalid) {
-    current.set("currency", networkCurrency[networkParamAndAlias.network]);
-  }
-  if (isStakingTypeInvalid) {
-    current.delete("stakingType");
-    current.delete("validator");
-  }
-  if (isStakingTypeExpected) {
-    current.set("stakingType", defaultStakingType);
-  }
-  if (isValidatorSelectionUnsupported) {
-    current.delete("validator");
+  if (isMultipleNetworks) {
+    current.set("network", network[0]);
+    validator && current.set("validator", validator);
+  } else {
+    if (isNetworkInvalid) {
+      current.set("network", networkParamAndAlias.alias);
+    }
+    if (isCurrencyInvalid || isNetworkAndCurrencyPairInvalid) {
+      current.set("currency", networkCurrency[networkParamAndAlias.network]);
+    }
+    if (isStakingTypeInvalid) {
+      current.delete("stakingType");
+      current.delete("validator");
+    }
+    if (isStakingTypeExpected) {
+      current.set("stakingType", defaultStakingType);
+    }
+    if (isValidatorSelectionUnsupported) {
+      console.log("or here", validator);
+      current.delete("validator");
+    }
   }
 
   if (
+    isMultipleNetworks ||
     isNetworkInvalid ||
     isCurrencyInvalid ||
     isNetworkAndCurrencyPairInvalid ||
