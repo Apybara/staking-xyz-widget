@@ -31,10 +31,11 @@ export const getDynamicPageMetadata = ({
   description?: string;
   networkParam?: string;
 }): Metadata => {
+  const network = Array.isArray(networkParam) ? networkParam?.[0] : networkParam;
   const baseMetaTitle = getBaseMetaTitle(page);
-  const networkId = networkIdRegex.test(networkParam || "")
-    ? (networkParam as Network)
-    : networkUrlParamToId[networkParam as string] || defaultNetwork;
+  const networkId = networkIdRegex.test(network || "")
+    ? (network as Network)
+    : networkUrlParamToId[network as string] || defaultNetwork;
   const networkName = networkInfo[networkId].name;
   const dynamicTitle = networkName ? `${baseMetaTitle} ✦ ${networkName}` : baseMetaTitle;
 
