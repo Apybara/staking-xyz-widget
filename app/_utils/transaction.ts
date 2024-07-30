@@ -6,12 +6,14 @@ export const getBasicAmountValidation = ({
   amount,
   min,
   max,
+  safeMin,
   bufferValidationAmount,
   bufferValidationMax,
 }: {
   amount?: string;
   min?: string;
   max?: string;
+  safeMin?: string;
   bufferValidationAmount?: string;
   bufferValidationMax?: string;
 }): BasicAmountValidationResult => {
@@ -29,6 +31,9 @@ export const getBasicAmountValidation = ({
   }
   if (max && parsedAmount.isGreaterThan(max)) {
     return "exceeded";
+  }
+  if (max && safeMin && BigNumber(max).minus(parsedAmount).isLessThan(safeMin)) {
+    return "safeMinInsufficient";
   }
   if (
     bufferValidationAmount &&
@@ -66,6 +71,7 @@ export const getBasicTxCtaValidation = ({
   if (unbondingDelegatedValidator) return "unbondingDelegatedValidator";
   if (invalidValidator) return "invalidValidator";
   if (differentValidator) return "differentValidator";
+  if (amountValidation === "safeMinInsufficient") return "submittable";
   if (amountValidation !== "valid") return amountValidation;
   if (walletConnectionStatus === "disconnected") return "disconnected";
   if (walletConnectionStatus === "connecting") return "connecting";
@@ -81,6 +87,7 @@ export const getBasicRedelegateCtaValidation = ({
   amountValidation: BasicAmountValidationResult;
   walletConnectionStatus: WalletConnectionStatus;
 }): BasicTxCtaValidationResult => {
+  if (amountValidation === "safeMinInsufficient") return "submittable";
   if (amountValidation !== "valid") return amountValidation;
   if (!isAgreementChecked) return "invalid";
   if (walletConnectionStatus === "disconnected") return "disconnected";
@@ -110,7 +117,8 @@ export type BasicAmountValidationResult =
   | "invalid"
   | "insufficient"
   | "exceeded"
-  | "bufferExceeded";
+  | "bufferExceeded"
+  | "safeMinInsufficient";
 
 export type BasicTxCtaValidationResult =
   | "empty"

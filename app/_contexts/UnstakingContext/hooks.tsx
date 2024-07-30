@@ -7,7 +7,7 @@ import {
   getBasicAmountValidation,
   getBasicTxCtaValidation,
 } from "../../_utils/transaction";
-import { defaultNetwork, requiredBalanceUnstakingByNetwork } from "../../consts";
+import { defaultNetwork, requiredBalanceUnstakingByNetwork, minStakedBalanceByNetwork } from "../../consts";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -16,14 +16,16 @@ export const useUnstakeAmountInputValidation = ({
   inputAmount: UnstakingStates["coinAmountInput"];
   stakedBalance?: string;
 }) => {
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
+  const minStakedBalance = stakingType ? minStakedBalanceByNetwork[network || defaultNetwork][stakingType] : 0;
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
     min: "0",
     max: stakedBalance,
+    safeMin: minStakedBalance ? minStakedBalance.toString() : undefined,
     bufferValidationAmount: requiredBalanceUnstakingByNetwork[network || defaultNetwork].toString(),
     bufferValidationMax: balanceData,
   });
@@ -37,10 +39,12 @@ export const useUnstakeAmountInputValidation = ({
 
 export const useUnstakeInputErrorMessage = ({
   amountValidation,
+  inputAmount,
 }: {
   amountValidation: BasicAmountValidationResult;
+  inputAmount: UnstakingStates["coinAmountInput"];
 }) => {
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const defaultMessage = getDefaultInputErrorMessage({ amountValidation });
 
   switch (network) {
@@ -48,8 +52,17 @@ export const useUnstakeInputErrorMessage = ({
     case "celestiatestnet3":
     case "cosmoshub":
     case "cosmoshubtestnet":
-    case "aleo":
       return defaultMessage;
+    case "aleo":
+      switch (stakingType) {
+        case "liquid":
+          return defaultMessage;
+        case "native":
+          if (amountValidation === "safeMinInsufficient") {
+            return `Unstaking ${inputAmount} ALEO will reduce your staked balance below the minimum 10K ALEO requirement and will unstake of all you staked balance.`;
+          }
+          return defaultMessage;
+      }
   }
 };
 
