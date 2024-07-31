@@ -1,4 +1,5 @@
 import type * as T from "../types";
+import type { StakingType } from "@/app/types";
 import type { TxProcedureType } from "../../txProcedure/types";
 import { getCreditsToMicroCredits } from "../../aleo/utils";
 import { fetchData } from "@/app/_utils/fetch";
@@ -104,9 +105,36 @@ export const getNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">
   return res;
 };
 
-export const setMonitorTxByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
+export const setMonitorTxByAddress = async ({
+  apiUrl,
+  address,
+  type,
+  stakingType,
+  amount,
+}: {
+  apiUrl: string;
+  address: string;
+  type: TxProcedureType;
+  stakingType: StakingType;
+  amount: number;
+}) => {
   const res = await fetchData(`${apiUrl}monitor/hash/${address}`, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: monitorByAddressTypeMap[type],
+      amount,
+      staking_option: stakingType,
+    }),
   });
   return res;
+};
+
+const monitorByAddressTypeMap: Record<TxProcedureType, string> = {
+  claim: "claim",
+  delegate: "stake",
+  undelegate: "unstake",
+  redelegate: "",
 };

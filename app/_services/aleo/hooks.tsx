@@ -31,7 +31,13 @@ import {
   usePuzzleUnstake,
   usePuzzleWithdraw,
 } from "./puzzle/hooks";
-import { getIsAleoAddressFormat, getMicroCreditsToCredits, getIsAleoNetwork, getIsAleoWalletType } from "./utils";
+import {
+  getIsAleoAddressFormat,
+  getMicroCreditsToCredits,
+  getCreditsToMicroCredits,
+  getIsAleoNetwork,
+  getIsAleoWalletType,
+} from "./utils";
 import { aleoRestUrl } from "@/app/consts";
 
 export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
@@ -181,9 +187,10 @@ const useAleoBroadcastTx = ({
       return {
         txId: txRes.txId || txId,
         uuid,
+        amount,
       };
     },
-    onSuccess: ({ txId, isError }) => {
+    onSuccess: ({ txId, isError, amount }) => {
       const validTxId = wallet === "leoWallet" ? undefined : txId;
 
       if (isError) {
@@ -194,6 +201,9 @@ const useAleoBroadcastTx = ({
         setMonitorTxByAddress({
           apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
           address: address || "",
+          type,
+          stakingType,
+          amount: getCreditsToMicroCredits(amount || 0),
         });
       }
     },
