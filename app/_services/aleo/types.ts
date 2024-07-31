@@ -39,6 +39,7 @@ export type AleoWithdrawProps = {
   address: string;
   chainId?: AleoNetwork;
   txFee: string;
+  amount?: string;
 };
 
 export type LeoWalletNetworkId = (typeof LeoWalletNetworkIds)[number];
