@@ -18,7 +18,7 @@ export const getIsAleoAddressFormat = (address: string): boolean => {
   if (address.length !== 63 || !address.startsWith("aleo")) return false;
 
   return getIsBech32(address);
-}
+};
 
 export const getCoinValueFromDenom = ({ network, amount }: { network: AleoNetwork; amount?: string | number }) => {
   const exponent = getExponent(network);
@@ -48,7 +48,12 @@ export const getCreditsToMicroCredits = (credits: string | number) => {
   return BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber();
 };
 
+export const getCreditsToMint = (credits: string | number) => {
+  return BigNumber(credits).times(MINT_CONVERSION_RATE).toNumber();
+};
+
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
+const MINT_CONVERSION_RATE = 0.925;
 
 const getIsBech32 = (address?: string) => {
   if (!address) return false;

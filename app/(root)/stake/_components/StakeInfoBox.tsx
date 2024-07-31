@@ -12,6 +12,7 @@ import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 import * as S from "./stake.css";
 import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
+import { getTokenEquivalent } from "@/app/_utils/conversions";
 
 export const StakeInfoBox = () => {
   const { network, stakingType } = useShell();
@@ -26,6 +27,9 @@ export const StakeInfoBox = () => {
   const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultStakeFee) });
   const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
   const hasCommission = validatorDetails?.commission !== undefined;
+  const isLiquid = stakingType === "liquid";
+
+  const tokenRate = getTokenEquivalent({ val: coinAmountInput as string, network: network || defaultNetwork });
 
   return (
     <InfoCard.Card>
@@ -70,20 +74,28 @@ export const StakeInfoBox = () => {
             <InfoCard.Content>{validatorDetails?.commission}%</InfoCard.Content>
           </InfoCard.StackItem>
         )}
-        {hasInput && (
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Unstaking period</InfoCard.Title>
+        {hasInput &&
+          (isLiquid ? (
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Will receive</InfoCard.Title>
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{tokenRate}</InfoCard.Content>
+            </InfoCard.StackItem>
+          ) : (
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Unstaking period</InfoCard.Title>
 
-              <Tooltip
-                className={S.unstakingTooltip}
-                trigger={<Icon name="info" />}
-                content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
-              />
-            </InfoCard.TitleBox>
-            <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
-          </InfoCard.StackItem>
-        )}
+                <Tooltip
+                  className={S.unstakingTooltip}
+                  trigger={<Icon name="info" />}
+                  content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
+                />
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
+            </InfoCard.StackItem>
+          ))}
       </InfoCard.Stack>
     </InfoCard.Card>
   );

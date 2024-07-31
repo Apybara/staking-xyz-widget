@@ -132,6 +132,8 @@ export type BasicTxCtaValidationResult =
   | "differentValidator"
   | "unbondingValidator"
   | "unbondingDelegatedValidator"
+  | "liquidRebalancing"
+  | "claimFirst"
   | "disconnected"
   | "connecting"
   | "submittable";
