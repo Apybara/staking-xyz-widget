@@ -16,7 +16,6 @@ const tabs: Array<StakingTypeTab> = [
   {
     label: stakingTypeMap.liquid,
     value: "liquid",
-    disabled: true,
   },
 ];
 
