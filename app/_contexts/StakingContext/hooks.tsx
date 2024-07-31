@@ -124,6 +124,9 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
               </>
             );
           }
+          if (validatorState === "liquidRebalancing") {
+            return "The liquid staking protocol is now in a rebalancing period. Please try again later in 10 minutes";
+          }
           if (validatorState === "invalidValidator") {
             return `${formattedValidatorAddress} is an invalid validator address`;
           }

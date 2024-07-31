@@ -11,13 +11,14 @@ import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { useDialog } from "@/app/_contexts/UIContext";
 import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
+import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 import { useUnbondingDelegations } from "../../../_services/stakingOperator/hooks";
 import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
   const { address } = useWallet();
-  const { currency, coinPrice, network } = useShell();
+  const { currency, coinPrice, network, stakingType } = useShell();
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
   const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -25,6 +26,7 @@ export const UnstakeInfoBox = () => {
   });
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
+  const isLiquid = stakingType === "liquid";
   const hasPendingItems = unbondingDelegations?.length || aleoUnstakeStatus !== null;
   const totalPendingItems = aleoUnstakeStatus !== null ? 1 : unbondingDelegations?.length || 0;
   const totalPendingAmount = useMemo(() => {
@@ -70,7 +72,11 @@ export const UnstakeInfoBox = () => {
                     Withdraw
                   </button>
                 }
-                content={`You can withdraw ${aleoUnbondingAmount} now!`}
+                content={
+                  isLiquid
+                    ? "You need to claim before making a new unstaking request"
+                    : `You can claim ${aleoUnbondingAmount} now!`
+                }
               />
             ) : (
               <p className={cn(S.remainingDays)}>

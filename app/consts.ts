@@ -17,6 +17,14 @@ export const networkCurrency: Record<Network, NetworkCurrency> = {
   cosmoshubtestnet: "ATOM",
   aleo: "ALEO",
 };
+
+export const networkTokens: Record<Network, string> = {
+  celestia: "",
+  celestiatestnet3: "",
+  cosmoshub: "",
+  cosmoshubtestnet: "",
+  aleo: "pALEO",
+};
 export const networkCoinPriceSymbol: Record<Network, string> = {
   celestia: "celestia",
   celestiatestnet3: "celestia",
