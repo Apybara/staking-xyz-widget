@@ -54,7 +54,9 @@ export const TxProcedureDialog = ({
 
   useEffect(() => {
     if (!open) return;
-    if (connectionStatus === "disconnected" || ((type === "stake" || type === "unstake") && inputState !== "valid")) {
+
+    const validInputState = inputState === "valid" || inputState === "safeMinInsufficient";
+    if (connectionStatus === "disconnected" || ((type === "stake" || type === "unstake") && !validInputState)) {
       toggleOpen(false);
     }
   }, [connectionStatus, open, inputState]);
