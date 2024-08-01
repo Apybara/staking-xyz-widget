@@ -1,9 +1,20 @@
+import type { StakingType } from "@/app/types";
 import { fetchData } from "@/app/_utils/fetch";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
 
-export const getAleoAddressUnbondingStatus = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
+export const getAleoAddressUnbondingStatus = async ({
+  apiUrl,
+  address,
+  stakingType,
+}: {
+  apiUrl: string;
+  address: string;
+  stakingType: StakingType | null;
+}) => {
   const latestBlockHeight = await getAleoLatestBlockHeight({ apiUrl });
-  const unbondingPosition = await getAleoAddressUnbondingPosition({ apiUrl, address });
+  const unbondingPosition = await (stakingType === "liquid"
+    ? getAleoAddressLiquidUnbondingPosition({ apiUrl, address })
+    : getAleoAddressUnbondingPosition({ apiUrl, address }));
 
   if (!unbondingPosition || !unbondingPosition.microCredits) return null;
 
@@ -52,6 +63,17 @@ export const getAleoAddressUnbondingPosition = async ({ apiUrl, address }: { api
     }),
   });
   return getFormattedUnbondingPosition(res.result);
+};
+
+export const getAleoAddressLiquidUnbondingPosition = async ({
+  apiUrl,
+  address,
+}: {
+  apiUrl: string;
+  address: string;
+}) => {
+  const res = await fetchData(`${apiUrl}program/pondo_core_protocolv1.aleo/mapping/unbonding/${address}`);
+  return getFormattedUnbondingPosition(res);
 };
 
 const getFormattedUnbondingPosition = (data: string | null) => {

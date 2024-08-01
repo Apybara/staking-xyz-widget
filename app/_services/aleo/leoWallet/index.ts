@@ -5,7 +5,14 @@ import type * as T from "./types";
 import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits, getCreditsToMint } from "../utils";
-import { aleoDefaultClaimFee, aleoDefaultStakeFee, aleoDefaultUnstakeFee } from "@/app/consts";
+import {
+  aleoDefaultClaimFee,
+  aleoDefaultLiquidClaimFee,
+  aleoDefaultLiquidStakeFee,
+  aleoDefaultLiquidUnstakeFee,
+  aleoDefaultStakeFee,
+  aleoDefaultUnstakeFee,
+} from "@/app/consts";
 
 export const getLeoWalletTxStatus = async ({
   txId,
@@ -94,15 +101,15 @@ export const leoWalletLiquidStake = async ({
 }: T.LeoWalletStakeProps) => {
   try {
     const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
-    const transactionMintAmount = getCreditsToMint(amount) + "u64";
+    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount)) + "u64";
 
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
       "pondo_core_protocolv1.aleo",
-      "deposit_public",
+      "deposit_public_as_signer",
       [transactionAmount, transactionMintAmount, address],
-      getLeoWalletFormattedTxFee(txFee || aleoDefaultStakeFee),
+      getLeoWalletFormattedTxFee(aleoDefaultLiquidStakeFee),
       false,
     );
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
@@ -146,14 +153,14 @@ export const leoWalletLiquidUnstake = async ({
   txFee,
 }: T.LeoWalletUnstakeProps) => {
   try {
-    const transactionMintAmount = getCreditsToMint(amount) + "u64";
+    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount)) + "u64";
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
       "pondo_core_protocolv1.aleo",
       "withdraw_public",
-      [transactionMintAmount, address],
-      getLeoWalletFormattedTxFee(txFee || aleoDefaultUnstakeFee),
+      [transactionMintAmount],
+      getLeoWalletFormattedTxFee(aleoDefaultLiquidUnstakeFee),
       false,
     );
 
@@ -197,7 +204,7 @@ export const leoWalletLiquidWithdraw = async ({
       "pondo_core_protocolv1.aleo",
       "claim_withdrawal_public",
       [address, transactionAmount],
-      getLeoWalletFormattedTxFee(txFee || aleoDefaultClaimFee),
+      getLeoWalletFormattedTxFee(aleoDefaultLiquidClaimFee),
       false,
     );
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);

@@ -285,8 +285,11 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
 };
 
 export const aleoDefaultStakeFee = "182079";
+export const aleoDefaultLiquidStakeFee = "633997";
 export const aleoDefaultUnstakeFee = "365356";
+export const aleoDefaultLiquidUnstakeFee = "689029";
 export const aleoDefaultClaimFee = "88711";
+export const aleoDefaultLiquidClaimFee = "689029";
 
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
   celestia: [

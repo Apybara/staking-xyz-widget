@@ -42,6 +42,7 @@ import { aleoRestUrl } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 
 export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
+  const { stakingType } = useShell();
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
   const shouldEnable = isAleoNetwork && isAleoAddressFormat;
@@ -51,7 +52,7 @@ export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: 
     queryKey: ["aleoAddressUnbondingStatus", address, network],
     queryFn: () => {
       if (!shouldEnable) return null;
-      return getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "" });
+      return getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "", stakingType });
     },
     refetchInterval: 30000,
     refetchOnWindowFocus: true,
@@ -207,7 +208,7 @@ const useAleoBroadcastTx = ({
           apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
           address: address || "",
           type,
-          stakingType,
+          stakingType: stakingType as StakingType,
           amount: getCreditsToMicroCredits(amount || 0),
         });
       }

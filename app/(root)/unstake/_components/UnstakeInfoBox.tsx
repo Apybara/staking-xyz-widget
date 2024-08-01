@@ -66,10 +66,10 @@ export const UnstakeInfoBox = () => {
           <InfoCard.TitleBox>
             {aleoUnstakeStatus.isWithdrawable ? (
               <Tooltip
-                className={S.withdrawableTooltip}
+                className={S.claimableTooltip}
                 trigger={
-                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
-                    Withdraw
+                  <button className={S.claimButton} onClick={() => toggleClaimingProcedureDialog(true)}>
+                    Claim
                   </button>
                 }
                 content={

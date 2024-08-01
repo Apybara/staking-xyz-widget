@@ -2,39 +2,83 @@
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
-import { unstakingPeriodByNetwork, defaultNetwork, aleoDefaultUnstakeFee } from "../../../consts";
-import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
+import { unstakingPeriodByNetwork, defaultNetwork, networkTokens, aleoDefaultUnstakeFee } from "../../../consts";
+import Tooltip from "@/app/_components/Tooltip";
+import { Icon } from "@/app/_components/Icon";
+
 import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
+import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
+import { getCoinFromToken } from "@/app/_utils/conversions";
+
+import * as S from "./unstake.css";
 
 export const UnstakeSecondaryInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput } = useUnstaking();
+  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultUnstakeFee) });
+
+  const castedNetwork = network || defaultNetwork;
 
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
   const isNative = stakingType === "native";
-  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultUnstakeFee) });
+  const isLiquid = stakingType === "liquid";
 
-  if (coinAmountInput === "" || coinAmountInput === "0") {
-    return null;
-  }
+  if (!hasInput) return null;
+
+  const tokenRate = getCoinFromToken({ val: coinAmountInput as string, network: castedNetwork });
 
   return (
     <InfoCard.Card>
       <InfoCard.Stack>
-        {isNative && hasInput && (
-          <InfoCard.StackItem>
+        <InfoCard.StackItem>
+          {isNative && hasInput && (
             <InfoCard.TitleBox>
               <InfoCard.Title>Transaction fee</InfoCard.Title>
             </InfoCard.TitleBox>
-            <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
-          </InfoCard.StackItem>
-        )}
+          )}
+          {hasInput && isLiquid && (
+            <InfoCard.TitleBox>
+              <InfoCard.Title>Total fees</InfoCard.Title>
+
+              <Tooltip
+                className={S.unstakingTooltip}
+                trigger={<Icon name="info" />}
+                content={
+                  <>
+                    Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
+                    blended commission to validators <span className={S.plusSign}>+</span> protocol commission to
+                    Pondo.xyz
+                  </>
+                }
+              />
+            </InfoCard.TitleBox>
+          )}
+          <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
+        </InfoCard.StackItem>
         <InfoCard.StackItem>
           <InfoCard.TitleBox>
             <InfoCard.Title>Unstaking period</InfoCard.Title>
           </InfoCard.TitleBox>
           <InfoCard.Content>{unstakingPeriodByNetwork[network || defaultNetwork]}</InfoCard.Content>
         </InfoCard.StackItem>
+        {hasInput && isLiquid && (
+          <InfoCard.StackItem>
+            <InfoCard.TitleBox>
+              <InfoCard.Title>Will receive</InfoCard.Title>
+
+              <Tooltip
+                className={S.unstakingTooltip}
+                trigger={<Icon name="info" />}
+                content={
+                  <>
+                    1 {networkTokens[castedNetwork]} = {getCoinFromToken({ val: 1, network: castedNetwork })}
+                  </>
+                }
+              />
+            </InfoCard.TitleBox>
+            <InfoCard.Content>{tokenRate}</InfoCard.Content>
+          </InfoCard.StackItem>
+        )}
       </InfoCard.Stack>
     </InfoCard.Card>
   );

@@ -13,7 +13,7 @@ export const plusSign = style({
   color: colors.black300,
 });
 
-export const unstakingTooltip = style({
+export const stakingTooltip = style({
   maxInlineSize: pxToRem(250),
 });
 

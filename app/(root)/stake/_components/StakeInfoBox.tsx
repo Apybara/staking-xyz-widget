@@ -3,7 +3,13 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
-import { feeRatioByNetwork, unstakingPeriodByNetwork, defaultNetwork, aleoDefaultStakeFee } from "../../../consts";
+import {
+  feeRatioByNetwork,
+  unstakingPeriodByNetwork,
+  defaultNetwork,
+  aleoDefaultStakeFee,
+  networkCurrency,
+} from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
@@ -12,7 +18,7 @@ import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 import * as S from "./stake.css";
 import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
-import { getTokenEquivalent } from "@/app/_utils/conversions";
+import { getTokenFromCoin } from "@/app/_utils/conversions";
 
 export const StakeInfoBox = () => {
   const { network, stakingType } = useShell();
@@ -20,16 +26,16 @@ export const StakeInfoBox = () => {
   const networkReward = useNetworkReward({ amount: coinAmountInput });
   const { validatorDetails } = useStakeValidatorState();
   // const stakeFees = getStakeFees({ amount: coinAmountInput, network: network || defaultNetwork });
-  // const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
+  const castedNetwork = network || defaultNetwork;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
   const isNative = stakingType === "native";
   const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultStakeFee) });
-  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
+  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork];
   const hasCommission = validatorDetails?.commission !== undefined;
   const isLiquid = stakingType === "liquid";
 
-  const tokenRate = getTokenEquivalent({ val: coinAmountInput as string, network: network || defaultNetwork });
+  const tokenRate = getTokenFromCoin({ val: coinAmountInput as string, network: castedNetwork });
 
   return (
     <InfoCard.Card>
@@ -49,23 +55,26 @@ export const StakeInfoBox = () => {
             <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
           </InfoCard.StackItem>
         )}
-        {/* {stakeFees && (
+        {hasInput && isLiquid && (
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
               <InfoCard.Title>Total fees</InfoCard.Title>
 
               <Tooltip
+                className={S.stakingTooltip}
                 trigger={<Icon name="info" />}
                 content={
                   <>
-                    Network fee <span className={S.plusSign}>+</span> Platform fee ({platformFee}%)
+                    Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
+                    blended commission to validators <span className={S.plusSign}>+</span> protocol commission to
+                    Pondo.xyz
                   </>
                 }
               />
             </InfoCard.TitleBox>
-            <InfoCard.Content>{formattedStakeFees}</InfoCard.Content>
+            <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
           </InfoCard.StackItem>
-        )} */}
+        )}
         {hasCommission && (
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
@@ -79,6 +88,16 @@ export const StakeInfoBox = () => {
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
                 <InfoCard.Title>Will receive</InfoCard.Title>
+
+                <Tooltip
+                  className={S.stakingTooltip}
+                  trigger={<Icon name="info" />}
+                  content={
+                    <>
+                      1 {networkCurrency[castedNetwork]} = {getTokenFromCoin({ val: 1, network: castedNetwork })}
+                    </>
+                  }
+                />
               </InfoCard.TitleBox>
               <InfoCard.Content>{tokenRate}</InfoCard.Content>
             </InfoCard.StackItem>
@@ -88,7 +107,7 @@ export const StakeInfoBox = () => {
                 <InfoCard.Title>Unstaking period</InfoCard.Title>
 
                 <Tooltip
-                  className={S.unstakingTooltip}
+                  className={S.stakingTooltip}
                   trigger={<Icon name="info" />}
                   content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
                 />
