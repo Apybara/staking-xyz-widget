@@ -87,6 +87,7 @@ const ListItem = ({ activity, network }: { activity: ListItem; network: Network 
   });
   const amountValue = getAmountValue({ activity, formattedAmount });
   const href = `${networkExplorerTx[network || defaultNetwork]}${activity.id}`;
+  const showRewardRate = network !== "aleo";
 
   return (
     <ListTable.Item>
@@ -104,7 +105,7 @@ const ListItem = ({ activity, network }: { activity: ListItem; network: Network 
               ? getUTCStringFromUnixTimestamp(activity.timestamp)
               : getUTCStringFromUnixTimeString(activity.created_at)
           }
-          reward={activity.type === "claim" ? undefined : `Reward ${getPercentagedNumber(activity.rewardRate)}`}
+          reward={showRewardRate ? `Reward ${getPercentagedNumber(activity.rewardRate)}` : undefined}
           isProcessing={activity.inProgress}
         />
       </ListTable.ExternalLinkItemWrapper>
