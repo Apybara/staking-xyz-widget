@@ -48,12 +48,16 @@ export const getCreditsToMicroCredits = (credits: string | number) => {
   return BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber();
 };
 
+export const getMintToCredits = (mint: string | number) => {
+  return BigNumber(mint).div(MINT_CONVERSION_RATE).toNumber();
+};
+
 export const getCreditsToMint = (credits: string | number) => {
   return BigNumber(credits).times(MINT_CONVERSION_RATE).toNumber();
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
-const MINT_CONVERSION_RATE = 0.925;
+const MINT_CONVERSION_RATE = 0.1;
 
 const getIsBech32 = (address?: string) => {
   if (!address) return false;
