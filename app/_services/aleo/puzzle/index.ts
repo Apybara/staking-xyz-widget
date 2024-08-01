@@ -4,7 +4,14 @@ import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits, getCreditsToMint } from "../utils";
 import BigNumber from "bignumber.js";
-import { aleoDefaultClaimFee, aleoDefaultStakeFee, aleoDefaultUnstakeFee } from "@/app/consts";
+import {
+  aleoDefaultClaimFee,
+  aleoDefaultLiquidClaimFee,
+  aleoDefaultLiquidStakeFee,
+  aleoDefaultLiquidUnstakeFee,
+  aleoDefaultStakeFee,
+  aleoDefaultUnstakeFee,
+} from "@/app/consts";
 
 export const getPuzzleTxStatus = async ({
   id,
@@ -67,22 +74,22 @@ export const puzzleStake = async ({
 
 export const puzzleLiquidStake = async ({ amount, address, chainId = "aleo", txFee }: T.PuzzleStakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
-  const transactionMintAmount = getCreditsToMint(amount) + "u64";
+  const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount)) + "u64";
 
   try {
     const { eventId, error } = await requestCreateEvent(
       {
         type: EventType.Execute,
         programId: "pondo_core_protocolv1.aleo",
-        functionId: "deposit_public",
-        fee: getPuzzleFormattedTxFee(txFee || aleoDefaultStakeFee),
+        functionId: "deposit_public_as_signer",
+        fee: getPuzzleFormattedTxFee(aleoDefaultLiquidStakeFee),
         inputs: [transactionAmount, transactionMintAmount, address],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
     );
 
     if (error) throw new Error(error);
-    if (!eventId) throw new Error("No eventId returned from deposit_public requestCreateEvent");
+    if (!eventId) throw new Error("No eventId returned from deposit_public_as_signer requestCreateEvent");
     return eventId;
   } catch (error) {
     console.error(error);
@@ -115,7 +122,7 @@ export const puzzleUnstake = async ({ address, amount, chainId = "aleo", txFee }
 };
 
 export const puzzleLiquidUnstake = async ({ address, amount, chainId = "aleo", txFee }: T.PuzzleUnstakeProps) => {
-  const transactionMintAmount = getCreditsToMint(amount) + "u64";
+  const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount)) + "u64";
 
   try {
     const { eventId, error } = await requestCreateEvent(
@@ -123,8 +130,8 @@ export const puzzleLiquidUnstake = async ({ address, amount, chainId = "aleo", t
         type: EventType.Execute,
         programId: "pondo_core_protocolv1.aleo",
         functionId: "withdraw_public",
-        fee: getPuzzleFormattedTxFee(txFee || aleoDefaultUnstakeFee),
-        inputs: [transactionMintAmount, address],
+        fee: getPuzzleFormattedTxFee(aleoDefaultLiquidUnstakeFee),
+        inputs: [transactionMintAmount],
       },
       aleoNetworkIdByWallet[chainId].puzzle,
     );
@@ -169,7 +176,7 @@ export const puzzleLiquidWithdraw = async ({ address, chainId = "aleo", txFee, a
         type: EventType.Execute,
         programId: "pondo_core_protocolv1.aleo",
         functionId: "claim_withdrawal_public",
-        fee: getPuzzleFormattedTxFee(txFee || aleoDefaultClaimFee),
+        fee: getPuzzleFormattedTxFee(aleoDefaultLiquidClaimFee),
         inputs: [address, transactionAmount],
       },
       aleoNetworkIdByWallet[chainId].puzzle,

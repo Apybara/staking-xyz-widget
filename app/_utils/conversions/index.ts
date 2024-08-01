@@ -2,7 +2,7 @@ import type { FiatCurrency, CoinPrice, Currency, Network, StakingType } from "..
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
 import { fiatCurrencyMap, networkCurrency, defaultGlobalCurrency, defaultNetwork, networkTokens } from "../../consts";
-import { getCreditsToMint } from "@/app/_services/aleo/utils";
+import { getCreditsToMint, getMintToCredits } from "@/app/_services/aleo/utils";
 
 const numbroDefaultOptions: numbro.Format = {
   mantissa: 2,
@@ -155,13 +155,24 @@ export const getFormattedCoinValue = ({
   return `${value}${defaultSymbol}`;
 };
 
-export const getTokenEquivalent = ({ val, network }: { val: string | number; network: Network }) => {
+export const getTokenFromCoin = ({ val, network }: { val: string | number; network: Network }) => {
   const castedNetwork = network || defaultNetwork;
 
   return getFormattedCoinValue({
     val: getCreditsToMint(val),
     formatOptions: {
       currencySymbol: networkTokens[castedNetwork],
+    },
+  });
+};
+
+export const getCoinFromToken = ({ val, network }: { val: string | number; network: Network }) => {
+  const castedNetwork = network || defaultNetwork;
+
+  return getFormattedCoinValue({
+    val: getMintToCredits(val),
+    formatOptions: {
+      currencySymbol: networkCurrency[castedNetwork],
     },
   });
 };
