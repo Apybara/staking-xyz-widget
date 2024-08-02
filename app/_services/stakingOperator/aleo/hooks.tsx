@@ -26,12 +26,15 @@ import { fromUnixTime } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
-  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
 
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: !!address && isAleoNetwork,
+    enabled: shouldEnable,
     queryKey: ["aleoAddressRewards", network, address],
-    queryFn: () => getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address }),
+    queryFn: () => {
+      if (!shouldEnable) return null;
+      return getAddressRewards({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address });
+    },
     refetchOnWindowFocus: true,
     refetchInterval: 15000,
   });
@@ -252,11 +255,15 @@ export const useAleoDelegatedValidator = ({ network, address }: { network: Netwo
 };
 
 export const useAleoValidatorDetails = ({ network, address }: { network: Network | null; address?: string }) => {
+  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
+
   const { data, isLoading, isRefetching, error } = useQuery({
-    enabled: getIsAleoNetwork(network || "") && !!address,
+    enabled: shouldEnable,
     queryKey: ["aleoValidatorDetails", network, address],
-    queryFn: () =>
-      getValidatorDetails({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
+    queryFn: () => {
+      if (!shouldEnable) return null;
+      return getValidatorDetails({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" });
+    },
   });
 
   return { data, isLoading, isRefetching, error };

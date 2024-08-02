@@ -43,11 +43,15 @@ import { aleoRestUrl } from "@/app/consts";
 export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
+  const shouldEnable = isAleoNetwork && isAleoAddressFormat;
 
   const { data, error, isLoading } = useQuery({
-    enabled: !!address && isAleoNetwork && isAleoAddressFormat,
+    enabled: shouldEnable,
     queryKey: ["aleoAddressUnbondingStatus", address, network],
-    queryFn: () => getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "" }),
+    queryFn: () => {
+      if (!shouldEnable) return null;
+      return getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "" });
+    },
     refetchInterval: 30000,
     refetchOnWindowFocus: true,
   });
