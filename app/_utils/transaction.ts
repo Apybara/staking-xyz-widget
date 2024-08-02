@@ -50,7 +50,7 @@ export const getBasicTxCtaValidation = ({
   amountValidation,
   walletConnectionStatus,
   liquidRebalancing,
-  claimFirst,
+  withdrawFirst,
   closedValidator,
   closedDelegatedValidator,
   unbondingValidator,
@@ -61,7 +61,7 @@ export const getBasicTxCtaValidation = ({
   amountValidation: BasicAmountValidationResult;
   walletConnectionStatus: WalletConnectionStatus;
   liquidRebalancing?: boolean;
-  claimFirst?: boolean;
+  withdrawFirst?: boolean;
   closedValidator?: boolean;
   closedDelegatedValidator?: boolean;
   unbondingValidator?: boolean;
@@ -70,7 +70,7 @@ export const getBasicTxCtaValidation = ({
   differentValidator?: boolean;
 }): BasicTxCtaValidationResult => {
   if (liquidRebalancing) return "liquidRebalancing";
-  if (claimFirst) return "claimFirst";
+  if (withdrawFirst) return "withdrawFirst";
   if (closedValidator) return "closedValidator";
   if (closedDelegatedValidator) return "closedDelegatedValidator";
   if (unbondingValidator) return "unbondingValidator";
@@ -139,7 +139,7 @@ export type BasicTxCtaValidationResult =
   | "unbondingValidator"
   | "unbondingDelegatedValidator"
   | "liquidRebalancing"
-  | "claimFirst"
+  | "withdrawFirst"
   | "disconnected"
   | "connecting"
   | "submittable";
