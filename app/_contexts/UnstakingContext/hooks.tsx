@@ -37,7 +37,7 @@ export const useUnstakeAmountInputValidation = ({
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
     walletConnectionStatus: connectionStatus,
-    claimFirst: stakingType === "liquid" && aleoUnstakeStatus?.isClaimable,
+    withdrawFirst: stakingType === "liquid" && aleoUnstakeStatus?.isWithdrawable,
   });
 
   return { amountValidation, ctaValidation };

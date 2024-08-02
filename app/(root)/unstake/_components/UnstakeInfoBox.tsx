@@ -74,8 +74,8 @@ export const UnstakeInfoBox = () => {
                 }
                 content={
                   isLiquid
-                    ? "You need to claim before making a new unstaking request"
-                    : `You can claim ${aleoUnbondingAmount} now!`
+                    ? "You need to withdraw before making a new unstaking request"
+                    : `You can withdraw ${aleoUnbondingAmount} now!`
                 }
               />
             ) : (
