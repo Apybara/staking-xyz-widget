@@ -72,7 +72,7 @@ export const getAleoAddressLiquidUnbondingPosition = async ({
   apiUrl: string;
   address: string;
 }) => {
-  const res = await fetchData(`${apiUrl}program/pondo_core_protocolv1.aleo/mapping/unbonding/${address}`);
+  const res = await fetchData(`${apiUrl}program/pondo_core_protocolv1.aleo/mapping/withdrawals/${address}`);
   return getFormattedUnbondingPosition(res);
 };
 
