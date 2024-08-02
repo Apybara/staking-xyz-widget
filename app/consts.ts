@@ -1,4 +1,12 @@
-import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, StakingType } from "./types";
+import type {
+  Network,
+  NetworkInfo,
+  NetworkCurrency,
+  WalletInfo,
+  WalletType,
+  StakingType,
+  StakingTypeTab,
+} from "./types";
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";

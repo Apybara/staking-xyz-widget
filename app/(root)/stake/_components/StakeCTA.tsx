@@ -49,7 +49,7 @@ const textMap: Record<StakingStates["ctaState"], string> = {
   unbondingValidator: "Please try again later in an hour",
   unbondingDelegatedValidator: "Please try again later in an hour",
   liquidRebalancing: "Please try again later in 10 minutes",
-  claimFirst: "Please try again later in 10 minutes",
+  claimFirst: "",
   disconnected: "Connect wallet",
   connecting: "Connecting",
   submittable: "Stake",
