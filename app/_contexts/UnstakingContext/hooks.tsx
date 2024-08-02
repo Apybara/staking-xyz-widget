@@ -59,7 +59,7 @@ export const useUnstakeInputErrorMessage = ({
           return defaultMessage;
         case "native":
           if (amountValidation === "safeMinInsufficient") {
-            return `Unstaking ${inputAmount} ALEO will reduce your staked balance below the minimum 10K ALEO requirement and will unstake of all you staked balance.`;
+            return `Unstaking ${inputAmount} ALEO will reduce your staked balance below the minimum 10K ALEO requirement and will unstake of all your staked balance.`;
           }
           return defaultMessage;
       }
