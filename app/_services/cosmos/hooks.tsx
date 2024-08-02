@@ -429,6 +429,7 @@ export const useCosmosSigningClient = ({ network, wallet }: { network: Network |
   const isCosmosWallet = !!wallet && getIsCosmosWalletType(wallet);
   const castedNetwork = (isCosmosNetwork ? network : defaultNetwork) as CosmosNetwork;
   const castedWallet = isCosmosWallet ? (wallet as CosmosWalletType) : null;
+  const shouldEnable = !!network && !!wallet && isCosmosNetwork;
 
   const offlineSignerGetter = useOfflineSignerGetter({ network: castedNetwork, wallet: castedWallet });
 
@@ -437,9 +438,12 @@ export const useCosmosSigningClient = ({ network, wallet }: { network: Network |
     isLoading,
     error,
   } = useQuery({
-    enabled: !!network && !!wallet && isCosmosNetwork,
+    enabled: shouldEnable,
     queryKey: ["cosmosSigningClient", network, wallet, !!offlineSignerGetter],
-    queryFn: () => getSigningClient({ network: network || undefined, getOfflineSigner: offlineSignerGetter }),
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getSigningClient({ network: network || undefined, getOfflineSigner: offlineSignerGetter });
+    },
   });
 
   return { data: signingClient, isLoading, error };

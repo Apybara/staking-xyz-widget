@@ -69,11 +69,11 @@ export const useStakedBalance = () => {
   const { network } = useShell();
   const { address } = useWallet();
   const celestiaData = cosmos.useCosmosDelegations({
-    network,
+    network: getIsCelestia(network) ? network : null,
     address: address && getIsCelestia(network) ? address : undefined,
   });
   const cosmoshubData = cosmos.useCosmosDelegations({
-    network,
+    network: getIsCosmosHub(network) ? network : null,
     address: address && getIsCosmosHub(network) ? address : undefined,
   });
   const aleoData = aleo.useAleoAddressStakedBalance({

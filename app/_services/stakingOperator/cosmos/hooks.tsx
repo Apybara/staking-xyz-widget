@@ -36,7 +36,7 @@ export const useCosmosDelegations = ({ address, network }: { address?: string; n
   const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
 
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!address && !!isCosmosNetwork,
+    enabled: !!network && !!address && !!isCosmosNetwork,
     queryKey: ["cosmosDelegations", address, network],
     queryFn: () => getDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
     refetchInterval: 90000,
