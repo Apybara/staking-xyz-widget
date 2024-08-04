@@ -20,13 +20,38 @@ export const getAleoAddressUnbondingStatus = async ({ apiUrl, address }: { apiUr
 };
 
 export const getAleoLatestBlockHeight = async ({ apiUrl }: { apiUrl: string }) => {
-  const res: number = await fetchData(`${apiUrl}latest/height`);
-  return res;
+  const res = await fetchData(`${apiUrl}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "latest/height",
+    }),
+  });
+  return res.result;
 };
 
 export const getAleoAddressUnbondingPosition = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
-  const res = await fetchData(`${apiUrl}program/credits.aleo/mapping/unbonding/${address}`);
-  return getFormattedUnbondingPosition(res);
+  const res = await fetchData(`${apiUrl}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getMappingValue",
+      params: {
+        program_id: "credits.aleo",
+        mapping_name: "unbonding",
+        key: address,
+      },
+    }),
+  });
+  return getFormattedUnbondingPosition(res.result);
 };
 
 const getFormattedUnbondingPosition = (data: string | null) => {
