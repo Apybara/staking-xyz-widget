@@ -3,8 +3,8 @@ import cn from "classnames";
 import { Icon } from "../Icon";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { type TabButtonProps, TabButton } from "../TabButton";
+import type { Network } from "@/app/types";
 import * as S from "./listTable.css";
-import { Network } from "@/app/types";
 
 export type TabsProps = {
   tabs: Array<TabButtonProps>;
