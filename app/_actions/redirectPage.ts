@@ -44,7 +44,6 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
       current.set("stakingType", defaultStakingType);
     }
     if (isValidatorSelectionUnsupported) {
-      console.log("or here", validator);
       current.delete("validator");
     }
   }

@@ -120,3 +120,10 @@ export const explorerTagIcon = style({
     },
   },
 });
+
+export const slowTxWarning = style({
+  fontSize: pxToRem(14),
+  fontWeight: weights.bold,
+  color: colors.black300,
+  textAlign: "center",
+});

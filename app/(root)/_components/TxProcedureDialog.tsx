@@ -17,6 +17,8 @@ import { ClaimingStates } from "@/app/_services/rewards/types";
 import type { TxType } from "@/app/types";
 import { useTxPostHogEvents } from "@/app/_services/postHog/hooks";
 
+import * as S from "../../_components/TransactionDialog/delegationDialog.css";
+
 export const TxProcedureDialog = ({
   title,
   amount,
@@ -107,6 +109,11 @@ export const TxProcedureDialog = ({
           </TransactionDialog.StepItem>
         ))}
       </TransactionDialog.StepsBox>
+      {isLoading && (
+        <p className={S.slowTxWarning}>
+          Please try refreshing your browser if this process is taking longer than 2 minutes
+        </p>
+      )}
       {!allProceduresCompleted ? (
         <TransactionDialog.CTAButton
           state={isLoading ? "loading" : "default"}
