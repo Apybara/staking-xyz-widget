@@ -185,11 +185,15 @@ export const useAleoServerStatus = ({ network }: { network: Network | null }) =>
 };
 
 export const useAleoAddressBalance = ({ network, address }: { network: Network | null; address?: string }) => {
+  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
+
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || ""),
+    enabled: shouldEnable,
     queryKey: ["aleoAddressBalance", network, address],
-    queryFn: () =>
-      getAddressBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getAddressBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" });
+    },
     refetchOnWindowFocus: true,
     refetchInterval: 15000,
   });
@@ -198,11 +202,18 @@ export const useAleoAddressBalance = ({ network, address }: { network: Network |
 };
 
 export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address?: string }) => {
+  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
+
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || ""),
+    enabled: shouldEnable,
     queryKey: ["aleoAddressStakedBalance", network, address],
-    queryFn: () =>
-      getAddressStakedBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getAddressStakedBalance({
+        apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+        address: address || "",
+      });
+    },
     refetchOnWindowFocus: true,
     refetchInterval: 15000,
   });
@@ -244,11 +255,15 @@ export const useAleoReward = ({ network, amount }: { network: Network | null; am
 };
 
 export const useAleoDelegatedValidator = ({ network, address }: { network: Network | null; address?: string }) => {
+  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
+
   const { data, isLoading, isRefetching, error } = useQuery({
-    enabled: getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || ""),
+    enabled: shouldEnable,
     queryKey: ["aleoDelegatedValidator", network, address],
-    queryFn: () =>
-      getAddressDelegation({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" }),
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getAddressDelegation({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" });
+    },
   });
 
   return { data, isLoading, isRefetching, error };
