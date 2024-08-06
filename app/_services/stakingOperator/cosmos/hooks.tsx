@@ -34,11 +34,15 @@ export const useCosmosAddressAuthCheck = ({ address, network }: { address?: stri
 export const useCosmosDelegations = ({ address, network }: { address?: string; network: Network | null }) => {
   const isCosmosNetwork = getIsCosmosNetwork(network || "");
   const castedNetwork = (isCosmosNetwork ? network : "celestia") as CosmosNetwork;
+  const shouldEnable = !!network && !!address && !!isCosmosNetwork;
 
   const { data, isLoading, error, refetch } = useQuery({
-    enabled: !!network && !!address && !!isCosmosNetwork,
+    enabled: shouldEnable,
     queryKey: ["cosmosDelegations", address, network],
-    queryFn: () => getDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" }),
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getDelegations({ apiUrl: stakingOperatorUrlByNetwork[castedNetwork], address: address || "" });
+    },
     refetchInterval: 90000,
     refetchOnWindowFocus: true,
   });
