@@ -14,10 +14,6 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const headersList = headers();
   const hostname = headersList.get("x-forwarded-host");
 
-  // if (network?.toLowerCase() === "aleo") {
-  //   redirect("https://aleo.staking.xyz");
-  // }
-
   const isAleoUrl = ALEO_URLS.includes(hostname as string);
   const castedNetwork = isAleoUrl ? "aleo" : (network as Network) || defaultNetwork;
 
