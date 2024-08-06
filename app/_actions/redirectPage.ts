@@ -1,8 +1,9 @@
 "use server";
 
 import type { Network, RouterStruct } from "../types";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { defaultNetwork, networkCurrency, networkDefaultStakingType, networkInfo } from "../consts";
+import { ALEO_URLS, defaultNetwork, networkCurrency, networkDefaultStakingType, networkInfo } from "../consts";
 import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } from "../_utils";
 import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
 
@@ -10,20 +11,26 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const { network, currency, stakingType, validator } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
 
+  const headersList = headers();
+  const hostname = headersList.get("x-forwarded-host");
+
   // if (network?.toLowerCase() === "aleo") {
   //   redirect("https://aleo.staking.xyz");
   // }
 
-  const defaultStakingType = networkDefaultStakingType[(network as Network) || defaultNetwork];
+  const isAleoUrl = ALEO_URLS.includes(hostname as string);
+  const castedNetwork = isAleoUrl ? "aleo" : (network as Network) || defaultNetwork;
+
+  const defaultStakingType = networkDefaultStakingType[castedNetwork];
   const isNetworkInvalid = !getIsNetworkValid(network);
   const isCurrencyInvalid = !getIsCurrencyValid(currency);
-  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid(network, currency);
+  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid(castedNetwork, currency);
   const isStakingTypeInvalid = (stakingType || validator) && !defaultStakingType;
   const isStakingTypeExpected = !stakingType && !!defaultStakingType;
   const isImportPage = page === "import";
   const isValidatorSelectionUnsupported =
-    !!validator && networkInfo[(network as Network) || defaultNetwork]?.supportsValidatorSelection !== true;
-  const networkParamAndAlias = getNetworkParamFromValidAlias(network || "");
+    !!validator && networkInfo[castedNetwork]?.supportsValidatorSelection !== true;
+  const networkParamAndAlias = getNetworkParamFromValidAlias(castedNetwork || "");
   const isMultipleNetworks = Array.isArray(network);
 
   if (isMultipleNetworks) {
@@ -41,10 +48,9 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
       current.delete("validator");
     }
     if (isStakingTypeExpected) {
-      current.set("stakingType", defaultStakingType);
+      current.set("stakingType", defaultStakingType as string);
     }
     if (isValidatorSelectionUnsupported) {
-      console.log("or here", validator);
       current.delete("validator");
     }
   }
