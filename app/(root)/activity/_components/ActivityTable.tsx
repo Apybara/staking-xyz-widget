@@ -89,12 +89,14 @@ const ListItem = ({ activity, network }: { activity: ListItem; network: Network 
   const href = `${networkExplorerTx[network || defaultNetwork]}${activity.id}`;
   const showRewardRate = network !== "aleo";
 
+  const hasValidLink = !!activity.id && !activity.inProgress;
+
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={activity.id ? href : undefined}>
+      <ListTable.ExternalLinkItemWrapper href={hasValidLink ? href : undefined}>
         <ListTable.TxInfoPrimary
           title={getTitleKey(activity)}
-          externalLink={!!activity.id}
+          externalLink={hasValidLink}
           amount={amountValue}
           isProcessing={activity.inProgress}
           isSuccess={activity.result === undefined ? undefined : activity.result === "success"}
