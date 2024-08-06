@@ -18,6 +18,7 @@ import type { TxType } from "@/app/types";
 import { useTxPostHogEvents } from "@/app/_services/postHog/hooks";
 
 import * as S from "../../_components/TransactionDialog/delegationDialog.css";
+import { WalletStates } from "@/app/_contexts/WalletContext/types";
 
 export const TxProcedureDialog = ({
   title,
@@ -47,6 +48,7 @@ export const TxProcedureDialog = ({
   const hasLoadingProcedures = getHasLoadingProcedures(procedures || []);
 
   const isLoading = getIsLoadingState(uncheckedProcedures?.[0]);
+  const isLeoWalletLoading = getIsLeoWalletLoadingState(uncheckedProcedures?.[0], activeWallet);
 
   const ctaText = useMemo(() => {
     if (!uncheckedProcedures?.[0])
@@ -109,7 +111,7 @@ export const TxProcedureDialog = ({
           </TransactionDialog.StepItem>
         ))}
       </TransactionDialog.StepsBox>
-      {isLoading && (
+      {isLeoWalletLoading && (
         <p className={S.slowTxWarning}>
           Please try refreshing your browser if this process is taking longer than 2 minutes
         </p>
@@ -156,6 +158,9 @@ const getActiveProcedure = (procedures: Array<TxProcedure>) => {
 };
 const getIsLoadingState = (procedure: TxProcedure) => {
   return procedure?.state === "preparing" || procedure?.state === "loading" || procedure?.state === "broadcasting";
+};
+const getIsLeoWalletLoadingState = (procedure: TxProcedure, activeWallet: WalletStates["activeWallet"]) => {
+  return activeWallet === "leoWallet" && (procedure?.state === "loading" || procedure?.state === "broadcasting");
 };
 
 const ctaTextMap: Record<TxProcedureStep, Record<TxProcedureState, string>> = {
