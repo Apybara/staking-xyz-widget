@@ -4,6 +4,7 @@ import { Icon } from "../Icon";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { type TabButtonProps, TabButton } from "../TabButton";
 import * as S from "./listTable.css";
+import { Network } from "@/app/types";
 
 export type TabsProps = {
   tabs: Array<TabButtonProps>;
@@ -55,10 +56,25 @@ export type TxInfoPrimaryProps = {
   isProcessing?: boolean;
   isSuccess?: boolean;
   amount?: string;
+  network?: Network | null;
 };
-export const TxInfoPrimary = ({ title, externalLink, isProcessing, isSuccess, amount }: TxInfoPrimaryProps) => {
+export const TxInfoPrimary = ({
+  title,
+  externalLink,
+  isProcessing,
+  isSuccess,
+  amount,
+  network,
+}: TxInfoPrimaryProps) => {
   return (
-    <div className={cn(S.txInfoPrimary({ isProcessing, isError: isSuccess === false }))}>
+    <div
+      className={cn(
+        S.txInfoPrimary({
+          isInactive: isProcessing || isSuccess === false,
+          isAleoProcessing: isProcessing && network === "aleo",
+        }),
+      )}
+    >
       <div className={cn(S.txInfoPrimaryStart)}>
         {isProcessing && <LoadingSpinner className={S.txInfoLoadingIcon} size={12} />}
         {!isProcessing && isSuccess !== undefined && (
@@ -87,10 +103,11 @@ export type TxInfoSecondaryProps = {
   time: string;
   reward?: string;
   isProcessing?: boolean;
+  network?: Network | null;
 };
-export const TxInfoSecondary = ({ time, reward, isProcessing }: TxInfoSecondaryProps) => {
+export const TxInfoSecondary = ({ time, reward, isProcessing, network }: TxInfoSecondaryProps) => {
   return (
-    <div className={cn(S.txInfoSecondary({ isProcessing }))}>
+    <div className={cn(S.txInfoSecondary({ isProcessing, isAleoProcessing: isProcessing && network === "aleo" }))}>
       <time className={cn(S.txInfoSecondaryValue)}>{time}</time>
       {reward && <p className={cn(S.txInfoSecondaryValue)}>{reward}</p>}
     </div>

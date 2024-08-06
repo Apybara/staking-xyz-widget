@@ -101,6 +101,7 @@ const ListItem = ({ activity, network }: { activity: ListItem; network: Network 
           amount={amountValue}
           isProcessing={isInProgress}
           isSuccess={activity.result === undefined ? undefined : activity.result === "success"}
+          network={network}
         />
         <ListTable.TxInfoSecondary
           time={
@@ -110,6 +111,7 @@ const ListItem = ({ activity, network }: { activity: ListItem; network: Network 
           }
           reward={showRewardRate ? `Reward ${getPercentagedNumber(activity.rewardRate)}` : undefined}
           isProcessing={isInProgress}
+          network={network}
         />
       </ListTable.ExternalLinkItemWrapper>
     </ListTable.Item>

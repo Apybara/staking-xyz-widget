@@ -51,16 +51,7 @@ export const txInfoPrimary = recipe({
     inlineSize: "100%",
   },
   variants: {
-    isProcessing: {
-      true: {
-        color: colors.black600,
-        cursor: "progress",
-      },
-      false: {
-        color: colors.black000,
-      },
-    },
-    isError: {
+    isInactive: {
       true: {
         color: colors.black600,
         transition: "color 0.3s",
@@ -76,10 +67,25 @@ export const txInfoPrimary = recipe({
         color: colors.black000,
       },
     },
+    isAleoProcessing: {
+      true: {
+        color: colors.black600,
+        cursor: "progress",
+
+        selectors: {
+          [`${item}:hover &`]: {
+            color: colors.black600,
+          },
+        },
+      },
+      false: {
+        color: colors.black000,
+      },
+    },
   },
   defaultVariants: {
-    isProcessing: false,
-    isError: false,
+    isAleoProcessing: false,
+    isInactive: false,
   },
 });
 export const txInfoPrimaryStart = style({
@@ -153,14 +159,34 @@ export const txInfoSecondary = recipe({
       true: {
         color: colors.black600,
         transition: "color 0.3s",
-        cursor: "progress",
+
+        selectors: {
+          [`${item}:hover &`]: {
+            color: colors.black300,
+            transition: "color 0.3s",
+          },
+        },
       },
       false: {
         color: colors.black300,
       },
     },
+    isAleoProcessing: {
+      true: {
+        color: colors.black600,
+        cursor: "progress",
+
+        selectors: {
+          [`${item}:hover &`]: {
+            color: colors.black600,
+            transition: "color 0.3s",
+          },
+        },
+      },
+    },
   },
   defaultVariants: {
+    isAleoProcessing: false,
     isProcessing: false,
   },
 });
