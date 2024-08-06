@@ -58,7 +58,7 @@ export type TxInfoPrimaryProps = {
 };
 export const TxInfoPrimary = ({ title, externalLink, isProcessing, isSuccess, amount }: TxInfoPrimaryProps) => {
   return (
-    <div className={cn(S.txInfoPrimary({ isInactive: isProcessing || isSuccess === false }))}>
+    <div className={cn(S.txInfoPrimary({ isProcessing, isError: isSuccess === false }))}>
       <div className={cn(S.txInfoPrimaryStart)}>
         {isProcessing && <LoadingSpinner className={S.txInfoLoadingIcon} size={12} />}
         {!isProcessing && isSuccess !== undefined && (
