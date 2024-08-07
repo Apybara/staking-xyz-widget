@@ -152,6 +152,9 @@ importers:
       "@keplr-wallet/types":
         specifier: ^0.12.76
         version: 0.12.76
+      "@types/logrocket-react":
+        specifier: ^3.0.3
+        version: 3.0.3
       "@types/node":
         specifier: ^20
         version: 20.11.26
@@ -182,6 +185,12 @@ importers:
       lint-staged:
         specifier: ^15.2.2
         version: 15.2.2
+      logrocket:
+        specifier: ^8.1.2
+        version: 8.1.2
+      logrocket-react:
+        specifier: ^6.0.3
+        version: 6.0.3(logrocket@8.1.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       pino-pretty:
         specifier: ^10.3.1
         version: 10.3.1
@@ -2740,6 +2749,10 @@ packages:
     resolution:
       { integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ== }
 
+  "@types/logrocket-react@3.0.3":
+    resolution:
+      { integrity: sha512-fGpJV4ccwfWAL0293EQx5HrS4PGMvXBpTQOXpA/SLXSCm7fC2O19w7Y3CcgWDmyawQnqbzd8faKAL12VhPdZKA== }
+
   "@types/long@4.0.2":
     resolution:
       { integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA== }
@@ -5221,6 +5234,22 @@ packages:
     resolution:
       { integrity: sha512-niTvB4gqvtof056rRIrTZvjNYE4rCUzO6X/X+kYjd7WFxXeJ0NwEFnRxX6ehkvv3jTwrXnNdtAak5XYZuIyPFw== }
     engines: { node: ">=18" }
+
+  logrocket-react@6.0.3:
+    resolution:
+      { integrity: sha512-mU2QMFy5lfogXeAb+djy5XcAL5lAxPovRiN62lb4EzeuvuYmXJJmArniK3K2P9Gu02auWTiSwKHISFS0JH+eyA== }
+    peerDependencies:
+      logrocket: ">=2.0"
+      react: ">=18"
+      react-dom: ">=18"
+
+  logrocket@1.0.1:
+    resolution:
+      { integrity: sha512-oPA0c5GzMKsWp/6p19OaujZQMzttluqVOI+989uHeciPAljPZvGEpZRbNO3Rr+jC/8jVLJdlMP9IHuyhKsASGA== }
+
+  logrocket@8.1.2:
+    resolution:
+      { integrity: sha512-9D9ZiDkRkoDqjY/vV5L31Ry7dtNRDGiEFniPWmDUILBRdrCX/kPTMjXlD/RdHd/mUbRYM827lXJBIuoVHpShtA== }
 
   long@4.0.0:
     resolution:
@@ -10367,6 +10396,10 @@ snapshots:
 
   "@types/json5@0.0.29": {}
 
+  "@types/logrocket-react@3.0.3":
+    dependencies:
+      logrocket: 1.0.1
+
   "@types/long@4.0.2": {}
 
   "@types/ms@0.7.34": {}
@@ -10633,7 +10666,7 @@ snapshots:
       "@walletconnect/jsonrpc-ws-connection": 1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       "@walletconnect/keyvaluestorage": 1.1.1
       "@walletconnect/logger": 2.1.2
-      "@walletconnect/relay-api": 1.0.9
+      "@walletconnect/relay-api": 1.0.10
       "@walletconnect/relay-auth": 1.0.4
       "@walletconnect/safe-json": 1.0.2
       "@walletconnect/time": 1.0.2
@@ -10761,7 +10794,7 @@ snapshots:
     dependencies:
       "@walletconnect/jsonrpc-http-connection": 1.0.8
       "@walletconnect/jsonrpc-provider": 1.0.13
-      "@walletconnect/jsonrpc-types": 1.0.3
+      "@walletconnect/jsonrpc-types": 1.0.4
       "@walletconnect/jsonrpc-utils": 1.0.8
       "@walletconnect/modal": 2.6.2(@types/react@18.2.65)(react@18.2.0)
       "@walletconnect/sign-client": 2.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -10902,7 +10935,7 @@ snapshots:
 
   "@walletconnect/legacy-types@2.0.0":
     dependencies:
-      "@walletconnect/jsonrpc-types": 1.0.3
+      "@walletconnect/jsonrpc-types": 1.0.4
 
   "@walletconnect/legacy-utils@2.0.0":
     dependencies:
@@ -11173,7 +11206,7 @@ snapshots:
     dependencies:
       "@walletconnect/jsonrpc-http-connection": 1.0.8
       "@walletconnect/jsonrpc-provider": 1.0.13
-      "@walletconnect/jsonrpc-types": 1.0.3
+      "@walletconnect/jsonrpc-types": 1.0.4
       "@walletconnect/jsonrpc-utils": 1.0.8
       "@walletconnect/logger": 2.1.2
       "@walletconnect/sign-client": 2.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -11206,7 +11239,7 @@ snapshots:
       "@stablelib/random": 1.0.2
       "@stablelib/sha256": 1.0.1
       "@stablelib/x25519": 1.0.3
-      "@walletconnect/relay-api": 1.0.9
+      "@walletconnect/relay-api": 1.0.10
       "@walletconnect/safe-json": 1.0.2
       "@walletconnect/time": 1.0.2
       "@walletconnect/types": 2.11.0
@@ -13377,6 +13410,16 @@ snapshots:
       slice-ansi: 7.1.0
       strip-ansi: 7.1.0
       wrap-ansi: 9.0.0
+
+  logrocket-react@6.0.3(logrocket@8.1.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      logrocket: 8.1.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  logrocket@1.0.1: {}
+
+  logrocket@8.1.2: {}
 
   long@4.0.0: {}
 
