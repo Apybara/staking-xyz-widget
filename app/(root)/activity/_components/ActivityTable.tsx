@@ -89,24 +89,29 @@ const ListItem = ({ activity, network }: { activity: ListItem; network: Network 
   const href = `${networkExplorerTx[network || defaultNetwork]}${activity.id}`;
   const showRewardRate = network !== "aleo";
 
+  const isInProgress = activity.inProgress;
+  const hasValidLink = network === "aleo" ? !!activity.id && !isInProgress : !!activity.id;
+
   return (
     <ListTable.Item>
-      <ListTable.ExternalLinkItemWrapper href={activity.id ? href : undefined}>
+      <ListTable.ExternalLinkItemWrapper href={hasValidLink ? href : undefined}>
         <ListTable.TxInfoPrimary
           title={getTitleKey(activity)}
-          externalLink={!!activity.id}
+          externalLink={hasValidLink}
           amount={amountValue}
-          isProcessing={activity.inProgress}
+          isProcessing={isInProgress}
           isSuccess={activity.result === undefined ? undefined : activity.result === "success"}
+          network={network}
         />
         <ListTable.TxInfoSecondary
           time={
-            !activity.inProgress
+            !isInProgress
               ? getUTCStringFromUnixTimestamp(activity.timestamp)
               : getUTCStringFromUnixTimeString(activity.created_at)
           }
           reward={showRewardRate ? `Reward ${getPercentagedNumber(activity.rewardRate)}` : undefined}
-          isProcessing={activity.inProgress}
+          isProcessing={isInProgress}
+          network={network}
         />
       </ListTable.ExternalLinkItemWrapper>
     </ListTable.Item>

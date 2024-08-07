@@ -67,8 +67,24 @@ export const txInfoPrimary = recipe({
         color: colors.black000,
       },
     },
+    isAleoProcessing: {
+      true: {
+        color: colors.black600,
+        cursor: "progress",
+
+        selectors: {
+          [`${item}:hover &`]: {
+            color: colors.black600,
+          },
+        },
+      },
+      false: {
+        color: colors.black000,
+      },
+    },
   },
   defaultVariants: {
+    isAleoProcessing: false,
     isInactive: false,
   },
 });
@@ -155,8 +171,22 @@ export const txInfoSecondary = recipe({
         color: colors.black300,
       },
     },
+    isAleoProcessing: {
+      true: {
+        color: colors.black600,
+        cursor: "progress",
+
+        selectors: {
+          [`${item}:hover &`]: {
+            color: colors.black600,
+            transition: "color 0.3s",
+          },
+        },
+      },
+    },
   },
   defaultVariants: {
+    isAleoProcessing: false,
     isProcessing: false,
   },
 });
