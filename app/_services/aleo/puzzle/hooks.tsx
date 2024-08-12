@@ -5,6 +5,7 @@ import useLocalStorage from "use-local-storage";
 import { useAccount, useBalance, useConnect, useDisconnect } from "@puzzlehq/sdk";
 import { usePuzzleStates as useGlobalPuzzleStates } from "@/app/_providers/Aleo/Puzzle/PuzzleStatesContext";
 import { puzzleStake, puzzleUnstake, puzzleWithdraw } from ".";
+import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 
 export const usePuzzleStake = () => {
   const { account } = useAccount();
@@ -24,6 +25,7 @@ export const usePuzzleStake = () => {
 };
 
 export const usePuzzleUnstake = () => {
+  const { instantWithdrawal } = useUnstaking();
   return async ({ address, amount, chainId, txFee }: T.PuzzleUnstakeProps) => {
     try {
       if (!amount) {
@@ -31,7 +33,7 @@ export const usePuzzleUnstake = () => {
         throw error;
       }
 
-      return await puzzleUnstake({ address, amount, chainId, txFee });
+      return await puzzleUnstake({ address, amount, chainId, txFee, instantWithdrawal });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;
