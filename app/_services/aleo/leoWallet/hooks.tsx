@@ -13,6 +13,7 @@ import {
   leoWalletWithdraw,
 } from ".";
 import { useShell } from "@/app/_contexts/ShellContext";
+import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 
 export const useLeoWalletStake = () => {
   const { stakingType } = useShell();
@@ -37,6 +38,7 @@ export const useLeoWalletStake = () => {
 export const useLeoWalletUnstake = () => {
   const { stakingType } = useShell();
   const { wallet, publicKey } = useLeoWallet();
+  const { instantWithdrawal } = useUnstaking();
 
   const unstakingFunction = stakingType === "liquid" ? leoWalletLiquidUnstake : leoWalletUnstake;
 
@@ -47,7 +49,7 @@ export const useLeoWalletUnstake = () => {
         throw error;
       }
 
-      return await unstakingFunction({ amount, wallet, address: publicKey, chainId, txFee });
+      return await unstakingFunction({ amount, wallet, address: publicKey, chainId, txFee, instantWithdrawal });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;

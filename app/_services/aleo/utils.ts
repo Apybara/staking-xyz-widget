@@ -57,14 +57,12 @@ export const getCreditsToMint = (credits: string | number) => {
 };
 
 export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number) => {
-  return BigNumber(BigNumber(unstakeAmount).times(INSTANT_WITHDRAWAL_FEE).times(MINT_CONVERSION_RATE))
-    .plus(txFee)
-    .toNumber();
+  return BigNumber(unstakeAmount).times(INSTANT_WITHDRAWAL_FEE).dividedBy(MINT_CONVERSION_RATE).plus(txFee).toNumber();
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
-export const MINT_CONVERSION_RATE = 0.1;
-export const INSTANT_WITHDRAWAL_FEE = 0.25;
+const MINT_CONVERSION_RATE = 0.1;
+const INSTANT_WITHDRAWAL_FEE = 0.25;
 
 const getIsBech32 = (address?: string) => {
   if (!address) return false;
