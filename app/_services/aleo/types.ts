@@ -33,6 +33,7 @@ export type AleoUnstakeProps = {
   address: string;
   chainId?: AleoNetwork;
   txFee: string;
+  instantWithdrawal?: boolean;
 };
 
 export type AleoWithdrawProps = {

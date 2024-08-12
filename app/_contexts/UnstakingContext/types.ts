@@ -7,6 +7,7 @@ import type { BaseAmountInputPadProps } from "../../_components/AmountInputPad";
 export type UnstakingContext = UnstakingStates & {};
 
 export type UnstakingStates = {
+  instantWithdrawal?: boolean;
   coinAmountInput?: string;
   inputState?: BasicAmountValidationResult;
   ctaState: BasicTxCtaValidationResult;

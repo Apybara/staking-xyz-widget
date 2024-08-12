@@ -11,7 +11,6 @@ import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { useDialog } from "@/app/_contexts/UIContext";
 import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
-import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 import { useUnbondingDelegations } from "../../../_services/stakingOperator/hooks";
 import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
 import * as S from "./unstake.css";
@@ -66,10 +65,10 @@ export const UnstakeInfoBox = () => {
           <InfoCard.TitleBox>
             {aleoUnstakeStatus.isWithdrawable ? (
               <Tooltip
-                className={S.claimableTooltip}
+                className={S.withdrawableTooltip}
                 trigger={
-                  <button className={S.claimButton} onClick={() => toggleClaimingProcedureDialog(true)}>
-                    Claim
+                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
+                    Withdraw
                   </button>
                 }
                 content={

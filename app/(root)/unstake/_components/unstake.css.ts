@@ -44,7 +44,8 @@ export const plusSign = style({
 });
 
 export const unstakingTooltip = style({
-  maxInlineSize: pxToRem(250),
+  maxInlineSize: pxToRem(303),
+  textAlign: "center",
 });
 
 export const claimableStatus = style({
@@ -55,7 +56,7 @@ export const claimableStatus = style({
   backgroundColor: colors.yellow900,
 });
 
-export const claimableTooltip = style({
+export const withdrawableTooltip = style({
   maxInlineSize: pxToRem(246),
   padding: pxToRem(16),
   backgroundColor: colors.yellow100,
@@ -64,7 +65,7 @@ export const claimableTooltip = style({
   textAlign: "center",
 });
 
-export const claimButton = style({
+export const withdrawButton = style({
   backgroundColor: colors.yellow100,
   border: 0,
   borderRadius: pxToRem(4),

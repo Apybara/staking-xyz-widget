@@ -5,16 +5,20 @@ import * as InfoCard from "../../../_components/InfoCard";
 import { unstakingPeriodByNetwork, defaultNetwork, networkTokens } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
+import Switch from "@/app/_components/Switch";
 
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { getCoinFromToken } from "@/app/_utils/conversions";
+import { getInstantWithdrawalFee } from "@/app/_services/aleo/utils";
 
 import * as S from "./unstake.css";
 
 export const UnstakeSecondaryInfoBox = () => {
   const { network, stakingType } = useShell();
-  const { coinAmountInput } = useUnstaking();
-  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: "1000" });
+  const { coinAmountInput, instantWithdrawal, setStates } = useUnstaking();
+  const txFee = "0.3456"; // dummy sum of network fee + blended commission + protocal commission
+  const totalFees = instantWithdrawal ? getInstantWithdrawalFee(coinAmountInput || "0", txFee) : txFee;
+  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: totalFees });
 
   const castedNetwork = network || defaultNetwork;
 
@@ -29,24 +33,41 @@ export const UnstakeSecondaryInfoBox = () => {
     <InfoCard.Card>
       <InfoCard.Stack>
         {isLiquid && (
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Total fees</InfoCard.Title>
+          <>
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Instant withdrawal</InfoCard.Title>
 
-              <Tooltip
-                className={S.unstakingTooltip}
-                trigger={<Icon name="info" />}
-                content={
-                  <>
-                    Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
-                    blended commission to validators <span className={S.plusSign}>+</span> protocol commission to
-                    Pondo.xyz
-                  </>
-                }
-              />
-            </InfoCard.TitleBox>
-            <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
-          </InfoCard.StackItem>
+                <Tooltip
+                  className={S.unstakingTooltip}
+                  trigger={<Icon name="info" />}
+                  content="Instant withdrawals have a fee of 0.25%."
+                />
+              </InfoCard.TitleBox>
+              <InfoCard.Content>
+                <Switch onChange={(checked) => setStates({ instantWithdrawal: checked })} />
+              </InfoCard.Content>
+            </InfoCard.StackItem>
+
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Total fees</InfoCard.Title>
+
+                <Tooltip
+                  className={S.unstakingTooltip}
+                  trigger={<Icon name="info" />}
+                  content={
+                    <>
+                      Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
+                      blended commission to validators <span className={S.plusSign}>+</span> protocol commission to
+                      Pondo.xyz
+                    </>
+                  }
+                />
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
+            </InfoCard.StackItem>
+          </>
         )}
         <InfoCard.StackItem>
           <InfoCard.TitleBox>

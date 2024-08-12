@@ -121,7 +121,13 @@ export const puzzleUnstake = async ({ address, amount, chainId = "aleo", txFee }
   }
 };
 
-export const puzzleLiquidUnstake = async ({ address, amount, chainId = "aleo", txFee }: T.PuzzleUnstakeProps) => {
+export const puzzleLiquidUnstake = async ({
+  address,
+  amount,
+  chainId = "aleo",
+  txFee,
+  instantWithdrawal,
+}: T.PuzzleUnstakeProps) => {
   const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount)) + "u64";
 
   try {
@@ -129,7 +135,7 @@ export const puzzleLiquidUnstake = async ({ address, amount, chainId = "aleo", t
       {
         type: EventType.Execute,
         programId: "pondo_core_protocolv1.aleo",
-        functionId: "withdraw_public",
+        functionId: instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
         fee: getPuzzleFormattedTxFee(aleoDefaultLiquidUnstakeFee),
         inputs: [transactionMintAmount],
       },
