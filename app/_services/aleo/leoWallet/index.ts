@@ -151,6 +151,7 @@ export const leoWalletLiquidUnstake = async ({
   address,
   chainId = "aleo",
   txFee,
+  instantWithdrawal,
 }: T.LeoWalletUnstakeProps) => {
   try {
     const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount)) + "u64";
@@ -158,7 +159,7 @@ export const leoWalletLiquidUnstake = async ({
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
       "pondo_core_protocolv1.aleo",
-      "withdraw_public",
+      instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
       [transactionMintAmount],
       getLeoWalletFormattedTxFee(aleoDefaultLiquidUnstakeFee),
       false,

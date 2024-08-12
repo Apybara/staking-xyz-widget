@@ -62,6 +62,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
 };
 
 const initialStates: T.UnstakingContext = {
+  instantWithdrawal: false,
   coinAmountInput: "",
   inputState: "empty",
   ctaState: "empty",
