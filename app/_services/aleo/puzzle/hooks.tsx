@@ -4,11 +4,22 @@ import { useCallback, useEffect, useMemo } from "react";
 import useLocalStorage from "use-local-storage";
 import { useAccount, useBalance, useConnect, useDisconnect } from "@puzzlehq/sdk";
 import { usePuzzleStates as useGlobalPuzzleStates } from "@/app/_providers/Aleo/Puzzle/PuzzleStatesContext";
-import { puzzleStake, puzzleUnstake, puzzleWithdraw } from ".";
 import { useUnstaking } from "@/app/_contexts/UnstakingContext";
+import {
+  puzzleLiquidStake,
+  puzzleLiquidUnstake,
+  puzzleLiquidWithdraw,
+  puzzleStake,
+  puzzleUnstake,
+  puzzleWithdraw,
+} from ".";
+import { useShell } from "@/app/_contexts/ShellContext";
 
 export const usePuzzleStake = () => {
+  const { stakingType } = useShell();
   const { account } = useAccount();
+
+  const stakingFunction = stakingType === "liquid" ? puzzleLiquidStake : puzzleStake;
 
   return async ({ validatorAddress, amount, chainId, txFee }: T.PuzzleStakeProps) => {
     try {
@@ -16,7 +27,7 @@ export const usePuzzleStake = () => {
         const error = new Error("Staking fails: missing validatorAddress, address, or amount");
         throw error;
       }
-      return await puzzleStake({ amount, validatorAddress, address: account.address, chainId, txFee });
+      return await stakingFunction({ amount, validatorAddress, address: account.address, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Staking fails");
       throw err;
@@ -26,6 +37,10 @@ export const usePuzzleStake = () => {
 
 export const usePuzzleUnstake = () => {
   const { instantWithdrawal } = useUnstaking();
+  const { stakingType } = useShell();
+
+  const unstakingFunction = stakingType === "liquid" ? puzzleLiquidUnstake : puzzleUnstake;
+
   return async ({ address, amount, chainId, txFee }: T.PuzzleUnstakeProps) => {
     try {
       if (!amount) {
@@ -33,7 +48,7 @@ export const usePuzzleUnstake = () => {
         throw error;
       }
 
-      return await puzzleUnstake({ address, amount, chainId, txFee, instantWithdrawal });
+      return await unstakingFunction({ address, amount, chainId, txFee, instantWithdrawal });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;
@@ -42,9 +57,13 @@ export const usePuzzleUnstake = () => {
 };
 
 export const usePuzzleWithdraw = () => {
+  const { stakingType } = useShell();
+
+  const withdrawFunction = stakingType === "liquid" ? puzzleLiquidWithdraw : puzzleWithdraw;
+
   return async ({ address, chainId, txFee }: T.PuzzleWithdrawProps) => {
     try {
-      return await puzzleWithdraw({ address, chainId, txFee });
+      return await withdrawFunction({ address, chainId, txFee });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Withdraw fails");
       throw err;
