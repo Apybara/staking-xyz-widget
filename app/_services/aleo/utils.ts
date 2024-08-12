@@ -62,7 +62,7 @@ export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: s
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
 const MINT_CONVERSION_RATE = 0.1;
-const INSTANT_WITHDRAWAL_FEE = 0.25;
+const INSTANT_WITHDRAWAL_FEE = 0.00025;
 
 const getIsBech32 = (address?: string) => {
   if (!address) return false;
