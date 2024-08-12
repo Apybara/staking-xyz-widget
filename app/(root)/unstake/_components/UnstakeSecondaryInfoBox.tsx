@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
@@ -69,7 +70,11 @@ export const UnstakeSecondaryInfoBox = () => {
                   content={
                     <>
                       Total fee <span className={S.plusSign}>=</span>{" "}
-                      {instantWithdrawal ? `instant withdrawals fee ${(<span className={S.plusSign}>+</span>)}` : ""}{" "}
+                      {!!instantWithdrawal && (
+                        <>
+                          instant withdrawals fee <span className={S.plusSign}>+</span>{" "}
+                        </>
+                      )}
                       network fee <span className={S.plusSign}>+</span> blended commission to validators{" "}
                       <span className={S.plusSign}>+</span> protocol commission to Pondo.xyz
                     </>
