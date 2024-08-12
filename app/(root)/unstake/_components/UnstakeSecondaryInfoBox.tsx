@@ -58,9 +58,10 @@ export const UnstakeSecondaryInfoBox = () => {
                   trigger={<Icon name="info" />}
                   content={
                     <>
-                      Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
-                      blended commission to validators <span className={S.plusSign}>+</span> protocol commission to
-                      Pondo.xyz
+                      Total fee <span className={S.plusSign}>=</span>{" "}
+                      {instantWithdrawal ? `instant withdrawals fee ${(<span className={S.plusSign}>+</span>)}` : ""}{" "}
+                      network fee <span className={S.plusSign}>+</span> blended commission to validators{" "}
+                      <span className={S.plusSign}>+</span> protocol commission to Pondo.xyz
                     </>
                   }
                 />
