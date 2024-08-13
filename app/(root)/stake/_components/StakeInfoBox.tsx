@@ -4,6 +4,7 @@ import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 // import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 import { feeRatioByNetwork, unstakingPeriodByNetwork, defaultNetwork, networkCurrency } from "../../../consts";
+import type { StakingType } from "@/app/types";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
@@ -24,7 +25,7 @@ export const StakeInfoBox = () => {
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
   const castedNetwork = network || defaultNetwork;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
-  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork];
+  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork][stakingType as StakingType];
   const hasCommission = validatorDetails?.commission !== undefined;
   const isLiquid = stakingType === "liquid";
 

@@ -476,12 +476,27 @@ export const minStakedBalanceByNetwork: Record<Network, Record<StakingType, numb
   },
 };
 
-export const unstakingPeriodByNetwork: Record<Network, string> = {
-  celestia: "21 days",
-  celestiatestnet3: "21 days",
-  cosmoshub: "21 days",
-  cosmoshubtestnet: "21 days",
-  aleo: "1 hour",
+export const unstakingPeriodByNetwork: Record<Network, Record<StakingType, string>> = {
+  celestia: {
+    native: "21 days",
+    liquid: "",
+  },
+  celestiatestnet3: {
+    native: "21 days",
+    liquid: "",
+  },
+  cosmoshub: {
+    native: "21 days",
+    liquid: "",
+  },
+  cosmoshubtestnet: {
+    native: "21 days",
+    liquid: "",
+  },
+  aleo: {
+    native: "1 hour",
+    liquid: "1 day",
+  },
 };
 
 export const rewardsFrequencyByNetwork: Record<Network, string> = {
