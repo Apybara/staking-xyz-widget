@@ -15,6 +15,7 @@ import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
+import type { StakingType } from "@/app/types";
 // import { getStakeFees } from "@/app/_utils/transaction";
 import * as S from "./stake.css";
 import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
@@ -31,7 +32,7 @@ export const StakeInfoBox = () => {
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
   const isNative = stakingType === "native";
   const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultStakeFee) });
-  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork];
+  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork][stakingType as StakingType];
   const hasCommission = validatorDetails?.commission !== undefined;
   const isLiquid = stakingType === "liquid";
 

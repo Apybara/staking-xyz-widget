@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
-import { unstakingPeriodByNetwork, defaultNetwork, networkTokens, aleoDefaultUnstakeFee } from "../../../consts";
+import { unstakingPeriodByNetwork, defaultNetwork, networkTokens } from "../../../consts";
+import type { StakingType } from "@/app/types";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import Switch from "@/app/_components/Switch";
@@ -89,12 +90,16 @@ export const UnstakeSecondaryInfoBox = () => {
           <InfoCard.TitleBox>
             <InfoCard.Title>Unstaking period</InfoCard.Title>
           </InfoCard.TitleBox>
-          <InfoCard.Content>{unstakingPeriodByNetwork[network || defaultNetwork]}</InfoCard.Content>
+          <InfoCard.Content>
+            {instantWithdrawal
+              ? "Instant"
+              : unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType]}
+          </InfoCard.Content>
         </InfoCard.StackItem>
         {hasInput && isLiquid && (
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
-              <InfoCard.Title>Will receive</InfoCard.Title>
+              <InfoCard.Title>Will return</InfoCard.Title>
 
               <Tooltip
                 className={S.unstakingTooltip}

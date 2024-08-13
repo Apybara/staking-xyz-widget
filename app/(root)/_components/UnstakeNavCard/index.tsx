@@ -6,6 +6,7 @@ import { useUnbondingDelegations, useStakedBalance } from "../../../_services/st
 import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
 import * as NavCard from "../NavCard";
 import { Skeleton } from "../../../_components/Skeleton";
+import type { StakingType } from "@/app/types";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { unstakingPeriodByNetwork, defaultNetwork } from "../../../consts";
@@ -103,8 +104,8 @@ const useDefaultTitle = ({
 };
 
 const useFallbackTime = () => {
-  const { network } = useShell();
-  const fallbackTime = unstakingPeriodByNetwork[network || defaultNetwork];
+  const { network, stakingType } = useShell();
+  const fallbackTime = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
 
   return {
     time: fallbackTime.split(" ")[0],
