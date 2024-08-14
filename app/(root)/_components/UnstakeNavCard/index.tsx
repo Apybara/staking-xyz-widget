@@ -108,7 +108,7 @@ const useFallbackTime = () => {
   const fallbackTime = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
 
   return {
-    time: fallbackTime.split(" ")[0],
-    unit: fallbackTime.split(" ")[1],
+    time: fallbackTime?.split(" ")[0],
+    unit: fallbackTime?.split(" ")[1],
   };
 };
