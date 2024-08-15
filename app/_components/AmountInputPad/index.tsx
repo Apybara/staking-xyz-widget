@@ -200,6 +200,11 @@ const AvailabilityElement = ({
     coinPrice,
     currency: primaryCurrency,
   });
+  // NOTE: This is a temporary fix to display pALEO instead of ALEO when unstaking liquid pALEO
+  const primaryValueString =
+    primaryValue?.includes("ALEO") && type === "unstake" && stakingType === "liquid"
+      ? primaryValue.replace("ALEO", "pALEO")
+      : primaryValue;
 
   if (!availableValue?.length) return null;
 
@@ -207,7 +212,7 @@ const AvailabilityElement = ({
     <div className={S.topBarInfo}>
       <p style={{ lineHeight: 0 }}>
         <AvailabilityText.Primary>
-          {prefix}: {primaryValue}
+          {prefix}: {primaryValueString}
         </AvailabilityText.Primary>
       </p>
       {!!tooltip && tooltip}

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "type-check": "tsc -p tsconfig.json --noEmit --incremental false"
+    "type-check": "tsc -p tsconfig.json --noEmit --incremental false",
+    "postinstall": "sed -ibak 's/await initializeWorker(Cargo);/(async () => await initializeWorker(Cargo))();/' node_modules/@demox-labs/aleo-sdk/dist/worker.js"
   },
   "dependencies": {
     "@cosmjs/amino": "^0.32.3",
@@ -26,6 +27,7 @@
     "@cosmos-kit/okxwallet": "^2.7.0",
     "@cosmos-kit/react": "^2.13.0",
     "@cosmos-kit/react-lite": "^2.9.0",
+    "@demox-labs/aleo-sdk": "^0.3.39",
     "@demox-labs/aleo-wallet-adapter-base": "^0.0.22",
     "@demox-labs/aleo-wallet-adapter-leo": "^0.0.24",
     "@demox-labs/aleo-wallet-adapter-react": "^0.0.21",
