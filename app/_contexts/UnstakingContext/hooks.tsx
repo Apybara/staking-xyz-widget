@@ -37,6 +37,7 @@ export const useUnstakeAmountInputValidation = ({
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
     walletConnectionStatus: connectionStatus,
+    withdrawing: stakingType === "liquid" && !!aleoUnstakeStatus,
     withdrawFirst: stakingType === "liquid" && aleoUnstakeStatus?.isWithdrawable,
   });
 
@@ -50,7 +51,12 @@ export const useUnstakeInputErrorMessage = ({
   amountValidation: BasicAmountValidationResult;
   inputAmount: UnstakingStates["coinAmountInput"];
 }) => {
+  const { address } = useWallet();
   const { network, stakingType } = useShell();
+  const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
+    address: address || undefined,
+    network,
+  });
   const defaultMessage = getDefaultInputErrorMessage({ amountValidation });
 
   switch (network) {
@@ -62,6 +68,9 @@ export const useUnstakeInputErrorMessage = ({
     case "aleo":
       switch (stakingType) {
         case "liquid":
+          if (!!aleoUnstakeStatus && !aleoUnstakeStatus?.isWithdrawable) {
+            return "Only one unstaking request is possible at a time. Please wait until the current request is completed before submitting another one.";
+          }
           return defaultMessage;
         case "native":
           if (amountValidation === "safeMinInsufficient") {

@@ -5,12 +5,18 @@ import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
-import { stakingOperatorUrlByNetwork } from "../../consts";
+import {
+  stakingOperatorUrlByNetwork,
+  ALEO_PONDO_CORE_ID,
+  ALEO_PONDO_TOKEN_ID,
+  ALEO_PONDO_TOKEN_NETWORK,
+  ALEO_MTSP_ID,
+} from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
 import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
-import { getAleoAddressUnbondingStatus } from "./sdk";
+import { getAleoAddressUnbondingStatus, getPAleoBalanceByAddress } from "./sdk";
 import {
   useIsLeoWalletInstalled,
   useLeoWalletStates,
@@ -38,9 +44,40 @@ import {
   getIsAleoNetwork,
   getIsAleoWalletType,
 } from "./utils";
-import { aleoRestUrl } from "@/app/consts";
+import { networkEndpoints } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { usePondoData } from "./pondo/hooks";
+
+export const usePAleoBalanceByAddress = ({ address, network }: { address?: string; network: Network | null }) => {
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
+  const shouldEnable = isAleoNetwork && isAleoAddressFormat;
+
+  const { data, error, isLoading, isRefetching } = useQuery({
+    enabled: shouldEnable,
+    queryKey: ["paleoBalanceByAddress", address, network],
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getPAleoBalanceByAddress({
+        apiUrl: networkEndpoints.aleo.rpc,
+        address: address || "",
+        tokenId: ALEO_PONDO_TOKEN_ID,
+        tokenIdNetwork: ALEO_PONDO_TOKEN_NETWORK,
+        mtspProgramId: ALEO_MTSP_ID,
+      });
+    },
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
+  });
+
+  return {
+    data,
+    stakedBalance: getMicroCreditsToCredits(data || 0).toString(),
+    isLoading,
+    isRefetching,
+    error,
+  };
+};
 
 export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
   const { stakingType } = useShell();
@@ -50,10 +87,15 @@ export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: 
 
   const { data, error, isLoading } = useQuery({
     enabled: shouldEnable,
-    queryKey: ["aleoAddressUnbondingStatus", address, network],
+    queryKey: ["aleoAddressUnbondingStatus", address, network, stakingType],
     queryFn: () => {
       if (!shouldEnable) return null;
-      return getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "", stakingType });
+      return getAleoAddressUnbondingStatus({
+        apiUrl: networkEndpoints.aleo.rpc,
+        address: address || "",
+        stakingType,
+        pondoProgramId: ALEO_PONDO_CORE_ID,
+      });
     },
     refetchInterval: 30000,
     refetchOnWindowFocus: true,
