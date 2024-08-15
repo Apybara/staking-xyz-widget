@@ -19,6 +19,11 @@ export type UnstakingStates = {
     isLoading: boolean;
     error: Error | null;
   };
+  pAleoBalance?: {
+    data?: string;
+    isLoading: boolean;
+    error: Error | null;
+  };
   cosmosSigningClient: SigningStargateClient | null;
   resetProceduresStates: () => void;
   setStates: Dispatch<Partial<UnstakingStates>>;

@@ -1,8 +1,27 @@
 import type { AleoNetwork, AleoWalletType } from "@/app/types";
 import BigNumber from "bignumber.js";
-import { aleoNetworkVariants, aleoWalletVariants, networkCurrency } from "@/app/consts";
-import { assets } from "chain-registry";
 import { Asset, AssetList } from "@chain-registry/types";
+import { assets } from "chain-registry";
+import { getFormattedCoinValue } from "@/app/_utils/conversions";
+import { aleoNetworkVariants, aleoWalletVariants, networkCurrency } from "@/app/consts";
+
+export const getPAleoFromAleo = ({ val, mintRate }: { val: string | number; mintRate: number }) => {
+  return getFormattedCoinValue({
+    val: getCreditsToMint(val, mintRate),
+    formatOptions: {
+      currencySymbol: "pALEO",
+    },
+  });
+};
+
+export const getAleoFromPAleo = ({ val, mintRate }: { val: string | number; mintRate: number }) => {
+  return getFormattedCoinValue({
+    val: getMintToCredits(val, mintRate),
+    formatOptions: {
+      currencySymbol: networkCurrency.aleo,
+    },
+  });
+};
 
 export const getIsAleoNetwork = (network: string | null): network is AleoNetwork => {
   return aleoNetworkVariants.includes(network as AleoNetwork);

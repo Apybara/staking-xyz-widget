@@ -26,13 +26,6 @@ export const networkCurrency: Record<Network, NetworkCurrency> = {
   aleo: "ALEO",
 };
 
-export const networkTokens: Record<Network, string> = {
-  celestia: "",
-  celestiatestnet3: "",
-  cosmoshub: "",
-  cosmoshubtestnet: "",
-  aleo: "pALEO",
-};
 export const networkCoinPriceSymbol: Record<Network, string> = {
   celestia: "celestia",
   celestiatestnet3: "celestia",
@@ -180,8 +173,9 @@ export const networkEndpoints: Record<
     rest:
       process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REST_ENDPOINT || "https://rest.sentry-01.theta-testnet.polypore.xyz/",
   },
+  // TODO: use dynamic Aleo network
   aleo: {
-    rpc: "",
+    rpc: process.env.NEXT_PUBLIC_ALEOTESTNET_RPC_ENDPOINT || "https://testnetbeta.aleorpc.com/",
     rest: "",
   },
 };
@@ -551,9 +545,6 @@ export const serverUrlByNetwork: Record<Network, string> = {
   aleo: process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET || "",
 };
 
-// TODO: use dynamic Aleo network
-export const aleoRestUrl = "https://testnetbeta.aleorpc.com/";
-
 export const ALEO_URLS = ["aleo.staking.xyz", "testnet.staking.xyz"];
 
 export const SITE_TITLE = "Staking.xyz";
@@ -567,3 +558,7 @@ export const TELEGRAM_URL = "https://t.me/staking_xyz";
 
 export const PONDO_URL = "https://pondo.xyz";
 export const VERIDISE_URL = "https://veridise.com";
+// TODO: use dynamic Aleo network
+export const ALEO_PONDO_TOKEN_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_ID || "";
+export const ALEO_PONDO_TOKEN_NETWORK = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK || "";
+export const ALEO_MTSP_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID || "";

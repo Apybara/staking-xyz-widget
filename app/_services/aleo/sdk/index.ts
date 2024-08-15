@@ -1,6 +1,56 @@
 import type { StakingType } from "@/app/types";
+import BigNumber from "bignumber.js";
 import { fetchData } from "@/app/_utils/fetch";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
+import { getLazyInitAleoSDK, getAleoMappingValue, getFormattedAleoString } from "./utils";
+import { getMicroCreditsToCredits } from "../utils";
+
+export const getPAleoBalanceByAddress = async ({
+  apiUrl,
+  address,
+  tokenId,
+  tokenIdNetwork,
+  mtspProgramId,
+}: {
+  apiUrl: string;
+  address: string;
+  tokenId: string;
+  tokenIdNetwork: string;
+  mtspProgramId: string;
+}) => {
+  const balanceKey = await getAleoTokenOwnerHash({ address, tokenId, network: tokenIdNetwork });
+  const balanceStruct = await getAleoMappingValue({
+    apiUrl,
+    mappingKey: balanceKey,
+    programId: mtspProgramId,
+    mappingName: "authorized_balances",
+  });
+
+  if (!balanceStruct) {
+    return BigNumber(0).toString();
+  }
+  const microCreditsBalance = BigNumber(
+    JSON.parse(getFormattedAleoString(balanceStruct))["balance"].slice(0, -4),
+  ).toString();
+
+  // ⚠️ TODO: CONFIRM CONVERSION FORMAT
+  return getMicroCreditsToCredits(microCreditsBalance).toString();
+};
+
+const getAleoTokenOwnerHash = async ({
+  address,
+  tokenId,
+  network,
+}: {
+  address: string;
+  tokenId: string;
+  network: string;
+}) => {
+  const sdk = await getLazyInitAleoSDK();
+  const tokenOwnerString = `{ account: ${address}, token_id: ${tokenId} }`;
+
+  return sdk.Plaintext.fromString(network, tokenOwnerString).hashBhp256();
+};
 
 export const getAleoAddressUnbondingStatus = async ({
   apiUrl,
