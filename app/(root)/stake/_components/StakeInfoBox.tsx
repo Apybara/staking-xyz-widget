@@ -11,7 +11,7 @@ import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 import type { StakingType } from "@/app/types";
 // import { getStakeFees } from "@/app/_utils/transaction";
-import { getTokenFromCoin } from "@/app/_utils/conversions";
+import { getPAleoFromAleo } from "@/app/_services/aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 import { getLiquidFees } from "@/app/_utils/transaction";
 
@@ -34,8 +34,6 @@ export const StakeInfoBox = () => {
   const hasCommission = validatorDetails?.commission !== undefined;
   const isNative = stakingType === "native";
   const isLiquid = stakingType === "liquid";
-
-  const tokenRate = getTokenFromCoin({ val: coinAmountInput || "0", network: castedNetwork, mintRate: mintRate || 1 });
 
   return (
     <InfoCard.Card>
@@ -92,13 +90,14 @@ export const StakeInfoBox = () => {
                   trigger={<Icon name="info" />}
                   content={
                     <>
-                      1 {networkCurrency[castedNetwork]} ={" "}
-                      {getTokenFromCoin({ val: 1, network: castedNetwork, mintRate: mintRate || 1 })}
+                      1 {networkCurrency[castedNetwork]} = {getPAleoFromAleo({ val: 1, mintRate: mintRate || 1 })}
                     </>
                   }
                 />
               </InfoCard.TitleBox>
-              <InfoCard.Content>{tokenRate}</InfoCard.Content>
+              <InfoCard.Content>
+                {getPAleoFromAleo({ val: coinAmountInput as string, mintRate: mintRate || 1 })}
+              </InfoCard.Content>
             </InfoCard.StackItem>
           ) : (
             <InfoCard.StackItem>

@@ -4,6 +4,8 @@ import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
+import { getIsAleoNetwork } from "../../_services/aleo/utils";
+import { usePAleoBalanceByAddress } from "../../_services/aleo/hooks";
 import { useStakedBalance } from "../../_services/stakingOperator/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
@@ -16,9 +18,17 @@ export const useUnstaking = () => useContext(UnstakingContext);
 export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   const [states, setStates] = useReducer<T.UseUnstakingReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const { activeWallet, address } = useWallet();
-  const stakedBalance = useStakedBalance();
+
+  const defaultStakedBalance = useStakedBalance();
+  const pAleoBalance = usePAleoBalanceByAddress({
+    address: address || undefined,
+    network: network,
+  });
+  const isAleoNetwork = network && getIsAleoNetwork(network);
+  const stakedBalance = isAleoNetwork && stakingType === "liquid" ? pAleoBalance : defaultStakedBalance;
+
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
     wallet: activeWallet,
