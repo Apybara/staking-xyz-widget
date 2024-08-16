@@ -1,10 +1,5 @@
 import { fetchData } from "@/app/_utils/fetch";
 
-export const getRebalancingPeriod = ({ address }: { address: string }) => {
-  const res: { rebalancingPeriod: number | string } = { rebalancingPeriod: 0 };
-  return res;
-};
-
 export const getPondoData = async ({ apiUrl }: { apiUrl: string }) => {
   const res = await fetchData(`${apiUrl}`, {
     method: "POST",

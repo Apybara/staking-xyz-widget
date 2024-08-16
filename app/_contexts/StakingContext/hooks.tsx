@@ -16,7 +16,7 @@ import {
   networkCurrency,
 } from "@/app/consts";
 import { getAddressChunks } from "@/app/_utils/address";
-import { useRebalancingPeriod } from "@/app/_services/aleo/pondo/hooks";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
@@ -29,7 +29,7 @@ export const useStakeAmountInputValidation = ({
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
   const { minInitialAmount, minSubsequentAmount } = useStakeMinAmount();
   const { state: validatorState } = useStakeValidatorState();
-  const { rebalancingPeriod } = useRebalancingPeriod() || {};
+  const { isRebalancing } = usePondoData() || {};
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -40,7 +40,7 @@ export const useStakeAmountInputValidation = ({
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
-    liquidRebalancing: stakingType === "liquid" && !!rebalancingPeriod && rebalancingPeriod !== "0",
+    liquidRebalancing: stakingType === "liquid" && isRebalancing,
     walletConnectionStatus: connectionStatus,
     closedValidator: validatorState === "closedValidator",
     closedDelegatedValidator: validatorState === "closedDelegatedValidator",
@@ -196,10 +196,10 @@ export const useStakeValidatorState = () => {
     address: validator || delegatedValidator?.validatorAddress || "",
     network,
   });
-  const { rebalancingPeriod } = useRebalancingPeriod();
+  const { isRebalancing } = usePondoData() || {};
 
   // Liquid rebalancing view
-  if (stakingType === "liquid" && !!rebalancingPeriod && rebalancingPeriod !== "0") {
+  if (stakingType === "liquid" && isRebalancing) {
     return {
       state: "liquidRebalancing",
     };

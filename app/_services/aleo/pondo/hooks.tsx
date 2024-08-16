@@ -1,19 +1,10 @@
 import BigNumber from "bignumber.js";
 import { useQuery } from "@tanstack/react-query";
 import * as T from "./types";
-import { useWallet } from "@/app/_contexts/WalletContext";
-import { getPondoData, getRebalancingPeriod } from ".";
+import { getPondoData } from ".";
 import { aleoRestUrl } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getIsAleoNetwork } from "../utils";
-
-export const useRebalancingPeriod = () => {
-  const { address } = useWallet();
-
-  const { rebalancingPeriod } = getRebalancingPeriod({ address: address as string });
-
-  return { rebalancingPeriod };
-};
 
 export const usePondoData = (): T.PondoDataResponse | null => {
   const { network, stakingType } = useShell();
