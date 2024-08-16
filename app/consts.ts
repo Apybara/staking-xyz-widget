@@ -293,11 +293,37 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
 };
 
 export const aleoDefaultStakeFee = "182079";
-export const aleoDefaultLiquidStakeFee = "633997";
 export const aleoDefaultUnstakeFee = "365356";
-export const aleoDefaultLiquidUnstakeFee = "689029";
 export const aleoDefaultClaimFee = "88711";
-export const aleoDefaultLiquidClaimFee = "689029";
+
+export const aleoFees = {
+  stake: {
+    native: "182079",
+    liquid: "669023",
+  },
+  unstake: {
+    native: "365356",
+    liquid: "738315",
+  },
+  instant_unstake: {
+    native: null,
+    liquid: "811339",
+  },
+  redelegate: {
+    native: null,
+    liquid: null,
+  },
+  claim: {
+    native: null,
+    liquid: null,
+  },
+  withdraw: {
+    native: "88711",
+    liquid: "175655",
+  },
+};
+
+export const PONDO_PROTOCOL_COMMISSION = 0.1;
 
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
   celestia: [

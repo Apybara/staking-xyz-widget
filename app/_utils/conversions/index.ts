@@ -155,22 +155,38 @@ export const getFormattedCoinValue = ({
   return `${value}${defaultSymbol}`;
 };
 
-export const getTokenFromCoin = ({ val, network }: { val: string | number; network: Network }) => {
+export const getTokenFromCoin = ({
+  val,
+  network,
+  mintRate,
+}: {
+  val: string | number;
+  network: Network;
+  mintRate: number;
+}) => {
   const castedNetwork = network || defaultNetwork;
 
   return getFormattedCoinValue({
-    val: getCreditsToMint(val),
+    val: getCreditsToMint(val, mintRate),
     formatOptions: {
       currencySymbol: networkTokens[castedNetwork],
     },
   });
 };
 
-export const getCoinFromToken = ({ val, network }: { val: string | number; network: Network }) => {
+export const getCoinFromToken = ({
+  val,
+  network,
+  mintRate,
+}: {
+  val: string | number;
+  network: Network;
+  mintRate: number;
+}) => {
   const castedNetwork = network || defaultNetwork;
 
   return getFormattedCoinValue({
-    val: getMintToCredits(val),
+    val: getMintToCredits(val, mintRate),
     formatOptions: {
       currencySymbol: networkCurrency[castedNetwork],
     },

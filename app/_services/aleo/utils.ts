@@ -48,20 +48,27 @@ export const getCreditsToMicroCredits = (credits: string | number) => {
   return BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber();
 };
 
-export const getMintToCredits = (mint: string | number) => {
-  return BigNumber(mint).div(MINT_CONVERSION_RATE).toNumber();
+export const getMintToCredits = (mint: string | number, rate: number) => {
+  return BigNumber(mint)
+    .div(rate || "1")
+    .toNumber();
 };
 
-export const getCreditsToMint = (credits: string | number) => {
-  return BigNumber(credits).times(MINT_CONVERSION_RATE).toNumber();
+export const getCreditsToMint = (credits: string | number, rate: number) => {
+  return BigNumber(credits)
+    .times(rate || "1")
+    .toNumber();
 };
 
-export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number) => {
-  return BigNumber(unstakeAmount).times(INSTANT_WITHDRAWAL_FEE).dividedBy(MINT_CONVERSION_RATE).plus(txFee).toNumber();
+export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number, rate?: number) => {
+  return BigNumber(unstakeAmount)
+    .times(INSTANT_WITHDRAWAL_FEE)
+    .dividedBy(rate || "1")
+    .plus(txFee)
+    .toNumber();
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
-const MINT_CONVERSION_RATE = 0.1;
 const INSTANT_WITHDRAWAL_FEE = 0.00025;
 
 const getIsBech32 = (address?: string) => {
