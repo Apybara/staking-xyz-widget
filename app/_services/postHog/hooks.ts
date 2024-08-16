@@ -70,7 +70,7 @@ export const useTxPostHogEvents = ({
   const action = eventActionMap[type];
   const hasAuthApproval = uncheckedProcedures?.[0]?.step === "sign";
 
-  const captureFlowStart = usePostHogEvent(`${type}_tx_flow_started`);
+  const captureFlowStart = usePostHogEvent(`${type === "instant_unstake" ? "unstake" : type}_tx_flow_started`);
   const captureAuthSuccess = usePostHogEvent(
     `${type === "unstake" ? "stake" : type}_tx_flow_auth_succeeded` as T.Event,
   );

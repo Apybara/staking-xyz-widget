@@ -69,6 +69,6 @@ export type RouterStruct = {
   };
 };
 
-export type TxType = "stake" | "unstake" | "redelegate" | "claim" | "withdraw";
+export type TxType = "stake" | "unstake" | "instant_unstake" | "redelegate" | "claim" | "withdraw";
 
 type Device = "mobile" | "desktop";

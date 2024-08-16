@@ -26,6 +26,7 @@ export type AleoStakeProps = {
   chainId?: AleoNetwork;
   validatorAddress: string;
   txFee: string;
+  mintRate: number;
 };
 
 export type AleoUnstakeProps = {
@@ -33,6 +34,7 @@ export type AleoUnstakeProps = {
   address: string;
   chainId?: AleoNetwork;
   txFee: string;
+  mintRate: number;
   instantWithdrawal?: boolean;
 };
 
