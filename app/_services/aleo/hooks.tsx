@@ -40,6 +40,7 @@ import {
 } from "./utils";
 import { aleoRestUrl } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
+import { usePondoData } from "./pondo/hooks";
 
 export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
   const { stakingType } = useShell();
@@ -128,6 +129,7 @@ const useAleoBroadcastTx = ({
   const { operatorUrl } = broadcastTxMap[type];
   const { wallet: leoWallet } = useLeoWallet();
   const { stakingType } = useShell();
+  const { mintRate } = usePondoData() || {};
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
@@ -160,6 +162,7 @@ const useAleoBroadcastTx = ({
         address,
         chainId: "aleo",
         txFee,
+        mintRate: mintRate || 1,
       });
 
       onBroadcasting?.();
