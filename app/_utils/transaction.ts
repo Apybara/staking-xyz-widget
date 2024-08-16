@@ -1,6 +1,7 @@
-import type { WalletConnectionStatus, Network } from "../types";
+import type { WalletConnectionStatus, Network, TxType } from "../types";
 import BigNumber from "bignumber.js";
-import { feeRatioByNetwork } from "../consts";
+import { aleoFees, feeRatioByNetwork, PONDO_PROTOCOL_COMMISSION } from "../consts";
+import { getMicroCreditsToCredits } from "../_services/aleo/utils";
 
 export const getBasicAmountValidation = ({
   amount,
@@ -115,6 +116,24 @@ export const getStakeFees = ({
   const ratio = feeRatioByNetwork[network];
   const result = BigNumber(amount).times(ratio);
   return floorResult ? Math.floor(result.toNumber()).toString() : result.toString();
+};
+
+export const getLiquidFees = ({
+  amount,
+  type,
+  floorResult,
+}: {
+  amount: string;
+  type: TxType;
+  floorResult?: boolean;
+}) => {
+  if (amount === "" || amount === "0") return undefined;
+
+  const networkFees = getMicroCreditsToCredits(aleoFees[type].liquid as string);
+  const protocolCommission = BigNumber(amount).times(PONDO_PROTOCOL_COMMISSION).toNumber();
+  const result = networkFees + protocolCommission;
+
+  return floorResult ? Math.floor(result).toString() : result.toString();
 };
 
 export type BasicAmountValidationResult =

@@ -1,5 +1,4 @@
 "use client";
-import { useMemo } from "react";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
@@ -12,15 +11,24 @@ import Switch from "@/app/_components/Switch";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { getCoinFromToken } from "@/app/_utils/conversions";
 import { getInstantWithdrawalFee } from "@/app/_services/aleo/utils";
+import { getLiquidFees } from "@/app/_utils/transaction";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
 import * as S from "./unstake.css";
 
 export const UnstakeSecondaryInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput, instantWithdrawal, setStates } = useUnstaking();
-  const txFee = "0.3456"; // dummy sum of network fee + blended commission + protocal commission
-  const totalFees = instantWithdrawal ? getInstantWithdrawalFee(coinAmountInput || "0", txFee) : txFee;
+
+  const liquidUnstakeFees = getLiquidFees({
+    amount: coinAmountInput || "0",
+    type: instantWithdrawal ? "instant_unstake" : "unstake",
+  });
+  const totalFees = instantWithdrawal
+    ? getInstantWithdrawalFee(coinAmountInput || "0", liquidUnstakeFees || "0")
+    : liquidUnstakeFees;
   const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: totalFees });
+  const { mintRate } = usePondoData() || {};
 
   const castedNetwork = network || defaultNetwork;
 
@@ -29,7 +37,7 @@ export const UnstakeSecondaryInfoBox = () => {
 
   if (!hasInput) return null;
 
-  const tokenRate = getCoinFromToken({ val: coinAmountInput as string, network: castedNetwork });
+  const tokenRate = getCoinFromToken({ val: coinAmountInput || "0", network: castedNetwork, mintRate: mintRate || 1 });
 
   return (
     <InfoCard.Card>
@@ -43,7 +51,7 @@ export const UnstakeSecondaryInfoBox = () => {
                 <Tooltip
                   className={S.unstakingTooltip}
                   trigger={<Icon name="info" />}
-                  content="Instant withdrawals have a fee of 0.25%."
+                  content="Instant withdrawals have a fee of 0.25%. They will be processed immediately without any waiting period."
                 />
               </InfoCard.TitleBox>
               <InfoCard.Content>
@@ -66,8 +74,7 @@ export const UnstakeSecondaryInfoBox = () => {
                           instant withdrawals fee <span className={S.plusSign}>+</span>{" "}
                         </>
                       )}
-                      network fee <span className={S.plusSign}>+</span> blended commission to validators{" "}
-                      <span className={S.plusSign}>+</span> protocol commission to Pondo.xyz
+                      network fee <span className={S.plusSign}>+</span> protocol commission to Pondo.xyz
                     </>
                   }
                 />
@@ -96,7 +103,8 @@ export const UnstakeSecondaryInfoBox = () => {
                 trigger={<Icon name="info" />}
                 content={
                   <>
-                    1 {networkTokens[castedNetwork]} = {getCoinFromToken({ val: 1, network: castedNetwork })}
+                    1 {networkTokens[castedNetwork]} ={" "}
+                    {getCoinFromToken({ val: 1, network: castedNetwork, mintRate: mintRate || 1 })}
                   </>
                 }
               />

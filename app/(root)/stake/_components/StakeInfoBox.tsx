@@ -11,17 +11,23 @@ import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
-import * as S from "./stake.css";
 import { getTokenFromCoin } from "@/app/_utils/conversions";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
+import { getLiquidFees } from "@/app/_utils/transaction";
+
+import * as S from "./stake.css";
 
 export const StakeInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
   const { validatorDetails } = useStakeValidatorState();
+
   // const stakeFees = getStakeFees({ amount: coinAmountInput, network: network || defaultNetwork });
-  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: "1000" });
+  const liquidStakeFees = getLiquidFees({ amount: coinAmountInput || "0", type: "stake" });
+  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: liquidStakeFees });
+  const { mintRate } = usePondoData() || {};
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
   const castedNetwork = network || defaultNetwork;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
@@ -29,7 +35,7 @@ export const StakeInfoBox = () => {
   const hasCommission = validatorDetails?.commission !== undefined;
   const isLiquid = stakingType === "liquid";
 
-  const tokenRate = getTokenFromCoin({ val: coinAmountInput as string, network: castedNetwork });
+  const tokenRate = getTokenFromCoin({ val: coinAmountInput || "0", network: castedNetwork, mintRate: mintRate || 1 });
 
   return (
     <InfoCard.Card>
@@ -47,13 +53,12 @@ export const StakeInfoBox = () => {
               <InfoCard.Title>Total fees</InfoCard.Title>
 
               <Tooltip
-                className={S.stakingTooltip}
+                className={S.feesTooltip}
                 trigger={<Icon name="info" />}
                 content={
                   <>
                     Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
-                    blended commission to validators <span className={S.plusSign}>+</span> protocol commission to
-                    Pondo.xyz
+                    protocol commission to Pondo.xyz
                   </>
                 }
               />
@@ -80,7 +85,8 @@ export const StakeInfoBox = () => {
                   trigger={<Icon name="info" />}
                   content={
                     <>
-                      1 {networkCurrency[castedNetwork]} = {getTokenFromCoin({ val: 1, network: castedNetwork })}
+                      1 {networkCurrency[castedNetwork]} ={" "}
+                      {getTokenFromCoin({ val: 1, network: castedNetwork, mintRate: mintRate || 1 })}
                     </>
                   }
                 />

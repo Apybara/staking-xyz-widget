@@ -32,6 +32,7 @@ export const eventVariants = [...EventVariants];
 export const eventActionMap = {
   stake: "_delegate",
   unstake: "_undelegate",
+  instant_unstake: "_undelegate",
   redelegate: "_redelegate",
   claim: "",
   withdraw: "",

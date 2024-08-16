@@ -21,13 +21,19 @@ export const useLeoWalletStake = () => {
 
   const stakingFunction = stakingType === "liquid" ? leoWalletLiquidStake : leoWalletStake;
 
-  return async ({ validatorAddress, amount, chainId, txFee }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
+  return async ({
+    validatorAddress,
+    amount,
+    chainId,
+    txFee,
+    mintRate,
+  }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet || !validatorAddress || !amount) {
         const error = new Error("Staking fails: missing wallet, publicKey, validatorAddress or amount");
         throw error;
       }
-      return await stakingFunction({ amount, validatorAddress, wallet, address: publicKey, chainId, txFee });
+      return await stakingFunction({ amount, validatorAddress, wallet, address: publicKey, chainId, txFee, mintRate });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Staking fails");
       throw err;
@@ -42,14 +48,22 @@ export const useLeoWalletUnstake = () => {
 
   const unstakingFunction = stakingType === "liquid" ? leoWalletLiquidUnstake : leoWalletUnstake;
 
-  return async ({ amount, chainId, txFee }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
+  return async ({ amount, chainId, txFee, mintRate }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet || !amount) {
         const error = new Error("Unstaking fails: missing wallet, publicKey, or stakeAmount");
         throw error;
       }
 
-      return await unstakingFunction({ amount, wallet, address: publicKey, chainId, txFee, instantWithdrawal });
+      return await unstakingFunction({
+        amount,
+        wallet,
+        address: publicKey,
+        chainId,
+        txFee,
+        mintRate,
+        instantWithdrawal,
+      });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;
