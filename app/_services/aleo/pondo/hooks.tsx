@@ -1,12 +1,11 @@
 import BigNumber from "bignumber.js";
 import { useQuery } from "@tanstack/react-query";
-import * as T from "./types";
 import { getPondoData } from ".";
 import { aleoRestUrl } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getIsAleoNetwork } from "../utils";
 
-export const usePondoData = (): T.PondoDataResponse | null => {
+export const usePondoData = () => {
   const { network, stakingType } = useShell();
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const shouldEnable = isAleoNetwork && stakingType === "liquid";
