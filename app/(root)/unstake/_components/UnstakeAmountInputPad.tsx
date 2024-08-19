@@ -5,17 +5,15 @@ import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import { useShell } from "@/app/_contexts/ShellContext";
 
 export const UnstakeAmountInputPad = () => {
-  const { network, stakingType } = useShell();
-  const { amountInputPad, stakedBalance, pAleoBalance, setStates, inputErrorMessage } = useUnstaking();
-
+  const { network } = useShell();
+  const { amountInputPad, stakedBalance, setStates, inputErrorMessage } = useUnstaking();
   const isAleoNetwork = network && getIsAleoNetwork(network);
-  const availableValueData = isAleoNetwork && stakingType === "liquid" ? pAleoBalance : stakedBalance;
 
   return (
     <AmountInputPad
       type="unstake"
-      availableValue={availableValueData?.data}
-      isAvailableValueLoading={availableValueData?.isLoading}
+      availableValue={stakedBalance?.data}
+      isAvailableValueLoading={stakedBalance?.isLoading}
       onValueChange={(val) => {
         setStates({ coinAmountInput: val });
       }}

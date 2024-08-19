@@ -68,7 +68,7 @@ export const AmountInputPad = ({
   hideCurrencyConversion,
   validatorInfo,
 }: AmountInputPadProps) => {
-  const { network, stakingType } = useShell();
+  const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
 

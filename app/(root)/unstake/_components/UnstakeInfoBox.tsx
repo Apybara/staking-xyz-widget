@@ -18,30 +18,86 @@ import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
   const { address } = useWallet();
-  const { currency, coinPrice, network, stakingType } = useShell();
+  const { network } = useShell();
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
+  const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
+    address: address || undefined,
+    network,
+  });
+
+  const hasPendingItems = unbondingDelegations?.length || aleoUnstakeStatus !== null;
+
+  if (!hasPendingItems) return null;
+  if (aleoUnstakeStatus !== null) return <AleoUnstakeInfo />;
+  return <DefaultUnstakeInfo />;
+};
+
+const AleoUnstakeInfo = () => {
+  const { address } = useWallet();
+  const { currency, coinPrice, network, stakingType } = useShell();
   const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
     address: address || undefined,
     network,
   });
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
-  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
-
   const isLiquid = stakingType === "liquid";
-  const hasPendingItems = unbondingDelegations?.length || aleoUnstakeStatus !== null;
-  const totalPendingItems = aleoUnstakeStatus !== null ? 1 : unbondingDelegations?.length || 0;
+  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
+  const aleoUnbondingAmount = getDynamicAssetValueFromCoin({
+    currency,
+    coinPrice,
+    network,
+    coinVal: aleoUnstakeStatus?.amount,
+  });
+  const times = aleoUnstakeStatus?.completionTime && getTimeUnitStrings(aleoUnstakeStatus.completionTime);
+  const remainingTimeString = times ? `${times.time} ${times?.unit} left` : `${unstakingPeriod} left`;
+
+  const titleContent = useMemo(() => {
+    if (aleoUnstakeStatus?.isWithdrawable) {
+      return (
+        <Tooltip
+          className={S.withdrawableTooltip}
+          trigger={
+            <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
+              Withdraw
+            </button>
+          }
+          content={`You can withdraw ${aleoUnbondingAmount} now!`}
+        />
+      );
+    }
+
+    return <p className={cn(S.remainingDays)}>{remainingTimeString}</p>;
+  }, [isLiquid, aleoUnstakeStatus?.isWithdrawable, aleoUnbondingAmount, remainingTimeString]);
+
+  if (!aleoUnstakeStatus) return null;
+
+  return (
+    <InfoCard.Card>
+      <InfoCard.StackItem>
+        <InfoCard.TitleBox>{titleContent}</InfoCard.TitleBox>
+        <InfoCard.Content>{aleoUnbondingAmount}</InfoCard.Content>
+      </InfoCard.StackItem>
+    </InfoCard.Card>
+  );
+};
+
+const DefaultUnstakeInfo = () => {
+  const { currency, coinPrice, network, stakingType } = useShell();
+  const { data: unbondingDelegations } = useUnbondingDelegations() || {};
+  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
+  const hasPendingItems = unbondingDelegations?.length;
+  const totalPendingItems = unbondingDelegations?.length || 0;
+
   const totalPendingAmount = useMemo(() => {
     if (!hasPendingItems) return undefined;
 
     const sumDenom =
-      aleoUnstakeStatus?.amount ||
       unbondingDelegations
         ?.reduce((acc, { amount }) => {
           return acc.plus(amount);
         }, BigNumber(0))
-        .toString() ||
-      "0";
+        .toString() || "0";
 
     return getDynamicAssetValueFromCoin({
       currency,
@@ -50,47 +106,6 @@ export const UnstakeInfoBox = () => {
       coinVal: sumDenom,
     });
   }, [unbondingDelegations, currency, hasPendingItems]);
-
-  if (!hasPendingItems) return null;
-
-  if (aleoUnstakeStatus !== null) {
-    const aleoUnbondingAmount = getDynamicAssetValueFromCoin({
-      currency,
-      coinPrice,
-      network,
-      coinVal: aleoUnstakeStatus.amount,
-    });
-    const times = aleoUnstakeStatus.completionTime && getTimeUnitStrings(aleoUnstakeStatus.completionTime);
-
-    return (
-      <InfoCard.Card>
-        <InfoCard.StackItem>
-          <InfoCard.TitleBox>
-            {aleoUnstakeStatus.isWithdrawable ? (
-              <Tooltip
-                className={S.withdrawableTooltip}
-                trigger={
-                  <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
-                    Withdraw
-                  </button>
-                }
-                content={
-                  isLiquid
-                    ? "You need to withdraw before making a new unstaking request"
-                    : `You can withdraw ${aleoUnbondingAmount} now!`
-                }
-              />
-            ) : (
-              <p className={cn(S.remainingDays)}>
-                {times ? `${times.time} ${times?.unit} left` : `${unstakingPeriod} left`}
-              </p>
-            )}
-          </InfoCard.TitleBox>
-          <InfoCard.Content>{aleoUnbondingAmount}</InfoCard.Content>
-        </InfoCard.StackItem>
-      </InfoCard.Card>
-    );
-  }
 
   return (
     <AccordionInfoCard.Root>

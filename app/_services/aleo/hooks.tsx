@@ -5,7 +5,13 @@ import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
-import { stakingOperatorUrlByNetwork, ALEO_PONDO_TOKEN_ID, ALEO_PONDO_TOKEN_NETWORK, ALEO_MTSP_ID } from "../../consts";
+import {
+  stakingOperatorUrlByNetwork,
+  ALEO_PONDO_CORE_ID,
+  ALEO_PONDO_TOKEN_ID,
+  ALEO_PONDO_TOKEN_NETWORK,
+  ALEO_MTSP_ID,
+} from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
@@ -66,6 +72,7 @@ export const usePAleoBalanceByAddress = ({ address, network }: { address?: strin
 
   return {
     data,
+    stakedBalance: getMicroCreditsToCredits(data || 0).toString(),
     isLoading,
     isRefetching,
     error,
@@ -80,10 +87,15 @@ export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: 
 
   const { data, error, isLoading } = useQuery({
     enabled: shouldEnable,
-    queryKey: ["aleoAddressUnbondingStatus", address, network],
+    queryKey: ["aleoAddressUnbondingStatus", address, network, stakingType],
     queryFn: () => {
       if (!shouldEnable) return null;
-      return getAleoAddressUnbondingStatus({ apiUrl: networkEndpoints.aleo.rpc, address: address || "", stakingType });
+      return getAleoAddressUnbondingStatus({
+        apiUrl: networkEndpoints.aleo.rpc,
+        address: address || "",
+        stakingType,
+        pondoProgramId: ALEO_PONDO_CORE_ID,
+      });
     },
     refetchInterval: 30000,
     refetchOnWindowFocus: true,

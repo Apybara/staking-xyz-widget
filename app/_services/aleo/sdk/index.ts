@@ -2,8 +2,7 @@ import type { StakingType } from "@/app/types";
 import BigNumber from "bignumber.js";
 import { fetchData } from "@/app/_utils/fetch";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
-import { getLazyInitAleoSDK, getAleoMappingValue, getFormattedAleoString } from "./utils";
-import { getMicroCreditsToCredits } from "../utils";
+import { getLazyInitAleoSDK, getFormattedAleoString } from "./utils";
 
 export const getPAleoBalanceByAddress = async ({
   apiUrl,
@@ -19,22 +18,28 @@ export const getPAleoBalanceByAddress = async ({
   mtspProgramId: string;
 }) => {
   const balanceKey = await getAleoTokenOwnerHash({ address, tokenId, network: tokenIdNetwork });
-  const balanceStruct = await getAleoMappingValue({
-    apiUrl,
-    mappingKey: balanceKey,
-    programId: mtspProgramId,
-    mappingName: "authorized_balances",
+  const res = await fetchData(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getMappingValue",
+      params: {
+        program_id: mtspProgramId,
+        mapping_name: "authorized_balances",
+        key: balanceKey,
+      },
+    }),
   });
 
-  if (!balanceStruct) {
+  if (!res?.result) {
     return BigNumber(0).toString();
   }
-  const microCreditsBalance = BigNumber(
-    JSON.parse(getFormattedAleoString(balanceStruct))["balance"].slice(0, -4),
-  ).toString();
 
-  // ⚠️ TODO: CONFIRM CONVERSION FORMAT
-  return getMicroCreditsToCredits(microCreditsBalance).toString();
+  return BigNumber(JSON.parse(getFormattedAleoString(res.result))["balance"].slice(0, -4)).toString();
 };
 
 const getAleoTokenOwnerHash = async ({
@@ -56,15 +61,19 @@ export const getAleoAddressUnbondingStatus = async ({
   apiUrl,
   address,
   stakingType,
+  pondoProgramId,
 }: {
   apiUrl: string;
   address: string;
   stakingType: StakingType | null;
+  pondoProgramId: string;
 }) => {
   const latestBlockHeight = await getAleoLatestBlockHeight({ apiUrl });
   const unbondingPosition = await (stakingType === "liquid"
-    ? getAleoAddressLiquidUnbondingPosition({ apiUrl, address })
+    ? getAleoAddressLiquidUnbondingPosition({ apiUrl, address, pondoProgramId })
     : getAleoAddressUnbondingPosition({ apiUrl, address }));
+
+  console.log(unbondingPosition);
 
   if (!unbondingPosition || !unbondingPosition.microCredits) return null;
 
@@ -118,12 +127,29 @@ export const getAleoAddressUnbondingPosition = async ({ apiUrl, address }: { api
 export const getAleoAddressLiquidUnbondingPosition = async ({
   apiUrl,
   address,
+  pondoProgramId,
 }: {
   apiUrl: string;
   address: string;
+  pondoProgramId: string;
 }) => {
-  const res = await fetchData(`${apiUrl}program/pondo_core_protocolv1.aleo/mapping/withdrawals/${address}`);
-  return getFormattedUnbondingPosition(res);
+  const res = await fetchData(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getMappingValue",
+      params: {
+        program_id: pondoProgramId,
+        mapping_name: "withdrawals",
+        key: address,
+      },
+    }),
+  });
+  return getFormattedUnbondingPosition(res.result);
 };
 
 const getFormattedUnbondingPosition = (data: string | null) => {
@@ -141,7 +167,7 @@ const getFormattedUnbondingPosition = (data: string | null) => {
     const value = JSON.parse(processedText);
     return {
       microCredits: value.microcredits as number,
-      height: value.height as number,
+      height: (value.height || value.claim_block) as number,
     };
   } catch (error) {
     console.error("Error parsing text to object:", error);

@@ -47,7 +47,6 @@
     "classnames": "^2.5.1",
     "date-fns": "^3.6.0",
     "graz": "^0.1.15",
-    "json-rpc-2.0": "^1.7.0",
     "juno-network": "^0.18.1",
     "long": "^5.2.3",
     "mathjs": "^12.4.1",

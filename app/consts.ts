@@ -560,5 +560,6 @@ export const PONDO_URL = "https://pondo.xyz";
 export const VERIDISE_URL = "https://veridise.com";
 // TODO: use dynamic Aleo network
 export const ALEO_PONDO_TOKEN_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_ID || "";
+export const ALEO_PONDO_CORE_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID || "";
 export const ALEO_PONDO_TOKEN_NETWORK = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK || "";
 export const ALEO_MTSP_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID || "";

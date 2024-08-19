@@ -64,7 +64,7 @@ export const getMicroCreditsToCredits = (microCredits: string | number) => {
 };
 
 export const getCreditsToMicroCredits = (credits: string | number) => {
-  return BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber();
+  return Math.floor(BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber());
 };
 
 export const getMintToCredits = (mint: string | number, rate: number) => {

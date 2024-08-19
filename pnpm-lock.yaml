@@ -112,9 +112,6 @@ importers:
       graz:
         specifier: ^0.1.15
         version: 0.1.15(@cosmjs/amino@0.32.3)(@cosmjs/cosmwasm-stargate@0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10))(@cosmjs/launchpad@0.27.1)(@cosmjs/proto-signing@0.32.3)(@cosmjs/stargate@0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10))(@cosmjs/tendermint-rpc@0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10))(@leapwallet/cosmos-social-login-capsule-provider@0.0.30(@types/react@18.2.65)(bufferutil@4.0.8)(fp-ts@2.16.5)(immer@9.0.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)(zod@3.21.1))(@terra-money/feather.js@3.0.0-beta.3)(@types/react@18.2.65)(axios@1.6.7)(bufferutil@4.0.8)(immer@9.0.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
-      json-rpc-2.0:
-        specifier: ^1.7.0
-        version: 1.7.0
       juno-network:
         specifier: ^0.18.1
         version: 0.18.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -5175,10 +5172,6 @@ packages:
   json-parse-even-better-errors@2.3.1:
     resolution:
       { integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w== }
-
-  json-rpc-2.0@1.7.0:
-    resolution:
-      { integrity: sha512-asnLgC1qD5ytP+fvBP8uL0rvj+l8P6iYICbzZ8dVxCpESffVjzA7KkYkbKCIbavs7cllwH1ZUaNtJwphdeRqpg== }
 
   json-rpc-engine@6.1.0:
     resolution:
@@ -13394,8 +13387,6 @@ snapshots:
   json-buffer@3.0.1: {}
 
   json-parse-even-better-errors@2.3.1: {}
-
-  json-rpc-2.0@1.7.0: {}
 
   json-rpc-engine@6.1.0:
     dependencies:

@@ -1,5 +1,3 @@
-import { JSONRPCClient } from "json-rpc-2.0";
-
 export const getLazyInitAleoSDK = async () => {
   try {
     return await import("@demox-labs/aleo-sdk");
@@ -7,64 +5,6 @@ export const getLazyInitAleoSDK = async () => {
     console.log(error);
     throw error;
   }
-};
-
-export const getAleoClient = ({ apiUrl }: { apiUrl: string }) => {
-  const client = new JSONRPCClient((jsonRPCRequest: any) =>
-    fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ ...jsonRPCRequest }),
-    }).then((response: any) => {
-      if (response.status === 200) {
-        // Use client.receive when you received a JSON-RPC response.
-        return response.json().then((jsonRPCResponse: any) => client.receive(jsonRPCResponse));
-      } else if (jsonRPCRequest.id !== undefined) {
-        return Promise.reject(new Error(response.statusText));
-      }
-    }),
-  );
-  return client;
-};
-
-export const getAleoMappingValue = async ({
-  apiUrl,
-  mappingKey,
-  programId,
-  mappingName,
-  maxRetries = 6,
-  baseDelay = 300,
-}: {
-  apiUrl: string;
-  mappingKey: string;
-  programId: string;
-  mappingName: string;
-  maxRetries?: number;
-  baseDelay?: number;
-}) => {
-  const client = await getAleoClient({ apiUrl });
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      await delay(baseDelay * Math.pow(2, attempt - 1));
-      const response = (await client.request("getMappingValue", {
-        program_id: programId,
-        mapping_name: mappingName,
-        key: mappingKey,
-      })) as string;
-
-      return response;
-    } catch (error) {
-      if (attempt === maxRetries) {
-        throw new Error(`Failed to get mapping value after ${maxRetries} attempts: ${error}`);
-      }
-    }
-  }
-
-  // This line should not be reached as the function will either return or throw an error
-  throw new Error("Unexpected error in getMappingValue function");
 };
 
 /**
