@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "type-check": "tsc -p tsconfig.json --noEmit --incremental false"
+    "type-check": "tsc -p tsconfig.json --noEmit --incremental false",
+    "postinstall": "sed -ibak 's/await initializeWorker(Cargo);/(async () => await initializeWorker(Cargo))();/' node_modules/@demox-labs/aleo-sdk/dist/worker.js"
   },
   "dependencies": {
     "@cosmjs/amino": "^0.32.3",
