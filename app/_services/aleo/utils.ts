@@ -60,7 +60,7 @@ export const getCreditsToMint = (credits: string | number, rate: number) => {
     .toNumber();
 };
 
-export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number, rate?: number) => {
+export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number, rate: number) => {
   return BigNumber(unstakeAmount)
     .times(INSTANT_WITHDRAWAL_FEE)
     .dividedBy(rate || "1")
