@@ -20,15 +20,15 @@ export const UnstakeSecondaryInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput, instantWithdrawal, setStates } = useUnstaking();
 
+  const { mintRate } = usePondoData() || {};
   const liquidUnstakeFees = getLiquidFees({
     amount: coinAmountInput || "0",
     type: instantWithdrawal ? "instant_unstake" : "unstake",
   });
   const totalFees = instantWithdrawal
-    ? getInstantWithdrawalFee(coinAmountInput || "0", liquidUnstakeFees || "0")
+    ? getInstantWithdrawalFee(coinAmountInput || "0", liquidUnstakeFees || "0", mintRate || 1)
     : liquidUnstakeFees;
   const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: totalFees });
-  const { mintRate } = usePondoData() || {};
 
   const castedNetwork = network || defaultNetwork;
 
