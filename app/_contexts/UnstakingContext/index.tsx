@@ -43,7 +43,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
     network: network || defaultNetwork,
     wallet: activeWallet,
     amount: states.coinAmountInput || "",
-    type: "undelegate",
+    type: states.instantWithdrawal ? "instant_undelegate" : "undelegate",
     instantWithdrawal: states.instantWithdrawal,
   });
   const amountInputPad = useInputStates();
