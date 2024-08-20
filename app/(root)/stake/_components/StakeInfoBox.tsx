@@ -2,8 +2,8 @@
 import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
-// import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
-import { feeRatioByNetwork, unstakingPeriodByNetwork, defaultNetwork } from "../../../consts";
+import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
+import { feeRatioByNetwork, unstakingPeriodByNetwork, defaultNetwork, aleoDefaultStakeFee } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
@@ -11,9 +11,10 @@ import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 import * as S from "./stake.css";
+import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
 
 export const StakeInfoBox = () => {
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
   const { validatorDetails } = useStakeValidatorState();
@@ -21,6 +22,8 @@ export const StakeInfoBox = () => {
   // const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
+  const isNative = stakingType === "native";
+  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultStakeFee) });
   const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
   const hasCommission = validatorDetails?.commission !== undefined;
 
@@ -34,6 +37,14 @@ export const StakeInfoBox = () => {
           </InfoCard.TitleBox>
           <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
         </InfoCard.StackItem>
+        {isNative && hasInput && (
+          <InfoCard.StackItem>
+            <InfoCard.TitleBox>
+              <InfoCard.Title>Transaction fee</InfoCard.Title>
+            </InfoCard.TitleBox>
+            <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
+          </InfoCard.StackItem>
+        )}
         {/* {stakeFees && (
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
