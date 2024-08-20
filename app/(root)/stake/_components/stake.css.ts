@@ -13,8 +13,13 @@ export const plusSign = style({
   color: colors.black300,
 });
 
-export const unstakingTooltip = style({
+export const stakingTooltip = style({
   maxInlineSize: pxToRem(250),
+});
+
+export const feesTooltip = style({
+  maxInlineSize: pxToRem(303),
+  textAlign: "center",
 });
 
 export const approvalTooltip = style({

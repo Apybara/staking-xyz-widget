@@ -18,7 +18,7 @@ export const getIsAleoAddressFormat = (address: string): boolean => {
   if (address.length !== 63 || !address.startsWith("aleo")) return false;
 
   return getIsBech32(address);
-}
+};
 
 export const getCoinValueFromDenom = ({ network, amount }: { network: AleoNetwork; amount?: string | number }) => {
   const exponent = getExponent(network);
@@ -45,10 +45,31 @@ export const getMicroCreditsToCredits = (microCredits: string | number) => {
 };
 
 export const getCreditsToMicroCredits = (credits: string | number) => {
-  return BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber();
+  return Math.floor(BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber());
+};
+
+export const getMintToCredits = (mint: string | number, rate: number) => {
+  return BigNumber(mint)
+    .div(rate || "1")
+    .toNumber();
+};
+
+export const getCreditsToMint = (credits: string | number, rate: number) => {
+  return BigNumber(credits)
+    .times(rate || "1")
+    .toNumber();
+};
+
+export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number, rate: number) => {
+  return BigNumber(unstakeAmount)
+    .times(INSTANT_WITHDRAWAL_FEE)
+    .dividedBy(rate || "1")
+    .plus(txFee)
+    .toNumber();
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
+const INSTANT_WITHDRAWAL_FEE = 0.00025;
 
 const getIsBech32 = (address?: string) => {
   if (!address) return false;

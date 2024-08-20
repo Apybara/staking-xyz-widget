@@ -8,21 +8,10 @@ import Tooltip from "@/app/_components/Tooltip";
 
 import * as S from "./stakingTabs.css";
 
-const tabs: Array<StakingTypeTab> = [
-  {
-    label: stakingTypeMap.native,
-    value: "native",
-  },
-  {
-    label: stakingTypeMap.liquid,
-    value: "liquid",
-    disabled: true,
-  },
-];
-
 export const StakingTypeTabs = () => {
   const { stakingType, validator } = useShell();
   const { activeStakingType, onUpdateRouter } = useStakingTypeChange();
+  const { tabs } = useStakingTypeTabOptions();
 
   return (
     stakingType &&
@@ -32,7 +21,9 @@ export const StakingTypeTabs = () => {
           <li key={`staking-tab-${value}`} className={cn(S.tab)}>
             <button
               className={cn(
-                S.tabButton({ state: disabled ? "disabled" : activeStakingType === value ? "highlighted" : "default" }),
+                S.tabButton({
+                  state: disabled ? "disabled" : activeStakingType === value ? "highlighted" : "default",
+                }),
               )}
               onClick={() => onUpdateRouter(value)}
               disabled={disabled}
@@ -45,4 +36,24 @@ export const StakingTypeTabs = () => {
       </ul>
     )
   );
+};
+
+const useStakingTypeTabOptions = () => {
+  const isAleoNativeStakingEnabled = process.env.NEXT_PUBLIC_ALEO_NATIVE_STAKING_ENABLED === "true";
+  const isAleoLiquidStakingEnabled = process.env.NEXT_PUBLIC_ALEO_LIQUID_STAKING_ENABLED === "true";
+
+  const tabs: Array<StakingTypeTab> = [
+    {
+      label: stakingTypeMap.native,
+      value: "native",
+      disabled: !isAleoNativeStakingEnabled,
+    },
+    {
+      label: stakingTypeMap.liquid,
+      value: "liquid",
+      disabled: !isAleoLiquidStakingEnabled,
+    },
+  ];
+
+  return { tabs };
 };

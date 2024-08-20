@@ -16,18 +16,20 @@ import {
   networkCurrency,
 } from "@/app/consts";
 import { getAddressChunks } from "@/app/_utils/address";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
 export const useStakeAmountInputValidation = ({
   inputAmount = "0",
 }: {
   inputAmount: StakingStates["coinAmountInput"];
 }) => {
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
   const buffer = useStakeMaxAmountBuffer({ amount: inputAmount });
   const { minInitialAmount, minSubsequentAmount } = useStakeMinAmount();
   const { state: validatorState } = useStakeValidatorState();
+  const { isRebalancing } = usePondoData() || {};
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -38,6 +40,7 @@ export const useStakeAmountInputValidation = ({
   });
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
+    liquidRebalancing: stakingType === "liquid" && isRebalancing,
     walletConnectionStatus: connectionStatus,
     closedValidator: validatorState === "closedValidator",
     closedDelegatedValidator: validatorState === "closedDelegatedValidator",
@@ -79,6 +82,9 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
     case "aleo":
       switch (stakingType) {
         case "liquid":
+          if (validatorState === "liquidRebalancing") {
+            return "The liquid staking protocol is now in a rebalancing period. Please try again later in 10 minutes";
+          }
           return defaultMessage;
         case "native":
           if (validatorState === "closedValidator") {
@@ -181,7 +187,7 @@ const useStakeMinAmount = () => {
 };
 
 export const useStakeValidatorState = () => {
-  const { validator, network } = useShell();
+  const { validator, network, stakingType } = useShell();
   const { address } = useWallet();
   const { data: validatorDetails, isLoading: isLoadingValidatorDetails } =
     useValidatorDetails({ address: validator || undefined }) || {};
@@ -190,6 +196,14 @@ export const useStakeValidatorState = () => {
     address: validator || delegatedValidator?.validatorAddress || "",
     network,
   });
+  const { isRebalancing } = usePondoData() || {};
+
+  // Liquid rebalancing view
+  if (stakingType === "liquid" && isRebalancing) {
+    return {
+      state: "liquidRebalancing",
+    };
+  }
 
   // Default staking view
   if (!validator) {

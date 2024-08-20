@@ -5,6 +5,7 @@ import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import * as InfoCard from "../../../_components/InfoCard";
+import type { StakingType } from "@/app/types";
 import Tooltip from "@/app/_components/Tooltip";
 import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
@@ -17,7 +18,7 @@ import * as S from "./unstake.css";
 
 export const UnstakeInfoBox = () => {
   const { address } = useWallet();
-  const { currency, coinPrice, network } = useShell();
+  const { currency, coinPrice, network, stakingType } = useShell();
   const { data: unbondingDelegations } = useUnbondingDelegations() || {};
   const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -25,6 +26,9 @@ export const UnstakeInfoBox = () => {
   });
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
 
+  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
+
+  const isLiquid = stakingType === "liquid";
   const hasPendingItems = unbondingDelegations?.length || aleoUnstakeStatus !== null;
   const totalPendingItems = aleoUnstakeStatus !== null ? 1 : unbondingDelegations?.length || 0;
   const totalPendingAmount = useMemo(() => {
@@ -70,13 +74,15 @@ export const UnstakeInfoBox = () => {
                     Withdraw
                   </button>
                 }
-                content={`You can withdraw ${aleoUnbondingAmount} now!`}
+                content={
+                  isLiquid
+                    ? "You need to withdraw before making a new unstaking request"
+                    : `You can withdraw ${aleoUnbondingAmount} now!`
+                }
               />
             ) : (
               <p className={cn(S.remainingDays)}>
-                {times
-                  ? `${times.time} ${times?.unit} left`
-                  : `${unstakingPeriodByNetwork[network || defaultNetwork]} left`}
+                {times ? `${times.time} ${times?.unit} left` : `${unstakingPeriod} left`}
               </p>
             )}
           </InfoCard.TitleBox>
@@ -106,9 +112,7 @@ export const UnstakeInfoBox = () => {
                 <AccordionInfoCard.StackItem key={"unbonding-delegations" + network + index}>
                   <InfoCard.TitleBox>
                     <p className={cn(S.remainingDays)}>
-                      {times
-                        ? `${times.time} ${times?.unit} left`
-                        : `${unstakingPeriodByNetwork[network || defaultNetwork]} left`}
+                      {times ? `${times.time} ${times?.unit} left` : `${unstakingPeriod} left`}
                     </p>
                   </InfoCard.TitleBox>
                   <InfoCard.Content>

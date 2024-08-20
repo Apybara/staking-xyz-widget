@@ -13,7 +13,7 @@ export const card = style([
 
 export const stack = style({});
 globalStyle(`${stack} > * + *`, {
-  marginBlockStart: pxToRem(24),
+  marginBlockStart: pxToRem(14),
 });
 
 export const stackItem = style({

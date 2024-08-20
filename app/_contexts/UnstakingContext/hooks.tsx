@@ -8,6 +8,7 @@ import {
   getBasicTxCtaValidation,
 } from "../../_utils/transaction";
 import { defaultNetwork, requiredBalanceUnstakingByNetwork, minStakedBalanceByNetwork } from "../../consts";
+import { useAleoAddressUnbondingStatus } from "@/app/_services/aleo/hooks";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -20,6 +21,10 @@ export const useUnstakeAmountInputValidation = ({
   const { address, activeWallet, connectionStatus } = useWallet();
   const { data: balanceData } = useWalletBalance({ address, network, activeWallet }) || {};
   const minStakedBalance = stakingType ? minStakedBalanceByNetwork[network || defaultNetwork][stakingType] : 0;
+  const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
+    address: address || undefined,
+    network,
+  });
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
@@ -32,6 +37,7 @@ export const useUnstakeAmountInputValidation = ({
   const ctaValidation = getBasicTxCtaValidation({
     amountValidation,
     walletConnectionStatus: connectionStatus,
+    withdrawFirst: stakingType === "liquid" && aleoUnstakeStatus?.isWithdrawable,
   });
 
   return { amountValidation, ctaValidation };

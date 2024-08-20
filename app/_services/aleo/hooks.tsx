@@ -39,8 +39,11 @@ import {
   getIsAleoWalletType,
 } from "./utils";
 import { aleoRestUrl } from "@/app/consts";
+import { useShell } from "@/app/_contexts/ShellContext";
+import { usePondoData } from "./pondo/hooks";
 
 export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
+  const { stakingType } = useShell();
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
   const shouldEnable = isAleoNetwork && isAleoAddressFormat;
@@ -50,7 +53,7 @@ export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: 
     queryKey: ["aleoAddressUnbondingStatus", address, network],
     queryFn: () => {
       if (!shouldEnable) return null;
-      return getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "" });
+      return getAleoAddressUnbondingStatus({ apiUrl: aleoRestUrl, address: address || "", stakingType });
     },
     refetchInterval: 30000,
     refetchOnWindowFocus: true,
@@ -113,7 +116,6 @@ export const useAleoTxProcedures = ({
 
 const useAleoBroadcastTx = ({
   type,
-  stakingType = "native",
   amount = "",
   network,
   wallet,
@@ -123,9 +125,11 @@ const useAleoBroadcastTx = ({
   onBroadcasting,
   onSuccess,
   onError,
-}: AleoTxParams & AleoTxStep & { type: TxProcedureType; stakingType?: StakingType }) => {
+}: AleoTxParams & AleoTxStep & { type: TxProcedureType }) => {
   const { operatorUrl } = broadcastTxMap[type];
   const { wallet: leoWallet } = useLeoWallet();
+  const { stakingType } = useShell();
+  const { mintRate } = usePondoData() || {};
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
@@ -144,7 +148,7 @@ const useAleoBroadcastTx = ({
         apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
         address,
         amount,
-        stakingOption: stakingType,
+        stakingOption: stakingType as StakingType,
       });
       if (!uuid) {
         throw new Error("Failed to broadcast transaction: missing uuid");
@@ -158,6 +162,7 @@ const useAleoBroadcastTx = ({
         address,
         chainId: "aleo",
         txFee,
+        mintRate: mintRate || 1,
       });
 
       onBroadcasting?.();
@@ -206,7 +211,7 @@ const useAleoBroadcastTx = ({
           apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
           address: address || "",
           type,
-          stakingType,
+          stakingType: stakingType as StakingType,
           amount: getCreditsToMicroCredits(amount || 0),
         });
       }

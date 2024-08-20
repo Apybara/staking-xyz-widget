@@ -3,29 +3,39 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
-import { feeRatioByNetwork, unstakingPeriodByNetwork, defaultNetwork, aleoDefaultStakeFee } from "../../../consts";
+import { unstakingPeriodByNetwork, defaultNetwork, networkCurrency } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
+import type { StakingType } from "@/app/types";
 // import { getStakeFees } from "@/app/_utils/transaction";
+import { getTokenFromCoin } from "@/app/_utils/conversions";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
+import { getLiquidFees } from "@/app/_utils/transaction";
+
 import * as S from "./stake.css";
-import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
 
 export const StakeInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
   const { validatorDetails } = useStakeValidatorState();
+
   // const stakeFees = getStakeFees({ amount: coinAmountInput, network: network || defaultNetwork });
-  // const formattedStakeFees = useDynamicAssetValueFromCoin({ coinVal: stakeFees });
+  const liquidStakeFees = getLiquidFees({ amount: coinAmountInput || "0", type: "stake" });
+  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: liquidStakeFees });
+  const { mintRate } = usePondoData() || {};
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
+  const castedNetwork = network || defaultNetwork;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
-  const isNative = stakingType === "native";
-  const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: getMicroCreditsToCredits(aleoDefaultStakeFee) });
-  const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork];
+  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork][stakingType as StakingType];
   const hasCommission = validatorDetails?.commission !== undefined;
+  const isNative = stakingType === "native";
+  const isLiquid = stakingType === "liquid";
+
+  const tokenRate = getTokenFromCoin({ val: coinAmountInput || "0", network: castedNetwork, mintRate: mintRate || 1 });
 
   return (
     <InfoCard.Card>
@@ -37,31 +47,32 @@ export const StakeInfoBox = () => {
           </InfoCard.TitleBox>
           <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
         </InfoCard.StackItem>
-        {isNative && hasInput && (
+        {hasInput && (
           <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Transaction fee</InfoCard.Title>
-            </InfoCard.TitleBox>
+            {isNative && (
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Transaction fee</InfoCard.Title>
+              </InfoCard.TitleBox>
+            )}
+            {isLiquid && (
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Total fees</InfoCard.Title>
+
+                <Tooltip
+                  className={S.feesTooltip}
+                  trigger={<Icon name="info" />}
+                  content={
+                    <>
+                      Total fee <span className={S.plusSign}>=</span> network fee <span className={S.plusSign}>+</span>{" "}
+                      protocol commission to Pondo.xyz
+                    </>
+                  }
+                />
+              </InfoCard.TitleBox>
+            )}
             <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
           </InfoCard.StackItem>
         )}
-        {/* {stakeFees && (
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Total fees</InfoCard.Title>
-
-              <Tooltip
-                trigger={<Icon name="info" />}
-                content={
-                  <>
-                    Network fee <span className={S.plusSign}>+</span> Platform fee ({platformFee}%)
-                  </>
-                }
-              />
-            </InfoCard.TitleBox>
-            <InfoCard.Content>{formattedStakeFees}</InfoCard.Content>
-          </InfoCard.StackItem>
-        )} */}
         {hasCommission && (
           <InfoCard.StackItem>
             <InfoCard.TitleBox>
@@ -70,20 +81,39 @@ export const StakeInfoBox = () => {
             <InfoCard.Content>{validatorDetails?.commission}%</InfoCard.Content>
           </InfoCard.StackItem>
         )}
-        {hasInput && (
-          <InfoCard.StackItem>
-            <InfoCard.TitleBox>
-              <InfoCard.Title>Unstaking period</InfoCard.Title>
+        {hasInput &&
+          (isLiquid ? (
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Will receive</InfoCard.Title>
 
-              <Tooltip
-                className={S.unstakingTooltip}
-                trigger={<Icon name="info" />}
-                content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
-              />
-            </InfoCard.TitleBox>
-            <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
-          </InfoCard.StackItem>
-        )}
+                <Tooltip
+                  className={S.stakingTooltip}
+                  trigger={<Icon name="info" />}
+                  content={
+                    <>
+                      1 {networkCurrency[castedNetwork]} ={" "}
+                      {getTokenFromCoin({ val: 1, network: castedNetwork, mintRate: mintRate || 1 })}
+                    </>
+                  }
+                />
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{tokenRate}</InfoCard.Content>
+            </InfoCard.StackItem>
+          ) : (
+            <InfoCard.StackItem>
+              <InfoCard.TitleBox>
+                <InfoCard.Title>Unstaking period</InfoCard.Title>
+
+                <Tooltip
+                  className={S.stakingTooltip}
+                  trigger={<Icon name="info" />}
+                  content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
+                />
+              </InfoCard.TitleBox>
+              <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
+            </InfoCard.StackItem>
+          ))}
       </InfoCard.Stack>
     </InfoCard.Card>
   );

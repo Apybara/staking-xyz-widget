@@ -39,6 +39,15 @@ export const unstakingStatus = style({
   gap: pxToRem(4),
 });
 
+export const plusSign = style({
+  color: colors.black300,
+});
+
+export const unstakingTooltip = style({
+  maxInlineSize: pxToRem(303),
+  textAlign: "center",
+});
+
 export const claimableStatus = style({
   display: "block",
   blockSize: pxToRem(6),
@@ -48,7 +57,7 @@ export const claimableStatus = style({
 });
 
 export const withdrawableTooltip = style({
-  maxInlineSize: pxToRem(170),
+  maxInlineSize: pxToRem(246),
   padding: pxToRem(16),
   backgroundColor: colors.yellow100,
   border: 0,

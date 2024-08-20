@@ -4,8 +4,9 @@ import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import type * as T from "./types";
 import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
 import { aleoNetworkIdByWallet } from "../consts";
-import { getCreditsToMicroCredits } from "../utils";
-import { aleoDefaultClaimFee, aleoDefaultStakeFee, aleoDefaultUnstakeFee } from "@/app/consts";
+import { getCreditsToMicroCredits, getCreditsToMint } from "../utils";
+import { aleoFees } from "@/app/consts";
+import { getLiquidFees } from "@/app/_utils/transaction";
 
 export const getLeoWalletTxStatus = async ({
   txId,
@@ -75,7 +76,37 @@ export const leoWalletStake = async ({
       "credits.aleo",
       "bond_public",
       [validatorAddress, address, transactionAmount],
-      getLeoWalletFormattedTxFee(txFee || aleoDefaultStakeFee),
+      getLeoWalletFormattedTxFee(txFee || aleoFees.stake.native),
+      false,
+    );
+    return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const leoWalletLiquidStake = async ({
+  amount = "0",
+  wallet,
+  address,
+  chainId = "aleo",
+  mintRate,
+}: T.LeoWalletStakeProps) => {
+  try {
+    const txFee = getLiquidFees({ amount, type: "stake" });
+    const txFeeMicro = getCreditsToMicroCredits(txFee || "0");
+
+    const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
+    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount, mintRate)) + "u64";
+
+    const aleoTransaction = Transaction.createTransaction(
+      address,
+      aleoNetworkIdByWallet[chainId].leoWallet,
+      "pondo_core_protocolv1.aleo",
+      "deposit_public_as_signer",
+      [transactionAmount, transactionMintAmount, address],
+      txFeeMicro,
       false,
     );
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
@@ -100,7 +131,37 @@ export const leoWalletUnstake = async ({
       "credits.aleo",
       "unbond_public",
       [address, transactionAmount],
-      getLeoWalletFormattedTxFee(txFee || aleoDefaultUnstakeFee),
+      getLeoWalletFormattedTxFee(txFee || aleoFees.unstake.native),
+      false,
+    );
+
+    return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const leoWalletLiquidUnstake = async ({
+  amount = "0",
+  wallet,
+  address,
+  chainId = "aleo",
+  mintRate,
+  instantWithdrawal,
+}: T.LeoWalletUnstakeProps) => {
+  try {
+    const txFee = getLiquidFees({ amount, type: instantWithdrawal ? "instant_unstake" : "unstake" });
+    const txFeeMicro = getCreditsToMicroCredits(txFee || "0");
+
+    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount, mintRate)) + "u64";
+    const aleoTransaction = Transaction.createTransaction(
+      address,
+      aleoNetworkIdByWallet[chainId].leoWallet,
+      "pondo_core_protocolv1.aleo",
+      instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
+      [transactionMintAmount],
+      txFeeMicro,
       false,
     );
 
@@ -119,7 +180,34 @@ export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo", txF
       "credits.aleo",
       "claim_unbond_public",
       [address],
-      getLeoWalletFormattedTxFee(txFee || aleoDefaultClaimFee),
+      getLeoWalletFormattedTxFee(txFee || aleoFees.withdraw.native),
+      false,
+    );
+    return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const leoWalletLiquidWithdraw = async ({
+  wallet,
+  address,
+  chainId = "aleo",
+  amount = "0",
+}: T.LeoWalletWithdrawProps) => {
+  try {
+    const txFee = getLiquidFees({ amount, type: "withdraw" });
+    const txFeeMicro = getCreditsToMicroCredits(txFee || "0");
+
+    const transactionAmount = getCreditsToMicroCredits(amount || "0") + "u64";
+    const aleoTransaction = Transaction.createTransaction(
+      address,
+      aleoNetworkIdByWallet[chainId].leoWallet,
+      "pondo_core_protocolv1.aleo",
+      "claim_withdrawal_public",
+      [address, transactionAmount],
+      txFeeMicro,
       false,
     );
     return await (wallet?.adapter as LeoWalletAdapter).requestTransaction(aleoTransaction);

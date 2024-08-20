@@ -1,7 +1,8 @@
 import type { FiatCurrency, CoinPrice, Currency, Network, StakingType } from "../../types";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
-import { fiatCurrencyMap, networkCurrency, defaultGlobalCurrency, defaultNetwork } from "../../consts";
+import { fiatCurrencyMap, networkCurrency, defaultGlobalCurrency, defaultNetwork, networkTokens } from "../../consts";
+import { getCreditsToMint, getMintToCredits } from "@/app/_services/aleo/utils";
 
 const numbroDefaultOptions: numbro.Format = {
   mantissa: 2,
@@ -152,6 +153,44 @@ export const getFormattedCoinValue = ({
     .toUpperCase();
 
   return `${value}${defaultSymbol}`;
+};
+
+export const getTokenFromCoin = ({
+  val,
+  network,
+  mintRate,
+}: {
+  val: string | number;
+  network: Network;
+  mintRate: number;
+}) => {
+  const castedNetwork = network || defaultNetwork;
+
+  return getFormattedCoinValue({
+    val: getCreditsToMint(val, mintRate),
+    formatOptions: {
+      currencySymbol: networkTokens[castedNetwork],
+    },
+  });
+};
+
+export const getCoinFromToken = ({
+  val,
+  network,
+  mintRate,
+}: {
+  val: string | number;
+  network: Network;
+  mintRate: number;
+}) => {
+  const castedNetwork = network || defaultNetwork;
+
+  return getFormattedCoinValue({
+    val: getMintToCredits(val, mintRate),
+    formatOptions: {
+      currencySymbol: networkCurrency[castedNetwork],
+    },
+  });
 };
 
 const localeMap: Record<FiatCurrency, string> = {

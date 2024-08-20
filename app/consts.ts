@@ -1,4 +1,12 @@
-import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, StakingType } from "./types";
+import type {
+  Network,
+  NetworkInfo,
+  NetworkCurrency,
+  WalletInfo,
+  WalletType,
+  StakingType,
+  StakingTypeTab,
+} from "./types";
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
@@ -16,6 +24,14 @@ export const networkCurrency: Record<Network, NetworkCurrency> = {
   cosmoshub: "ATOM",
   cosmoshubtestnet: "ATOM",
   aleo: "ALEO",
+};
+
+export const networkTokens: Record<Network, string> = {
+  celestia: "",
+  celestiatestnet3: "",
+  cosmoshub: "",
+  cosmoshubtestnet: "",
+  aleo: "pALEO",
 };
 export const networkCoinPriceSymbol: Record<Network, string> = {
   celestia: "celestia",
@@ -280,6 +296,35 @@ export const aleoDefaultStakeFee = "182079";
 export const aleoDefaultUnstakeFee = "365356";
 export const aleoDefaultClaimFee = "88711";
 
+export const aleoFees = {
+  stake: {
+    native: "182079",
+    liquid: "669023",
+  },
+  unstake: {
+    native: "365356",
+    liquid: "738315",
+  },
+  instant_unstake: {
+    native: null,
+    liquid: "811339",
+  },
+  redelegate: {
+    native: null,
+    liquid: null,
+  },
+  claim: {
+    native: null,
+    liquid: null,
+  },
+  withdraw: {
+    native: "88711",
+    liquid: "175655",
+  },
+};
+
+export const PONDO_PROTOCOL_COMMISSION = 0.1;
+
 export const networkWalletInfos: Record<Network, Array<WalletInfo>> = {
   celestia: [
     walletsInfo.keplr,
@@ -457,12 +502,27 @@ export const minStakedBalanceByNetwork: Record<Network, Record<StakingType, numb
   },
 };
 
-export const unstakingPeriodByNetwork: Record<Network, string> = {
-  celestia: "21 days",
-  celestiatestnet3: "21 days",
-  cosmoshub: "21 days",
-  cosmoshubtestnet: "21 days",
-  aleo: "1 hour",
+export const unstakingPeriodByNetwork: Record<Network, Record<StakingType, string>> = {
+  celestia: {
+    native: "21 days",
+    liquid: "",
+  },
+  celestiatestnet3: {
+    native: "21 days",
+    liquid: "",
+  },
+  cosmoshub: {
+    native: "21 days",
+    liquid: "",
+  },
+  cosmoshubtestnet: {
+    native: "21 days",
+    liquid: "",
+  },
+  aleo: {
+    native: "1 hour",
+    liquid: "1 day",
+  },
 };
 
 export const rewardsFrequencyByNetwork: Record<Network, string> = {

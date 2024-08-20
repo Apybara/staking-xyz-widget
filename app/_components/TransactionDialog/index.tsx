@@ -125,6 +125,7 @@ export const ResultButtons = ({
 const iconMap: Record<TopBoxProps["type"], string> = {
   stake: StakeIcon,
   unstake: UnstakeIcon,
+  instant_unstake: UnstakeIcon,
   redelegate: RedelegateIcon,
   claim: UnstakeIcon,
   withdraw: UnstakeIcon,
@@ -132,6 +133,7 @@ const iconMap: Record<TopBoxProps["type"], string> = {
 const titleMap: Record<TopBoxProps["type"], string> = {
   stake: "Steps to stake",
   unstake: "Steps to unstake",
+  instant_unstake: "Steps to unstake",
   redelegate: "Steps to import",
   claim: "Steps to claim",
   withdraw: "Steps to withdraw",

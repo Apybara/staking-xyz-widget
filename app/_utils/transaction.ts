@@ -1,6 +1,7 @@
-import type { WalletConnectionStatus, Network } from "../types";
+import type { WalletConnectionStatus, Network, TxType } from "../types";
 import BigNumber from "bignumber.js";
-import { feeRatioByNetwork } from "../consts";
+import { aleoFees, feeRatioByNetwork, PONDO_PROTOCOL_COMMISSION } from "../consts";
+import { getMicroCreditsToCredits } from "../_services/aleo/utils";
 
 export const getBasicAmountValidation = ({
   amount,
@@ -49,6 +50,8 @@ export const getBasicAmountValidation = ({
 export const getBasicTxCtaValidation = ({
   amountValidation,
   walletConnectionStatus,
+  liquidRebalancing,
+  withdrawFirst,
   closedValidator,
   closedDelegatedValidator,
   unbondingValidator,
@@ -58,6 +61,8 @@ export const getBasicTxCtaValidation = ({
 }: {
   amountValidation: BasicAmountValidationResult;
   walletConnectionStatus: WalletConnectionStatus;
+  liquidRebalancing?: boolean;
+  withdrawFirst?: boolean;
   closedValidator?: boolean;
   closedDelegatedValidator?: boolean;
   unbondingValidator?: boolean;
@@ -65,6 +70,8 @@ export const getBasicTxCtaValidation = ({
   invalidValidator?: boolean;
   differentValidator?: boolean;
 }): BasicTxCtaValidationResult => {
+  if (liquidRebalancing) return "liquidRebalancing";
+  if (withdrawFirst) return "withdrawFirst";
   if (closedValidator) return "closedValidator";
   if (closedDelegatedValidator) return "closedDelegatedValidator";
   if (unbondingValidator) return "unbondingValidator";
@@ -111,6 +118,16 @@ export const getStakeFees = ({
   return floorResult ? Math.floor(result.toNumber()).toString() : result.toString();
 };
 
+export const getLiquidFees = ({ amount, type }: { amount: string; type: TxType }) => {
+  if (amount === "" || amount === "0") return undefined;
+
+  const networkFees = getMicroCreditsToCredits(aleoFees[type].liquid as string);
+  const protocolCommission = BigNumber(amount).times(PONDO_PROTOCOL_COMMISSION).toNumber();
+  const result = networkFees + protocolCommission;
+
+  return result;
+};
+
 export type BasicAmountValidationResult =
   | "valid"
   | "empty"
@@ -132,6 +149,8 @@ export type BasicTxCtaValidationResult =
   | "differentValidator"
   | "unbondingValidator"
   | "unbondingDelegatedValidator"
+  | "liquidRebalancing"
+  | "withdrawFirst"
   | "disconnected"
   | "connecting"
   | "submittable";
