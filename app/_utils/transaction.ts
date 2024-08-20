@@ -118,22 +118,14 @@ export const getStakeFees = ({
   return floorResult ? Math.floor(result.toNumber()).toString() : result.toString();
 };
 
-export const getLiquidFees = ({
-  amount,
-  type,
-  floorResult,
-}: {
-  amount: string;
-  type: TxType;
-  floorResult?: boolean;
-}) => {
+export const getLiquidFees = ({ amount, type }: { amount: string; type: TxType }) => {
   if (amount === "" || amount === "0") return undefined;
 
   const networkFees = getMicroCreditsToCredits(aleoFees[type].liquid as string);
   const protocolCommission = BigNumber(amount).times(PONDO_PROTOCOL_COMMISSION).toNumber();
   const result = networkFees + protocolCommission;
 
-  return floorResult ? Math.floor(result).toString() : result.toString();
+  return result.toString();
 };
 
 export type BasicAmountValidationResult =

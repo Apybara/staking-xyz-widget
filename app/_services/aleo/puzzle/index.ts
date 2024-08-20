@@ -4,7 +4,7 @@ import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/
 import { aleoNetworkIdByWallet } from "../consts";
 import { getCreditsToMicroCredits, getCreditsToMint } from "../utils";
 import BigNumber from "bignumber.js";
-import { aleoDefaultClaimFee, aleoDefaultStakeFee, aleoDefaultUnstakeFee, aleoFees } from "@/app/consts";
+import { aleoFees } from "@/app/consts";
 import { getLiquidFees } from "@/app/_utils/transaction";
 
 export const getPuzzleTxStatus = async ({
