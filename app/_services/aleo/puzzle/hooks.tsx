@@ -23,7 +23,7 @@ export const usePuzzleStake = () => {
 
   return async ({ validatorAddress, amount, chainId, txFee, mintRate }: T.PuzzleStakeProps) => {
     try {
-      if (!validatorAddress || !amount || !account?.address) {
+      if (!amount || !account?.address) {
         const error = new Error("Staking fails: missing validatorAddress, address, or amount");
         throw error;
       }

@@ -29,7 +29,7 @@ export const useLeoWalletStake = () => {
     mintRate,
   }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
     try {
-      if (!publicKey || !wallet || !validatorAddress || !amount) {
+      if (!publicKey || !wallet || !amount) {
         const error = new Error("Staking fails: missing wallet, publicKey, validatorAddress or amount");
         throw error;
       }
