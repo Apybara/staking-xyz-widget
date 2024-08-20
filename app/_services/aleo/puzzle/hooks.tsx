@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo } from "react";
 import useLocalStorage from "use-local-storage";
 import { useAccount, useBalance, useConnect, useDisconnect } from "@puzzlehq/sdk";
 import { usePuzzleStates as useGlobalPuzzleStates } from "@/app/_providers/Aleo/Puzzle/PuzzleStatesContext";
-import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 import {
   puzzleLiquidStake,
   puzzleLiquidUnstake,
@@ -36,12 +35,11 @@ export const usePuzzleStake = () => {
 };
 
 export const usePuzzleUnstake = () => {
-  const { instantWithdrawal } = useUnstaking();
   const { stakingType } = useShell();
 
   const unstakingFunction = stakingType === "liquid" ? puzzleLiquidUnstake : puzzleUnstake;
 
-  return async ({ address, amount, chainId, txFee, mintRate }: T.PuzzleUnstakeProps) => {
+  return async ({ address, amount, chainId, txFee, mintRate, instantWithdrawal }: T.PuzzleUnstakeProps) => {
     try {
       if (!amount) {
         const error = new Error("Unstaking fails: missing stakeAmount");
