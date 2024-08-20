@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useUnbondingDelegations, useStakedBalance } from "../../../_services/stakingOperator/hooks";
-import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
+import { useAleoAddressUnbondingStatus, usePAleoBalanceByAddress } from "../../../_services/aleo/hooks";
 import * as NavCard from "../NavCard";
 import { Skeleton } from "../../../_components/Skeleton";
 import type { StakingType } from "@/app/types";
@@ -21,15 +21,20 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     address: address || undefined,
     network,
   });
+  const pAleoStakedBalanceQuery = usePAleoBalanceByAddress({ address: address || undefined, network });
 
   const fallbackTime = useFallbackTime();
   const showOneEntryOnly = aleoUnstakeStatus !== null;
   const hasPendingItems = unbondingDelegations?.length || showOneEntryOnly;
   const totalPendingItems = showOneEntryOnly ? 1 : unbondingDelegations?.length || 0;
-  const isDisabled =
-    connectionStatus !== "connected" || ((!stakedBalance || stakedBalance === "0") && !hasPendingItems);
   const completionTime = aleoUnstakeStatus?.completionTime || unbondingDelegations?.[0]?.completionTime;
   const defaultTitle = useDefaultTitle({ showOneEntryOnly, unbondingDelegationsLength: unbondingDelegations?.length });
+
+  const isDisabled = useMemo(() => {
+    if (connectionStatus !== "connected") return true;
+    if (network === "aleo" && pAleoStakedBalanceQuery.stakedBalance !== "0") return false;
+    return (!stakedBalance || stakedBalance === "0") && !hasPendingItems;
+  }, [connectionStatus, network, pAleoStakedBalanceQuery.stakedBalance, stakedBalance, hasPendingItems]);
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;

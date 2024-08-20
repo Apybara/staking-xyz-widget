@@ -1,9 +1,10 @@
 import type * as T from "./types";
 import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
+import BigNumber from "bignumber.js";
+import { PALEO_INSTANT_WITHDRAWAL_FEE_RATIO } from "@/app/consts";
 import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/sdk";
 import { aleoNetworkIdByWallet } from "../consts";
-import { getCreditsToMicroCredits, getCreditsToMint, getMicroCreditsToCredits } from "../utils";
-import BigNumber from "bignumber.js";
+import { getCreditsToMicroCredits, getCreditsToMint, getMicroCreditsToCredits, getMintToCredits } from "../utils";
 import { aleoFees } from "@/app/consts";
 import { getLiquidFees } from "@/app/_utils/transaction";
 
@@ -121,7 +122,10 @@ export const puzzleLiquidUnstake = async ({
   instantWithdrawal,
 }: T.PuzzleUnstakeProps) => {
   const txFee = getLiquidFees({ amount, type: instantWithdrawal ? "instant_unstake" : "unstake" });
-  const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount, mintRate)) + "u64";
+
+  const txPAleoAmount = getCreditsToMicroCredits(amount) + "u64";
+  const txAleoAmount = getCreditsToMicroCredits(getMintToCredits(amount, mintRate)) + "u64";
+  const inputs = instantWithdrawal ? [txPAleoAmount, txAleoAmount] : [txPAleoAmount];
 
   try {
     const { eventId, error } = await requestCreateEvent(
@@ -130,7 +134,7 @@ export const puzzleLiquidUnstake = async ({
         programId: "pondo_core_protocolv1.aleo",
         functionId: instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
         fee: txFee || 0,
-        inputs: [transactionMintAmount],
+        inputs,
       },
       aleoNetworkIdByWallet[chainId].puzzle,
     );

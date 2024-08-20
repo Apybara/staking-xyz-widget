@@ -13,7 +13,6 @@ import {
   leoWalletWithdraw,
 } from ".";
 import { useShell } from "@/app/_contexts/ShellContext";
-import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 
 export const useLeoWalletStake = () => {
   const { stakingType } = useShell();
@@ -44,11 +43,16 @@ export const useLeoWalletStake = () => {
 export const useLeoWalletUnstake = () => {
   const { stakingType } = useShell();
   const { wallet, publicKey } = useLeoWallet();
-  const { instantWithdrawal } = useUnstaking();
 
   const unstakingFunction = stakingType === "liquid" ? leoWalletLiquidUnstake : leoWalletUnstake;
 
-  return async ({ amount, chainId, txFee, mintRate }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
+  return async ({
+    amount,
+    chainId,
+    txFee,
+    mintRate,
+    instantWithdrawal,
+  }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet || !amount) {
         const error = new Error("Unstaking fails: missing wallet, publicKey, or stakeAmount");
