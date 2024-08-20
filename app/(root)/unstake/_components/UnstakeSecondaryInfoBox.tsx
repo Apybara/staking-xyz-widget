@@ -8,7 +8,6 @@ import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import Switch from "@/app/_components/Switch";
 
-import { getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { getCoinFromToken } from "@/app/_utils/conversions";
 import { getInstantWithdrawalFee } from "@/app/_services/aleo/utils";
@@ -44,14 +43,14 @@ export const UnstakeSecondaryInfoBox = () => {
   return (
     <InfoCard.Card>
       <InfoCard.Stack>
-        <InfoCard.StackItem>
-          {isNative && hasInput && (
+        {hasInput && isNative && (
+          <InfoCard.StackItem>
             <InfoCard.TitleBox>
               <InfoCard.Title>Transaction fee</InfoCard.Title>
             </InfoCard.TitleBox>
-          )}
-          <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
-        </InfoCard.StackItem>
+            <InfoCard.Content>{formattedTotalFees}</InfoCard.Content>
+          </InfoCard.StackItem>
+        )}
         {isLiquid && (
           <>
             <InfoCard.StackItem>

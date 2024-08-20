@@ -3,13 +3,7 @@ import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
-import {
-  feeRatioByNetwork,
-  unstakingPeriodByNetwork,
-  defaultNetwork,
-  aleoDefaultStakeFee,
-  networkCurrency,
-} from "../../../consts";
+import { unstakingPeriodByNetwork, defaultNetwork, networkCurrency } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
