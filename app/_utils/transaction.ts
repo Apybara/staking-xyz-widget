@@ -125,7 +125,7 @@ export const getLiquidFees = ({ amount, type }: { amount: string; type: TxType }
   const protocolCommission = BigNumber(amount).times(PONDO_PROTOCOL_COMMISSION).toNumber();
   const result = networkFees + protocolCommission;
 
-  return result.toString();
+  return result;
 };
 
 export type BasicAmountValidationResult =
