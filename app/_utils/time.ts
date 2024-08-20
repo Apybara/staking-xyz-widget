@@ -1,5 +1,6 @@
 import moment from "moment";
 import { fromUnixTime } from "date-fns";
+import { pluralize } from ".";
 
 export const getTimeDiffInSingleString = (time?: string | Date) => {
   if (!time) return undefined;
@@ -48,25 +49,25 @@ export const getTimeUnitStrings = (units: TimeUnits) => {
   if (units.d !== undefined) {
     return {
       time: units.d,
-      unit: "days",
+      unit: pluralize(units.d, "day"),
     };
   }
   if (units.h !== undefined) {
     return {
       time: units.h,
-      unit: "hrs",
+      unit: pluralize(units.h, "hr"),
     };
   }
   if (units.m !== undefined) {
     return {
       time: units.m,
-      unit: "mins",
+      unit: pluralize(units.m, "min"),
     };
   }
   if (units.s !== undefined) {
     return {
       time: units.s,
-      unit: "secs",
+      unit: pluralize(units.s, "sec"),
     };
   }
 };
