@@ -14,7 +14,7 @@ export type BaseTxProcedure = {
   tooltip?: ReactNode;
 };
 
-export type TxProcedureType = "delegate" | "undelegate" | "redelegate" | "claim";
+export type TxProcedureType = "delegate" | "undelegate" | "instant_undelegate" | "redelegate" | "claim";
 
 export type TxProcedureStep = "auth" | "sign";
 

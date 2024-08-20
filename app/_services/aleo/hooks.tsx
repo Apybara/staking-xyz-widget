@@ -403,6 +403,9 @@ const broadcastTxMap: Record<TxProcedureType, { operatorUrl: string }> = {
   undelegate: {
     operatorUrl: "stake/user/undelegate",
   },
+  instant_undelegate: {
+    operatorUrl: "stake/user/undelegate",
+  },
   claim: {
     operatorUrl: "stake/user/claim",
   },
