@@ -124,7 +124,7 @@ export const setMonitorTxByAddress = async ({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      type: monitorByAddressTypeMap[type],
+      type: monitorByAddressTypeMap[stakingType][type],
       amount,
       staking_option: stakingType,
     }),
@@ -132,9 +132,19 @@ export const setMonitorTxByAddress = async ({
   return res;
 };
 
-const monitorByAddressTypeMap: Record<TxProcedureType, string> = {
-  claim: "claim",
-  delegate: "stake",
-  undelegate: "unstake",
-  redelegate: "",
+const monitorByAddressTypeMap: Record<StakingType, Record<TxProcedureType, string>> = {
+  native: {
+    claim: "claim",
+    delegate: "stake",
+    undelegate: "unstake",
+    instant_undelegate: "",
+    redelegate: "",
+  },
+  liquid: {
+    claim: "claim_withdrawal_public",
+    delegate: "deposit_public_as_signer",
+    undelegate: "withdraw_public",
+    instant_undelegate: "instant_withdraw_public",
+    redelegate: "",
+  },
 };

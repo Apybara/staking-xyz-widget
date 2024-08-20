@@ -463,6 +463,11 @@ const broadcastTxMap: Record<
     operatorUrl: "stake/user/undelegate",
     typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
   },
+  instant_undelegate: {
+    mutationKey: "signUndelegateCosmosMessage",
+    operatorUrl: "stake/user/undelegate",
+    typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
+  },
   claim: {
     mutationKey: "signWithdrawRewardsCosmosMessage",
     operatorUrl: "stake/user/claim",
