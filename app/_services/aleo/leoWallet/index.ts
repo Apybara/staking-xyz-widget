@@ -94,11 +94,11 @@ export const leoWalletLiquidStake = async ({
   mintRate,
 }: T.LeoWalletStakeProps) => {
   try {
-    const txFee = getLiquidFees({ amount, type: "stake" });
+    const txFee = getLiquidFees({ amount, type: "stake", floorResult: true });
     const txFeeMicro = getCreditsToMicroCredits(txFee as string);
 
     const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
-    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount, mintRate)) + "u64";
+    const transactionMintAmount = getCreditsToMicroCredits(Math.floor(getCreditsToMint(amount, mintRate))) + "u64";
 
     const aleoTransaction = Transaction.createTransaction(
       address,
@@ -151,10 +151,10 @@ export const leoWalletLiquidUnstake = async ({
   instantWithdrawal,
 }: T.LeoWalletUnstakeProps) => {
   try {
-    const txFee = getLiquidFees({ amount, type: instantWithdrawal ? "instant_unstake" : "unstake" });
+    const txFee = getLiquidFees({ amount, type: instantWithdrawal ? "instant_unstake" : "unstake", floorResult: true });
     const txFeeMicro = getCreditsToMicroCredits(txFee as string);
 
-    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount, mintRate)) + "u64";
+    const transactionMintAmount = getCreditsToMicroCredits(Math.floor(getCreditsToMint(amount, mintRate))) + "u64";
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
@@ -197,7 +197,7 @@ export const leoWalletLiquidWithdraw = async ({
   amount = "0",
 }: T.LeoWalletWithdrawProps) => {
   try {
-    const txFee = getLiquidFees({ amount, type: "withdraw" });
+    const txFee = getLiquidFees({ amount, type: "withdraw", floorResult: true });
     const txFeeMicro = getCreditsToMicroCredits(txFee as string);
 
     const transactionAmount = getCreditsToMicroCredits(amount as string) + "u64";
