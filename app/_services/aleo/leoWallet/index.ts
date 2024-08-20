@@ -4,7 +4,7 @@ import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import type * as T from "./types";
 import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
 import { aleoNetworkIdByWallet } from "../consts";
-import { getCreditsToMicroCredits, getCreditsToMint } from "../utils";
+import { getCreditsToMicroCredits, getCreditsToMint, getMintToCredits } from "../utils";
 import { aleoFees } from "@/app/consts";
 import { getLiquidFees } from "@/app/_utils/transaction";
 
@@ -154,13 +154,16 @@ export const leoWalletLiquidUnstake = async ({
     const txFee = getLiquidFees({ amount, type: instantWithdrawal ? "instant_unstake" : "unstake" });
     const txFeeMicro = getCreditsToMicroCredits(txFee || "0");
 
-    const transactionMintAmount = getCreditsToMicroCredits(getCreditsToMint(amount, mintRate)) + "u64";
+    const txPAleoAmount = getCreditsToMicroCredits(amount) + "u64";
+    const txAleoAmount = getCreditsToMicroCredits(getMintToCredits(amount, mintRate)) + "u64";
+    const inputs = instantWithdrawal ? [txPAleoAmount, txAleoAmount] : [txPAleoAmount];
+
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
       "pondo_core_protocolv1.aleo",
       instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
-      [transactionMintAmount],
+      inputs,
       txFeeMicro,
       false,
     );

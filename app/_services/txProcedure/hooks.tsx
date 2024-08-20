@@ -11,8 +11,10 @@ export const useTxProcedure = ({
   network,
   wallet,
   type,
+  instantWithdrawal,
 }: CosmosTxParams & {
   type: TxProcedureType;
+  instantWithdrawal?: boolean;
 }) => {
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
   const { authState, signState, authStep, signStep } = useTxProcedureStates();
@@ -40,6 +42,7 @@ export const useTxProcedure = ({
       address,
       type,
       signStep,
+      instantWithdrawal,
     }) || {};
 
   const updateStates = () => {

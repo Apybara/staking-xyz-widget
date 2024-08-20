@@ -119,9 +119,11 @@ export const useAleoTxProcedures = ({
   address,
   type,
   signStep,
+  instantWithdrawal,
 }: AleoTxParams & {
   type: TxProcedureType;
   signStep: AleoTxStep;
+  instantWithdrawal?: boolean;
 }) => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
 
@@ -131,6 +133,7 @@ export const useAleoTxProcedures = ({
     wallet: wallet || null,
     address: address || undefined,
     amount,
+    instantWithdrawal,
     onPreparing: signStep.onPreparing,
     onLoading: signStep.onLoading,
     onBroadcasting: signStep.onBroadcasting,
@@ -162,12 +165,13 @@ const useAleoBroadcastTx = ({
   network,
   wallet,
   address,
+  instantWithdrawal,
   onPreparing,
   onLoading,
   onBroadcasting,
   onSuccess,
   onError,
-}: AleoTxParams & AleoTxStep & { type: TxProcedureType }) => {
+}: AleoTxParams & AleoTxStep & { type: TxProcedureType; instantWithdrawal?: boolean }) => {
   const { operatorUrl } = broadcastTxMap[type];
   const { wallet: leoWallet } = useLeoWallet();
   const { stakingType } = useShell();
@@ -178,7 +182,7 @@ const useAleoBroadcastTx = ({
   const operatorResponseQuery = getOperatorResponseQuery({ type });
 
   const { error, mutate, reset } = useMutation({
-    mutationKey: ["aleoTx", type, amount, wallet, network, address],
+    mutationKey: ["aleoTx", type, amount, wallet, network, address, instantWithdrawal],
     mutationFn: async () => {
       if (!address || !txMethodByWallet) {
         throw new Error("Failed to broadcast transaction: missing address or txMethodByWallet");
@@ -205,6 +209,7 @@ const useAleoBroadcastTx = ({
         chainId: "aleo",
         txFee,
         mintRate: mintRate || 1,
+        instantWithdrawal,
       });
 
       onBroadcasting?.();

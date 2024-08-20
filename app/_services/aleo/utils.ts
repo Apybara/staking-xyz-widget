@@ -4,6 +4,7 @@ import { Asset, AssetList } from "@chain-registry/types";
 import { assets } from "chain-registry";
 import { getFormattedCoinValue } from "@/app/_utils/conversions";
 import { aleoNetworkVariants, aleoWalletVariants, networkCurrency } from "@/app/consts";
+import { PALEO_INSTANT_WITHDRAWAL_FEE_RATIO } from "@/app/consts";
 
 export const getPAleoFromAleo = ({ val, mintRate }: { val: string | number; mintRate: number }) => {
   return getFormattedCoinValue({
@@ -81,14 +82,13 @@ export const getCreditsToMint = (credits: string | number, rate: number) => {
 
 export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number, rate: number) => {
   return BigNumber(unstakeAmount)
-    .times(INSTANT_WITHDRAWAL_FEE)
+    .times(PALEO_INSTANT_WITHDRAWAL_FEE_RATIO)
     .dividedBy(rate || "1")
     .plus(txFee)
     .toNumber();
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
-const INSTANT_WITHDRAWAL_FEE = 0.00025;
 
 const getIsBech32 = (address?: string) => {
   if (!address) return false;
