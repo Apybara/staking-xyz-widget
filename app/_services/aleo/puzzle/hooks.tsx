@@ -59,9 +59,9 @@ export const usePuzzleWithdraw = () => {
 
   const withdrawFunction = stakingType === "liquid" ? puzzleLiquidWithdraw : puzzleWithdraw;
 
-  return async ({ address, chainId, txFee }: T.PuzzleWithdrawProps) => {
+  return async ({ address, chainId, txFee, amount }: T.PuzzleWithdrawProps) => {
     try {
-      return await withdrawFunction({ address, chainId, txFee });
+      return await withdrawFunction({ address, chainId, txFee, amount });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Withdraw fails");
       throw err;

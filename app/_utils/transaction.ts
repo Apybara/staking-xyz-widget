@@ -73,8 +73,8 @@ export const getBasicTxCtaValidation = ({
   differentValidator?: boolean;
 }): BasicTxCtaValidationResult => {
   if (liquidRebalancing) return "liquidRebalancing";
-  if (withdrawing) return "withdrawing";
   if (withdrawFirst) return "withdrawFirst";
+  if (withdrawing) return "withdrawing";
   if (closedValidator) return "closedValidator";
   if (closedDelegatedValidator) return "closedDelegatedValidator";
   if (unbondingValidator) return "unbondingValidator";

@@ -181,8 +181,15 @@ const useAleoBroadcastTx = ({
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
   const operatorResponseQuery = getOperatorResponseQuery({ type });
 
+  const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
+    address: address || undefined,
+    network: network,
+  });
+  const txAmount =
+    (type === "claim" && isAleoNetwork && stakingType === "liquid" ? aleoAddressUnbondingData?.amount : amount) || "";
+
   const { error, mutate, reset } = useMutation({
-    mutationKey: ["aleoTx", type, amount, wallet, network, address, instantWithdrawal],
+    mutationKey: ["aleoTx", type, txAmount, wallet, network, address, instantWithdrawal],
     mutationFn: async () => {
       if (!address || !txMethodByWallet) {
         throw new Error("Failed to broadcast transaction: missing address or txMethodByWallet");
@@ -193,7 +200,7 @@ const useAleoBroadcastTx = ({
       const { validatorAddress, uuid, txFee } = await operatorResponseQuery({
         apiUrl: `${stakingOperatorUrlByNetwork[castedNetwork]}${operatorUrl}`,
         address,
-        amount,
+        amount: txAmount,
         stakingOption: stakingType as StakingType,
       });
       if (!uuid) {
@@ -203,7 +210,7 @@ const useAleoBroadcastTx = ({
       onLoading?.();
       // TODO: use dynamic chainId
       const txId = await txMethodByWallet({
-        amount,
+        amount: txAmount,
         validatorAddress: validatorAddress || "",
         address,
         chainId: "aleo",

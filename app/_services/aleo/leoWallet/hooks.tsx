@@ -81,14 +81,14 @@ export const useLeoWalletWithdraw = () => {
 
   const withdrawFunction = stakingType === "liquid" ? leoWalletLiquidWithdraw : leoWalletWithdraw;
 
-  return async ({ chainId, txFee }: Omit<T.LeoWalletWithdrawProps, "wallet" | "address">) => {
+  return async ({ chainId, txFee, amount }: Omit<T.LeoWalletWithdrawProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet) {
         const error = new Error("Withdraw fails: missing wallet or publicKey");
         throw error;
       }
 
-      return await withdrawFunction({ wallet, address: publicKey, chainId, txFee });
+      return await withdrawFunction({ wallet, address: publicKey, chainId, txFee, amount });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Withdraw fails");
       throw err;

@@ -62,7 +62,11 @@ const AleoUnstakeInfo = () => {
               Withdraw
             </button>
           }
-          content={`You can withdraw ${aleoUnbondingAmount} now!`}
+          content={
+            isLiquid
+              ? `You need to withdraw before making a new unstaking request.`
+              : `You can withdraw ${aleoUnbondingAmount} now!`
+          }
         />
       );
     }
