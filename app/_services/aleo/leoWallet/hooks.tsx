@@ -25,14 +25,22 @@ export const useLeoWalletStake = () => {
     amount,
     chainId,
     txFee,
-    mintRate,
+    aleoToPAleoRate,
   }: Omit<T.LeoWalletStakeProps, "wallet" | "address">) => {
     try {
       if (!publicKey || !wallet || !amount) {
         const error = new Error("Staking fails: missing wallet, publicKey, validatorAddress or amount");
         throw error;
       }
-      return await stakingFunction({ amount, validatorAddress, wallet, address: publicKey, chainId, txFee, mintRate });
+      return await stakingFunction({
+        amount,
+        validatorAddress,
+        wallet,
+        address: publicKey,
+        chainId,
+        txFee,
+        aleoToPAleoRate,
+      });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Staking fails");
       throw err;
@@ -50,7 +58,7 @@ export const useLeoWalletUnstake = () => {
     amount,
     chainId,
     txFee,
-    mintRate,
+    pAleoToAleoRate,
     instantWithdrawal,
   }: Omit<T.LeoWalletUnstakeProps, "wallet" | "address">) => {
     try {
@@ -65,7 +73,7 @@ export const useLeoWalletUnstake = () => {
         address: publicKey,
         chainId,
         txFee,
-        mintRate,
+        pAleoToAleoRate,
         instantWithdrawal,
       });
     } catch (error) {

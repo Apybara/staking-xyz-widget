@@ -6,22 +6,19 @@ import { getFormattedCoinValue } from "@/app/_utils/conversions";
 import { aleoNetworkVariants, aleoWalletVariants, networkCurrency } from "@/app/consts";
 import { PALEO_INSTANT_WITHDRAWAL_FEE_RATIO } from "@/app/consts";
 
-export const getPAleoFromAleo = ({ val, mintRate }: { val: string | number; mintRate: number }) => {
-  return getFormattedCoinValue({
-    val: getCreditsToMint(val, mintRate),
-    formatOptions: {
-      currencySymbol: "pALEO",
-    },
-  });
-};
-
-export const getAleoFromPAleo = ({ val, mintRate }: { val: string | number; mintRate: number }) => {
-  return getFormattedCoinValue({
-    val: getMintToCredits(val, mintRate),
-    formatOptions: {
-      currencySymbol: networkCurrency.aleo,
-    },
-  });
+export const getInstantWithdrawalAleoAmount = ({
+  pAleoMicroCredits,
+  pAleoToAleoRate,
+}: {
+  pAleoMicroCredits: string | number;
+  pAleoToAleoRate: number;
+}) => {
+  const pAleoInstantWithdrawFee = getPAleoInstantWithdrawFee({ amount: pAleoMicroCredits.toString() });
+  const txPAleoAmount = BigNumber(pAleoMicroCredits).minus(pAleoInstantWithdrawFee).toString();
+  const aleoMicroCreditsAmount = getAleoFromPAleo(txPAleoAmount, pAleoToAleoRate);
+  // The round-down value is to prevent fluctuation of the pALEO to ALEO conversion rate
+  const aleoMicroCreditsRoundDownAmount = Math.floor(BigNumber(aleoMicroCreditsAmount).times(0.99998).toNumber());
+  return aleoMicroCreditsRoundDownAmount + "u64";
 };
 
 export const getIsAleoNetwork = (network: string | null): network is AleoNetwork => {
@@ -68,24 +65,50 @@ export const getCreditsToMicroCredits = (credits: string | number) => {
   return Math.floor(BigNumber(credits).times(TOKEN_CONVERSION_FACTOR).toNumber());
 };
 
-export const getMintToCredits = (mint: string | number, rate: number) => {
-  return BigNumber(mint)
-    .div(rate || "1")
+export const getFormattedPAleoFromAleo = ({
+  val,
+  aleoToPAleoRate,
+}: {
+  val: string | number;
+  aleoToPAleoRate: number;
+}) => {
+  return getFormattedCoinValue({
+    val: getPAleoFromAleo(val, aleoToPAleoRate),
+    formatOptions: {
+      currencySymbol: "pALEO",
+    },
+  });
+};
+
+export const getFormattedAleoFromPAleo = ({
+  val,
+  pAleoToAleoRate,
+}: {
+  val: string | number;
+  pAleoToAleoRate: number;
+}) => {
+  return getFormattedCoinValue({
+    val: getAleoFromPAleo(val, pAleoToAleoRate),
+    formatOptions: {
+      currencySymbol: networkCurrency.aleo,
+    },
+  });
+};
+
+export const getPAleoFromAleo = (aleo: string | number, aleoToPAleoRate: number) => {
+  return BigNumber(aleo)
+    .times(aleoToPAleoRate || "1")
     .toNumber();
 };
 
-export const getCreditsToMint = (credits: string | number, rate: number) => {
-  return BigNumber(credits)
-    .times(rate || "1")
+export const getAleoFromPAleo = (pAleo: string | number, pAleoToAleoRate: number) => {
+  return BigNumber(pAleo)
+    .times(pAleoToAleoRate || "1")
     .toNumber();
 };
 
-export const getInstantWithdrawalFee = (unstakeAmount: string | number, txFee: string | number, rate: number) => {
-  return BigNumber(unstakeAmount)
-    .times(PALEO_INSTANT_WITHDRAWAL_FEE_RATIO)
-    .dividedBy(rate || "1")
-    .plus(txFee)
-    .toNumber();
+export const getPAleoInstantWithdrawFee = ({ amount }: { amount: string }) => {
+  return BigNumber(amount).times(PALEO_INSTANT_WITHDRAWAL_FEE_RATIO).toNumber();
 };
 
 const TOKEN_CONVERSION_FACTOR = Math.pow(10, 6); // 1,000,000
