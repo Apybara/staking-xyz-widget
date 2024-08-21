@@ -76,10 +76,10 @@ export const UnstakeSecondaryInfoBox = () => {
                       Total fee <span className={S.plusSign}>=</span>{" "}
                       {!!instantWithdrawal && (
                         <>
-                          instant withdrawals fee <span className={S.plusSign}>+</span>{" "}
+                          Instant withdrawal fee <span className={S.plusSign}>+</span>{" "}
                         </>
                       )}
-                      network fee <span className={S.plusSign}>+</span> protocol commission to Pondo.xyz
+                      Network fee <span className={S.plusSign}>+</span> Pondo fee
                     </>
                   }
                 />
