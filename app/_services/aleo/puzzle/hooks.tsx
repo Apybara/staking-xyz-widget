@@ -20,13 +20,20 @@ export const usePuzzleStake = () => {
 
   const stakingFunction = stakingType === "liquid" ? puzzleLiquidStake : puzzleStake;
 
-  return async ({ validatorAddress, amount, chainId, txFee, mintRate }: T.PuzzleStakeProps) => {
+  return async ({ validatorAddress, amount, chainId, txFee, aleoToPAleoRate }: T.PuzzleStakeProps) => {
     try {
       if (!amount || !account?.address) {
         const error = new Error("Staking fails: missing validatorAddress, address, or amount");
         throw error;
       }
-      return await stakingFunction({ amount, validatorAddress, address: account.address, chainId, txFee, mintRate });
+      return await stakingFunction({
+        amount,
+        validatorAddress,
+        address: account.address,
+        chainId,
+        txFee,
+        aleoToPAleoRate,
+      });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Staking fails");
       throw err;
@@ -39,14 +46,14 @@ export const usePuzzleUnstake = () => {
 
   const unstakingFunction = stakingType === "liquid" ? puzzleLiquidUnstake : puzzleUnstake;
 
-  return async ({ address, amount, chainId, txFee, mintRate, instantWithdrawal }: T.PuzzleUnstakeProps) => {
+  return async ({ address, amount, chainId, txFee, pAleoToAleoRate, instantWithdrawal }: T.PuzzleUnstakeProps) => {
     try {
       if (!amount) {
         const error = new Error("Unstaking fails: missing stakeAmount");
         throw error;
       }
 
-      return await unstakingFunction({ address, amount, chainId, txFee, mintRate, instantWithdrawal });
+      return await unstakingFunction({ address, amount, chainId, txFee, pAleoToAleoRate, instantWithdrawal });
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unstaking fails");
       throw err;

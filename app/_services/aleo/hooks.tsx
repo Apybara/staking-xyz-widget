@@ -175,7 +175,7 @@ const useAleoBroadcastTx = ({
   const { operatorUrl } = broadcastTxMap[type];
   const { wallet: leoWallet } = useLeoWallet();
   const { stakingType } = useShell();
-  const { mintRate } = usePondoData() || {};
+  const { pAleoToAleoRate, aleoToPAleoRate } = usePondoData() || {};
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
@@ -215,7 +215,8 @@ const useAleoBroadcastTx = ({
         address,
         chainId: "aleo",
         txFee,
-        mintRate: mintRate || 1,
+        pAleoToAleoRate: pAleoToAleoRate || 1,
+        aleoToPAleoRate: aleoToPAleoRate || 1,
         instantWithdrawal,
       });
 
@@ -300,12 +301,12 @@ const useAleoTxMethodByWallet = ({ wallet, type }: { wallet: AleoTxParams["walle
 
   if (wallet === "leoWallet") {
     if (type === "delegate") return leoWalletStake;
-    if (type === "undelegate") return leoWalletUnstake;
+    if (type === "undelegate" || type === "instant_undelegate") return leoWalletUnstake;
     if (type === "claim") return leoWalletWithdraw;
   }
   if (wallet === "puzzle") {
     if (type === "delegate") return puzzleStake;
-    if (type === "undelegate") return puzzleUnstake;
+    if (type === "undelegate" || type === "instant_undelegate") return puzzleUnstake;
     if (type === "claim") return puzzleWithdraw;
   }
   return null;

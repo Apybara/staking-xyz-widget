@@ -297,11 +297,11 @@ export const aleoFees = {
   },
   unstake: {
     native: "365356",
-    liquid: "738315",
+    liquid: "556319",
   },
   instant_unstake: {
     native: null,
-    liquid: "811339",
+    liquid: "556319",
   },
   redelegate: {
     native: null,
@@ -563,4 +563,4 @@ export const ALEO_PONDO_TOKEN_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOK
 export const ALEO_PONDO_CORE_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID || "";
 export const ALEO_PONDO_TOKEN_NETWORK = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK || "";
 export const ALEO_MTSP_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID || "";
-export const PALEO_INSTANT_WITHDRAWAL_FEE_RATIO = 0.00025;
+export const PALEO_INSTANT_WITHDRAWAL_FEE_RATIO = 0.0025;

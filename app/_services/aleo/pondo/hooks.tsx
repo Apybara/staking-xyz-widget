@@ -10,7 +10,7 @@ export const usePondoData = () => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const shouldEnable = isAleoNetwork && stakingType === "liquid";
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     enabled: shouldEnable,
     queryKey: ["pondoData"],
     queryFn: () => {
@@ -23,13 +23,16 @@ export const usePondoData = () => {
 
   if (!data) return null;
 
+  const pAleoToAleoRate = BigNumber(data.pondoTVL || "1")
+    .dividedBy(data.paleoSupply || "1")
+    .toNumber();
+  const aleoToPAleoRate = 1 / pAleoToAleoRate;
+
   return {
-    mintRate:
-      1 /
-      BigNumber(data.pondoTVL || "1")
-        .dividedBy(data.paleoSupply || "1")
-        .toNumber(),
+    pAleoToAleoRate,
+    aleoToPAleoRate,
     isLoading,
     isRebalancing: data.protocolState === "1" || data.protocolState === "2",
+    refetch,
   };
 };

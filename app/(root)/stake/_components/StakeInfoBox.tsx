@@ -11,9 +11,9 @@ import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 import type { StakingType } from "@/app/types";
 // import { getStakeFees } from "@/app/_utils/transaction";
-import { getPAleoFromAleo } from "@/app/_services/aleo/utils";
+import { getFormattedPAleoFromAleo } from "@/app/_services/aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
-import { getLiquidFees } from "@/app/_utils/transaction";
+import { getLiquidTotalFees } from "@/app/_utils/transaction";
 
 import * as S from "./stake.css";
 
@@ -24,9 +24,9 @@ export const StakeInfoBox = () => {
   const { validatorDetails } = useStakeValidatorState();
 
   // const stakeFees = getStakeFees({ amount: coinAmountInput, network: network || defaultNetwork });
-  const liquidStakeFees = getLiquidFees({ amount: coinAmountInput || "0", type: "stake" });
+  const liquidStakeFees = getLiquidTotalFees({ amount: coinAmountInput || "0", type: "stake" });
   const formattedTotalFees = useDynamicAssetValueFromCoin({ coinVal: liquidStakeFees });
-  const { mintRate } = usePondoData() || {};
+  const { aleoToPAleoRate } = usePondoData() || {};
   // const platformFee = feeRatioByNetwork[network || defaultNetwork] * 100;
   const castedNetwork = network || defaultNetwork;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
@@ -90,13 +90,14 @@ export const StakeInfoBox = () => {
                   trigger={<Icon name="info" />}
                   content={
                     <>
-                      1 {networkCurrency[castedNetwork]} = {getPAleoFromAleo({ val: 1, mintRate: mintRate || 1 })}
+                      1 {networkCurrency[castedNetwork]} ={" "}
+                      {getFormattedPAleoFromAleo({ val: 1, aleoToPAleoRate: aleoToPAleoRate || 1 })}
                     </>
                   }
                 />
               </InfoCard.TitleBox>
               <InfoCard.Content>
-                {getPAleoFromAleo({ val: coinAmountInput as string, mintRate: mintRate || 1 })}
+                {getFormattedPAleoFromAleo({ val: coinAmountInput as string, aleoToPAleoRate: aleoToPAleoRate || 1 })}
               </InfoCard.Content>
             </InfoCard.StackItem>
           ) : (
