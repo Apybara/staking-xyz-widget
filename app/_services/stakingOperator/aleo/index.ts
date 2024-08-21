@@ -127,6 +127,7 @@ export const setMonitorTxByAddress = async ({
       type: monitorByAddressTypeMap[stakingType][type],
       amount,
       staking_option: stakingType,
+      protocol: protocolMap[stakingType],
     }),
   });
   return res;
@@ -147,4 +148,9 @@ const monitorByAddressTypeMap: Record<StakingType, Record<TxProcedureType, strin
     instant_undelegate: "instant_withdraw_public",
     redelegate: "",
   },
+};
+
+const protocolMap: Record<StakingType, string> = {
+  native: "",
+  liquid: "pondo_v1",
 };
