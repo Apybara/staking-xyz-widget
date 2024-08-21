@@ -24,9 +24,11 @@ export const usePondoData = () => {
   if (!data) return null;
 
   return {
-    mintRate: BigNumber(data.protocolBalance || "1")
-      .dividedBy(data.paleoSupply || "1")
-      .toNumber(),
+    mintRate:
+      1 /
+      BigNumber(data.pondoTVL || "1")
+        .dividedBy(data.paleoSupply || "1")
+        .toNumber(),
     isLoading,
     isRebalancing: data.protocolState === "1" || data.protocolState === "2",
   };
