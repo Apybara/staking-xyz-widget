@@ -116,7 +116,7 @@ export const networkExplorer: Record<Network, string> = {
   cosmoshub: "https://www.mintscan.io/cosmos/",
   cosmoshubtestnet: "https://www.mintscan.io/cosmoshub-testnet/",
   // TODO: use dynamic Aleo network
-  aleo: "https://testnetbeta.aleo123.io/",
+  aleo: "https://testnet.aleoscan.io/",
 };
 
 export const networkExplorerTx: Record<Network, string> = {
@@ -124,7 +124,7 @@ export const networkExplorerTx: Record<Network, string> = {
   celestiatestnet3: `${networkExplorer.celestiatestnet3}tx/`,
   cosmoshub: `${networkExplorer.cosmoshub}tx/`,
   cosmoshubtestnet: `${networkExplorer.cosmoshubtestnet}tx/`,
-  aleo: `${networkExplorer.aleo}transactionDetail/`,
+  aleo: `${networkExplorer.aleo}transaction?id=`,
 };
 
 export const networkExplorerAddress: Record<Network, string> = {
@@ -132,7 +132,7 @@ export const networkExplorerAddress: Record<Network, string> = {
   celestiatestnet3: `${networkExplorer.celestiatestnet3}address/`,
   cosmoshub: `${networkExplorer.cosmoshub}address/`,
   cosmoshubtestnet: `${networkExplorer.cosmoshubtestnet}address/`,
-  aleo: `${networkExplorer.aleo}address/`,
+  aleo: `${networkExplorer.aleo}address?a=`,
 };
 
 export const CosmosNetworkVariants = ["celestia", "celestiatestnet3", "cosmoshub", "cosmoshubtestnet"] as const;
