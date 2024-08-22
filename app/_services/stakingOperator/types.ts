@@ -366,6 +366,19 @@ export type AddressStakedBalanceResponse = {
   "total-staked"?: number;
 };
 
+export type AddressHistoricalStakingAmountResponse = {
+  historicalAmount: {
+    aleo: {
+      stake: number;
+      unstake: number;
+    };
+    pondo_v1: {
+      stake: number;
+      unstake: number;
+    };
+  };
+};
+
 export type PaginationParams = {
   offset: number;
   limit: number;

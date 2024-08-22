@@ -27,7 +27,6 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     network,
     stakingType: "liquid",
   });
-  const pAleoStakedBalanceQuery = usePAleoBalanceByAddress({ address: address || undefined, network });
 
   const fallbackTime = useFallbackTime();
   const showOneEntryOnly = aleoUnstakeStatus !== null || aleoLiquidUnstakeStatus !== null;
@@ -42,9 +41,8 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
 
   const isDisabled = useMemo(() => {
     if (connectionStatus !== "connected") return true;
-    if (network === "aleo" && pAleoStakedBalanceQuery.stakedBalance !== "0") return false;
     return (!stakedBalance || stakedBalance === "0") && !hasPendingItems;
-  }, [connectionStatus, network, pAleoStakedBalanceQuery.stakedBalance, stakedBalance, hasPendingItems]);
+  }, [connectionStatus, stakedBalance, hasPendingItems]);
 
   const endBoxValue = useMemo(() => {
     if (connectionStatus !== "connected") return undefined;
@@ -78,18 +76,18 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
 
       return isWithdrawable
         ? {
-            title: <NavCard.SecondaryText>Withdrawable</NavCard.SecondaryText>,
-            value: <NavCard.PrimaryText>{aleoUnbondingAmount}</NavCard.PrimaryText>,
-          }
+          title: <NavCard.SecondaryText>Withdrawable</NavCard.SecondaryText>,
+          value: <NavCard.PrimaryText>{aleoUnbondingAmount}</NavCard.PrimaryText>,
+        }
         : {
-            title: defaultTitle,
-            value: (
-              <NavCard.PrimaryText>
-                {times?.time || fallbackTime.time}{" "}
-                <NavCard.SecondaryText>{times?.unit || fallbackTime.unit} left</NavCard.SecondaryText>
-              </NavCard.PrimaryText>
-            ),
-          };
+          title: defaultTitle,
+          value: (
+            <NavCard.PrimaryText>
+              {times?.time || fallbackTime.time}{" "}
+              <NavCard.SecondaryText>{times?.unit || fallbackTime.unit} left</NavCard.SecondaryText>
+            </NavCard.PrimaryText>
+          ),
+        };
     }
   }, [
     connectionStatus,

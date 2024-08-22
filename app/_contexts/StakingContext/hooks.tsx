@@ -172,9 +172,9 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
 
 const useStakeMinAmount = () => {
   const { network, stakingType } = useShell();
-  const { stakedBalance } = useStakedBalance() || {};
+  const { nativeBalance } = useStakedBalance() || {};
 
-  const isInitialStake = !stakedBalance || stakedBalance === "0";
+  const isInitialStake = !nativeBalance || nativeBalance === "0";
   const minInitialAmount =
     isInitialStake && stakingType ? minInitialStakingAmountByNetwork[network || defaultNetwork][stakingType] : 0;
   const minSubsequentAmount =
