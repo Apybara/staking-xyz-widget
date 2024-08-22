@@ -14,19 +14,21 @@ import * as S from "./heroCard.css";
 export const HeroCard = () => {
   const { connectionStatus } = useWallet();
   const { stakedBalance, isLoading: isLoadingStakedBalance, error: stakedBalanceError } = useStakedBalance() || {};
-  const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward({ amount: stakedBalance }) || {};
   const { data: addressRewards } = useAddressRewards() || {};
   const { dailyRewards } = addressRewards || {};
+
+  const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward({ amount: stakedBalance }) || {};
 
   const formattedStakedBalance = useDynamicAssetValueFromCoin({ coinVal: stakedBalance });
   const formattedDailyEarned = useDynamicAssetValueFromCoin({ coinVal: dailyRewards || 0 });
   const formattedEstDailyReward = useDynamicAssetValueFromCoin({ coinVal: rewards?.daily });
+
   const addressRewardsValue = useMemo(() => {
     if (!stakedBalance || stakedBalance === "0") return undefined;
     if (dailyRewards && dailyRewards !== "0") return `+Daily earned ${formattedDailyEarned}`;
     if (formattedEstDailyReward) return `Est. daily rewards ${formattedEstDailyReward}`;
     return undefined;
-  }, [addressRewards]);
+  }, [stakedBalance, dailyRewards, formattedDailyEarned, formattedEstDailyReward]);
 
   if (connectionStatus === "connected") {
     if (isLoadingStakedBalance) {
@@ -58,7 +60,7 @@ export const HeroCard = () => {
       );
     }
 
-    if (stakedBalance && stakedBalance !== "0") {
+    if (stakedBalance) {
       return (
         <CTACard
           topSubtitle={

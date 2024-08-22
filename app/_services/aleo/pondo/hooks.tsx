@@ -6,13 +6,13 @@ import { useShell } from "@/app/_contexts/ShellContext";
 import { getIsAleoNetwork } from "../utils";
 
 export const usePondoData = () => {
-  const { network, stakingType } = useShell();
+  const { network } = useShell();
   const isAleoNetwork = getIsAleoNetwork(network || "");
-  const shouldEnable = isAleoNetwork && stakingType === "liquid";
+  const shouldEnable = isAleoNetwork;
 
   const { data, isLoading, refetch } = useQuery({
     enabled: shouldEnable,
-    queryKey: ["pondoData"],
+    queryKey: ["pondoData", shouldEnable],
     queryFn: () => {
       if (!shouldEnable) return null;
       return getPondoData({ apiUrl: networkEndpoints.aleo.rpc });
@@ -29,6 +29,7 @@ export const usePondoData = () => {
   const aleoToPAleoRate = 1 / pAleoToAleoRate;
 
   return {
+    data,
     pAleoToAleoRate,
     aleoToPAleoRate,
     isLoading,

@@ -96,18 +96,18 @@ const FirstSection = () => {
 
 const SecondSection = () => {
   const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards() || {};
+
   const { stakedBalance } = useStakedBalance() || {};
-  const { rewards: networkRewards, isLoading: isNetworkRewardsLoading } =
-    useNetworkReward({ amount: stakedBalance }) || {};
+  const { rewards, isLoading: isRewardsLoading } = useNetworkReward({ amount: stakedBalance }) || {};
 
   const hasAccruedRewards = addressRewards && addressRewards.accruedRewards;
   const title = hasAccruedRewards ? "Accrued rewards" : "Est. daily rewards";
   const accruedRewards = hasAccruedRewards ? addressRewards.accruedRewards : 0;
   const isAccruedRewardsSmall =
     accruedRewards && BigNumber(accruedRewards).isLessThan(1) && BigNumber(accruedRewards).isGreaterThan(0);
-  const isLoading = hasAccruedRewards ? isAddressRewardsLoading : isNetworkRewardsLoading;
+  const isLoading = hasAccruedRewards ? isAddressRewardsLoading : isRewardsLoading;
 
-  const formattedDailyReward = useDynamicAssetValueFromCoin({ coinVal: networkRewards?.daily });
+  const formattedDailyReward = useDynamicAssetValueFromCoin({ coinVal: rewards?.daily });
   const formattedAccruedRewards = useDynamicAssetValueFromCoin({
     coinVal: accruedRewards,
     minValue: !isAccruedRewardsSmall ? undefined : 0.000001,
