@@ -84,10 +84,10 @@ export const useStakedBalance = () => {
   switch (network) {
     case "celestia":
     case "celestiatestnet3":
-      return celestiaData;
+      return { ...celestiaData, nativeBalance: undefined, liquidBalance: undefined };
     case "cosmoshub":
     case "cosmoshubtestnet":
-      return cosmoshubData;
+      return { ...cosmoshubData, nativeBalance: undefined, liquidBalance: undefined };
     case "aleo":
       return aleoData;
     default:

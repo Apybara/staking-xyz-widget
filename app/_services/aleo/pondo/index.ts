@@ -1,6 +1,6 @@
 import { fetchData } from "@/app/_utils/fetch";
 
-export const getPondoData = async ({ apiUrl }: { apiUrl: string }) => {
+export const getPondoData = async ({ apiUrl }: { apiUrl: string }): Promise<PondoDataResult> => {
   const res = await fetchData(`${apiUrl}`, {
     method: "POST",
     headers: {
@@ -13,4 +13,17 @@ export const getPondoData = async ({ apiUrl }: { apiUrl: string }) => {
     }),
   });
   return res.result;
+};
+
+type PondoDataResult = {
+  protocolBalance: string;
+  totalCredits: string;
+  pondoTVL: string;
+  bondedWithdrawals: string;
+  lastDelegatedBalance: string;
+  reservedForWithdrawals: string;
+  protocolState: string;
+  mintedPaleo: string;
+  paleoSupply: string;
+  pondoSupply: string;
 };

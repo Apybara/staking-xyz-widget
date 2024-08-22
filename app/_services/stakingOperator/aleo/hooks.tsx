@@ -1,5 +1,6 @@
 import type { AleoNetwork, Network, StakingType } from "../../../types";
 import type * as T from "../types";
+import BigNumber from "bignumber.js";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { networkDefaultStakingType, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
 import {
@@ -14,6 +15,7 @@ import {
   getAddressBalance,
   getAddressDelegation,
   getAddressStakedBalance,
+  getAddressHistoricalStakingAmount,
   getNetworkReward,
   getNetworkStatus,
   getServerStatus,
@@ -24,11 +26,23 @@ import { getCalculatedRewards, getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
 import { fromUnixTime } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
+import { getAleoFromPAleo } from "../../aleo/utils";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
+import { usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
+  const historicalStakingAmount = useAleoAddressHistoricalStakingAmount({ network, address });
+  const { data: pAleoMicroBalance } = usePAleoBalanceByAddress({ address, network });
+  const { pAleoToAleoRate } = usePondoData() || {};
 
-  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+  const {
+    data: stakingOperatorData,
+    isLoading,
+    isRefetching,
+    error,
+    refetch,
+  } = useQuery({
     enabled: shouldEnable,
     queryKey: ["aleoAddressRewards", network, address],
     queryFn: () => {
@@ -39,9 +53,19 @@ export const useAleoAddressRewards = ({ address, network }: { address: string; n
     refetchInterval: 15000,
   });
 
+  const nativeCumulativeRewards = stakingOperatorData?.cumulativeRewards || 0;
+  const liquidCumulativeRewards =
+    pAleoMicroBalance && pAleoToAleoRate
+      ? BigNumber(getAleoFromPAleo(pAleoMicroBalance, pAleoToAleoRate))
+          .minus(historicalStakingAmount.data?.historicalAmount.pondo_v1.stake || 0)
+          .plus(historicalStakingAmount.data?.historicalAmount.pondo_v1.unstake || 0)
+          .toNumber()
+      : 0;
+  const cumulativeMicroRewards = BigNumber(nativeCumulativeRewards).plus(liquidCumulativeRewards).toNumber();
+
   return {
     data: {
-      cumulativeRewards: getMicroCreditsToCredits(data?.cumulativeRewards || 0),
+      cumulativeRewards: getMicroCreditsToCredits(cumulativeMicroRewards),
       dailyRewards: null,
       accruedRewards: null,
       lastCycleRewards: null,
@@ -203,6 +227,8 @@ export const useAleoAddressBalance = ({ network, address }: { network: Network |
 
 export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address?: string }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
+  const { pAleoToAleoRate } = usePondoData() || {};
+  const { data: pAleoMicroBalance } = usePAleoBalanceByAddress({ address, network });
 
   const { data, isLoading, isRefetching, error, refetch } = useQuery({
     enabled: shouldEnable,
@@ -218,9 +244,49 @@ export const useAleoAddressStakedBalance = ({ network, address }: { network: Net
     refetchInterval: 15000,
   });
 
+  const nativeBalanceMicro = data?.["total-staked"] || 0;
+
   return {
     data,
-    stakedBalance: getMicroCreditsToCredits(data?.["total-staked"] || 0).toString(),
+    stakedBalance: getMicroCreditsToCredits(
+      BigNumber(nativeBalanceMicro)
+        .plus(getAleoFromPAleo(pAleoMicroBalance || 0, pAleoToAleoRate || 1))
+        .toNumber(),
+    ).toString(),
+    nativeBalance: getMicroCreditsToCredits(nativeBalanceMicro).toString(),
+    liquidBalance: getMicroCreditsToCredits(pAleoMicroBalance || 0).toString(),
+    isLoading,
+    isRefetching,
+    error,
+    refetch,
+  };
+};
+
+export const useAleoAddressHistoricalStakingAmount = ({
+  network,
+  address,
+}: {
+  network: Network | null;
+  address?: string;
+}) => {
+  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
+
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    enabled: shouldEnable,
+    queryKey: ["aleoAddressHistoricalStakingAmount", network, address],
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getAddressHistoricalStakingAmount({
+        apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+        address: address || "",
+      });
+    },
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
+  });
+
+  return {
+    data,
     isLoading,
     isRefetching,
     error,

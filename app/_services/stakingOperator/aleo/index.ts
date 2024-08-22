@@ -40,6 +40,13 @@ export const getAddressStakedBalance = async ({ apiUrl, address }: T.BaseParams)
   return res;
 };
 
+export const getAddressHistoricalStakingAmount = async ({ apiUrl, address }: T.BaseParams) => {
+  const res: T.AddressHistoricalStakingAmountResponse = await fetchData(
+    `${apiUrl}address/${address}/historical-staking-amount`,
+  );
+  return res;
+};
+
 export const getAddressDelegation = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.ValidatorDetailsResponse = await fetchData(`${apiUrl}address/${address}/delegation`);
   return res.response;

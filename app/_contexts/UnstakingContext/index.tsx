@@ -21,13 +21,15 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   const { network, stakingType } = useShell();
   const { activeWallet, address } = useWallet();
 
-  const defaultStakedBalance = useStakedBalance();
-  const pAleoBalance = usePAleoBalanceByAddress({
+  const stakedBalanceQuery = useStakedBalance();
+  const pAleoBalanceQuery = usePAleoBalanceByAddress({
     address: address || undefined,
     network: network,
   });
   const isAleoNetwork = network && getIsAleoNetwork(network);
-  const stakedBalance = isAleoNetwork && stakingType === "liquid" ? pAleoBalance : defaultStakedBalance;
+  const stakedBalance = isAleoNetwork && stakingType === "liquid" ? pAleoBalanceQuery : stakedBalanceQuery;
+  const stakedBalanceValue =
+    isAleoNetwork && stakingType === "liquid" ? pAleoBalanceQuery?.stakedBalance : stakedBalanceQuery?.nativeBalance;
 
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,
@@ -35,7 +37,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   });
   const { amountValidation, ctaValidation } = useUnstakeAmountInputValidation({
     inputAmount: states.coinAmountInput,
-    stakedBalance: stakedBalance?.stakedBalance,
+    stakedBalance: stakedBalanceValue,
   });
   const inputErrorMessage = useUnstakeInputErrorMessage({ amountValidation, inputAmount: states.coinAmountInput });
   const { procedures, resetStates } = useTxProcedure({
@@ -58,7 +60,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
         procedures,
         amountInputPad,
         stakedBalance: {
-          data: stakedBalance?.stakedBalance,
+          data: stakedBalanceValue,
           isLoading: stakedBalance?.isLoading || false,
           error: stakedBalance?.error || null,
         },
