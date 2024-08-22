@@ -12,7 +12,6 @@ export const container = style({
   top: "calc(100% + 16px)",
   left: "0",
   right: "0",
-  zIndex: 1,
 });
 
 export const text = style({
