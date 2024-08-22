@@ -371,7 +371,7 @@ export type PaginationParams = {
   limit: number;
 };
 type CommonResponse<R, D> = {
-  status: "OK" | "Bad Request" | "Internal Server Error";
+  status: string;
   statusCode: number;
   requestBody?: R;
   data: D | null;

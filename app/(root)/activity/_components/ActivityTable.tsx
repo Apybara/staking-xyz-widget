@@ -190,7 +190,8 @@ const getTitleKey = (activity: ListItem) => {
       return activity.staking_option === "native" ? "Stake (Native)" : "Stake (Liquid)";
     case "unstake":
       if (!activity.staking_option) return "Unstake";
-      return activity.staking_option === "native" ? "Unstake (Native)" : "Unstake (Liquid)";
+      if (activity.staking_option === "native") return "Unstake (Native)";
+      return activity.status.toLowerCase().includes("instant") ? "Unstake (Liquid instant)" : "Unstake (Liquid)";
     case "claim":
       return "Withdraw";
     case "rewards":
