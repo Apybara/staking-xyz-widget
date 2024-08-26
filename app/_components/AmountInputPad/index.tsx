@@ -118,20 +118,7 @@ export const AmountInputPad = ({
       type={type}
       availableValue={availableValue}
       availabilityElement={
-        <AvailabilityElement
-          type={type}
-          availableValue={availableValue}
-          primaryCurrency={primaryCurrency}
-          tooltip={
-            type === "unstake" && (
-              <Tooltip
-                className={S.topBarTooltip}
-                trigger={<Icon name="info" />}
-                content="You can only unstake positions that have been staked through Staking.xyz."
-              />
-            )
-          }
-        />
+        <AvailabilityElement type={type} availableValue={availableValue} primaryCurrency={primaryCurrency} />
       }
       isAvailableValueLoading={isAvailableValueLoading}
       inputField={{
@@ -185,7 +172,7 @@ const AvailabilityElement = ({
   availableValue,
   type,
   tooltip,
-}: { primaryCurrency: Currency; tooltip: ReactNode } & Pick<AmountInputPadProps, "availableValue" | "type">) => {
+}: { primaryCurrency: Currency; tooltip?: ReactNode } & Pick<AmountInputPadProps, "availableValue" | "type">) => {
   const { network, coinPrice, stakingType } = useShell();
 
   const prefix = type === "stake" ? "Available" : "Staked";
