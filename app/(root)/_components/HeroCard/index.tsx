@@ -1,6 +1,8 @@
 "use client";
 import { useMemo } from "react";
+import { useShell } from "@/app/_contexts/ShellContext";
 import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 import { Skeleton } from "@/app/_components/Skeleton";
 import Tooltip from "@/app/_components/Tooltip";
 import { useWallet } from "../../../_contexts/WalletContext";
@@ -12,6 +14,7 @@ import { Icon } from "@/app/_components/Icon";
 import * as S from "./heroCard.css";
 
 export const HeroCard = () => {
+  const { network } = useShell();
   const { connectionStatus } = useWallet();
   const { stakedBalance, isLoading: isLoadingStakedBalance, error: stakedBalanceError } = useStakedBalance() || {};
   const { isLoading: isLoadingReward, rewards, error: rewardError } = useNetworkReward({ amount: stakedBalance }) || {};
@@ -27,6 +30,8 @@ export const HeroCard = () => {
     if (formattedEstDailyReward) return `Est. daily rewards ${formattedEstDailyReward}`;
     return undefined;
   }, [addressRewards]);
+
+  const isAleo = getIsAleoNetwork(network);
 
   if (connectionStatus === "connected") {
     if (isLoadingStakedBalance) {
@@ -45,11 +50,13 @@ export const HeroCard = () => {
           topSubtitle={
             <>
               <span>Total staked balance</span>
-              <Tooltip
-                className={S.balanceTooltip}
-                trigger={<Icon name="info" />}
-                content="This balance only tracks stake that has been done through Staking.xyz."
-              />
+              {!isAleo && (
+                <Tooltip
+                  className={S.balanceTooltip}
+                  trigger={<Icon name="info" />}
+                  content="This balance only tracks stake that has been done through Staking.xyz."
+                />
+              )}
             </>
           }
           title="Error"
@@ -64,11 +71,13 @@ export const HeroCard = () => {
           topSubtitle={
             <>
               <span>Total staked balance</span>
-              <Tooltip
-                className={S.balanceTooltip}
-                trigger={<Icon name="info" />}
-                content="This balance only tracks stake that has been done through Staking.xyz."
-              />
+              {!isAleo && (
+                <Tooltip
+                  className={S.balanceTooltip}
+                  trigger={<Icon name="info" />}
+                  content="This balance only tracks stake that has been done through Staking.xyz."
+                />
+              )}
             </>
           }
           title={formattedStakedBalance}
