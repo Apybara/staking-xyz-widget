@@ -79,21 +79,29 @@ export const usePAleoBalanceByAddress = ({ address, network }: { address?: strin
   };
 };
 
-export const useAleoAddressUnbondingStatus = ({ address, network }: { address?: string; network: Network | null }) => {
-  const { stakingType } = useShell();
+export const useAleoAddressUnbondingStatus = ({
+  address,
+  network,
+  stakingType,
+}: {
+  address?: string;
+  network: Network | null;
+  stakingType?: StakingType;
+}) => {
+  const { stakingType: defaultStakingType } = useShell();
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
   const shouldEnable = isAleoNetwork && isAleoAddressFormat;
 
   const { data, error, isLoading } = useQuery({
     enabled: shouldEnable,
-    queryKey: ["aleoAddressUnbondingStatus", address, network, stakingType],
+    queryKey: ["aleoAddressUnbondingStatus", address, network, stakingType || defaultStakingType],
     queryFn: () => {
       if (!shouldEnable) return null;
       return getAleoAddressUnbondingStatus({
         apiUrl: networkEndpoints.aleo.rpc,
         address: address || "",
-        stakingType,
+        stakingType: stakingType || defaultStakingType,
         pondoProgramId: ALEO_PONDO_CORE_ID,
       });
     },

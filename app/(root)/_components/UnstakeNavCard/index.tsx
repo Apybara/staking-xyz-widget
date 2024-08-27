@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
 import { useUnbondingDelegations, useStakedBalance } from "../../../_services/stakingOperator/hooks";
@@ -7,7 +8,7 @@ import { useAleoAddressUnbondingStatus, usePAleoBalanceByAddress } from "../../.
 import * as NavCard from "../NavCard";
 import { Skeleton } from "../../../_components/Skeleton";
 import type { StakingType } from "@/app/types";
-import { getTimeUnitStrings } from "../../../_utils/time";
+import { getShortestTime, getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { unstakingPeriodByNetwork, defaultNetwork } from "../../../consts";
 import * as S from "./unstakeNavCard.css";
@@ -21,13 +22,22 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     address: address || undefined,
     network,
   });
+  const aleoLiquidUnstakeStatus = useAleoAddressUnbondingStatus({
+    address: address || undefined,
+    network,
+    stakingType: "liquid",
+  });
   const pAleoStakedBalanceQuery = usePAleoBalanceByAddress({ address: address || undefined, network });
 
   const fallbackTime = useFallbackTime();
-  const showOneEntryOnly = aleoUnstakeStatus !== null;
+  const showOneEntryOnly = aleoUnstakeStatus !== null || aleoLiquidUnstakeStatus !== null;
   const hasPendingItems = unbondingDelegations?.length || showOneEntryOnly;
   const totalPendingItems = showOneEntryOnly ? 1 : unbondingDelegations?.length || 0;
-  const completionTime = aleoUnstakeStatus?.completionTime || unbondingDelegations?.[0]?.completionTime;
+  const completionTime = getShortestTime([
+    aleoUnstakeStatus?.completionTime,
+    aleoLiquidUnstakeStatus?.completionTime,
+    unbondingDelegations?.[0]?.completionTime,
+  ]);
   const defaultTitle = useDefaultTitle({ showOneEntryOnly, unbondingDelegationsLength: unbondingDelegations?.length });
 
   const isDisabled = useMemo(() => {
@@ -55,14 +65,18 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     }
     if (hasPendingItems) {
       const times = completionTime && getTimeUnitStrings(completionTime);
+      const isWithdrawable = aleoUnstakeStatus?.isWithdrawable || aleoLiquidUnstakeStatus?.isWithdrawable;
+      const withdrawableAmount = aleoUnstakeStatus?.isWithdrawable ? aleoUnstakeStatus.amount : "0";
+      const liquidWithdrawableAmount = aleoLiquidUnstakeStatus?.isWithdrawable ? aleoLiquidUnstakeStatus.amount : "0";
+
       const aleoUnbondingAmount = getDynamicAssetValueFromCoin({
         currency,
         coinPrice,
         network,
-        coinVal: aleoUnstakeStatus?.amount,
+        coinVal: BigNumber(withdrawableAmount).plus(liquidWithdrawableAmount).toString(),
       });
 
-      return aleoUnstakeStatus?.isWithdrawable
+      return isWithdrawable
         ? {
             title: <NavCard.SecondaryText>Withdrawable</NavCard.SecondaryText>,
             value: <NavCard.PrimaryText>{aleoUnbondingAmount}</NavCard.PrimaryText>,
@@ -85,6 +99,7 @@ export const UnstakeNavCard = (props: NavCard.PageNavCardProps) => {
     completionTime,
     showOneEntryOnly,
     aleoUnstakeStatus,
+    aleoLiquidUnstakeStatus,
     defaultTitle,
   ]);
 
