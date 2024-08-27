@@ -106,52 +106,45 @@ export const getUTCStringFromUnixTimeString = (time: string) => {
 };
 
 export const getShortestTime = (times: (TimeUnits | undefined)[]) => {
-  const filteredTimes = times.filter((time) => time !== undefined) as TimeUnits[];
+  let shortestTime: TimeUnits | undefined;
+  let shortestSeconds = Infinity;
 
-  if (!filteredTimes.length) {
-    return undefined;
-  }
-
-  let shortestTimeObj = filteredTimes[0];
-  let shortestTimeInSeconds = convertToSeconds(filteredTimes[0]);
-
-  for (let i = 1; i < filteredTimes.length; i++) {
-    const currentTimeInSeconds = convertToSeconds(filteredTimes[i]);
-    if (currentTimeInSeconds < shortestTimeInSeconds) {
-      shortestTimeInSeconds = currentTimeInSeconds;
-      shortestTimeObj = filteredTimes[i];
+  for (const time of times) {
+    if (time) {
+      const seconds = convertToSeconds(time);
+      if (seconds < shortestSeconds) {
+        shortestSeconds = seconds;
+        shortestTime = time;
+      }
     }
   }
 
-  return shortestTimeObj;
+  return shortestTime;
 };
 
-const convertToSeconds = (timeObj: TimeUnits): number => {
-  const SECONDS_IN_DAY = 86400;
-  const SECONDS_IN_HOUR = 3600;
-  const SECONDS_IN_MINUTE = 60;
-
+const convertToSeconds = (timeObj: TimeUnits) => {
   let totalSeconds = 0;
-  if (timeObj.d !== undefined) {
-    totalSeconds += timeObj.d * SECONDS_IN_DAY;
+
+  for (const unit in timeObj) {
+    if (unit in TIME_UNIT_SECONDS) {
+      const value = timeObj[unit as TimeUnit];
+      if (value !== undefined) {
+        totalSeconds += value * TIME_UNIT_SECONDS[unit as TimeUnit];
+      }
+    }
   }
-  if (timeObj.h !== undefined) {
-    totalSeconds += timeObj.h * SECONDS_IN_HOUR;
-  }
-  if (timeObj.m !== undefined) {
-    totalSeconds += timeObj.m * SECONDS_IN_MINUTE;
-  }
-  if (timeObj.s !== undefined) {
-    totalSeconds += timeObj.s;
-  }
+
   return totalSeconds;
 };
 
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-type TimeUnits = {
-  d: number | undefined;
-  h: number | undefined;
-  m: number | undefined;
-  s: number | undefined;
+const TIME_UNIT_SECONDS = {
+  d: 24 * 60 * 60,
+  h: 60 * 60,
+  m: 60,
+  s: 1,
 };
+
+type TimeUnit = keyof typeof TIME_UNIT_SECONDS;
+type TimeUnits = Record<TimeUnit, number | undefined>;
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
