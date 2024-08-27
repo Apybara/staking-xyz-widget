@@ -105,6 +105,48 @@ export const getUTCStringFromUnixTimeString = (time: string) => {
   return getFormattedUTCString(moment(time).toDate());
 };
 
+export const getShortestTime = (times: (TimeUnits | undefined)[]) => {
+  const filteredTimes = times.filter((time) => time !== undefined) as TimeUnits[];
+
+  if (!filteredTimes.length) {
+    return undefined;
+  }
+
+  let shortestTimeObj = filteredTimes[0];
+  let shortestTimeInSeconds = convertToSeconds(filteredTimes[0]);
+
+  for (let i = 1; i < filteredTimes.length; i++) {
+    const currentTimeInSeconds = convertToSeconds(filteredTimes[i]);
+    if (currentTimeInSeconds < shortestTimeInSeconds) {
+      shortestTimeInSeconds = currentTimeInSeconds;
+      shortestTimeObj = filteredTimes[i];
+    }
+  }
+
+  return shortestTimeObj;
+};
+
+const convertToSeconds = (timeObj: TimeUnits): number => {
+  const SECONDS_IN_DAY = 86400;
+  const SECONDS_IN_HOUR = 3600;
+  const SECONDS_IN_MINUTE = 60;
+
+  let totalSeconds = 0;
+  if (timeObj.d !== undefined) {
+    totalSeconds += timeObj.d * SECONDS_IN_DAY;
+  }
+  if (timeObj.h !== undefined) {
+    totalSeconds += timeObj.h * SECONDS_IN_HOUR;
+  }
+  if (timeObj.m !== undefined) {
+    totalSeconds += timeObj.m * SECONDS_IN_MINUTE;
+  }
+  if (timeObj.s !== undefined) {
+    totalSeconds += timeObj.s;
+  }
+  return totalSeconds;
+};
+
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 type TimeUnits = {
