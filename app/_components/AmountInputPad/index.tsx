@@ -22,6 +22,7 @@ import * as AvailabilityText from "./AvailabilityText";
 import { getStringHasNumbersOnly } from "./InputField";
 import Tooltip from "../Tooltip";
 import { Icon } from "../Icon";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 
 import * as S from "./amountInputPad.css";
 
@@ -71,6 +72,7 @@ export const AmountInputPad = ({
   const { network } = useShell();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
+  const isAleo = getIsAleoNetwork(network);
 
   const requiredBalance = requiredBalanceStakingByNetwork[castedNetwork];
 
@@ -118,7 +120,21 @@ export const AmountInputPad = ({
       type={type}
       availableValue={availableValue}
       availabilityElement={
-        <AvailabilityElement type={type} availableValue={availableValue} primaryCurrency={primaryCurrency} />
+        <AvailabilityElement
+          type={type}
+          availableValue={availableValue}
+          primaryCurrency={primaryCurrency}
+          tooltip={
+            type === "unstake" &&
+            !isAleo && (
+              <Tooltip
+                className={S.topBarTooltip}
+                trigger={<Icon name="info" />}
+                content="You can only unstake positions that have been staked through Staking.xyz."
+              />
+            )
+          }
+        />
       }
       isAvailableValueLoading={isAvailableValueLoading}
       inputField={{
