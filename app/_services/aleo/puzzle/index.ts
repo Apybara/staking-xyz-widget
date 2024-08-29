@@ -4,9 +4,9 @@ import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/
 import { aleoNetworkIdByWallet } from "../consts";
 import {
   getCreditsToMicroCredits,
-  getPAleoFromAleo,
   getMicroCreditsToCredits,
   getInstantWithdrawalAleoAmount,
+  getPAleoDepositMintingAmountFromAleo,
 } from "../utils";
 import { aleoFees } from "@/app/consts";
 
@@ -68,7 +68,10 @@ export const puzzleStake = async ({
 export const puzzleLiquidStake = async ({ amount, address, chainId = "aleo", aleoToPAleoRate }: T.PuzzleStakeProps) => {
   const txFee = getMicroCreditsToCredits(aleoFees.stake.liquid);
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
-  const transactionMintAmount = getCreditsToMicroCredits(getPAleoFromAleo(amount, aleoToPAleoRate)) + "u64";
+  const transactionMintAmount = getPAleoDepositMintingAmountFromAleo({
+    aleoCredits: amount,
+    aleoToPAleoRate,
+  });
 
   try {
     const { eventId, error } = await requestCreateEvent(

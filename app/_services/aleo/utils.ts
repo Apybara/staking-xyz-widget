@@ -28,6 +28,19 @@ export const getAleoTotalUnstakeFees = ({
   return txFee + pAleoInstantWithdrawFee;
 };
 
+export const getPAleoDepositMintingAmountFromAleo = ({
+  aleoCredits,
+  aleoToPAleoRate,
+}: {
+  aleoCredits: string | number;
+  aleoToPAleoRate: number;
+}) => {
+  const pAleoMicroAmount = getCreditsToMicroCredits(getPAleoFromAleo(aleoCredits, aleoToPAleoRate));
+  // The round-down value is to prevent fluctuation of the pALEO to ALEO conversion rate
+  const pAleoMicroCreditsRoundDownAmount = Math.floor(BigNumber(pAleoMicroAmount).times(0.9999).toNumber());
+  return pAleoMicroCreditsRoundDownAmount + "u64";
+};
+
 export const getInstantWithdrawalAleoAmount = ({
   pAleoMicroCredits,
   pAleoToAleoRate,

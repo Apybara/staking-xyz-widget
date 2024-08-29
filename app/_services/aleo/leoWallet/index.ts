@@ -3,7 +3,11 @@ import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import type * as T from "./types";
 import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
 import { aleoNetworkIdByWallet } from "../consts";
-import { getCreditsToMicroCredits, getPAleoFromAleo, getInstantWithdrawalAleoAmount } from "../utils";
+import {
+  getCreditsToMicroCredits,
+  getInstantWithdrawalAleoAmount,
+  getPAleoDepositMintingAmountFromAleo,
+} from "../utils";
 import { aleoFees } from "@/app/consts";
 
 export const getLeoWalletTxStatus = async ({
@@ -89,7 +93,10 @@ export const leoWalletLiquidStake = async ({
 }: T.LeoWalletStakeProps) => {
   try {
     const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
-    const transactionMintAmount = getCreditsToMicroCredits(getPAleoFromAleo(amount, aleoToPAleoRate)) + "u64";
+    const transactionMintAmount = getPAleoDepositMintingAmountFromAleo({
+      aleoCredits: amount,
+      aleoToPAleoRate,
+    });
 
     const aleoTransaction = Transaction.createTransaction(
       address,
