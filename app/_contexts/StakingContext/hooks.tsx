@@ -83,7 +83,7 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
       switch (stakingType) {
         case "liquid":
           if (validatorState === "liquidRebalancing") {
-            return "The liquid staking protocol is now in a rebalancing period. Please try again later in 10 minutes";
+            return "The liquid staking protocol is in a rebalancing period. Please try again in 10 minutes.";
           }
           return defaultMessage;
         case "native":

@@ -1,10 +1,32 @@
-import type { AleoNetwork, AleoWalletType } from "@/app/types";
+import type { AleoNetwork, AleoWalletType, StakingType } from "@/app/types";
 import BigNumber from "bignumber.js";
 import { Asset, AssetList } from "@chain-registry/types";
 import { assets } from "chain-registry";
 import { getFormattedCoinValue } from "@/app/_utils/conversions";
-import { aleoNetworkVariants, aleoWalletVariants, networkCurrency } from "@/app/consts";
+import { aleoNetworkVariants, aleoWalletVariants, networkCurrency, aleoFees } from "@/app/consts";
 import { PALEO_INSTANT_WITHDRAWAL_FEE_RATIO } from "@/app/consts";
+
+export const getAleoTotalUnstakeFees = ({
+  amount,
+  stakingType,
+  isInstant,
+  pAleoToAleoRate,
+}: {
+  amount: string;
+  stakingType: StakingType;
+  isInstant: boolean;
+  pAleoToAleoRate?: number;
+}) => {
+  if (amount === "" || amount === "0") return undefined;
+
+  const txFee = getMicroCreditsToCredits(aleoFees.unstake[stakingType || "native"]);
+  if (!isInstant) {
+    return txFee;
+  }
+
+  const pAleoInstantWithdrawFee = getAleoFromPAleo(getPAleoInstantWithdrawFee({ amount }), pAleoToAleoRate || 1);
+  return txFee + pAleoInstantWithdrawFee;
+};
 
 export const getInstantWithdrawalAleoAmount = ({
   pAleoMicroCredits,

@@ -1,5 +1,5 @@
 import * as T from "./types";
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useMemo, useReducer } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
@@ -28,8 +28,12 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
   });
   const isAleoNetwork = network && getIsAleoNetwork(network);
   const stakedBalance = isAleoNetwork && stakingType === "liquid" ? pAleoBalanceQuery : stakedBalanceQuery;
-  const stakedBalanceValue =
-    isAleoNetwork && stakingType === "liquid" ? pAleoBalanceQuery?.stakedBalance : stakedBalanceQuery?.nativeBalance;
+  const stakedBalanceValue = useMemo(() => {
+    if (isAleoNetwork) {
+      return stakingType === "liquid" ? pAleoBalanceQuery?.stakedBalance : stakedBalanceQuery?.nativeBalance;
+    }
+    return stakedBalanceQuery?.stakedBalance;
+  }, [isAleoNetwork, stakingType, pAleoBalanceQuery, stakedBalanceQuery]);
 
   const { data: cosmosSigningClient } = useCosmosSigningClient({
     network: network || defaultNetwork,

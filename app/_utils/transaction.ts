@@ -1,6 +1,6 @@
 import type { WalletConnectionStatus, Network, TxType } from "../types";
 import BigNumber from "bignumber.js";
-import { aleoFees, feeRatioByNetwork, PONDO_PROTOCOL_COMMISSION } from "../consts";
+import { aleoFees, feeRatioByNetwork } from "../consts";
 import { getAleoFromPAleo, getMicroCreditsToCredits, getPAleoInstantWithdrawFee } from "../_services/aleo/utils";
 
 export const getBasicAmountValidation = ({
@@ -119,26 +119,6 @@ export const getStakeFees = ({
   const ratio = feeRatioByNetwork[network];
   const result = BigNumber(amount).times(ratio);
   return floorResult ? Math.floor(result.toNumber()).toString() : result.toString();
-};
-
-export const getLiquidTotalFees = ({
-  amount,
-  type,
-  pAleoToAleoRate,
-}: {
-  amount: string;
-  type: TxType;
-  pAleoToAleoRate?: number;
-}) => {
-  if (amount === "" || amount === "0") return undefined;
-
-  const networkFees = getMicroCreditsToCredits(aleoFees[type].liquid as string);
-  const protocolCommission = BigNumber(amount).times(PONDO_PROTOCOL_COMMISSION).toNumber();
-  const pAleoInstantWithdrawFee =
-    type === "instant_unstake" ? getAleoFromPAleo(getPAleoInstantWithdrawFee({ amount }), pAleoToAleoRate || 1) : 0;
-  const result = networkFees + protocolCommission + pAleoInstantWithdrawFee;
-
-  return result;
 };
 
 export type BasicAmountValidationResult =
