@@ -65,8 +65,8 @@ importers:
         specifier: ^0.0.21
         version: 0.0.21(react@18.2.0)
       "@puzzlehq/sdk":
-        specifier: ^0.5.1
-        version: 0.5.2(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: ^0.5.3
+        version: 0.5.3(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
       "@radix-ui/react-accordion":
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1477,15 +1477,15 @@ packages:
     resolution:
       { integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw== }
 
-  "@puzzlehq/sdk-core@0.5.2":
+  "@puzzlehq/sdk-core@0.5.3":
     resolution:
-      { integrity: sha512-seYkGTDj1P6fO7Ne8Ea9R02fcxqind+m+l/YtsSFFTFOx0CCx+G62dG2nQ46LwoGuoWHVF6XO9YGq92p1Y6g/g== }
+      { integrity: sha512-yGBZLK7CBiS/6dORBYTUVRXqnr22MOH5VkGYs67ROptqEgfSP8GEAL+1drWxy8iFVL3Tjubw5CG4p1bA9Eiy2w== }
     peerDependencies:
       buffer: ^6.0.3
 
-  "@puzzlehq/sdk@0.5.2":
+  "@puzzlehq/sdk@0.5.3":
     resolution:
-      { integrity: sha512-bBDaZVX65YwYGAVQ6ugqbWxnr6E7tiEN5/KvFeOdKwWgSmZSOG2Kf3x7nK5X/nQFlbVch7URVNsFWCM12DU5tw== }
+      { integrity: sha512-u1kLpaxpIegtX9g0qnXZ/Mikb4QQXTdRDBpvykc8pW9KiOrOiXXdN3G6BC+J+5lrg68UOu8KA1DufGLnwupLJw== }
     peerDependencies:
       react: ^18.2.0
 
@@ -3191,7 +3191,6 @@ packages:
   "@walletconnect/sign-client@2.11.0":
     resolution:
       { integrity: sha512-H2ukscibBS+6WrzQWh+WyVBqO5z4F5et12JcwobdwgHnJSlqIoZxqnUYYWNCI5rUR5UKsKWaUyto4AE9N5dw4Q== }
-    deprecated: Reliability and performance greatly improved - please see https://github.com/WalletConnect/walletconnect-monorepo/releases
 
   "@walletconnect/sign-client@2.11.3":
     resolution:
@@ -8875,7 +8874,7 @@ snapshots:
 
   "@protobufjs/utf8@1.1.0": {}
 
-  "@puzzlehq/sdk-core@0.5.2(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)":
+  "@puzzlehq/sdk-core@0.5.3(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)":
     dependencies:
       "@puzzlehq/types": 1.0.23
       "@puzzlehq/walletconnect-modal-sign-html": 0.0.6(@types/react@18.2.65)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
@@ -8908,9 +8907,9 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  "@puzzlehq/sdk@0.5.2(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)":
+  "@puzzlehq/sdk@0.5.3(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)":
     dependencies:
-      "@puzzlehq/sdk-core": 0.5.2(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+      "@puzzlehq/sdk-core": 0.5.3(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       "@puzzlehq/types": 1.0.23
       "@tanstack/query-core": 4.36.1
       "@tanstack/react-query": 4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -10944,7 +10943,7 @@ snapshots:
       "@walletconnect/jsonrpc-ws-connection": 1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       "@walletconnect/keyvaluestorage": 1.1.1
       "@walletconnect/logger": 2.1.2
-      "@walletconnect/relay-api": 1.0.9
+      "@walletconnect/relay-api": 1.0.10
       "@walletconnect/relay-auth": 1.0.4
       "@walletconnect/safe-json": 1.0.2
       "@walletconnect/time": 1.0.2
@@ -11194,7 +11193,7 @@ snapshots:
 
   "@walletconnect/relay-api@1.0.10":
     dependencies:
-      "@walletconnect/jsonrpc-types": 1.0.3
+      "@walletconnect/jsonrpc-types": 1.0.4
 
   "@walletconnect/relay-api@1.0.9":
     dependencies:
@@ -11505,7 +11504,7 @@ snapshots:
       "@stablelib/random": 1.0.2
       "@stablelib/sha256": 1.0.1
       "@stablelib/x25519": 1.0.3
-      "@walletconnect/relay-api": 1.0.9
+      "@walletconnect/relay-api": 1.0.10
       "@walletconnect/safe-json": 1.0.2
       "@walletconnect/time": 1.0.2
       "@walletconnect/types": 2.12.2
