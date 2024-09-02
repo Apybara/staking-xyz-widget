@@ -11,6 +11,8 @@ import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
 
+export const isAleoTestnet = process.env.NEXT_PUBLIC_ALEO_USE_TESTNET === "true";
+
 export const NetworkVariants = ["cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3", "aleo"] as const;
 export const networkVariants = [...NetworkVariants];
 export const defaultNetwork = NetworkVariants[0] as Network;
@@ -87,7 +89,7 @@ export const networkInfo: Record<Network, NetworkInfo> = {
   },
   aleo: {
     id: "aleo",
-    name: "Aleo Testnet",
+    name: isAleoTestnet ? "Aleo Testnet" : "Aleo",
     logo: AleoLogo,
     currency: networkCurrency.aleo,
     denom: "",
@@ -108,8 +110,8 @@ export const networkExplorer: Record<Network, string> = {
   celestiatestnet3: "https://www.mintscan.io/celestia-testnet/",
   cosmoshub: "https://www.mintscan.io/cosmos/",
   cosmoshubtestnet: "https://www.mintscan.io/cosmoshub-testnet/",
-  // TODO: use dynamic Aleo network
-  aleo: "https://testnet.aleoscan.io/",
+  // TODO: confirm Aleo mainnet explorer link
+  aleo: isAleoTestnet ? "https://testnet.aleoscan.io/" : "https://aleoscan.io/",
 };
 
 export const networkExplorerTx: Record<Network, string> = {
@@ -532,8 +534,8 @@ export const stakingOperatorUrlByNetwork: Record<Network, string> = {
   celestiatestnet3: process.env.NEXT_PUBLIC_STAKING_API_CELESTIA_TESTNET || "",
   cosmoshub: process.env.NEXT_PUBLIC_STAKING_API_COSMOSHUB || "",
   cosmoshubtestnet: process.env.NEXT_PUBLIC_STAKING_API_COSMOSHUB_TESTNET || "",
-  // TODO: use dynamic Aleo network
-  aleo: process.env.NEXT_PUBLIC_STAKING_API_ALEO_TESTNET || "",
+  aleo:
+    (isAleoTestnet ? process.env.NEXT_PUBLIC_STAKING_API_ALEO_TESTNET : process.env.NEXT_PUBLIC_STAKING_API_ALEO) || "",
 };
 
 export const serverUrlByNetwork: Record<Network, string> = {
@@ -541,8 +543,8 @@ export const serverUrlByNetwork: Record<Network, string> = {
   celestiatestnet3: process.env.NEXT_PUBLIC_SERVER_API_CELESTIA_TESTNET || "",
   cosmoshub: process.env.NEXT_PUBLIC_SERVER_API_COSMOSHUB || "",
   cosmoshubtestnet: process.env.NEXT_PUBLIC_SERVER_API_COSMOSHUB_TESTNET || "",
-  // TODO: use dynamic Aleo network
-  aleo: process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET || "",
+  aleo:
+    (isAleoTestnet ? process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET : process.env.NEXT_PUBLIC_SERVER_API_ALEO) || "",
 };
 
 export const ALEO_URLS = ["aleo.staking.xyz", "testnet.staking.xyz"];

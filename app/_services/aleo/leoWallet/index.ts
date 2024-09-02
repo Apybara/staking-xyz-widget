@@ -2,6 +2,7 @@ import type { LeoWalletAdapter } from "@demox-labs/aleo-wallet-adapter-leo";
 import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import type * as T from "./types";
 import { Transaction } from "@demox-labs/aleo-wallet-adapter-base";
+import { isAleoTestnet } from "@/app/consts";
 import { aleoNetworkIdByWallet } from "../consts";
 import {
   getCreditsToMicroCredits,
@@ -9,6 +10,8 @@ import {
   getPAleoDepositMintingAmountFromAleo,
 } from "../utils";
 import { aleoFees } from "@/app/consts";
+
+const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
 
 export const getLeoWalletTxStatus = async ({
   txId,
@@ -63,7 +66,7 @@ export const leoWalletStake = async ({
   validatorAddress,
   wallet,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
   txFee,
 }: T.LeoWalletStakeProps) => {
   try {
@@ -88,7 +91,7 @@ export const leoWalletLiquidStake = async ({
   amount = "0",
   wallet,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
   aleoToPAleoRate,
 }: T.LeoWalletStakeProps) => {
   try {
@@ -118,7 +121,7 @@ export const leoWalletUnstake = async ({
   amount,
   wallet,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
   txFee,
 }: T.LeoWalletUnstakeProps) => {
   try {
@@ -144,7 +147,7 @@ export const leoWalletLiquidUnstake = async ({
   amount = "0",
   wallet,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
   pAleoToAleoRate,
   instantWithdrawal,
 }: T.LeoWalletUnstakeProps) => {
@@ -172,7 +175,12 @@ export const leoWalletLiquidUnstake = async ({
   }
 };
 
-export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo", txFee }: T.LeoWalletWithdrawProps) => {
+export const leoWalletWithdraw = async ({
+  wallet,
+  address,
+  chainId = defaultChainId,
+  txFee,
+}: T.LeoWalletWithdrawProps) => {
   try {
     const aleoTransaction = Transaction.createTransaction(
       address,
@@ -193,7 +201,7 @@ export const leoWalletWithdraw = async ({ wallet, address, chainId = "aleo", txF
 export const leoWalletLiquidWithdraw = async ({
   wallet,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
   amount = "0",
 }: T.LeoWalletWithdrawProps) => {
   try {

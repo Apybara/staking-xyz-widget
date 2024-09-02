@@ -1,6 +1,7 @@
 import type * as T from "./types";
 import type { AleoTxStatus, AleoTxStatusResponse } from "../types";
 import { requestCreateEvent, getEvent, EventType, EventStatus } from "@puzzlehq/sdk";
+import { isAleoTestnet } from "@/app/consts";
 import { aleoNetworkIdByWallet } from "../consts";
 import {
   getCreditsToMicroCredits,
@@ -10,10 +11,12 @@ import {
 } from "../utils";
 import { aleoFees } from "@/app/consts";
 
+const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
+
 export const getPuzzleTxStatus = async ({
   id,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
 }: T.PuzzleTxStatusProps): Promise<AleoTxStatusResponse> => {
   try {
     const res = await getEvent({ id, address, network: aleoNetworkIdByWallet[chainId].puzzle });
@@ -40,7 +43,7 @@ export const puzzleStake = async ({
   amount,
   validatorAddress,
   address,
-  chainId = "aleo",
+  chainId = defaultChainId,
   txFee,
 }: T.PuzzleStakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
@@ -65,7 +68,12 @@ export const puzzleStake = async ({
   }
 };
 
-export const puzzleLiquidStake = async ({ amount, address, chainId = "aleo", aleoToPAleoRate }: T.PuzzleStakeProps) => {
+export const puzzleLiquidStake = async ({
+  amount,
+  address,
+  chainId = defaultChainId,
+  aleoToPAleoRate,
+}: T.PuzzleStakeProps) => {
   const txFee = getMicroCreditsToCredits(aleoFees.stake.liquid);
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
   const transactionMintAmount = getPAleoDepositMintingAmountFromAleo({
@@ -94,7 +102,7 @@ export const puzzleLiquidStake = async ({ amount, address, chainId = "aleo", ale
   }
 };
 
-export const puzzleUnstake = async ({ address, amount, chainId = "aleo", txFee }: T.PuzzleUnstakeProps) => {
+export const puzzleUnstake = async ({ address, amount, chainId = defaultChainId, txFee }: T.PuzzleUnstakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
 
   try {
@@ -120,7 +128,7 @@ export const puzzleUnstake = async ({ address, amount, chainId = "aleo", txFee }
 
 export const puzzleLiquidUnstake = async ({
   amount,
-  chainId = "aleo",
+  chainId = defaultChainId,
   pAleoToAleoRate,
   instantWithdrawal,
 }: T.PuzzleUnstakeProps) => {
@@ -151,7 +159,7 @@ export const puzzleLiquidUnstake = async ({
   }
 };
 
-export const puzzleWithdraw = async ({ address, chainId = "aleo", txFee }: T.PuzzleWithdrawProps) => {
+export const puzzleWithdraw = async ({ address, chainId = defaultChainId, txFee }: T.PuzzleWithdrawProps) => {
   try {
     const { eventId, error } = await requestCreateEvent(
       {
@@ -173,7 +181,11 @@ export const puzzleWithdraw = async ({ address, chainId = "aleo", txFee }: T.Puz
   }
 };
 
-export const puzzleLiquidWithdraw = async ({ address, chainId = "aleo", amount = "0" }: T.PuzzleWithdrawProps) => {
+export const puzzleLiquidWithdraw = async ({
+  address,
+  chainId = defaultChainId,
+  amount = "0",
+}: T.PuzzleWithdrawProps) => {
   const txFee = getMicroCreditsToCredits(aleoFees.withdraw.liquid);
   const transactionAmount = getCreditsToMicroCredits(amount as string) + "u64";
 
