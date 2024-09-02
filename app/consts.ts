@@ -1,12 +1,4 @@
-import type {
-  Network,
-  NetworkInfo,
-  NetworkCurrency,
-  WalletInfo,
-  WalletType,
-  StakingType,
-  StakingTypeTab,
-} from "./types";
+import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, StakingType } from "./types";
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
@@ -175,9 +167,11 @@ export const networkEndpoints: Record<
     rest:
       process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REST_ENDPOINT || "https://rest.sentry-01.theta-testnet.polypore.xyz/",
   },
-  // TODO: use dynamic Aleo network
+  // TODO: confirm Aleo mainnet rpc
   aleo: {
-    rpc: process.env.NEXT_PUBLIC_ALEOTESTNET_RPC_ENDPOINT || "https://testnetbeta.aleorpc.com/",
+    rpc:
+      (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_RPC_ENDPOINT : process.env.NEXT_PUBLIC_ALEO_RPC_ENDPOINT) ||
+      "https://testnetbeta.aleorpc.com/",
     rest: "",
   },
 };
@@ -560,9 +554,18 @@ export const TELEGRAM_URL = "https://t.me/staking_xyz";
 
 export const PONDO_URL = "https://pondo.xyz";
 export const VERIDISE_URL = "https://veridise.com";
-// TODO: use dynamic Aleo network
-export const ALEO_PONDO_TOKEN_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_ID || "";
-export const ALEO_PONDO_CORE_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID || "";
-export const ALEO_PONDO_TOKEN_NETWORK = process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK || "";
+// TODO: confirm Aleo mainnet Pondo token ID
+export const ALEO_PONDO_TOKEN_ID =
+  (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_ID : process.env.NEXT_PUBLIC_ALEO_PONDO_TOKEN_ID) ||
+  "";
+// TODO: confirm Aleo mainnet Pondo core ID
+export const ALEO_PONDO_CORE_ID =
+  (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) ||
+  "";
+// TODO: confirm Aleo mainnet Pondo token network
+export const ALEO_PONDO_TOKEN_NETWORK =
+  (isAleoTestnet
+    ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK
+    : process.env.NEXT_PUBLIC_ALEO_PONDO_TOKEN_NETWORK) || "";
 export const ALEO_MTSP_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID || "";
 export const PALEO_INSTANT_WITHDRAWAL_FEE_RATIO = 0.0025;
