@@ -35,10 +35,17 @@ export const getPAleoDepositMintingAmountFromAleo = ({
   aleoCredits: string | number;
   aleoToPAleoRate: number;
 }) => {
-  const pAleoMicroAmount = getCreditsToMicroCredits(getPAleoFromAleo(aleoCredits, aleoToPAleoRate));
+  const pAleoAmount = getPAleoFromAleo(aleoCredits, aleoToPAleoRate);
+  const pAleoMicroAmount = getCreditsToMicroCredits(pAleoAmount);
+
   // The round-down value is to prevent fluctuation of the pALEO to ALEO conversion rate
+  const pAleoCreditsRoundDownAmount = BigNumber(pAleoAmount).times(0.9999).toNumber();
   const pAleoMicroCreditsRoundDownAmount = Math.floor(BigNumber(pAleoMicroAmount).times(0.9999).toNumber());
-  return pAleoMicroCreditsRoundDownAmount + "u64";
+
+  return {
+    pAleoCreditsAmount: pAleoCreditsRoundDownAmount,
+    txMicroCreditsInput: pAleoMicroCreditsRoundDownAmount + "u64",
+  };
 };
 
 export const getInstantWithdrawalAleoAmount = ({
