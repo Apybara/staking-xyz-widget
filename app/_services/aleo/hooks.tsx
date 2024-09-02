@@ -14,6 +14,7 @@ import {
   ALEO_PONDO_TOKEN_NETWORK,
   ALEO_MTSP_ID,
   defaultNetwork,
+  isAleoTestnet,
 } from "../../consts";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
 import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
@@ -50,6 +51,8 @@ import { networkEndpoints } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { usePondoData } from "./pondo/hooks";
 import { useDialog } from "@/app/_contexts/UIContext";
+
+const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
 
 export const usePAleoBalanceByAddress = ({ address, network }: { address?: string; network: Network | null }) => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
@@ -228,12 +231,11 @@ const useAleoBroadcastTx = ({
       }
 
       onLoading?.();
-      // TODO: use dynamic chainId
       const txId = await txMethodByWallet({
         amount: txAmount,
         validatorAddress: validatorAddress || "",
         address,
-        chainId: "aleo",
+        chainId: defaultChainId,
         txFee,
         pAleoToAleoRate: pAleoToAleoRate || 1,
         aleoToPAleoRate: aleoToPAleoRate || 1,

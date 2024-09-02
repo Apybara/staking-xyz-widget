@@ -1,5 +1,5 @@
-import type { AleoWalletNetworkIds } from "./types";
-import type { AleoNetwork, AleoWalletType } from "@/app/types";
+import type { AleoWalletNetworkIds, AleoInstanceChainId } from "./types";
+import type { AleoWalletType } from "@/app/types";
 import { WalletAdapterNetwork as LeoNetworkId } from "@demox-labs/aleo-wallet-adapter-base";
 
 export const LeoWalletNetworkIds: Array<LeoNetworkId> = [
@@ -15,9 +15,13 @@ export const leoWalletNetworkIds = [...LeoWalletNetworkIds];
 export const PuzzleNetworkIds = ["aleo:1"] as const;
 export const puzzleNetworkIds = [...PuzzleNetworkIds];
 
-// TODO: handle testnet and mainnet
-export const aleoNetworkIdByWallet: Record<AleoNetwork, Record<AleoWalletType, AleoWalletNetworkIds>> = {
-  aleo: {
+// TODO: confirm Aleo mainnet network ID
+export const aleoNetworkIdByWallet: Record<AleoInstanceChainId, Record<AleoWalletType, AleoWalletNetworkIds>> = {
+  mainnet: {
+    leoWallet: LeoNetworkId.MainnetBeta,
+    puzzle: "aleo:1",
+  },
+  testnet: {
     leoWallet: LeoNetworkId.TestnetBeta,
     puzzle: "aleo:1",
   },
