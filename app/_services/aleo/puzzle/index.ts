@@ -71,7 +71,7 @@ export const puzzleLiquidStake = async ({ amount, address, chainId = "aleo", ale
   const transactionMintAmount = getPAleoDepositMintingAmountFromAleo({
     aleoCredits: amount,
     aleoToPAleoRate,
-  });
+  }).txMicroCreditsInput;
 
   try {
     const { eventId, error } = await requestCreateEvent(

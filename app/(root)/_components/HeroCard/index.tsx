@@ -67,7 +67,7 @@ export const HeroCard = () => {
       );
     }
 
-    if (stakedBalance) {
+    if (stakedBalance && stakedBalance !== "0") {
       return (
         <CTACard
           topSubtitle={

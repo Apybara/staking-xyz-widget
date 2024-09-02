@@ -96,7 +96,7 @@ export const leoWalletLiquidStake = async ({
     const transactionMintAmount = getPAleoDepositMintingAmountFromAleo({
       aleoCredits: amount,
       aleoToPAleoRate,
-    });
+    }).txMicroCreditsInput;
 
     const aleoTransaction = Transaction.createTransaction(
       address,

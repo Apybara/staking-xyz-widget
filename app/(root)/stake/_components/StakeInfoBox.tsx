@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
@@ -8,8 +9,13 @@ import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
 import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
+import { getFormattedCoinValue } from "@/app/_utils/conversions";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
-import { getFormattedPAleoFromAleo, getIsAleoNetwork, getMicroCreditsToCredits } from "@/app/_services/aleo/utils";
+import {
+  getIsAleoNetwork,
+  getMicroCreditsToCredits,
+  getPAleoDepositMintingAmountFromAleo,
+} from "@/app/_services/aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
 import * as S from "./stake.css";
@@ -30,6 +36,32 @@ export const StakeInfoBox = () => {
   const aleoTxFee = useDynamicAssetValueFromCoin({
     coinVal: getMicroCreditsToCredits(aleoFees.stake[stakingType || "native"]),
   });
+
+  const fixedAleoToPAleoAmount = useMemo(() => {
+    const val = getPAleoDepositMintingAmountFromAleo({
+      aleoCredits: 1,
+      aleoToPAleoRate: aleoToPAleoRate || 1,
+    }).pAleoCreditsAmount;
+    return getFormattedCoinValue({
+      val,
+      formatOptions: {
+        currencySymbol: "pALEO",
+      },
+    });
+  }, [aleoToPAleoRate]);
+
+  const receivableAleoToPAleoAmount = useMemo(() => {
+    const val = getPAleoDepositMintingAmountFromAleo({
+      aleoCredits: coinAmountInput || 0,
+      aleoToPAleoRate: aleoToPAleoRate || 1,
+    }).pAleoCreditsAmount;
+    return getFormattedCoinValue({
+      val,
+      formatOptions: {
+        currencySymbol: "pALEO",
+      },
+    });
+  }, [coinAmountInput, aleoToPAleoRate]);
 
   return (
     <InfoCard.Card>
@@ -75,15 +107,12 @@ export const StakeInfoBox = () => {
                 trigger={<Icon name="info" />}
                 content={
                   <>
-                    1 {networkCurrency[castedNetwork]} ={" "}
-                    {getFormattedPAleoFromAleo({ val: 1, aleoToPAleoRate: aleoToPAleoRate || 1 })}
+                    1 {networkCurrency[castedNetwork]} = {fixedAleoToPAleoAmount}
                   </>
                 }
               />
             </InfoCard.TitleBox>
-            <InfoCard.Content>
-              {getFormattedPAleoFromAleo({ val: coinAmountInput as string, aleoToPAleoRate: aleoToPAleoRate || 1 })}
-            </InfoCard.Content>
+            <InfoCard.Content>{receivableAleoToPAleoAmount}</InfoCard.Content>
           </InfoCard.StackItem>
         )}
         {hasInput && (
