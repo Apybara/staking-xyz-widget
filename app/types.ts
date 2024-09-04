@@ -74,6 +74,7 @@ export type TxType = "stake" | "unstake" | "instant_unstake" | "redelegate" | "c
 type Device = "mobile" | "desktop";
 
 export type PendingTransaction = {
+  address: string;
   network: Network;
   title: string;
   timestamp: number;

@@ -2,6 +2,7 @@ import type { WalletStates } from "../../_contexts/WalletContext/types";
 import type { AleoWalletType, AleoNetwork, Network, StakingType, PendingTransaction } from "../../types";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
 import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
+import type { DialogTypeVariant } from "@/app/_contexts/UIContext/types";
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import useLocalStorage from "use-local-storage";
@@ -49,6 +50,7 @@ import {
 import { networkEndpoints } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { usePondoData } from "./pondo/hooks";
+import { useDialog } from "@/app/_contexts/UIContext";
 
 export const usePAleoBalanceByAddress = ({ address, network }: { address?: string; network: Network | null }) => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
@@ -194,6 +196,8 @@ const useAleoBroadcastTx = ({
     "pendingTransactions",
     [],
   );
+  const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
+  const { toggleOpen: togglePendingTransactionsDialog } = useDialog("pendingTransactions");
 
   const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -241,6 +245,7 @@ const useAleoBroadcastTx = ({
       setPendingTransactions([
         ...pendingTransactions,
         {
+          address,
           network: network || defaultNetwork,
           title: pendingTransactionsTitleMap[type],
           timestamp,
@@ -249,6 +254,8 @@ const useAleoBroadcastTx = ({
           status: "pending",
         },
       ]);
+      togglePendingTransactionsDialog(true);
+      toggleTxProcedureDialog(false);
 
       let txRes: AleoTxStatusResponse | undefined = undefined;
       const getTxResult = async (txId: string) => {
@@ -463,4 +470,12 @@ const pendingTransactionsTitleMap: Record<TxProcedureType, string> = {
   instant_undelegate: "Unstake (Liquid instant)",
   claim: "Withdraw",
   redelegate: "Redelegate",
+};
+
+const txProcedureMap: Record<TxProcedureType, string> = {
+  delegate: "stakingProcedure",
+  undelegate: "unstakingProcedure",
+  instant_undelegate: "unstakingProcedure",
+  claim: "claimingProcedure",
+  redelegate: "redelegatingProcedure",
 };

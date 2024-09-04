@@ -1,11 +1,13 @@
 import moment from "moment";
 import cn from "classnames";
+import Link from "next/link";
 import type { PendingTransaction } from "../../types";
 import { useShell } from "@/app/_contexts/ShellContext";
+import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { getDynamicAssetValueFromCoin } from "@/app/_utils/conversions";
 import { Icon } from "../Icon";
 import * as Dialog from "../Dialog";
 import { LoadingSpinner } from "../LoadingSpinner";
-import { getDynamicAssetValueFromCoin } from "@/app/_utils/conversions";
 
 import * as S from "./pendingTransactionsDialog.css";
 
@@ -15,13 +17,23 @@ export type RootPendingTransactionsDialogProps = {
     onOpenChange: (open: boolean) => void;
   };
   networkPendingTransactions: Array<PendingTransaction>;
+  setPendingTransactions: (transaction: Array<PendingTransaction>) => void;
 };
 
 export const RootPendingTransactionsDialog = ({
   dialog,
   networkPendingTransactions,
+  setPendingTransactions,
 }: RootPendingTransactionsDialogProps) => {
   const { currency, coinPrice, network } = useShell();
+  const activityLink = useLinkWithSearchParams("activity");
+
+  const isAllCompleted = networkPendingTransactions.every((transaction) => transaction.status === "success");
+
+  const clearTransaction = (txId: string) => {
+    const newPendingTransactions = networkPendingTransactions.filter((transaction) => transaction.txId !== txId);
+    setPendingTransactions(newPendingTransactions);
+  };
 
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
@@ -30,7 +42,7 @@ export const RootPendingTransactionsDialog = ({
           <Dialog.Title className={S.title}>Pending transactions</Dialog.Title>
 
           <ul className={S.list}>
-            {networkPendingTransactions.map(({ title, timestamp, amount, status }) => (
+            {networkPendingTransactions.map(({ title, timestamp, amount, status, txId }) => (
               <li key={`pending-transaction-${timestamp}`} className={S.item}>
                 <div className={S.itemContent}>
                   {status === "success" ? (
@@ -55,19 +67,25 @@ export const RootPendingTransactionsDialog = ({
                 </div>
 
                 {status === "success" && (
-                  <button className={S.activityButton}>
+                  <Link className={S.activityButton} href={activityLink} onClick={() => clearTransaction(txId)}>
                     <span>View activity</span>
                     <span className={S.activityButtonArrow}>
                       <Icon name="arrow" />
                     </span>
-                  </button>
+                  </Link>
                 )}
               </li>
             ))}
           </ul>
 
-          <button className={S.minimizeButton} onClick={() => dialog.onOpenChange(false)}>
-            Minimize
+          <button
+            className={S.minimizeButton}
+            onClick={() => {
+              dialog.onOpenChange(false);
+              isAllCompleted && setPendingTransactions([]);
+            }}
+          >
+            Dismiss
           </button>
         </Dialog.Content>
       </Dialog.Main>
