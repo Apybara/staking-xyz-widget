@@ -39,6 +39,7 @@ export const TxProcedureDialog = ({
   const { connectionStatus, activeWallet } = useWallet();
   const { procedures, amountInputPad, inputState, resetProceduresStates } = data;
   const { open, toggleOpen } = useDialog(dialog);
+  const { toggleOpen: togglePendingTransactionsDialog } = useDialog("pendingTransactions");
   const activityLink = useLinkWithSearchParams("activity");
 
   const uncheckedProcedures = getUncheckedProcedures(procedures || []);
@@ -48,6 +49,7 @@ export const TxProcedureDialog = ({
   const hasLoadingProcedures = getHasLoadingProcedures(procedures || []);
 
   const isLoading = getIsLoadingState(uncheckedProcedures?.[0]);
+  const isBroadcasting = getIsBroadcastingState(uncheckedProcedures?.[0]);
   const isLeoWalletLoading = getIsLeoWalletLoadingState(uncheckedProcedures?.[0], activeWallet);
 
   const ctaText = useMemo(() => {
@@ -111,12 +113,8 @@ export const TxProcedureDialog = ({
           </TransactionDialog.StepItem>
         ))}
       </TransactionDialog.StepsBox>
-      {isLeoWalletLoading && (
-        <p className={S.slowTxWarning}>
-          Please try refreshing your browser if this process is taking longer than 2 minutes
-        </p>
-      )}
-      {!allProceduresCompleted ? (
+      {isBroadcasting && <p className={S.slowTxWarning}>Now, we&apos;ll wait for broadcasting the tx.</p>}
+      {!allProceduresCompleted && !isBroadcasting ? (
         <TransactionDialog.CTAButton
           state={isLoading ? "loading" : "default"}
           disabled={isLoading}
@@ -134,6 +132,7 @@ export const TxProcedureDialog = ({
             resetProceduresStates();
             queryClient.refetchQueries();
             toggleOpen(false);
+            isBroadcasting && togglePendingTransactionsDialog(true);
           }}
         />
       )}
@@ -158,6 +157,9 @@ const getActiveProcedure = (procedures: Array<TxProcedure>) => {
 };
 const getIsLoadingState = (procedure: TxProcedure) => {
   return procedure?.state === "preparing" || procedure?.state === "loading" || procedure?.state === "broadcasting";
+};
+const getIsBroadcastingState = (procedure: TxProcedure) => {
+  return procedure?.state === "broadcasting";
 };
 const getIsLeoWalletLoadingState = (procedure: TxProcedure, activeWallet: WalletStates["activeWallet"]) => {
   return activeWallet === "leoWallet" && (procedure?.state === "loading" || procedure?.state === "broadcasting");

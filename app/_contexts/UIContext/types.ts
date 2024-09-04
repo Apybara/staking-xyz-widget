@@ -11,6 +11,7 @@ export const DialogTypeVariants = [
   "redelegatingProcedure",
   "claimingProcedure",
   "importHelp",
+  "pendingTransactions",
 ] as const;
 export type DialogTypeVariant = (typeof DialogTypeVariants)[number];
 
