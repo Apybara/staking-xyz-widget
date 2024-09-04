@@ -1,9 +1,10 @@
 import type { WalletStates } from "../../_contexts/WalletContext/types";
-import type { AleoWalletType, AleoNetwork, Network, StakingType } from "../../types";
+import type { AleoWalletType, AleoNetwork, Network, StakingType, PendingTransaction } from "../../types";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
 import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import useLocalStorage from "use-local-storage";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import {
   stakingOperatorUrlByNetwork,
@@ -11,6 +12,7 @@ import {
   ALEO_PONDO_TOKEN_ID,
   ALEO_PONDO_TOKEN_NETWORK,
   ALEO_MTSP_ID,
+  defaultNetwork,
 } from "../../consts";
 import { getPuzzleTxStatus } from "./puzzle";
 import { getLeoWalletTxStatus } from "./leoWallet";
@@ -188,6 +190,10 @@ const useAleoBroadcastTx = ({
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
   const operatorResponseQuery = getOperatorResponseQuery({ type });
+  const [pendingTransactions, setPendingTransactions] = useLocalStorage<Array<PendingTransaction>>(
+    "pendingTransactions",
+    [],
+  );
 
   const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -229,6 +235,20 @@ const useAleoBroadcastTx = ({
       });
 
       onBroadcasting?.();
+
+      const timestamp = Date.now();
+
+      setPendingTransactions([
+        ...pendingTransactions,
+        {
+          network: network || defaultNetwork,
+          title: pendingTransactionsTitleMap[type],
+          timestamp,
+          txId,
+          amount: txAmount,
+          status: "pending",
+        },
+      ]);
 
       let txRes: AleoTxStatusResponse | undefined = undefined;
       const getTxResult = async (txId: string) => {
@@ -278,6 +298,13 @@ const useAleoBroadcastTx = ({
           amount: getCreditsToMicroCredits(amount || 0),
         });
       }
+
+      const updatedTransactions = pendingTransactions?.map((transaction) =>
+        transaction.txId === txId
+          ? ({ ...transaction, status: isError ? "failed" : "success" } as PendingTransaction)
+          : transaction,
+      );
+      setPendingTransactions(updatedTransactions || []);
     },
     onError: (error) => onError?.(error),
   });
@@ -428,4 +455,12 @@ const broadcastTxMap: Record<TxProcedureType, { operatorUrl: string }> = {
   redelegate: {
     operatorUrl: "",
   },
+};
+
+const pendingTransactionsTitleMap: Record<TxProcedureType, string> = {
+  delegate: "Stake",
+  undelegate: "Unstake",
+  instant_undelegate: "Unstake (Liquid instant)",
+  claim: "Withdraw",
+  redelegate: "Redelegate",
 };

@@ -72,3 +72,12 @@ export type RouterStruct = {
 export type TxType = "stake" | "unstake" | "instant_unstake" | "redelegate" | "claim" | "withdraw";
 
 type Device = "mobile" | "desktop";
+
+export type PendingTransaction = {
+  network: Network;
+  title: string;
+  timestamp: number;
+  amount: string;
+  txId: string;
+  status: "pending" | "success" | "failed";
+};
