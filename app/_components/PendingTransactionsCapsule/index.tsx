@@ -1,35 +1,34 @@
 "use client";
 import useLocalStorage from "use-local-storage";
+import type { PendingTransaction } from "@/app/types";
 import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
-import { walletsInfo, defaultNetwork } from "../../consts";
+import { defaultNetwork } from "../../consts";
 import { RootPendingTransactionsCapsule } from "./RootPendingTransactionsCapsule";
-import type { PendingTransaction } from "@/app/types";
 
 export const PendingTransactionsCapsule = () => {
   const { network } = useShell();
-  const { connectionStatus, activeWallet, address } = useWallet();
-  const { toggleOpen } = useDialog("pendingTransactions");
-  const [pendingTransactions] = useLocalStorage<Array<PendingTransaction>>("pendingTransactions", []);
+  const { connectionStatus, address } = useWallet();
+  const { open, toggleOpen } = useDialog("pendingTransactions");
+  const [transactions] = useLocalStorage<Array<PendingTransaction>>("pendingTransactions", []);
 
-  const networkPendingTransactions =
-    pendingTransactions?.filter((transaction) => transaction.network === (network || defaultNetwork)) || [];
+  const networkTransactions =
+    transactions?.filter(
+      (transaction) => transaction.network === (network || defaultNetwork) && transaction.address === address,
+    ) || [];
+
+  const pendingTransactionsCount = networkTransactions.filter((transaction) => transaction.status === "pending").length;
+  const isAllCompleted = networkTransactions.every((transaction) => transaction.status === "success");
 
   return (
-    !!networkPendingTransactions.length && (
+    !!networkTransactions.length &&
+    connectionStatus === "connected" &&
+    !open && (
       <RootPendingTransactionsCapsule
-        state={connectionStatus === "disconnecting" ? "disconnected" : connectionStatus}
-        wallet={
-          activeWallet && address
-            ? {
-                info: walletsInfo[activeWallet],
-                address,
-              }
-            : undefined
-        }
         onButtonClick={() => toggleOpen(true)}
-        transactionsCount={networkPendingTransactions.length}
+        transactionsCount={pendingTransactionsCount}
+        isAllCompleted={isAllCompleted}
       />
     )
   );

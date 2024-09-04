@@ -1,5 +1,4 @@
-import { recipe } from "@vanilla-extract/recipes";
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
 

@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { colors } from "../../../theme/theme.css";
+import { colors, weights } from "../../../theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 
 export const pendingTransactionsCapsule = style({
@@ -29,7 +29,7 @@ export const count = style({
   color: colors.black100,
   fontSize: pxToRem(16),
   lineHeight: 1,
-  fontWeight: 600,
+  fontWeight: weights.bold,
 });
 
 export const title = style({
@@ -39,7 +39,7 @@ export const title = style({
   color: colors.black000,
   fontSize: pxToRem(16),
   lineHeight: 1,
-  fontWeight: 600,
+  fontWeight: weights.bold,
 });
 
 export const description = style({
