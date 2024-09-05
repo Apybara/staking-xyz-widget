@@ -4,7 +4,6 @@ import { colors, weights } from "../../../theme/theme.css";
 
 export const dialog = style({
   inlineSize: pxToRem(320),
-  paddingBlockStart: pxToRem(24),
 });
 
 export const title = style({
@@ -13,6 +12,7 @@ export const title = style({
   textAlign: "center",
   color: colors.black000,
   fontWeight: weights.bold,
+  marginBlockStart: pxToRem(8),
   marginBlockEnd: pxToRem(24),
 });
 
