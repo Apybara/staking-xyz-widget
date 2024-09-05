@@ -52,10 +52,10 @@ export const RootPendingTransactionsDialog = ({
                 <div className={S.itemContent}>
                   {status === "success" ? (
                     <span className={S.checkIcon}>
-                      <Icon name="circleCheck" />
+                      <Icon name="circleCheck" size={16} />
                     </span>
                   ) : (
-                    <LoadingSpinner className={S.loadingIcon} />
+                    <LoadingSpinner className={S.loadingIcon} size={16} />
                   )}
 
                   <div className={S.infoContainer}>

@@ -27,18 +27,18 @@ export const RootPendingTransactionsCapsule = ({
       ) : (
         <span className={S.count}>{transactionsCount}</span>
       )}
-      <div>
+      <div className={S.content}>
         <div className={S.title}>
           <span>
             {isAllCompleted ? "All transactions confirmed!" : `Pending ${pluralize(transactionsCount, "transaction")}`}
           </span>
           {!isAllCompleted && (
             <span className={S.loadingIcon}>
-              <LoadingSpinner size={12} />
+              <LoadingSpinner size={14} />
             </span>
           )}
         </div>
-        <span className={S.description}>Click to see details.</span>
+        <span className={S.description}>Click to see details</span>
       </div>
     </button>
   );

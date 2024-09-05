@@ -6,6 +6,7 @@ export const pendingTransactionsCapsule = style({
   position: "fixed",
   left: pxToRem(20),
   bottom: pxToRem(20),
+  inlineSize: pxToRem(280),
   blockSize: pxToRem(70),
   display: "flex",
   alignItems: "center",
@@ -30,6 +31,12 @@ export const count = style({
   fontSize: pxToRem(16),
   lineHeight: 1,
   fontWeight: weights.bold,
+});
+
+export const content = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: pxToRem(8),
 });
 
 export const title = style({
