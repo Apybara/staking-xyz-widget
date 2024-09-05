@@ -18,7 +18,7 @@ export const PendingTransactionsCapsule = () => {
       (transaction) => transaction.network === (network || defaultNetwork) && transaction.address === address,
     ) || [];
 
-  const pendingTransactionsCount = networkTransactions.filter((transaction) => transaction.status === "pending").length;
+  const pendingTransactions = networkTransactions.filter((transaction) => transaction.status === "pending");
   const isAllCompleted = networkTransactions.every((transaction) => transaction.status === "success");
 
   return (
@@ -27,7 +27,7 @@ export const PendingTransactionsCapsule = () => {
     !open && (
       <RootPendingTransactionsCapsule
         onButtonClick={() => toggleOpen(true)}
-        transactionsCount={pendingTransactionsCount}
+        transactionsCount={pendingTransactions.length}
         isAllCompleted={isAllCompleted}
       />
     )

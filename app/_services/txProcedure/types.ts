@@ -26,4 +26,5 @@ export type TxStepCallbacks = {
   onBroadcasting?: () => void;
   onSuccess?: (txHash?: string) => void;
   onError?: (e: Error, txHash?: string) => void;
+  onReset?: () => void;
 };
