@@ -177,6 +177,11 @@ const useTxProcedureStates = () => {
       authState.setTxHash(txHash);
       authState.setError(e);
     },
+    onReset: () => {
+      authState.setState("success");
+      authState.setTxHash(undefined);
+      authState.setError(null);
+    },
   };
 
   const signStep: TxStepCallbacks = {
@@ -204,6 +209,11 @@ const useTxProcedureStates = () => {
       signState.setState("error");
       signState.setTxHash(txHash);
       signState.setError(e);
+    },
+    onReset: () => {
+      signState.setState("active");
+      signState.setTxHash(undefined);
+      signState.setError(null);
     },
   };
 

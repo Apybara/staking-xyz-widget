@@ -151,6 +151,7 @@ export const useAleoTxProcedures = ({
     onBroadcasting: signStep.onBroadcasting,
     onSuccess: signStep.onSuccess,
     onError: signStep.onError,
+    onReset: signStep.onReset,
   });
 
   if (!isAleoNetwork || !address) return null;
@@ -183,6 +184,7 @@ const useAleoBroadcastTx = ({
   onBroadcasting,
   onSuccess,
   onError,
+  onReset,
 }: AleoTxParams & AleoTxStep & { type: TxProcedureType; instantWithdrawal?: boolean }) => {
   const { operatorUrl } = broadcastTxMap[type];
   const { wallet: leoWallet } = useLeoWallet();
@@ -196,6 +198,7 @@ const useAleoBroadcastTx = ({
     "pendingTransactions",
     [],
   );
+
   const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
   const { toggleOpen: togglePendingTransactionsDialog } = useDialog("pendingTransactions");
 
@@ -243,19 +246,21 @@ const useAleoBroadcastTx = ({
       const timestamp = Date.now();
 
       setPendingTransactions([
-        ...pendingTransactions,
         {
           address,
           network: network || defaultNetwork,
-          title: pendingTransactionsTitleMap[type],
+          title: pendingTransactionsTitleMap[type][stakingType as StakingType],
           timestamp,
           txId,
           amount: txAmount,
           status: "pending",
         },
+        ...pendingTransactions,
       ]);
+
       togglePendingTransactionsDialog(true);
       toggleTxProcedureDialog(false);
+      onReset?.();
 
       let txRes: AleoTxStatusResponse | undefined = undefined;
       const getTxResult = async (txId: string) => {
@@ -305,13 +310,6 @@ const useAleoBroadcastTx = ({
           amount: getCreditsToMicroCredits(amount || 0),
         });
       }
-
-      const updatedTransactions = pendingTransactions?.map((transaction) =>
-        transaction.txId === txId
-          ? ({ ...transaction, status: isError ? "failed" : "success" } as PendingTransaction)
-          : transaction,
-      );
-      setPendingTransactions(updatedTransactions || []);
     },
     onError: (error) => onError?.(error),
   });
@@ -464,12 +462,12 @@ const broadcastTxMap: Record<TxProcedureType, { operatorUrl: string }> = {
   },
 };
 
-const pendingTransactionsTitleMap: Record<TxProcedureType, string> = {
-  delegate: "Stake",
-  undelegate: "Unstake",
-  instant_undelegate: "Unstake (Liquid instant)",
-  claim: "Withdraw",
-  redelegate: "Redelegate",
+const pendingTransactionsTitleMap: Record<TxProcedureType, Record<StakingType, string>> = {
+  delegate: { native: "Stake (native)", liquid: "Stake (liquid)" },
+  undelegate: { native: "Unstake (native)", liquid: "Unstake (liquid)" },
+  instant_undelegate: { native: "Unstake (native)", liquid: "Unstake (liquid instant)" },
+  claim: { native: "Withdraw (native)", liquid: "Withdraw (liquid)" },
+  redelegate: { native: "Redelegate (native)", liquid: "Redelegate (liquid)" },
 };
 
 const txProcedureMap: Record<TxProcedureType, string> = {

@@ -20,13 +20,23 @@ export const RootPendingTransactionsCapsule = ({
 }: RootPendingTransactionsCapsuleProps) => {
   return (
     <button className={cn(S.pendingTransactionsCapsule, className)} onClick={onButtonClick}>
-      {isAllCompleted ? <Icon name="circleCheck" /> : <span className={S.count}>{transactionsCount}</span>}
+      {isAllCompleted ? (
+        <span className={S.checkIcon}>
+          <Icon name="circleCheck" size={32} />
+        </span>
+      ) : (
+        <span className={S.count}>{transactionsCount}</span>
+      )}
       <div>
         <div className={S.title}>
           <span>
             {isAllCompleted ? "All transactions confirmed!" : `Pending ${pluralize(transactionsCount, "transaction")}`}
           </span>
-          {!isAllCompleted && <LoadingSpinner className={S.loadingIcon} size={12} />}
+          {!isAllCompleted && (
+            <span className={S.loadingIcon}>
+              <LoadingSpinner size={12} />
+            </span>
+          )}
         </div>
         <span className={S.description}>Click to see details.</span>
       </div>

@@ -49,5 +49,11 @@ export const description = style({
 });
 
 export const loadingIcon = style({
+  display: "flex",
   color: colors.black000,
+});
+
+export const checkIcon = style({
+  display: "flex",
+  color: colors.green900,
 });

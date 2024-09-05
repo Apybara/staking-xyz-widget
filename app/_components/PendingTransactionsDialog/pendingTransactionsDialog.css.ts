@@ -21,20 +21,13 @@ export const list = style({
   flexDirection: "column",
   inlineSize: "100%",
   marginBlockEnd: pxToRem(20),
+  borderTop: `1px solid ${colors.black700}`,
 });
 
 export const item = style({
-  borderTop: `1px solid ${colors.black700}`,
+  borderBottom: `1px solid ${colors.black700}`,
   paddingBlock: pxToRem(14),
   paddingInline: pxToRem(10),
-  transition: "background-color 0.3s",
-
-  selectors: {
-    "&:hover": {
-      transition: "background-color 0.3s",
-      backgroundColor: "rgba(51, 51, 51, 0.5)",
-    },
-  },
 });
 
 export const itemContent = style({
@@ -88,34 +81,16 @@ export const checkIcon = style({
   color: colors.green900,
 });
 
-export const activityButton = style({
-  backgroundColor: colors.black900,
-  border: `1px solid ${colors.black700}`,
+export const actions = style({
+  display: "flex",
+  gap: pxToRem(10),
+  inlineSize: "100%",
+});
+
+export const dismissButton = style({
   borderRadius: pxToRem(8),
+  backgroundColor: colors.black700,
   color: colors.black000,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: pxToRem(8),
-  marginBlockStart: pxToRem(16),
-  marginInlineStart: pxToRem(24),
-  blockSize: pxToRem(34),
-  inlineSize: `calc(100% - ${pxToRem(24)})`,
-  boxShadow: "0px 0px 12px 0px #00000029",
-  fontSize: pxToRem(14),
-  fontWeight: weights.bold,
-  lineHeight: 1,
-});
-
-export const activityButtonArrow = style({
-  color: colors.black300,
-  display: "flex",
-});
-
-export const minimizeButton = style({
-  backgroundColor: colors.green100,
-  borderRadius: pxToRem(8),
-  color: colors.green900,
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -125,3 +100,11 @@ export const minimizeButton = style({
   fontWeight: weights.bold,
   lineHeight: 1,
 });
+
+export const activityButton = style([
+  dismissButton,
+  {
+    backgroundColor: colors.green100,
+    color: colors.green900,
+  },
+]);
