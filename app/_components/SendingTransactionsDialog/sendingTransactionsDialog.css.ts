@@ -14,6 +14,14 @@ export const title = style({
   fontWeight: weights.bold,
   marginBlockStart: pxToRem(8),
   marginBlockEnd: pxToRem(24),
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: pxToRem(8),
+});
+
+export const tooltip = style({
+  width: pxToRem(300),
 });
 
 export const list = style({
@@ -78,7 +86,7 @@ export const loadingIcon = style({
 });
 
 export const checkIcon = style({
-  color: colors.green900,
+  color: colors.black000,
 });
 
 export const actions = style({
@@ -90,6 +98,7 @@ export const actions = style({
 export const dismissButton = style({
   borderRadius: pxToRem(8),
   backgroundColor: colors.black700,
+  border: `1px solid ${colors.black800}`,
   color: colors.black000,
   display: "flex",
   justifyContent: "center",
@@ -106,5 +115,6 @@ export const activityButton = style([
   {
     backgroundColor: colors.green100,
     color: colors.green900,
+    border: 0,
   },
 ]);

@@ -1,3 +1,4 @@
+import type { Wallet } from "@demox-labs/aleo-wallet-adapter-react";
 import type { Network, WalletType, AleoNetwork } from "../../types";
 import type { TxStepCallbacks } from "../txProcedure/types";
 import { LeoWalletNetworkIds, PuzzleNetworkIds } from "./consts";
@@ -43,6 +44,14 @@ export type AleoWithdrawProps = {
   chainId?: AleoNetwork;
   txFee?: string;
   amount?: string;
+};
+
+export type GetTxResultProps = {
+  txId: string;
+  wallet: WalletType | null;
+  leoWallet: Wallet | null;
+  address: string;
+  network: AleoStakeProps["chainId"];
 };
 
 export type LeoWalletNetworkId = (typeof LeoWalletNetworkIds)[number];
