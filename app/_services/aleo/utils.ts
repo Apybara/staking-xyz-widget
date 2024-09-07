@@ -1,10 +1,13 @@
-import type { AleoNetwork, AleoWalletType, StakingType } from "@/app/types";
 import BigNumber from "bignumber.js";
-import { Asset, AssetList } from "@chain-registry/types";
 import { assets } from "chain-registry";
+import type { AleoNetwork, AleoWalletType, StakingType } from "@/app/types";
+import type { GetTxResultProps } from "./types";
+import { Asset, AssetList } from "@chain-registry/types";
 import { getFormattedCoinValue } from "@/app/_utils/conversions";
 import { aleoNetworkVariants, aleoWalletVariants, networkCurrency, aleoFees } from "@/app/consts";
 import { PALEO_INSTANT_WITHDRAWAL_FEE_RATIO } from "@/app/consts";
+import { getLeoWalletTxStatus } from "./leoWallet";
+import { getPuzzleTxStatus } from "./puzzle";
 
 export const getAleoTotalUnstakeFees = ({
   amount,
@@ -182,4 +185,20 @@ const getIsBech32 = (address?: string) => {
   }
 
   return true;
+};
+
+export const getTxResult = async ({ txId, wallet, leoWallet, address, network }: GetTxResultProps) => {
+  while (txId) {
+    switch (wallet) {
+      case "leoWallet":
+        const leoWalletTxStatus = await getLeoWalletTxStatus({ txId, wallet: leoWallet });
+        if (leoWalletTxStatus.status !== "loading") return leoWalletTxStatus;
+        break;
+      case "puzzle":
+        const puzzleWalletTxStatus = await getPuzzleTxStatus({ id: txId, address, chainId: network });
+        if (puzzleWalletTxStatus.status !== "loading") return puzzleWalletTxStatus;
+        break;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
 };

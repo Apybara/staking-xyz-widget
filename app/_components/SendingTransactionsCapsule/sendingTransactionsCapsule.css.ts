@@ -2,7 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { colors, weights } from "../../../theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 
-export const pendingTransactionsCapsule = style({
+export const sendingTransactionsCapsule = style({
   position: "fixed",
   left: pxToRem(20),
   bottom: pxToRem(20),

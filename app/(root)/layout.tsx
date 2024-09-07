@@ -8,7 +8,7 @@ import { Footer } from "../_components/Footer";
 import { WidgetShell } from "../_components/WidgetShell";
 import { WalletAccountDialog } from "../_components/WalletAccountDialog";
 import { WalletConnectionDialog } from "../_components/WalletConnectionDialog";
-import { PendingTransactionsDialog } from "../_components/PendingTransactionsDialog";
+import { SendingTransactionsDialog } from "../_components/SendingTransactionsDialog";
 import { getAllCoinPrices } from "../_services/coinMarketCap";
 import * as S from "./root.css";
 
@@ -39,7 +39,7 @@ const Base = async ({ children }: { children: ReactNode }) => {
       <div className={cn(S.base)}>{children}</div>
       <WalletAccountDialog />
       <WalletConnectionDialog />
-      <PendingTransactionsDialog />
+      <SendingTransactionsDialog />
     </WidgetProviders>
   );
 };

@@ -20,7 +20,8 @@ export type IconProps = {
     | "download"
     | "x"
     | "telegram"
-    | "doc";
+    | "doc"
+    | "sent";
   size?: number;
   className?: string;
 };

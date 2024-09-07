@@ -1,61 +1,66 @@
 import moment from "moment";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
-import type { PendingTransaction } from "../../types";
+import type { SendingTransaction } from "../../types";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import { getDynamicAssetValueFromCoin } from "@/app/_utils/conversions";
-import * as TransactionDialog from "../../_components/TransactionDialog";
 import { Icon } from "../Icon";
 import * as Dialog from "../Dialog";
 import { LoadingSpinner } from "../LoadingSpinner";
 
-import * as S from "./pendingTransactionsDialog.css";
+import * as S from "./sendingTransactionsDialog.css";
+import Tooltip from "../Tooltip";
+import { pluralize } from "@/app/_utils";
 
-export type RootPendingTransactionsDialogProps = {
+export type RootSendingTransactionsDialogProps = {
   dialog: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
   };
-  networkPendingTransactions: Array<PendingTransaction>;
-  setPendingTransactions: (transaction: Array<PendingTransaction>) => void;
+  networkSendingTransactions: Array<SendingTransaction>;
+  setSendingTransactions: (txs: Array<SendingTransaction>) => void;
 };
 
-export const RootPendingTransactionsDialog = ({
+export const RootSendingTransactionsDialog = ({
   dialog,
-  networkPendingTransactions,
-  setPendingTransactions,
-}: RootPendingTransactionsDialogProps) => {
+  networkSendingTransactions,
+  setSendingTransactions,
+}: RootSendingTransactionsDialogProps) => {
   const router = useRouter();
   const { currency, coinPrice, network } = useShell();
   const activityLink = useLinkWithSearchParams("activity");
 
-  const isSomeCompleted = networkPendingTransactions.some((transaction) => transaction.status === "success");
-  const isAllCompleted = networkPendingTransactions.every((transaction) => transaction.status === "success");
-
-  const clearTransaction = (txId: string) => {
-    const newPendingTransactions = networkPendingTransactions.filter((transaction) => transaction.txId !== txId);
-    setPendingTransactions(newPendingTransactions);
-  };
+  const isSomeCompleted = networkSendingTransactions.some((transaction) => transaction.status === "success");
+  const isAllCompleted = networkSendingTransactions.every((transaction) => transaction.status === "success");
 
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
       <Dialog.Main>
         <Dialog.Content className={S.dialog}>
           <Dialog.Title className={S.title}>
-            {isAllCompleted ? "All transactions confirmed!" : "Pending transactions"}
+            <span>
+              {isAllCompleted
+                ? "All transactions sent!"
+                : `Sending ${pluralize(networkSendingTransactions.length, "transaction")}`}
+            </span>
+            <Tooltip
+              className={S.tooltip}
+              trigger={<Icon name="info" />}
+              content="The following transactions is currently being processed. Once transactions are finalized, they will appear on the Activity page."
+            />
           </Dialog.Title>
 
           <ul className={S.list}>
-            {networkPendingTransactions.map(({ title, timestamp, amount, status, txId }) => (
+            {networkSendingTransactions.map(({ title, timestamp, amount, status, txId }) => (
               <li key={`pending-transaction-${timestamp}`} className={S.item}>
                 <div className={S.itemContent}>
                   {status === "success" ? (
                     <span className={S.checkIcon}>
-                      <Icon name="circleCheck" size={16} />
+                      <Icon name="sent" size={18} />
                     </span>
                   ) : (
-                    <LoadingSpinner className={S.loadingIcon} size={16} />
+                    <LoadingSpinner className={S.loadingIcon} size={18} />
                   )}
 
                   <div className={S.infoContainer}>
@@ -81,6 +86,7 @@ export const RootPendingTransactionsDialog = ({
                 onClick={() => {
                   router.push(activityLink);
                   dialog.onOpenChange(false);
+                  isAllCompleted && setSendingTransactions([]);
                 }}
               >
                 View activity
@@ -90,7 +96,7 @@ export const RootPendingTransactionsDialog = ({
               className={S.dismissButton}
               onClick={() => {
                 dialog.onOpenChange(false);
-                isAllCompleted && setPendingTransactions([]);
+                isAllCompleted && setSendingTransactions([]);
               }}
             >
               Dismiss

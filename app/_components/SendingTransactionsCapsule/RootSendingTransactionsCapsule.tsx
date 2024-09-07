@@ -3,23 +3,23 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import { pluralize } from "@/app/_utils";
 import { Icon } from "../Icon";
 
-import * as S from "./pendingTransactionsCapsule.css";
+import * as S from "./sendingTransactionsCapsule.css";
 
-export type RootPendingTransactionsCapsuleProps = {
+export type RootSendingTransactionsCapsuleProps = {
   className?: string;
   onButtonClick: () => void;
   transactionsCount: number;
   isAllCompleted: boolean;
 };
 
-export const RootPendingTransactionsCapsule = ({
+export const RootSendingTransactionsCapsule = ({
   className,
   onButtonClick,
   transactionsCount,
   isAllCompleted,
-}: RootPendingTransactionsCapsuleProps) => {
+}: RootSendingTransactionsCapsuleProps) => {
   return (
-    <button className={cn(S.pendingTransactionsCapsule, className)} onClick={onButtonClick}>
+    <button className={cn(S.sendingTransactionsCapsule, className)} onClick={onButtonClick}>
       {isAllCompleted ? (
         <span className={S.checkIcon}>
           <Icon name="circleCheck" size={32} />
@@ -30,7 +30,7 @@ export const RootPendingTransactionsCapsule = ({
       <div className={S.content}>
         <div className={S.title}>
           <span>
-            {isAllCompleted ? "All transactions confirmed!" : `Pending ${pluralize(transactionsCount, "transaction")}`}
+            {isAllCompleted ? "All transactions sent!" : `Sending ${pluralize(transactionsCount, "transaction")}`}
           </span>
           {!isAllCompleted && (
             <span className={S.loadingIcon}>

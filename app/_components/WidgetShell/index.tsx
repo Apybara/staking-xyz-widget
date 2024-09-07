@@ -7,7 +7,7 @@ import { LiquidStakingCredits } from "@/app/(root)/_components/LiquidStakingCred
 
 import { useWidget } from "../../_contexts/WidgetContext";
 import { LoadingSpinner } from "../LoadingSpinner";
-import { PendingTransactionsCapsule } from "../PendingTransactionsCapsule";
+import { SendingTransactionsCapsule } from "../SendingTransactionsCapsule";
 import * as S from "./widgetShell.css";
 
 export type WidgetShellProps = {
@@ -28,7 +28,7 @@ export const WidgetShell = ({ children, className }: WidgetShellProps) => {
     <>
       <section className={cn(S.shell, className)}>{children}</section>
       {stakingType === "liquid" && <LiquidStakingCredits />}
-      <PendingTransactionsCapsule />
+      <SendingTransactionsCapsule />
     </>
   );
 };

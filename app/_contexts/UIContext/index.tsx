@@ -10,7 +10,7 @@ const initialState: T.UIState = {
     redelegatingProcedure: false,
     claimingProcedure: false,
     importHelp: false,
-    pendingTransactions: false,
+    sendingTransactions: false,
   },
 };
 

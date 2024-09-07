@@ -1,35 +1,35 @@
 "use client";
-import type { PendingTransaction } from "../../types";
+import type { SendingTransaction } from "../../types";
 import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import useLocalStorage from "use-local-storage";
-import { RootPendingTransactionsDialog } from "./RootPendingTransactionsDialog";
+import { RootSendingTransactionsDialog } from "./RootSendingTransactionsDialog";
 import { defaultNetwork } from "@/app/consts";
 
-export const PendingTransactionsDialog = () => {
+export const SendingTransactionsDialog = () => {
   const { network } = useShell();
   const { address } = useWallet();
-  const { open, toggleOpen } = useDialog("pendingTransactions");
+  const { open, toggleOpen } = useDialog("sendingTransactions");
 
-  const [pendingTransactions, setPendingTransactions] = useLocalStorage<Array<PendingTransaction>>(
-    "pendingTransactions",
+  const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
+    "sendingTransactions",
     [],
   );
 
-  const networkPendingTransactions =
-    pendingTransactions?.filter(
+  const networkSendingTransactions =
+    sendingTransactions?.filter(
       (transaction) => transaction.network === (network || defaultNetwork) && transaction.address === address,
     ) || [];
 
   return (
-    <RootPendingTransactionsDialog
+    <RootSendingTransactionsDialog
       dialog={{
         open: !!open,
         onOpenChange: () => toggleOpen(!open),
       }}
-      networkPendingTransactions={networkPendingTransactions}
-      setPendingTransactions={setPendingTransactions}
+      networkSendingTransactions={networkSendingTransactions}
+      setSendingTransactions={setSendingTransactions}
     />
   );
 };

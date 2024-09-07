@@ -1,7 +1,7 @@
 import type { WalletStates } from "../../_contexts/WalletContext/types";
-import type { AleoWalletType, AleoNetwork, Network, StakingType, PendingTransaction } from "../../types";
+import type { AleoWalletType, AleoNetwork, Network, StakingType, SendingTransaction } from "../../types";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
-import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
+import type { AleoStakeProps, AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import type { DialogTypeVariant } from "@/app/_contexts/UIContext/types";
 import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -15,8 +15,6 @@ import {
   ALEO_MTSP_ID,
   defaultNetwork,
 } from "../../consts";
-import { getPuzzleTxStatus } from "./puzzle";
-import { getLeoWalletTxStatus } from "./leoWallet";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
 import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
 import { getAleoAddressUnbondingStatus, getPAleoBalanceByAddress } from "./sdk";
@@ -46,6 +44,7 @@ import {
   getCreditsToMicroCredits,
   getIsAleoNetwork,
   getIsAleoWalletType,
+  getTxResult,
 } from "./utils";
 import { networkEndpoints } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
@@ -194,13 +193,13 @@ const useAleoBroadcastTx = ({
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
   const operatorResponseQuery = getOperatorResponseQuery({ type });
-  const [pendingTransactions, setPendingTransactions] = useLocalStorage<Array<PendingTransaction>>(
-    "pendingTransactions",
+  const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
+    "sendingTransactions",
     [],
   );
 
   const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
-  const { toggleOpen: togglePendingTransactionsDialog } = useDialog("pendingTransactions");
+  const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
 
   const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -244,41 +243,36 @@ const useAleoBroadcastTx = ({
       onBroadcasting?.();
 
       const timestamp = Date.now();
-
-      setPendingTransactions([
+      const newSendingTransactions = [
         {
           address,
           network: network || defaultNetwork,
-          title: pendingTransactionsTitleMap[type][stakingType as StakingType],
+          title: sendingTransactionsTitleMap[type][stakingType as StakingType],
           timestamp,
           txId,
           amount: txAmount,
           status: "pending",
         },
-        ...pendingTransactions,
-      ]);
+        ...sendingTransactions,
+      ] as Array<SendingTransaction>;
 
-      togglePendingTransactionsDialog(true);
+      setSendingTransactions(newSendingTransactions);
+
+      toggleSendingTransactionsDialog(true);
       toggleTxProcedureDialog(false);
       onReset?.();
 
       let txRes: AleoTxStatusResponse | undefined = undefined;
-      const getTxResult = async (txId: string) => {
-        while (txId) {
-          switch (wallet) {
-            case "leoWallet":
-              const leoWalletTxStatus = await getLeoWalletTxStatus({ txId, wallet: leoWallet });
-              if (leoWalletTxStatus.status !== "loading") return leoWalletTxStatus;
-              break;
-            case "puzzle":
-              const puzzleWalletTxStatus = await getPuzzleTxStatus({ id: txId, address, chainId: castedNetwork });
-              if (puzzleWalletTxStatus.status !== "loading") return puzzleWalletTxStatus;
-              break;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      };
-      txRes = await getTxResult(txId);
+
+      txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
+
+      if (txRes?.status === "success") {
+        setSendingTransactions((prevTransactions) =>
+          prevTransactions?.map((transaction) =>
+            transaction.txId === txId ? { ...transaction, status: "success" } : transaction,
+          ),
+        );
+      }
 
       if (!txRes || txRes.status === "error") {
         return {
@@ -462,7 +456,7 @@ const broadcastTxMap: Record<TxProcedureType, { operatorUrl: string }> = {
   },
 };
 
-const pendingTransactionsTitleMap: Record<TxProcedureType, Record<StakingType, string>> = {
+const sendingTransactionsTitleMap: Record<TxProcedureType, Record<StakingType, string>> = {
   delegate: { native: "Stake (native)", liquid: "Stake (liquid)" },
   undelegate: { native: "Unstake (native)", liquid: "Unstake (liquid)" },
   instant_undelegate: { native: "Unstake (native)", liquid: "Unstake (liquid instant)" },
