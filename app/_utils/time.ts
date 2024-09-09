@@ -49,25 +49,25 @@ export const getTimeUnitStrings = (units: TimeUnits) => {
   if (units.d !== undefined) {
     return {
       time: units.d,
-      unit: pluralize(units.d, "day"),
+      unit: pluralize({ value: units.d, unit: "day" }),
     };
   }
   if (units.h !== undefined) {
     return {
       time: units.h,
-      unit: pluralize(units.h, "hr"),
+      unit: pluralize({ value: units.h, unit: "hr" }),
     };
   }
   if (units.m !== undefined) {
     return {
       time: units.m,
-      unit: pluralize(units.m, "min"),
+      unit: pluralize({ value: units.m, unit: "min" }),
     };
   }
   if (units.s !== undefined) {
     return {
       time: units.s,
-      unit: pluralize(units.s, "sec"),
+      unit: pluralize({ value: units.s, unit: "sec" }),
     };
   }
 };
