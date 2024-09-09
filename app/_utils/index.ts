@@ -25,7 +25,11 @@ export const removeLeadingAndTrailingZeros = (val: string) => {
   return `${integerString}.${trimmedDecimalString}`;
 };
 
-export const pluralize = (value: number, unit: string) => (value === 1 ? unit : `${unit}s`);
+export const pluralize = ({ value, unit, addVerb }: { value: number; unit: string; addVerb?: boolean }) => {
+  const isSingular = value === 1;
+
+  return isSingular ? `${unit}${addVerb ? " is" : ""}` : `${unit}s${addVerb ? " are" : ""}`;
+};
 
 export const getIsNetworkValid = (network?: string) => network && networkUrlParamRegex.test(network);
 export const getIsCurrencyValid = (currency?: string) => currencyRegex.test(currency || "");

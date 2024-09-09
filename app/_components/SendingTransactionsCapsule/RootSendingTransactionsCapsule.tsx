@@ -30,7 +30,9 @@ export const RootSendingTransactionsCapsule = ({
       <div className={S.content}>
         <div className={S.title}>
           <span>
-            {isAllCompleted ? "All transactions sent!" : `Sending ${pluralize(transactionsCount, "transaction")}`}
+            {isAllCompleted
+              ? "All transactions sent!"
+              : `Sending ${pluralize({ value: transactionsCount, unit: "transaction" })}`}
           </span>
           {!isAllCompleted && (
             <span className={S.loadingIcon}>

@@ -34,20 +34,23 @@ export const RootSendingTransactionsDialog = ({
   const isSomeCompleted = networkSendingTransactions.some((transaction) => transaction.status === "success");
   const isAllCompleted = networkSendingTransactions.every((transaction) => transaction.status === "success");
 
+  const formattedTransactionsText = pluralize({ value: networkSendingTransactions.length, unit: "transaction" });
+  const formattedTransactionsTextWithVerb = pluralize({
+    value: networkSendingTransactions.length,
+    unit: "transaction",
+    addVerb: true,
+  });
+
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
       <Dialog.Main>
         <Dialog.Content className={S.dialog}>
           <Dialog.Title className={S.title}>
-            <span>
-              {isAllCompleted
-                ? "All transactions sent!"
-                : `Sending ${pluralize(networkSendingTransactions.length, "transaction")}`}
-            </span>
+            <span>{isAllCompleted ? "All transactions sent!" : `Sending ${formattedTransactionsText}`}</span>
             <Tooltip
               className={S.tooltip}
               trigger={<Icon name="info" />}
-              content="The following transactions is currently being processed. Once transactions are finalized, they will appear on the Activity page."
+              content={`The following ${formattedTransactionsTextWithVerb} currently being processed. Once transactions are finalized, they will appear on the Activity page.`}
             />
           </Dialog.Title>
 
@@ -55,12 +58,12 @@ export const RootSendingTransactionsDialog = ({
             {networkSendingTransactions.map(({ title, timestamp, amount, status, txId }) => (
               <li key={`pending-transaction-${timestamp}`} className={S.item}>
                 <div className={S.itemContent}>
-                  {status === "success" ? (
-                    <span className={S.checkIcon}>
-                      <Icon name="sent" size={18} />
-                    </span>
-                  ) : (
+                  {status === "pending" ? (
                     <LoadingSpinner className={S.loadingIcon} size={18} />
+                  ) : (
+                    <span className={cn(S.statusIcon({ state: status }))}>
+                      <Icon name={status === "success" ? "sent" : "circleCross"} size={18} />
+                    </span>
                   )}
 
                   <div className={S.infoContainer}>

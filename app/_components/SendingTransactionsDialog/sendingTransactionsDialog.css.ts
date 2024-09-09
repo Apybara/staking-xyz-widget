@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
+import { recipe } from "@vanilla-extract/recipes";
 
 export const dialog = style({
   inlineSize: pxToRem(320),
@@ -85,8 +86,24 @@ export const loadingIcon = style({
   opacity: 0.5,
 });
 
-export const checkIcon = style({
-  color: colors.black000,
+export const statusIcon = recipe({
+  base: {
+    display: "flex",
+  },
+  variants: {
+    state: {
+      pending: {},
+      success: {
+        color: colors.black000,
+      },
+      failed: {
+        color: colors.yellow900,
+      },
+    },
+  },
+  defaultVariants: {
+    state: "success",
+  },
 });
 
 export const actions = style({

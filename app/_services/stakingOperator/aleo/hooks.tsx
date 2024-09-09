@@ -106,7 +106,7 @@ export const useAleoAddressActivity = ({
         filterKey,
       });
     },
-    refetchInterval: hasInProgress ? 5000 : 180000,
+    refetchInterval: 30000,
     placeholderData: keepPreviousData,
   });
 
