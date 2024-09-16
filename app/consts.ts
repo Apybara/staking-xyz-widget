@@ -171,7 +171,7 @@ export const networkEndpoints: Record<
   aleo: {
     rpc:
       (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_RPC_ENDPOINT : process.env.NEXT_PUBLIC_ALEO_RPC_ENDPOINT) ||
-      "https://testnetbeta.aleorpc.com/",
+      "https://mainnet.aleorpc.com/",
     rest: "",
   },
 };
