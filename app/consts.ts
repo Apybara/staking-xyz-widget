@@ -5,7 +5,7 @@ import AleoLogo from "./_assets/networks/aleo-logo.svg";
 
 export const isAleoTestnet = process.env.NEXT_PUBLIC_ALEO_USE_TESTNET === "true";
 
-export const NetworkVariants = ["cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3", "aleo"] as const;
+export const NetworkVariants = ["aleo", "cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
 export const defaultNetwork = NetworkVariants[0] as Network;
 
