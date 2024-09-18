@@ -554,6 +554,7 @@ export const TELEGRAM_URL = "https://t.me/staking_xyz";
 
 export const PONDO_URL = "https://pondo.xyz";
 export const VERIDISE_URL = "https://veridise.com";
+export const ZKSECURITY_URL = "https://www.zksecurity.xyz/";
 // TODO: confirm Aleo mainnet Pondo token ID
 export const ALEO_PONDO_TOKEN_ID =
   (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_ID : process.env.NEXT_PUBLIC_ALEO_PONDO_TOKEN_ID) ||
