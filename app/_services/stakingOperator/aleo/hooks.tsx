@@ -63,6 +63,25 @@ export const useAleoAddressRewards = ({ address, network }: { address: string; n
       : 0;
   const cumulativeMicroRewards = BigNumber(nativeCumulativeRewards).plus(liquidCumulativeRewards).toNumber();
 
+  console.log(
+    "native cumulative rewards: ",
+    nativeCumulativeRewards,
+    "liquid cumulative rewards: ",
+    liquidCumulativeRewards,
+    "pAleoMicroBalance: ",
+    pAleoMicroBalance,
+    "pAleoToAleoRate: ",
+    pAleoToAleoRate,
+    "aleoFromPAleo: ",
+    pAleoMicroBalance && pAleoToAleoRate && getAleoFromPAleo(pAleoMicroBalance, pAleoToAleoRate),
+    "getAleoFromPAleo: ",
+    BigNumber(getAleoFromPAleo(pAleoMicroBalance || 0, pAleoToAleoRate || 0)).toNumber(),
+    "historical stake: ",
+    historicalStakingAmount.data?.historicalAmount.pondo_v1.stake,
+    "historical unstake: ",
+    historicalStakingAmount.data?.historicalAmount.pondo_v1.unstake,
+  );
+
   return {
     data: {
       cumulativeRewards: getMicroCreditsToCredits(cumulativeMicroRewards),
@@ -106,7 +125,7 @@ export const useAleoAddressActivity = ({
         filterKey,
       });
     },
-    refetchInterval: 30000,
+    refetchInterval: hasInProgress ? 5000 : 180000,
     placeholderData: keepPreviousData,
   });
 
