@@ -10,7 +10,9 @@ export const LeoWalletProvider = ({ children }: { children: ReactNode }) => {
       wallets={aleoWallets}
       decryptPermission={DecryptPermission.UponRequest}
       // TODO: confirm Aleo mainnet network ID
-      network={isAleoTestnet ? WalletAdapterNetwork.TestnetBeta : WalletAdapterNetwork.MainnetBeta}
+      // NOTE: Leo Wallet team said to temporarily use "mainnet" string
+      network={isAleoTestnet ? WalletAdapterNetwork.TestnetBeta : "mainnet"}
+      // network={isAleoTestnet ? WalletAdapterNetwork.TestnetBeta : WalletAdapterNetwork.MainnetBeta}
       autoConnect
     >
       {children}

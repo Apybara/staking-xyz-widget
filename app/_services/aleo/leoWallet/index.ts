@@ -104,7 +104,9 @@ export const leoWalletLiquidStake = async ({
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
-      "pondo_core_protocolv1.aleo",
+      (isAleoTestnet
+        ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+        : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
       "deposit_public_as_signer",
       [transactionAmount, transactionMintAmount, address],
       Number(aleoFees.stake.liquid),
@@ -161,7 +163,9 @@ export const leoWalletLiquidUnstake = async ({
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
-      "pondo_core_protocolv1.aleo",
+      (isAleoTestnet
+        ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+        : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
       instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
       inputs,
       txFeeMicro,
@@ -211,7 +215,9 @@ export const leoWalletLiquidWithdraw = async ({
     const aleoTransaction = Transaction.createTransaction(
       address,
       aleoNetworkIdByWallet[chainId].leoWallet,
-      "pondo_core_protocolv1.aleo",
+      (isAleoTestnet
+        ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+        : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
       "claim_withdrawal_public",
       [address, transactionAmount],
       txFeeMicro,

@@ -85,7 +85,10 @@ export const puzzleLiquidStake = async ({
     const { eventId, error } = await requestCreateEvent(
       {
         type: EventType.Execute,
-        programId: "pondo_core_protocolv1.aleo",
+        programId:
+          (isAleoTestnet
+            ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+            : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
         functionId: "deposit_public_as_signer",
         fee: txFee || 0,
         inputs: [transactionAmount, transactionMintAmount, address],
@@ -142,7 +145,10 @@ export const puzzleLiquidUnstake = async ({
     const { eventId, error } = await requestCreateEvent(
       {
         type: EventType.Execute,
-        programId: "pondo_core_protocolv1.aleo",
+        programId:
+          (isAleoTestnet
+            ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+            : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
         functionId: instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
         fee: txFee || 0,
         inputs,
@@ -193,7 +199,10 @@ export const puzzleLiquidWithdraw = async ({
     const { eventId, error } = await requestCreateEvent(
       {
         type: EventType.Execute,
-        programId: "pondo_core_protocolv1.aleo",
+        programId:
+          (isAleoTestnet
+            ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+            : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
         functionId: "claim_withdrawal_public",
         fee: txFee || 0,
         inputs: [address, transactionAmount],
