@@ -15,15 +15,12 @@ export const leoWalletNetworkIds = [...LeoWalletNetworkIds];
 export const PuzzleNetworkIds = ["aleo:1"] as const;
 export const puzzleNetworkIds = [...PuzzleNetworkIds];
 
-// TODO: confirm Aleo mainnet network ID
-// NOTE: Leo Wallet team said to temporarily use "mainnet" string
 export const aleoNetworkIdByWallet: Record<
   AleoInstanceChainId,
   Record<AleoWalletType, AleoWalletNetworkIds | string>
 > = {
   mainnet: {
-    leoWallet: "mainnet",
-    // leoWallet: LeoNetworkId.MainnetBeta,
+    leoWallet: LeoNetworkId.MainnetBeta,
     puzzle: "aleo:1",
   },
   testnet: {
