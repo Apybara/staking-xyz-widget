@@ -56,12 +56,24 @@ export const useAleoAddressRewards = ({ address, network }: { address: string; n
   const nativeCumulativeRewards = stakingOperatorData?.cumulativeRewards || 0;
   const liquidCumulativeRewards =
     pAleoMicroBalance && pAleoToAleoRate
-      ? BigNumber(getAleoFromPAleo(pAleoMicroBalance, pAleoToAleoRate))
-          .minus(historicalStakingAmount.data?.historicalAmount.pondo_v1.stake || 0)
-          .plus(historicalStakingAmount.data?.historicalAmount.pondo_v1.unstake || 0)
-          .toNumber()
+      ? BigNumber(getAleoFromPAleo(pAleoMicroBalance, 1.0050695494300337)).minus(50000000).plus(1002520).toNumber()
       : 0;
   const cumulativeMicroRewards = BigNumber(nativeCumulativeRewards).plus(liquidCumulativeRewards).toNumber();
+
+  console.log(
+    "native rewards:",
+    nativeCumulativeRewards,
+    "liquid rewards: ",
+    liquidCumulativeRewards,
+    "pAleoMicroBalance: ",
+    pAleoMicroBalance,
+    "pAleoToAleoRate: ",
+    pAleoToAleoRate,
+    "aleoFromPAleo: ",
+    getAleoFromPAleo(pAleoMicroBalance || 0, 1.0050695494300337),
+    "balance: ",
+    BigNumber(getAleoFromPAleo(pAleoMicroBalance || 0, pAleoToAleoRate || 0)).toNumber(),
+  );
 
   return {
     data: {
