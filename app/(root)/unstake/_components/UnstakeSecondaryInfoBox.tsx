@@ -106,7 +106,7 @@ export const UnstakeSecondaryInfoBox = () => {
           <InfoCard.Content>
             {instantWithdrawal
               ? "Instant"
-              : unstakingPeriodByNetwork[network || defaultNetwork][stakingType || "native"]}
+              : `~${unstakingPeriodByNetwork[network || defaultNetwork][stakingType || "native"]}`}
           </InfoCard.Content>
         </InfoCard.StackItem>
         {isAleo && isLiquid && (
