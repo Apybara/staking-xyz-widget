@@ -200,7 +200,7 @@ export const networkDefaultStakingType: Record<Network, StakingType | null> = {
   celestiatestnet3: null,
   cosmoshub: null,
   cosmoshubtestnet: null,
-  aleo: "native",
+  aleo: "liquid",
 };
 
 export const CosmosWalletVariants = ["keplr", "keplrMobile", "leap", "leapMobile", "okx", "walletConnect"] as const;

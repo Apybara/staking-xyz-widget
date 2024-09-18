@@ -123,7 +123,7 @@ export const StakeInfoBox = () => {
               <Tooltip
                 className={S.stakingTooltip}
                 trigger={<Icon name="info" />}
-                content={<>It takes {unstakingPeriod} for unstaking to be completed.</>}
+                content={<>It takes ~{unstakingPeriod} for unstaking to be completed.</>}
               />
             </InfoCard.TitleBox>
             <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
