@@ -567,5 +567,6 @@ export const ALEO_PONDO_TOKEN_NETWORK =
   (isAleoTestnet
     ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK
     : process.env.NEXT_PUBLIC_ALEO_PONDO_TOKEN_NETWORK) || "";
-export const ALEO_MTSP_ID = process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID || "";
+export const ALEO_MTSP_ID =
+  (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID : process.env.NEXT_PUBLIC_ALEO_MTSP_ID) || "";
 export const PALEO_INSTANT_WITHDRAWAL_FEE_RATIO = 0.0025;
