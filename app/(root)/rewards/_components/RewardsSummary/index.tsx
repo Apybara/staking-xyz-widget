@@ -66,7 +66,7 @@ const FirstSection = () => {
   const isCumulativeRewardsSmall =
     cumulativeRewards && BigNumber(cumulativeRewards).isLessThan(1) && BigNumber(cumulativeRewards).isGreaterThan(0);
   const formattedCumulative = useDynamicAssetValueFromCoin({
-    coinVal: cumulativeRewards,
+    coinVal: BigNumber(cumulativeRewards || 0).isLessThan(0) ? 0 : cumulativeRewards,
     minValue: !isCumulativeRewardsSmall ? undefined : 0.000001,
     formatOptions: !isCumulativeRewardsSmall ? undefined : { mantissa: 6 },
   });
