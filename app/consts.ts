@@ -25,7 +25,7 @@ export const networkCoinPriceSymbol: Record<Network, string> = {
   celestiatestnet3: "celestia",
   cosmoshub: "cosmoshub",
   cosmoshubtestnet: "cosmoshub",
-  aleo: "", // TODO: Add Aleo price symbol
+  aleo: "aleo",
 };
 
 export const networkIdToUrlParamAlias: Record<Network, string> = {
@@ -102,7 +102,6 @@ export const networkExplorer: Record<Network, string> = {
   celestiatestnet3: "https://www.mintscan.io/celestia-testnet/",
   cosmoshub: "https://www.mintscan.io/cosmos/",
   cosmoshubtestnet: "https://www.mintscan.io/cosmoshub-testnet/",
-  // TODO: confirm Aleo mainnet explorer link
   aleo: isAleoTestnet ? "https://testnet.aleoscan.io/" : "https://aleoscan.io/",
 };
 
@@ -167,7 +166,6 @@ export const networkEndpoints: Record<
     rest:
       process.env.NEXT_PUBLIC_COSMOSHUBTESTNET_REST_ENDPOINT || "https://rest.sentry-01.theta-testnet.polypore.xyz/",
   },
-  // TODO: confirm Aleo mainnet rpc
   aleo: {
     rpc:
       (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_RPC_ENDPOINT : process.env.NEXT_PUBLIC_ALEO_RPC_ENDPOINT) ||
@@ -555,15 +553,12 @@ export const TELEGRAM_URL = "https://t.me/staking_xyz";
 export const PONDO_URL = "https://pondo.xyz";
 export const VERIDISE_URL = "https://veridise.com";
 export const ZKSECURITY_URL = "https://www.zksecurity.xyz/";
-// TODO: confirm Aleo mainnet Pondo token ID
 export const ALEO_PONDO_TOKEN_ID =
   (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_ID : process.env.NEXT_PUBLIC_ALEO_PONDO_TOKEN_ID) ||
   "";
-// TODO: confirm Aleo mainnet Pondo core ID
 export const ALEO_PONDO_CORE_ID =
   (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) ||
   "";
-// TODO: confirm Aleo mainnet Pondo token network
 export const ALEO_PONDO_TOKEN_NETWORK =
   (isAleoTestnet
     ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_TOKEN_NETWORK

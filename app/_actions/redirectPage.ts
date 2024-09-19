@@ -20,7 +20,7 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const defaultStakingType = networkDefaultStakingType[castedNetwork];
   const isNetworkInvalid = !getIsNetworkValid(network);
   const isCurrencyInvalid = !getIsCurrencyValid(currency);
-  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid(castedNetwork, currency);
+  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid(castedNetwork, currency, page);
   const isStakingTypeInvalid = (stakingType || validator) && !defaultStakingType;
   const isStakingTypeExpected = !stakingType && !!defaultStakingType;
   const isImportPage = page === "import";

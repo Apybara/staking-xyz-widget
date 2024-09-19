@@ -2,7 +2,7 @@ import type { Network } from "../../types";
 import type { PriceConversionIdVariant } from "./types";
 import { FiatCurrencyVariants } from "../../consts";
 
-export const PriceConversionIdVariants = [22861, 3794] as const; // TODO: Add Aleo ID
+export const PriceConversionIdVariants = [22861, 3794, 32193] as const;
 export const priceConversionIdVariants = [...PriceConversionIdVariants];
 
 export const PriceConversionCurrencyVariants = FiatCurrencyVariants;
@@ -13,5 +13,5 @@ export const networkPriceConversionId: Record<Network, PriceConversionIdVariant>
   celestiatestnet3: 22861,
   cosmoshub: 3794,
   cosmoshubtestnet: 3794,
-  aleo: 3794, // TODO: Add Aleo ID
+  aleo: 32193,
 };

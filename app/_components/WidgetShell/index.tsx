@@ -28,7 +28,7 @@ export const WidgetShell = ({ children, className }: WidgetShellProps) => {
     <>
       <section className={cn(S.shell, className)}>{children}</section>
       {stakingType === "liquid" && <LiquidStakingCredits />}
-      <SendingTransactionsCapsule />
+      {/* <SendingTransactionsCapsule /> */}
     </>
   );
 };

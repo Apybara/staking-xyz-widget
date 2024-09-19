@@ -31,7 +31,6 @@ export const StakeAmountInputPad = () => {
       }}
       maxAmountBuffer={maxAmountBuffer}
       error={inputErrorMessage}
-      hideCurrencyConversion={isAleoNetwork === true}
       validatorInfo={
         validatorDetails?.validatorAddress
           ? {

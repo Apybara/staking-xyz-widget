@@ -6,12 +6,12 @@ import { type NetworkSelectProps, NetworkSelect } from "../NetworkSelect";
 import { WalletCapsule } from "../WalletCapsule";
 
 export type RootHeaderProps = {
-  showCurrencyTool: boolean;
+  showCurrencyTool?: boolean;
   currencyTabs: CurrencyTabsProps;
   networkSelect: NetworkSelectProps;
 };
 
-export const RootHeader = ({ showCurrencyTool, currencyTabs, networkSelect }: RootHeaderProps) => {
+export const RootHeader = ({ showCurrencyTool = true, currencyTabs, networkSelect }: RootHeaderProps) => {
   return (
     <header className={cn(S.header)}>
       <Link href="/" className={cn(S.logo)}>
