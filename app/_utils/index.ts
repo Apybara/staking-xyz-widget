@@ -1,4 +1,4 @@
-import type { FiatCurrency, Network } from "../types";
+import type { FiatCurrency, Network, StakingType } from "../types";
 import { networkCurrency, networkUrlParamRegex, currencyRegex, fiatCurrencyVariants } from "../consts";
 
 export const removeLeadingAndTrailingZeros = (val: string) => {
@@ -34,17 +34,27 @@ export const pluralize = ({ value, unit, addVerb }: { value: number; unit: strin
 export const getIsNetworkValid = (network?: string) => network && networkUrlParamRegex.test(network);
 export const getIsCurrencyValid = (currency?: string) => currencyRegex.test(currency || "");
 
-export const getIsNetworkCurrencyPairValid = (network?: string, currency?: string, page?: string) => {
+export const getIsNetworkCurrencyPairValid = ({
+  network,
+  currency,
+  page,
+  stakingType,
+}: {
+  network?: string;
+  currency?: string;
+  page?: string;
+  stakingType?: StakingType;
+}) => {
   const isNetworkValid = getIsNetworkValid(network) || networkUrlParamRegex.test(network || "");
   const isCurrencyValid = getIsCurrencyValid(currency);
-  const isAleoUnstakePage = network === "aleo" && page === "unstake";
+  const isAleoLiquidUnstakePage = network === "aleo" && page === "unstake" && stakingType === "liquid";
 
   if (!isNetworkValid || !isCurrencyValid) return false;
 
   const upperCaseCurrency = (currency || "").toUpperCase();
 
   if (fiatCurrencyVariants.includes(upperCaseCurrency as FiatCurrency)) {
-    return !isAleoUnstakePage;
+    return !isAleoLiquidUnstakePage;
   }
 
   switch (network as Network | (string & {})) {

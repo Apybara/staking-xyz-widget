@@ -5,9 +5,9 @@ import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import { useShell } from "@/app/_contexts/ShellContext";
 
 export const UnstakeAmountInputPad = () => {
-  const { network } = useShell();
+  const { network, stakingType } = useShell();
   const { amountInputPad, stakedBalance, setStates, inputErrorMessage } = useUnstaking();
-  const isAleoNetwork = network && getIsAleoNetwork(network);
+  const isAleoLiquidNetwork = network && getIsAleoNetwork(network) && stakingType === "liquid";
 
   return (
     <AmountInputPad
@@ -18,7 +18,7 @@ export const UnstakeAmountInputPad = () => {
         setStates({ coinAmountInput: val });
       }}
       error={inputErrorMessage}
-      hideCurrencyConversion={!!isAleoNetwork}
+      hideCurrencyConversion={!!isAleoLiquidNetwork}
       {...amountInputPad}
     />
   );

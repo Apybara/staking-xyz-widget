@@ -94,6 +94,7 @@ export const topBar = style({
   inlineSize: "100%",
   marginBlockStart: pxToRem(-16),
   paddingInline: pxToRem(20),
+  blockSize: pxToRem(24),
 });
 
 export const topBarInfo = style({
