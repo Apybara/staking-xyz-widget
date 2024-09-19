@@ -85,7 +85,6 @@ export const useCurrencyChange = () => {
   const searchParams = useSearchParams();
 
   const onUpdateRouter = (curr: Currency) => {
-    console.log(curr);
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set("currency", curr);
     const search = current.toString();
