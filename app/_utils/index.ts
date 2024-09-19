@@ -1,5 +1,5 @@
-import type { Network } from "../types";
-import { networkCurrency, networkUrlParamRegex, currencyRegex } from "../consts";
+import type { FiatCurrency, Network } from "../types";
+import { networkCurrency, networkUrlParamRegex, currencyRegex, fiatCurrencyVariants } from "../consts";
 
 export const removeLeadingAndTrailingZeros = (val: string) => {
   // Remove leading zeros except in cases like "0.01"
@@ -34,13 +34,18 @@ export const pluralize = ({ value, unit, addVerb }: { value: number; unit: strin
 export const getIsNetworkValid = (network?: string) => network && networkUrlParamRegex.test(network);
 export const getIsCurrencyValid = (currency?: string) => currencyRegex.test(currency || "");
 
-export const getIsNetworkCurrencyPairValid = (network?: string, currency?: string) => {
+export const getIsNetworkCurrencyPairValid = (network?: string, currency?: string, page?: string) => {
   const isNetworkValid = getIsNetworkValid(network) || networkUrlParamRegex.test(network || "");
   const isCurrencyValid = getIsCurrencyValid(currency);
+  const isAleoUnstakePage = network === "aleo" && page === "unstake";
 
   if (!isNetworkValid || !isCurrencyValid) return false;
 
   const upperCaseCurrency = (currency || "").toUpperCase();
+
+  if (fiatCurrencyVariants.includes(upperCaseCurrency as FiatCurrency)) {
+    return !isAleoUnstakePage;
+  }
 
   switch (network as Network | (string & {})) {
     case "celestia":

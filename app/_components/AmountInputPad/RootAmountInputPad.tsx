@@ -41,7 +41,7 @@ export const RootAmountInputPad = ({
   maxTooltip,
   isMaxDisabled,
   error,
-  hideCurrencyConversion = false,
+  hideCurrencyConversion,
   validatorInfo,
 }: RootAmountInputPadProps) => {
   return (
