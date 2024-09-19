@@ -509,7 +509,7 @@ export const unstakingPeriodByNetwork: Record<Network, Record<StakingType, strin
   },
   aleo: {
     native: "1 hour",
-    liquid: "2 days",
+    liquid: "3 days",
   },
 };
 
