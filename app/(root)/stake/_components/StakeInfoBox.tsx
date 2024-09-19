@@ -126,7 +126,7 @@ export const StakeInfoBox = () => {
                 content={<>It takes ~{unstakingPeriod} for unstaking to be completed.</>}
               />
             </InfoCard.TitleBox>
-            <InfoCard.Content>{unstakingPeriod}</InfoCard.Content>
+            <InfoCard.Content>~{unstakingPeriod}</InfoCard.Content>
           </InfoCard.StackItem>
         )}
       </InfoCard.Stack>
