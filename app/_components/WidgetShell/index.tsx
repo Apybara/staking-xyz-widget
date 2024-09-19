@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import cn from "classnames";
 import { LiquidStakingCredits } from "@/app/(root)/_components/LiquidStakingCredits";
 
@@ -17,8 +17,11 @@ export type WidgetShellProps = {
 
 export const WidgetShell = ({ children, className }: WidgetShellProps) => {
   const { status } = useWidget();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const stakingType = searchParams.get("stakingType");
+  const isLSTCreditsActive = stakingType === "liquid" && (pathname === "/stake" || pathname === "/unstake");
 
   if (status === "loading") {
     return <LoadingSpinner size={24} />;
@@ -27,7 +30,7 @@ export const WidgetShell = ({ children, className }: WidgetShellProps) => {
   return (
     <>
       <section className={cn(S.shell, className)}>{children}</section>
-      {stakingType === "liquid" && <LiquidStakingCredits />}
+      {isLSTCreditsActive && <LiquidStakingCredits />}
       {/* <SendingTransactionsCapsule /> */}
     </>
   );
