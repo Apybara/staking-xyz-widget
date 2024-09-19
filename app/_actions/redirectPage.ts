@@ -1,6 +1,6 @@
 "use server";
 
-import type { Network, RouterStruct } from "../types";
+import type { Network, RouterStruct, StakingType } from "../types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ALEO_URLS, defaultNetwork, networkCurrency, networkDefaultStakingType, networkInfo } from "../consts";
@@ -20,7 +20,12 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const defaultStakingType = networkDefaultStakingType[castedNetwork];
   const isNetworkInvalid = !getIsNetworkValid(network);
   const isCurrencyInvalid = !getIsCurrencyValid(currency);
-  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid(castedNetwork, currency, page);
+  const isNetworkAndCurrencyPairInvalid = !getIsNetworkCurrencyPairValid({
+    network: castedNetwork,
+    currency,
+    page,
+    stakingType: stakingType as StakingType,
+  });
   const isStakingTypeInvalid = (stakingType || validator) && !defaultStakingType;
   const isStakingTypeExpected = !stakingType && !!defaultStakingType;
   const isImportPage = page === "import";
