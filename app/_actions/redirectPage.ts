@@ -34,7 +34,7 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     stakingType: stakingType as StakingType,
   });
   const isStakingTypeInvalid = (stakingType || validator) && !defaultStakingType;
-  const isStakingTypeExpected = !stakingType && !!defaultStakingType;
+  const isStakingTypeExpected = !stakingType && !!defaultStakingType && (page === "stake" || page === "unstake");
   const isImportPage = page === "import";
   const isValidatorSelectionUnsupported =
     !!validator && networkInfo[castedNetwork]?.supportsValidatorSelection !== true;
