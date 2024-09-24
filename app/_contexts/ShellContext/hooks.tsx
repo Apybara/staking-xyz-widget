@@ -1,6 +1,7 @@
 import type { Currency, Network, NetworkCurrency, StakingType } from "../../types";
 import type { ShellContext } from "./types";
 import { useEffect } from "react";
+import useLocalStorage from "use-local-storage";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useShell } from "../../_contexts/ShellContext";
 import {
@@ -18,6 +19,7 @@ import {
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
   const searchParams = useSearchParams();
+  const [, setCosmosKitStorage] = useLocalStorage<any>("cosmos-kit@2:core//current-wallet", undefined);
 
   useEffect(() => {
     const network = searchParams.get("network");
@@ -25,7 +27,15 @@ export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setSt
       // The redirect operation is handled in the page component
       return;
     }
-    setStates({ network: networkUrlParamToId[network] as Network });
+
+    const castedNetwork = networkUrlParamToId[network] as Network;
+    setStates({ network: castedNetwork });
+
+    // To prevent Keplr prompt when Aleo is active,
+    // clear the CosmosKit storage.
+    if (castedNetwork === "aleo") {
+      setCosmosKitStorage(undefined);
+    }
   }, [searchParams]);
 
   return null;
