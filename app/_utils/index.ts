@@ -1,5 +1,11 @@
 import type { FiatCurrency, Network, StakingType } from "../types";
-import { networkCurrency, networkUrlParamRegex, currencyRegex, fiatCurrencyVariants } from "../consts";
+import {
+  networkCurrency,
+  networkUrlParamRegex,
+  currencyRegex,
+  fiatCurrencyVariants,
+  isAleoOnlyInstance,
+} from "../consts";
 
 export const removeLeadingAndTrailingZeros = (val: string) => {
   // Remove leading zeros except in cases like "0.01"
@@ -31,7 +37,10 @@ export const pluralize = ({ value, unit, addVerb }: { value: number; unit: strin
   return isSingular ? `${unit}${addVerb ? " is" : ""}` : `${unit}s${addVerb ? " are" : ""}`;
 };
 
-export const getIsNetworkValid = (network?: string) => network && networkUrlParamRegex.test(network);
+export const getIsNetworkValid = (network?: string) => {
+  if (isAleoOnlyInstance) return !network || network === "";
+  return network && networkUrlParamRegex.test(network);
+};
 export const getIsCurrencyValid = (currency?: string) => currencyRegex.test(currency || "");
 
 export const getIsNetworkCurrencyPairValid = ({

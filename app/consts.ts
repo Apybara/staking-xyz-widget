@@ -4,6 +4,7 @@ import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
 
 export const isAleoTestnet = process.env.NEXT_PUBLIC_ALEO_USE_TESTNET === "true";
+export const isAleoOnlyInstance = process.env.NEXT_PUBLIC_ALEO_ONLY_INSTANCE === "true";
 
 export const NetworkVariants = ["aleo", "cosmoshub", "cosmoshubtestnet", "celestia", "celestiatestnet3"] as const;
 export const networkVariants = [...NetworkVariants];
@@ -539,7 +540,9 @@ export const serverUrlByNetwork: Record<Network, string> = {
     (isAleoTestnet ? process.env.NEXT_PUBLIC_SERVER_API_ALEO_TESTNET : process.env.NEXT_PUBLIC_SERVER_API_ALEO) || "",
 };
 
-export const ALEO_URLS = ["aleo.staking.xyz", "testnet.staking.xyz"];
+export const ALEO_ONLY_URL = "aleo.staking.xyz";
+
+export const ALEO_URLS = [ALEO_ONLY_URL, "testnet.staking.xyz"];
 
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking.";

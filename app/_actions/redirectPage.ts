@@ -3,7 +3,14 @@
 import type { Network, RouterStruct, StakingType } from "../types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { ALEO_URLS, defaultNetwork, networkCurrency, networkDefaultStakingType, networkInfo } from "../consts";
+import {
+  ALEO_URLS,
+  defaultNetwork,
+  isAleoOnlyInstance,
+  networkCurrency,
+  networkDefaultStakingType,
+  networkInfo,
+} from "../consts";
 import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } from "../_utils";
 import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
 
@@ -39,7 +46,11 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     validator && current.set("validator", validator);
   } else {
     if (isNetworkInvalid) {
-      current.set("network", networkParamAndAlias.alias);
+      if (isAleoOnlyInstance) {
+        current.delete("network");
+      } else {
+        current.set("network", networkParamAndAlias.alias);
+      }
     }
     if (isCurrencyInvalid || isNetworkAndCurrencyPairInvalid) {
       current.set("currency", networkCurrency[networkParamAndAlias.network]);

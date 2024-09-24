@@ -10,22 +10,29 @@ export type RootNetworkSelectProps = {
   activeNetwork: Network;
   onNetworkChange: (network: Network) => void;
   isOnMobileDevice?: boolean;
+  selectionDisabled?: boolean;
 };
 
-export const RootNetworkSelect = ({ activeNetwork, onNetworkChange, isOnMobileDevice }: RootNetworkSelectProps) => {
+export const RootNetworkSelect = ({
+  activeNetwork,
+  onNetworkChange,
+  isOnMobileDevice,
+  selectionDisabled,
+}: RootNetworkSelectProps) => {
   const { enabledNetworks, disabledNetworks } = useNetworkOptions();
 
   return (
     <Select.Main
+      disabled={selectionDisabled}
       defaultValue={activeNetwork}
       onValueChange={(value) => onNetworkChange(value as Network)}
       triggerContent={
-        <Select.Trigger label="Network">
+        <Select.Trigger label="Network" className={cn(selectionDisabled && S.disabledTrigger)}>
           <Image src={networkInfo[activeNetwork].logo} width={18} height={18} alt={`Logo of ${activeNetwork}`} />
           <Select.Value asChild>
             <p className={cn(S.triggerItemTitle)}>{networkInfo[activeNetwork].name}</p>
           </Select.Value>
-          <Select.TriggerIcon />
+          {!selectionDisabled && <Select.TriggerIcon />}
         </Select.Trigger>
       }
       items={

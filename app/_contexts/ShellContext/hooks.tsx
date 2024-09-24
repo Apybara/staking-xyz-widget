@@ -14,12 +14,18 @@ import {
   CoinVariants,
   stakingTypeRegex,
   networkDefaultStakingType,
+  isAleoOnlyInstance,
 } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (isAleoOnlyInstance) {
+      setStates({ network: "aleo" });
+      return;
+    }
+
     const network = searchParams.get("network");
     if (!network || !networkUrlParamRegex.test(network)) {
       // The redirect operation is handled in the page component

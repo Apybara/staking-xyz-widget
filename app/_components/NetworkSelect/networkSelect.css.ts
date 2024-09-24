@@ -39,6 +39,17 @@ export const selectItemMain = style({
   gap: pxToRem(8),
 });
 
+export const disabledTrigger = style({
+  cursor: "default",
+  paddingInlineEnd: pxToRem(10),
+
+  selectors: {
+    "&:hover": {
+      backgroundColor: colors.black750,
+    },
+  },
+});
+
 export const triggerItemTitle = style({
   fontSize: pxToRem(14),
   fontWeight: weights.semibold,
