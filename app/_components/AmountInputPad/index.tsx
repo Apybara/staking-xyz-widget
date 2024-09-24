@@ -120,21 +120,23 @@ export const AmountInputPad = ({
       type={type}
       availableValue={availableValue}
       availabilityElement={
-        <AvailabilityElement
-          type={type}
-          availableValue={availableValue}
-          primaryCurrency={primaryCurrency}
-          tooltip={
-            type === "unstake" &&
-            !isAleo && (
-              <Tooltip
-                className={S.topBarTooltip}
-                trigger={<Icon name="info" />}
-                content="You can only unstake positions that have been staked through Staking.xyz."
-              />
-            )
-          }
-        />
+        availableValue ? (
+          <AvailabilityElement
+            type={type}
+            availableValue={availableValue}
+            primaryCurrency={primaryCurrency}
+            tooltip={
+              type === "unstake" &&
+              !isAleo && (
+                <Tooltip
+                  className={S.topBarTooltip}
+                  trigger={<Icon name="info" />}
+                  content="You can only unstake positions that have been staked through Staking.xyz."
+                />
+              )
+            }
+          />
+        ) : null
       }
       isAvailableValueLoading={isAvailableValueLoading}
       inputField={{
