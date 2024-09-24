@@ -15,6 +15,7 @@ import {
   CoinVariants,
   stakingTypeRegex,
   networkDefaultStakingType,
+  isAleoOnlyInstance,
 } from "../../consts";
 
 export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setStates"] }) => {
@@ -22,6 +23,11 @@ export const useActiveNetwork = ({ setStates }: { setStates: ShellContext["setSt
   const [, setCosmosKitStorage] = useLocalStorage<any>("cosmos-kit@2:core//current-wallet", undefined);
 
   useEffect(() => {
+    if (isAleoOnlyInstance) {
+      setStates({ network: "aleo" });
+      return;
+    }
+
     const network = searchParams.get("network");
     if (!network || !networkUrlParamRegex.test(network)) {
       // The redirect operation is handled in the page component
