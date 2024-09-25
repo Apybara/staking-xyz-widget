@@ -65,6 +65,14 @@ export const TxProcedureDialog = ({
     }
   }, [connectionStatus, open, inputState]);
 
+  // If Aleo, reset the procedures state to default after active,
+  // because Aleo uses SendingTransactionsCapsule and SendingTransactionsDialog,
+  useEffect(() => {
+    if (network === "aleo" && procedures?.[0]?.state === "success") {
+      resetProceduresStates();
+    }
+  }, [network, procedures?.[0]?.state]);
+
   useTxPostHogEvents({
     type: type === "withdraw" ? "claim" : type,
     open,
