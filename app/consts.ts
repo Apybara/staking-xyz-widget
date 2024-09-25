@@ -269,7 +269,7 @@ export const walletsInfo: Record<WalletType, WalletInfo> = {
     logo: "/wallets/leoWallet.svg",
     downloadLink: "https://www.leo.app/download",
     devicesSupport: ["desktop", "mobile"],
-    comingSoon: ["mobile"],
+    // comingSoon: ["mobile"],
   },
   puzzle: {
     id: "puzzle",
