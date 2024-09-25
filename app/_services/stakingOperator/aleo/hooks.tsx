@@ -28,7 +28,7 @@ import { fromUnixTime } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getAleoFromPAleo } from "../../aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
-import { usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
+import { useAleoNativeBalanceByAddress, usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
@@ -226,39 +226,31 @@ export const useAleoAddressBalance = ({ network, address }: { network: Network |
 };
 
 export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address?: string }) => {
-  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
   const { pAleoToAleoRate } = usePondoData() || {};
-  const { data: pAleoMicroBalance } = usePAleoBalanceByAddress({ address, network });
-
-  const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: shouldEnable,
-    queryKey: ["aleoAddressStakedBalance", network, address],
-    queryFn: () => {
-      if (!shouldEnable) return undefined;
-      return getAddressStakedBalance({
-        apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-        address: address || "",
-      });
-    },
-    refetchOnWindowFocus: true,
-    refetchInterval: 15000,
-  });
-
-  const nativeBalanceMicro = data?.["total-staked"] || 0;
+  const {
+    data: nativeBalanceMicro,
+    isLoading: isLoadingNativeBalanceMicro,
+    isRefetching: isRefetchingNativeBalanceMicro,
+    error: errorNativeBalanceMicro,
+  } = useAleoNativeBalanceByAddress({ address, network });
+  const {
+    data: pAleoMicroBalance,
+    isLoading: isLoadingPAleoMicroBalance,
+    isRefetching: isRefetchingPAleoMicroBalance,
+    error: errorPAleoMicroBalance,
+  } = usePAleoBalanceByAddress({ address, network });
 
   return {
-    data,
     stakedBalance: getMicroCreditsToCredits(
-      BigNumber(nativeBalanceMicro)
+      BigNumber(nativeBalanceMicro || 0)
         .plus(getAleoFromPAleo(pAleoMicroBalance || 0, pAleoToAleoRate || 1))
         .toNumber(),
     ).toString(),
-    nativeBalance: getMicroCreditsToCredits(nativeBalanceMicro).toString(),
+    nativeBalance: getMicroCreditsToCredits(nativeBalanceMicro || 0).toString(),
     liquidBalance: getMicroCreditsToCredits(pAleoMicroBalance || 0).toString(),
-    isLoading,
-    isRefetching,
-    error,
-    refetch,
+    isLoading: isLoadingNativeBalanceMicro || isLoadingPAleoMicroBalance,
+    isRefetching: isRefetchingNativeBalanceMicro || isRefetchingPAleoMicroBalance,
+    error: errorNativeBalanceMicro || errorPAleoMicroBalance,
   };
 };
 

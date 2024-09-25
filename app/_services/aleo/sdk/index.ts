@@ -4,6 +4,56 @@ import { fetchData } from "@/app/_utils/fetch";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
 import { getLazyInitAleoSDK, getFormattedAleoString } from "./utils";
 
+export const getAleoWalletBalanceByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
+  const res = await fetchData(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getMappingValue",
+      params: {
+        program_id: "credits.aleo",
+        mapping_name: "account",
+        key: address,
+      },
+    }),
+  });
+
+  if (!res?.result) {
+    return BigNumber(0).toString();
+  }
+
+  return res.result.replace(/u64/g, "");
+};
+
+export const getAleoNativeBalanceByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
+  const res = await fetchData(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getMappingValue",
+      params: {
+        program_id: "credits.aleo",
+        mapping_name: "bonded",
+        key: address,
+      },
+    }),
+  });
+
+  if (!res?.result) {
+    return BigNumber(0).toString();
+  }
+
+  return BigNumber(JSON.parse(getFormattedAleoString(res.result))["microcredits"].slice(0, -4)).toString();
+};
+
 export const getPAleoBalanceByAddress = async ({
   apiUrl,
   address,
