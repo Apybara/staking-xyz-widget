@@ -18,7 +18,12 @@ import {
 } from "../../consts";
 import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
 import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
-import { getAleoAddressUnbondingStatus, getPAleoBalanceByAddress } from "./sdk";
+import {
+  getAleoAddressUnbondingStatus,
+  getAleoNativeBalanceByAddress,
+  getAleoWalletBalanceByAddress,
+  getPAleoBalanceByAddress,
+} from "./sdk";
 import {
   useIsLeoWalletInstalled,
   useLeoWalletStates,
@@ -53,6 +58,67 @@ import { usePondoData } from "./pondo/hooks";
 import { useDialog } from "@/app/_contexts/UIContext";
 
 const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
+
+export const useAleoWalletBalanceByAddress = ({
+  address,
+  network,
+}: {
+  address?: string | null;
+  network: Network | null;
+}) => {
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
+  const shouldEnable = isAleoNetwork && isAleoAddressFormat;
+
+  const { data, error, isLoading, isRefetching } = useQuery({
+    enabled: shouldEnable,
+    queryKey: ["aleoWalletBalanceByAddress", address, network],
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getAleoWalletBalanceByAddress({
+        apiUrl: networkEndpoints.aleo.rpc,
+        address: address || "",
+      });
+    },
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
+  });
+
+  return {
+    data: getMicroCreditsToCredits(data || "0").toString(),
+    isLoading,
+    isRefetching,
+    error,
+  };
+};
+
+export const useAleoNativeBalanceByAddress = ({ address, network }: { address?: string; network: Network | null }) => {
+  const isAleoNetwork = getIsAleoNetwork(network || "");
+  const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
+  const shouldEnable = isAleoNetwork && isAleoAddressFormat;
+
+  const { data, error, isLoading, isRefetching } = useQuery({
+    enabled: shouldEnable,
+    queryKey: ["aleoNativeBalanceByAddress", address, network],
+    queryFn: () => {
+      if (!shouldEnable) return undefined;
+      return getAleoNativeBalanceByAddress({
+        apiUrl: networkEndpoints.aleo.rpc,
+        address: address || "",
+      });
+    },
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
+  });
+
+  return {
+    data,
+    stakedBalance: getMicroCreditsToCredits(data || 0).toString(),
+    isLoading,
+    isRefetching,
+    error,
+  };
+};
 
 export const usePAleoBalanceByAddress = ({ address, network }: { address?: string; network: Network | null }) => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
@@ -399,7 +465,7 @@ export const useAleoWalletBalance = ({
   network: AleoNetwork | null;
   activeWallet: AleoWalletType | null;
 }) => {
-  const leoWalletBalance = useAleoBalanceFromStakingOperator({ address, network });
+  const leoWalletBalance = useAleoWalletBalanceByAddress({ address, network });
   const puzzleBalance = usePuzzleBalance({ address });
 
   if (!activeWallet) return null;
