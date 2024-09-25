@@ -23,7 +23,7 @@ export const getAleoWalletBalanceByAddress = async ({ apiUrl, address }: { apiUr
   });
 
   if (!res?.result) {
-    return BigNumber(0).toString();
+    return "0";
   }
 
   return res.result.replace(/u64/g, "");
@@ -48,7 +48,7 @@ export const getAleoNativeStakedBalanceByAddress = async ({ apiUrl, address }: {
   });
 
   if (!res?.result) {
-    return BigNumber(0).toString();
+    return "0";
   }
 
   return BigNumber(JSON.parse(getFormattedAleoString(res.result))["microcredits"].slice(0, -4)).toString();
@@ -86,7 +86,7 @@ export const getPAleoBalanceByAddress = async ({
   });
 
   if (!res?.result) {
-    return BigNumber(0).toString();
+    return "0";
   }
 
   return BigNumber(JSON.parse(getFormattedAleoString(res.result))["balance"].slice(0, -4)).toString();

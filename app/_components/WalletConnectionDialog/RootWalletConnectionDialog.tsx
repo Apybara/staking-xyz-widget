@@ -77,7 +77,8 @@ export const RootWalletConnectionDialog = ({
 
           <ul className={cn(S.list)}>
             {filteredWalletsByDevice.map((wallet) => {
-              const comingSoon = wallet.comingSoon?.includes(isOnMobileDevice ? "mobile" : "desktop");
+              const comingSoon =
+                wallet.comingSoon?.includes(isOnMobileDevice ? "mobile" : "desktop") && !wallet.isSupported;
               const disabled = !isAgreementChecked || (connection.isLoading && !wallet.isConnecting) || !!comingSoon;
 
               return (
