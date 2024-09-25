@@ -130,6 +130,29 @@ export const setMonitorTxByAddress = async ({
   return res;
 };
 
+export const setCoinbaseUserTracking = async ({
+  apiUrl,
+  address,
+  transactionId,
+  userId,
+}: T.BaseParams & {
+  transactionId: string;
+  userId: string;
+}) => {
+  await fetchData(`${apiUrl}stake/user/track`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      action: "stake",
+      address,
+      transactionId,
+      userId,
+    }),
+  });
+};
+
 const monitorByAddressTypeMap: Record<StakingType, Record<TxProcedureType, string>> = {
   native: {
     claim: "claim",

@@ -5,6 +5,7 @@ import type { AleoStakeProps, AleoTxParams, AleoTxStatusResponse, AleoTxStep } f
 import type { DialogTypeVariant } from "@/app/_contexts/UIContext/types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import useLocalStorage from "use-local-storage";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
@@ -17,13 +18,13 @@ import {
   defaultNetwork,
   isAleoTestnet,
 } from "../../consts";
-import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
 import {
   getAleoAddressUnbondingStatus,
   getAleoNativeStakedBalanceByAddress,
   getAleoWalletBalanceByAddress,
   getPAleoBalanceByAddress,
 } from "./sdk";
+import { getOperatorResponseQuery, setMonitorTxByAddress, setCoinbaseUserTracking } from "../stakingOperator/aleo";
 import {
   useIsLeoWalletInstalled,
   useLeoWalletStates,
@@ -53,7 +54,7 @@ import {
   getTxResult,
   getAleoFromPAleo,
 } from "./utils";
-import { networkEndpoints } from "@/app/consts";
+import { networkEndpoints, isAleoOnlyInstance } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { usePondoData } from "./pondo/hooks";
 import { useDialog } from "@/app/_contexts/UIContext";
@@ -303,6 +304,9 @@ const useAleoBroadcastTx = ({
     [],
   );
 
+  const searchParams = useSearchParams();
+  const uuidParam = searchParams.get("userId");
+
   const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
   const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
 
@@ -314,7 +318,7 @@ const useAleoBroadcastTx = ({
     (type === "claim" && isAleoNetwork && stakingType === "liquid" ? aleoAddressUnbondingData?.amount : amount) || "";
 
   const { error, mutate, reset } = useMutation({
-    mutationKey: ["aleoTx", type, txAmount, wallet, network, address, instantWithdrawal],
+    mutationKey: ["aleoTx", type, txAmount, wallet, network, address, instantWithdrawal, uuidParam],
     mutationFn: async () => {
       if (!address || !txMethodByWallet) {
         throw new Error("Failed to broadcast transaction: missing address or txMethodByWallet");
@@ -406,6 +410,15 @@ const useAleoBroadcastTx = ({
           type,
           stakingType: stakingType as StakingType,
           amount: getCreditsToMicroCredits(amount || 0),
+        });
+
+        // Coinbase Quest user tracking
+        if (!isAleoOnlyInstance || !uuidParam) return;
+        setCoinbaseUserTracking({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          address: address || "",
+          transactionId: txId || "",
+          userId: uuidParam,
         });
       }
     },
