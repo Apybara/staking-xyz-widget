@@ -7,6 +7,7 @@ import { getIsCelestia, getIsCosmosHub } from "./cosmos";
 import { getIsAleoNetwork, getIsAleoAddressFormat } from "../aleo/utils";
 import * as cosmos from "../stakingOperator/cosmos/hooks";
 import * as aleo from "../stakingOperator/aleo/hooks";
+import { useAleoAddressStakedBalance } from "../aleo/hooks";
 
 export const useUnbondingDelegations = () => {
   const { network } = useShell();
@@ -76,7 +77,7 @@ export const useStakedBalance = () => {
     network: getIsCosmosHub(network) ? network : null,
     address: address && getIsCosmosHub(network) ? address : undefined,
   });
-  const aleoData = aleo.useAleoAddressStakedBalance({
+  const aleoData = useAleoAddressStakedBalance({
     network: getIsAleoNetwork(network) ? network : null,
     address: address && getIsAleoNetwork(network) ? address : undefined,
   });

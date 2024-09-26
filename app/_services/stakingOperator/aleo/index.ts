@@ -30,16 +30,6 @@ export const getServerStatus = async ({ apiUrl }: Omit<T.BaseParams, "address">)
   return res;
 };
 
-export const getAddressBalance = async ({ apiUrl, address }: T.BaseParams) => {
-  const res: T.AddressBalanceResponse = await fetchData(`${apiUrl}address/${address}/balance`);
-  return res;
-};
-
-export const getAddressStakedBalance = async ({ apiUrl, address }: T.BaseParams) => {
-  const res: T.AddressStakedBalanceResponse = await fetchData(`${apiUrl}address/${address}/staked-balance`);
-  return res;
-};
-
 export const getAddressHistoricalStakingAmount = async ({ apiUrl, address }: T.BaseParams) => {
   const res: T.AddressHistoricalStakingAmountResponse = await fetchData(
     `${apiUrl}address/${address}/historical-staking-amount`,
