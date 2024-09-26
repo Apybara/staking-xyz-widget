@@ -33,7 +33,7 @@ export const usePondoData = () => {
     pAleoToAleoRate,
     aleoToPAleoRate,
     isLoading,
-    isRebalancing: data.protocolState === "1" || data.protocolState === "2",
+    isRebalancing: data.protocolState === "2",
     refetch,
   };
 };
