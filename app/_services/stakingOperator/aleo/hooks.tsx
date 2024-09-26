@@ -12,9 +12,7 @@ import {
 import {
   getAddressRewards,
   getAddressActivity,
-  getAddressBalance,
   getAddressDelegation,
-  getAddressStakedBalance,
   getAddressHistoricalStakingAmount,
   getNetworkReward,
   getNetworkStatus,
@@ -28,7 +26,7 @@ import { fromUnixTime } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getAleoFromPAleo } from "../../aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
-import { useAleoNativeBalanceByAddress, usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
+import { useAleoNativeStakedBalanceByAddress, usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
@@ -206,52 +204,6 @@ export const useAleoServerStatus = ({ network }: { network: Network | null }) =>
   });
 
   return { data, isLoading, isRefetching, error, refetch };
-};
-
-export const useAleoAddressBalance = ({ network, address }: { network: Network | null; address?: string }) => {
-  const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address || "");
-
-  const { data, isLoading, isRefetching, error, refetch } = useQuery({
-    enabled: shouldEnable,
-    queryKey: ["aleoAddressBalance", network, address],
-    queryFn: () => {
-      if (!shouldEnable) return undefined;
-      return getAddressBalance({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"], address: address || "" });
-    },
-    refetchOnWindowFocus: true,
-    refetchInterval: 15000,
-  });
-
-  return { data, isLoading, isRefetching, error, refetch };
-};
-
-export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address?: string }) => {
-  const { pAleoToAleoRate } = usePondoData() || {};
-  const {
-    data: nativeBalanceMicro,
-    isLoading: isLoadingNativeBalanceMicro,
-    isRefetching: isRefetchingNativeBalanceMicro,
-    error: errorNativeBalanceMicro,
-  } = useAleoNativeBalanceByAddress({ address, network });
-  const {
-    data: pAleoMicroBalance,
-    isLoading: isLoadingPAleoMicroBalance,
-    isRefetching: isRefetchingPAleoMicroBalance,
-    error: errorPAleoMicroBalance,
-  } = usePAleoBalanceByAddress({ address, network });
-
-  return {
-    stakedBalance: getMicroCreditsToCredits(
-      BigNumber(nativeBalanceMicro || 0)
-        .plus(getAleoFromPAleo(pAleoMicroBalance || 0, pAleoToAleoRate || 1))
-        .toNumber(),
-    ).toString(),
-    nativeBalance: getMicroCreditsToCredits(nativeBalanceMicro || 0).toString(),
-    liquidBalance: getMicroCreditsToCredits(pAleoMicroBalance || 0).toString(),
-    isLoading: isLoadingNativeBalanceMicro || isLoadingPAleoMicroBalance,
-    isRefetching: isRefetchingNativeBalanceMicro || isRefetchingPAleoMicroBalance,
-    error: errorNativeBalanceMicro || errorPAleoMicroBalance,
-  };
 };
 
 export const useAleoAddressHistoricalStakingAmount = ({

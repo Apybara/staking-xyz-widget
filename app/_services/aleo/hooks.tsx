@@ -4,6 +4,7 @@ import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
 import type { AleoStakeProps, AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import type { DialogTypeVariant } from "@/app/_contexts/UIContext/types";
 import { useEffect } from "react";
+import BigNumber from "bignumber.js";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import useLocalStorage from "use-local-storage";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
@@ -16,11 +17,10 @@ import {
   defaultNetwork,
   isAleoTestnet,
 } from "../../consts";
-import { useAleoAddressBalance } from "../stakingOperator/aleo/hooks";
 import { getOperatorResponseQuery, setMonitorTxByAddress } from "../stakingOperator/aleo";
 import {
   getAleoAddressUnbondingStatus,
-  getAleoNativeBalanceByAddress,
+  getAleoNativeStakedBalanceByAddress,
   getAleoWalletBalanceByAddress,
   getPAleoBalanceByAddress,
 } from "./sdk";
@@ -51,6 +51,7 @@ import {
   getIsAleoNetwork,
   getIsAleoWalletType,
   getTxResult,
+  getAleoFromPAleo,
 } from "./utils";
 import { networkEndpoints } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
@@ -58,6 +59,35 @@ import { usePondoData } from "./pondo/hooks";
 import { useDialog } from "@/app/_contexts/UIContext";
 
 const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
+
+export const useAleoAddressStakedBalance = ({ network, address }: { network: Network | null; address?: string }) => {
+  const { pAleoToAleoRate } = usePondoData() || {};
+  const {
+    data: nativeBalanceMicro,
+    isLoading: isLoadingNativeBalanceMicro,
+    isRefetching: isRefetchingNativeBalanceMicro,
+    error: errorNativeBalanceMicro,
+  } = useAleoNativeStakedBalanceByAddress({ address, network });
+  const {
+    data: pAleoMicroBalance,
+    isLoading: isLoadingPAleoMicroBalance,
+    isRefetching: isRefetchingPAleoMicroBalance,
+    error: errorPAleoMicroBalance,
+  } = usePAleoBalanceByAddress({ address, network });
+
+  return {
+    stakedBalance: getMicroCreditsToCredits(
+      BigNumber(nativeBalanceMicro || 0)
+        .plus(getAleoFromPAleo(pAleoMicroBalance || 0, pAleoToAleoRate || 1))
+        .toNumber(),
+    ).toString(),
+    nativeBalance: getMicroCreditsToCredits(nativeBalanceMicro || 0).toString(),
+    liquidBalance: getMicroCreditsToCredits(pAleoMicroBalance || 0).toString(),
+    isLoading: isLoadingNativeBalanceMicro || isLoadingPAleoMicroBalance,
+    isRefetching: isRefetchingNativeBalanceMicro || isRefetchingPAleoMicroBalance,
+    error: errorNativeBalanceMicro || errorPAleoMicroBalance,
+  };
+};
 
 export const useAleoWalletBalanceByAddress = ({
   address,
@@ -92,7 +122,13 @@ export const useAleoWalletBalanceByAddress = ({
   };
 };
 
-export const useAleoNativeBalanceByAddress = ({ address, network }: { address?: string; network: Network | null }) => {
+export const useAleoNativeStakedBalanceByAddress = ({
+  address,
+  network,
+}: {
+  address?: string;
+  network: Network | null;
+}) => {
   const isAleoNetwork = getIsAleoNetwork(network || "");
   const isAleoAddressFormat = getIsAleoAddressFormat(address || "");
   const shouldEnable = isAleoNetwork && isAleoAddressFormat;
@@ -102,7 +138,7 @@ export const useAleoNativeBalanceByAddress = ({ address, network }: { address?: 
     queryKey: ["aleoNativeBalanceByAddress", address, network],
     queryFn: () => {
       if (!shouldEnable) return undefined;
-      return getAleoNativeBalanceByAddress({
+      return getAleoNativeStakedBalanceByAddress({
         apiUrl: networkEndpoints.aleo.rpc,
         address: address || "",
       });
@@ -472,31 +508,6 @@ export const useAleoWalletBalance = ({
   if (activeWallet === "leoWallet") return leoWalletBalance;
   if (activeWallet === "puzzle") return puzzleBalance;
   return null;
-};
-
-const useAleoBalanceFromStakingOperator = ({
-  address,
-  network,
-}: {
-  address: string | null;
-  network: AleoNetwork | null;
-}) => {
-  const {
-    data: balanceFromStakingOperator,
-    isLoading,
-    error,
-  } = useAleoAddressBalance({
-    network,
-    address: address || "",
-  });
-
-  if (!address || balanceFromStakingOperator?.balance === undefined) return null;
-
-  return {
-    data: getMicroCreditsToCredits(balanceFromStakingOperator.balance).toString(),
-    isLoading,
-    error,
-  };
 };
 
 export const useAleoWalletHasStoredConnection = () => {

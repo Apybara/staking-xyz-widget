@@ -29,7 +29,7 @@ export const getAleoWalletBalanceByAddress = async ({ apiUrl, address }: { apiUr
   return res.result.replace(/u64/g, "");
 };
 
-export const getAleoNativeBalanceByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
+export const getAleoNativeStakedBalanceByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
   const res = await fetchData(apiUrl, {
     method: "POST",
     headers: {
