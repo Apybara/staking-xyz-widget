@@ -547,7 +547,7 @@ export const ALEO_URLS = [ALEO_ONLY_URL, "testnet.staking.xyz"];
 export const SITE_TITLE = "Staking.xyz";
 export const SITE_DESCRIPTION = "Your portal to staking.";
 export const SITE_URL = "https://staking.xyz";
-export const SITE_IMAGE = "/og-image.jpg";
+export const SITE_IMAGE = "/og-image.png";
 export const SITE_WALLET_CONNECT_LOGO = "https://www.staking.xyz/favicons/favicon-512.png";
 
 export const TWITTER_URL = "https://twitter.com/staking_xyz";
