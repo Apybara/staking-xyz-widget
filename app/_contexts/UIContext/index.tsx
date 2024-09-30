@@ -11,6 +11,7 @@ const initialState: T.UIState = {
     claimingProcedure: false,
     importHelp: false,
     sendingTransactions: false,
+    txSent: false,
   },
 };
 

@@ -127,3 +127,17 @@ export const slowTxWarning = style({
   color: colors.black300,
   textAlign: "center",
 });
+
+export const txSentDialog = style({
+  paddingTop: pxToRem(24),
+  gap: pxToRem(24),
+});
+
+export const txSentTopBox = style({
+  gap: pxToRem(16),
+});
+
+export const sentText = style({
+  fontSize: pxToRem(14),
+  color: colors.black100,
+});
