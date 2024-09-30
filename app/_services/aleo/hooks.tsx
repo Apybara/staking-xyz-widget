@@ -12,9 +12,8 @@ import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react
 import {
   stakingOperatorUrlByNetwork,
   ALEO_PONDO_CORE_ID,
-  ALEO_PONDO_TOKEN_ID,
-  ALEO_PONDO_TOKEN_NETWORK,
   ALEO_MTSP_ID,
+  ALEO_PONDO_TOKEN_ID,
   defaultNetwork,
   isAleoTestnet,
 } from "../../consts";
@@ -171,7 +170,6 @@ export const usePAleoBalanceByAddress = ({ address, network }: { address?: strin
         apiUrl: networkEndpoints.aleo.rpc,
         address: address || "",
         tokenId: ALEO_PONDO_TOKEN_ID,
-        tokenIdNetwork: ALEO_PONDO_TOKEN_NETWORK,
         mtspProgramId: ALEO_MTSP_ID,
       });
     },

@@ -2,7 +2,7 @@ import type { StakingType } from "@/app/types";
 import BigNumber from "bignumber.js";
 import { fetchData } from "@/app/_utils/fetch";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
-import { getLazyInitAleoSDK, getFormattedAleoString } from "./utils";
+import { getFormattedAleoString } from "./utils";
 
 export const getAleoWalletBalanceByAddress = async ({ apiUrl, address }: { apiUrl: string; address: string }) => {
   const res = await fetchData(apiUrl, {
@@ -58,16 +58,15 @@ export const getPAleoBalanceByAddress = async ({
   apiUrl,
   address,
   tokenId,
-  tokenIdNetwork,
   mtspProgramId,
 }: {
   apiUrl: string;
   address: string;
   tokenId: string;
-  tokenIdNetwork: string;
   mtspProgramId: string;
 }) => {
-  const balanceKey = await getAleoTokenOwnerHash({ address, tokenId, network: tokenIdNetwork });
+  const tokenOwnerHash = await getTokenOwnerHashByAddress({ apiUrl, tokenId, address });
+
   const res = await fetchData(apiUrl, {
     method: "POST",
     headers: {
@@ -80,7 +79,7 @@ export const getPAleoBalanceByAddress = async ({
       params: {
         program_id: mtspProgramId,
         mapping_name: "authorized_balances",
-        key: balanceKey,
+        key: tokenOwnerHash,
       },
     }),
   });
@@ -92,19 +91,36 @@ export const getPAleoBalanceByAddress = async ({
   return BigNumber(JSON.parse(getFormattedAleoString(res.result))["balance"].slice(0, -4)).toString();
 };
 
-const getAleoTokenOwnerHash = async ({
+export const getTokenOwnerHashByAddress = async ({
+  apiUrl,
   address,
   tokenId,
-  network,
 }: {
+  apiUrl: string;
   address: string;
   tokenId: string;
-  network: string;
 }) => {
-  const sdk = await getLazyInitAleoSDK();
-  const tokenOwnerString = `{ account: ${address}, token_id: ${tokenId} }`;
+  const res = await fetchData(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getTokenOwnerHash",
+      params: {
+        address,
+        tokenId,
+      },
+    }),
+  });
 
-  return sdk.Plaintext.fromString(network, tokenOwnerString).hashBhp256();
+  if (!res?.result) {
+    return undefined;
+  }
+
+  return res.result;
 };
 
 export const getAleoAddressUnbondingStatus = async ({

@@ -1,12 +1,3 @@
-export const getLazyInitAleoSDK = async () => {
-  try {
-    return await import("@demox-labs/aleo-sdk");
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
 /**
  * Aleo uses funky serialization for its JSON objects. This function takes that funky representation
  * and makes it a valid json object
