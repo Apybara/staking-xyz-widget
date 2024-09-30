@@ -13,22 +13,22 @@ import RedelegateIcon from "./redelegateIcon.svg";
 import * as S from "./delegationDialog.css";
 import { TxType } from "@/app/types";
 
-export const Shell = ({ dialog, children }: ShellProps) => {
+export const Shell = ({ className, dialog, children }: ShellProps) => {
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
       <Dialog.Main>
-        <Dialog.Content className={cn(S.shell)}>{children}</Dialog.Content>
+        <Dialog.Content className={cn(className, S.shell)}>{children}</Dialog.Content>
       </Dialog.Main>
     </Dialog.Root>
   );
 };
 
-export const TopBox = ({ title, type }: TopBoxProps) => {
+export const TopBox = ({ className, title, type, isAssistiveVisualActive = true }: TopBoxProps) => {
   return (
-    <div className={cn(S.topBox)}>
+    <div className={cn(className, S.topBox)}>
       <div className={cn(S.icons)}>
         <Icon name="circleCheck" size={40} />
-        <Image src={iconMap[type]} width={40} height={40} alt="Assistive visual" />
+        {isAssistiveVisualActive && <Image src={iconMap[type]} width={40} height={40} alt="Assistive visual" />}
       </div>
       <h2 className={cn(S.title)}>{title || titleMap[type]}</h2>
     </div>
@@ -122,6 +122,31 @@ export const ResultButtons = ({
   );
 };
 
+export const SentButtons = ({
+  onActivityButtonClick,
+  onDismissButtonClick,
+}: {
+  onActivityButtonClick: () => void;
+  onDismissButtonClick: () => void;
+}) => {
+  return (
+    <div className={cn(S.resultButtons)}>
+      <CTAButton
+        variant="secondary"
+        onClick={() => {
+          onDismissButtonClick();
+          onActivityButtonClick();
+        }}
+      >
+        View activity
+      </CTAButton>
+      <CTAButton variant="tertiary" onClick={onDismissButtonClick}>
+        Dismiss
+      </CTAButton>
+    </div>
+  );
+};
+
 const iconMap: Record<TopBoxProps["type"], string> = {
   stake: StakeIcon,
   unstake: UnstakeIcon,
@@ -140,6 +165,7 @@ const titleMap: Record<TopBoxProps["type"], string> = {
 };
 
 export type ShellProps = {
+  className?: string;
   dialog: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -147,8 +173,10 @@ export type ShellProps = {
   children: ReactNode;
 };
 export type TopBoxProps = {
+  className?: string;
   title?: string;
   type: TxType;
+  isAssistiveVisualActive?: boolean;
 };
 export type StepItemProps = {
   state: "idle" | "active" | "preparing" | "loading" | "broadcasting" | "success" | "error";

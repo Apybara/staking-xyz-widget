@@ -299,16 +299,17 @@ const useAleoBroadcastTx = ({
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
   const operatorResponseQuery = getOperatorResponseQuery({ type });
-  const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
-    "sendingTransactions",
-    [],
-  );
+  // const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
+  //   "sendingTransactions",
+  //   [],
+  // );
 
   const searchParams = useSearchParams();
   const uuidParam = searchParams.get("userId");
 
   const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
-  const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
+  // const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
+  const { toggleOpen: toggleTxSentDialog } = useDialog("txSent");
 
   const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -350,37 +351,48 @@ const useAleoBroadcastTx = ({
 
       onBroadcasting?.();
 
-      const timestamp = Date.now();
-      const newSendingTransactions = [
-        {
-          address,
-          network: network || defaultNetwork,
-          title: sendingTransactionsTitleMap[type][stakingType as StakingType],
-          timestamp,
-          txId,
-          amount: txAmount,
-          status: "pending",
-        },
-        ...sendingTransactions,
-      ] as Array<SendingTransaction>;
+      // const timestamp = Date.now();
+      // const newSendingTransactions = [
+      //   {
+      //     address,
+      //     network: network || defaultNetwork,
+      //     title: sendingTransactionsTitleMap[type][stakingType as StakingType],
+      //     timestamp,
+      //     txId,
+      //     amount: txAmount,
+      //     status: "pending",
+      //   },
+      //   ...sendingTransactions,
+      // ] as Array<SendingTransaction>;
 
-      setSendingTransactions(newSendingTransactions);
+      // setSendingTransactions(newSendingTransactions);
+      // toggleSendingTransactionsDialog(true);
 
-      toggleSendingTransactionsDialog(true);
+      toggleTxSentDialog(true);
       toggleTxProcedureDialog(false);
       onReset?.();
+
+      // Coinbase Quest user tracking
+      if (isAleoOnlyInstance && uuidParam) {
+        setCoinbaseUserTracking({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          address: address || "",
+          transactionId: txId || "",
+          userId: uuidParam,
+        });
+      }
 
       let txRes: AleoTxStatusResponse | undefined = undefined;
 
       txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
 
-      if (txRes?.status === "success") {
-        setSendingTransactions((prevTransactions) =>
-          prevTransactions?.map((transaction) =>
-            transaction.txId === txId ? { ...transaction, status: "success" } : transaction,
-          ),
-        );
-      }
+      // if (txRes?.status === "success") {
+      //   setSendingTransactions((prevTransactions) =>
+      //     prevTransactions?.map((transaction) =>
+      //       transaction.txId === txId ? { ...transaction, status: "success" } : transaction,
+      //     ),
+      //   );
+      // }
 
       if (!txRes || txRes.status === "error") {
         return {
@@ -410,15 +422,6 @@ const useAleoBroadcastTx = ({
           type,
           stakingType: stakingType as StakingType,
           amount: getCreditsToMicroCredits(amount || 0),
-        });
-
-        // Coinbase Quest user tracking
-        if (!isAleoOnlyInstance || !uuidParam) return;
-        setCoinbaseUserTracking({
-          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-          address: address || "",
-          transactionId: txId || "",
-          userId: uuidParam,
         });
       }
     },
