@@ -52,9 +52,6 @@ importers:
       "@cosmos-kit/react-lite":
         specifier: ^2.9.0
         version: 2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
-      "@demox-labs/aleo-sdk":
-        specifier: ^0.3.39
-        version: 0.3.39
       "@demox-labs/aleo-wallet-adapter-base":
         specifier: ^0.0.22
         version: 0.0.22
@@ -616,10 +613,6 @@ packages:
     peerDependencies:
       "@cosmjs/amino": ">= ^0.32"
       "@cosmjs/proto-signing": ">= ^0.32"
-
-  "@demox-labs/aleo-sdk@0.3.39":
-    resolution:
-      { integrity: sha512-+R20JpeikTHpP1OmQqkCsjBmMHgTKu6l1T3zlaw3OMK8E3tslOufUoi9vHMweAQtBKjsx2/d0XfVZttBdbL5bA== }
 
   "@demox-labs/aleo-wallet-adapter-base@0.0.21":
     resolution:
@@ -7994,8 +7987,6 @@ snapshots:
       "@cosmjs/amino": 0.32.3
       "@cosmjs/proto-signing": 0.32.3
       uuid: 9.0.1
-
-  "@demox-labs/aleo-sdk@0.3.39": {}
 
   "@demox-labs/aleo-wallet-adapter-base@0.0.21":
     dependencies:
