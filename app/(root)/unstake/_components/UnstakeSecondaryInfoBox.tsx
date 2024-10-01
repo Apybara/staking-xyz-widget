@@ -83,12 +83,6 @@ export const UnstakeSecondaryInfoBox = () => {
                 <InfoCard.Content>{formattedAleoTotalFees}</InfoCard.Content>
               </InfoCard.StackItem>
             )}
-            <InfoCard.StackItem>
-              <InfoCard.TitleBox>
-                <InfoCard.Title>Pondo fee</InfoCard.Title>
-              </InfoCard.TitleBox>
-              <InfoCard.Content>10% of rewards</InfoCard.Content>
-            </InfoCard.StackItem>
           </>
         )}
         {isAleo && !isLiquid && (
