@@ -372,6 +372,14 @@ const useAleoBroadcastTx = ({
       toggleTxProcedureDialog(false);
       onReset?.();
 
+      setMonitorTxByAddress({
+        apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+        address: address || "",
+        type,
+        stakingType: stakingType as StakingType,
+        amount: getCreditsToMicroCredits(amount || 0),
+      });
+
       // Coinbase Quest user tracking
       if (isAleoOnlyInstance && uuidParam) {
         setCoinbaseUserTracking({
@@ -382,9 +390,9 @@ const useAleoBroadcastTx = ({
         });
       }
 
-      let txRes: AleoTxStatusResponse | undefined = undefined;
+      // let txRes: AleoTxStatusResponse | undefined = undefined;
 
-      txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
+      // txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
 
       // if (txRes?.status === "success") {
       //   setSendingTransactions((prevTransactions) =>
@@ -394,37 +402,37 @@ const useAleoBroadcastTx = ({
       //   );
       // }
 
-      if (!txRes || txRes.status === "error") {
-        return {
-          txId: txRes?.txId,
-          uuid,
-          isError: true,
-        };
-      }
+      // if (!txRes || txRes.status === "error") {
+      //   return {
+      //     txId: txRes?.txId,
+      //     uuid,
+      //     isError: true,
+      //   };
+      // }
 
-      return {
-        txId: txRes.txId || txId,
-        uuid,
-        amount,
-      };
+      // return {
+      //   txId: txRes.txId || txId,
+      //   uuid,
+      //   amount,
+      // };
     },
-    onSuccess: ({ txId, isError, amount }) => {
-      const validTxId = wallet === "leoWallet" ? undefined : txId;
+    // onSuccess: ({ txId, isError, amount }) => {
+    //   const validTxId = wallet === "leoWallet" ? undefined : txId;
 
-      if (isError) {
-        const error = new Error("Sign in wallet failed");
-        onError?.(error, validTxId);
-      } else {
-        onSuccess?.(validTxId);
-        setMonitorTxByAddress({
-          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-          address: address || "",
-          type,
-          stakingType: stakingType as StakingType,
-          amount: getCreditsToMicroCredits(amount || 0),
-        });
-      }
-    },
+    //   if (isError) {
+    //     const error = new Error("Sign in wallet failed");
+    //     onError?.(error, validTxId);
+    //   } else {
+    //     onSuccess?.(validTxId);
+    //     setMonitorTxByAddress({
+    //       apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+    //       address: address || "",
+    //       type,
+    //       stakingType: stakingType as StakingType,
+    //       amount: getCreditsToMicroCredits(amount || 0),
+    //     });
+    //   }
+    // },
     onError: (error) => onError?.(error),
   });
 
