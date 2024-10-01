@@ -57,22 +57,27 @@ export const claimableStatus = style({
 });
 
 export const withdrawableTooltip = style({
-  maxInlineSize: pxToRem(246),
+  maxInlineSize: pxToRem(148),
   padding: pxToRem(16),
-  backgroundColor: colors.yellow100,
+  backgroundColor: colors.green100,
   border: 0,
-  color: colors.yellow900,
+  color: colors.green900,
   textAlign: "center",
+  borderRadius: pxToRem(8),
 });
 
 export const withdrawButton = style({
-  backgroundColor: colors.yellow100,
+  backgroundColor: colors.green100,
   border: 0,
-  borderRadius: pxToRem(4),
-  color: colors.yellow900,
+  borderRadius: pxToRem(8),
+  color: colors.green900,
   blockSize: pxToRem(20),
-  paddingInline: pxToRem(6),
+  paddingInline: pxToRem(8),
   fontSize: pxToRem(12),
   lineHeight: 1,
   fontWeight: weights.bold,
+});
+
+export const withdrawTooltipArrow = style({
+  fill: colors.green100,
 });
