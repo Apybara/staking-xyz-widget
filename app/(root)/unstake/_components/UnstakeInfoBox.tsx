@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import { Arrow } from "@radix-ui/react-tooltip";
 import cn from "classnames";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
@@ -63,9 +64,12 @@ const AleoUnstakeInfo = () => {
             </button>
           }
           content={
-            isLiquid
-              ? `You need to withdraw before making a new unstaking request.`
-              : `You can withdraw ${aleoUnbondingAmount} now!`
+            <>
+              {isLiquid
+                ? `You need to withdraw before making a new unstaking request.`
+                : `You can withdraw ${aleoUnbondingAmount} now!`}
+              <Arrow className={S.withdrawTooltipArrow} />
+            </>
           }
         />
       );
