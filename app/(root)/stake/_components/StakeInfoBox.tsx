@@ -19,11 +19,13 @@ import {
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
 import * as S from "./stake.css";
+import { useAleoPondoReward } from "@/app/_services/stakingOperator/aleo/hooks";
 
 export const StakeInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
+  const pondoNetworkReward = useAleoPondoReward({ network, amount: coinAmountInput || "0" });
   const { validatorDetails } = useStakeValidatorState();
   const { aleoToPAleoRate } = usePondoData() || {};
 
@@ -36,6 +38,13 @@ export const StakeInfoBox = () => {
   const aleoTxFee = useDynamicAssetValueFromCoin({
     coinVal: getMicroCreditsToCredits(aleoFees.stake[stakingType || "native"]),
   });
+
+  const networkRewardRate = useMemo(() => {
+    if (isAleo && isLiquid) {
+      return pondoNetworkReward?.rewards.percentage || 0;
+    }
+    return networkReward?.rewards.percentage || 0;
+  }, [networkReward, pondoNetworkReward, isAleo, isLiquid]);
 
   const fixedAleoToPAleoAmount = useMemo(() => {
     const val = getPAleoDepositMintingAmountFromAleo({
@@ -71,7 +80,7 @@ export const StakeInfoBox = () => {
             <InfoCard.Title>Est. reward rate</InfoCard.Title>
             {hasInput && <RewardsTooltip amount={coinAmountInput} />}
           </InfoCard.TitleBox>
-          <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
+          <InfoCard.Content className={S.rewardInfoValue}>{networkRewardRate}%</InfoCard.Content>
         </InfoCard.StackItem>
         {hasInput && isAleo && (
           <InfoCard.StackItem>

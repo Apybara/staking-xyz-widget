@@ -15,6 +15,7 @@ import {
   getAddressDelegation,
   getAddressHistoricalStakingAmount,
   getNetworkReward,
+  getPondoNetworkReward,
   getNetworkStatus,
   getServerStatus,
   getValidatorDetails,
@@ -26,7 +27,7 @@ import { fromUnixTime } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getAleoFromPAleo } from "../../aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
-import { useAleoNativeStakedBalanceByAddress, usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
+import { usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
@@ -255,6 +256,20 @@ export const useAleoReward = ({ network, amount }: { network: Network | null; am
     enabled: getIsAleoNetwork(network || ""),
     queryKey: ["aleoReward", network],
     queryFn: () => getNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"] }),
+    refetchOnWindowFocus: true,
+    refetchInterval: 600000, // 10 minutes
+  });
+
+  const rewards = getCalculatedRewards(amount, data || 0);
+
+  return { data, rewards, isLoading, isRefetching, error, refetch };
+};
+
+export const useAleoPondoReward = ({ network, amount }: { network: Network | null; amount: string }) => {
+  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+    enabled: getIsAleoNetwork(network || ""),
+    queryKey: ["aleoPondoReward", network],
+    queryFn: () => getPondoNetworkReward({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"] }),
     refetchOnWindowFocus: true,
     refetchInterval: 600000, // 10 minutes
   });

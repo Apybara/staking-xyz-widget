@@ -102,6 +102,11 @@ export const getNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">
   return res;
 };
 
+export const getPondoNetworkReward = async ({ apiUrl }: Omit<T.BaseParams, "address">) => {
+  const res: T.NetworkRewardResponse = await fetchData(`${apiUrl}network/reward/pondo_v1`);
+  return res;
+};
+
 export const setMonitorTxByAddress = async ({
   apiUrl,
   address,
