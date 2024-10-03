@@ -66,6 +66,7 @@ export type RouterStruct = {
     device?: Device;
     stakingType?: string;
     validator?: string;
+    userId?: string;
   };
 };
 
