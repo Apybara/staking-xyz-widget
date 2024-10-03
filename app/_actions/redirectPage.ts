@@ -77,8 +77,6 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     isStakingTypeExpected ||
     isValidatorSelectionUnsupported
   ) {
-    if (userId) current.set("userId", userId);
-
     const search = current.toString();
     const query = search ? `?${search}` : "";
     redirect(`/${isImportPage ? "" : page}${query}`);

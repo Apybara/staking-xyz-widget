@@ -4,13 +4,15 @@ import { defaultNetwork, networkIdToUrlParamAlias, networkUrlParamToId } from ".
 import { getIsNetworkValid } from ".";
 
 export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"]) => {
-  const { network, currency, device, validator } = searchParams || {};
+  const { network, currency, device, validator, userId, stakingType } = searchParams || {};
   const params = new Array();
 
   if (network?.length) params.push(["network", network]);
   if (currency?.length) params.push(["currency", currency]);
   if (device?.length) params.push(["device", device]);
   if (validator?.length) params.push(["validator", validator]);
+  if (userId?.length) params.push(["userId", userId]);
+  if (stakingType?.length) params.push(["stakingType", stakingType]);
 
   return new URLSearchParams(params);
 };
