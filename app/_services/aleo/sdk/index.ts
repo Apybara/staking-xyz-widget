@@ -51,7 +51,7 @@ export const getAleoNativeStakedBalanceByAddress = async ({ apiUrl, address }: {
     return "0";
   }
 
-  return BigNumber(JSON.parse(getFormattedAleoString(res.result))["microcredits"].slice(0, -4)).toString();
+  return BigNumber(JSON.parse(getFormattedAleoString(res.result))["microcredits"].slice(0, -3)).toString();
 };
 
 export const getPAleoBalanceByAddress = async ({
