@@ -79,6 +79,7 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   ) {
     const search = current.toString();
     const query = search ? `?${search}` : "";
+
     redirect(`/${isImportPage ? "" : page}${query}`);
   }
 }
