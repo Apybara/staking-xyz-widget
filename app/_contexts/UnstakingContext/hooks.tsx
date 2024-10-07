@@ -1,4 +1,5 @@
 import type { UnstakingStates } from "./types";
+import { useMemo } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useWalletBalance } from "@/app/_services/wallet/hooks";
@@ -7,15 +8,24 @@ import {
   getBasicAmountValidation,
   getBasicTxCtaValidation,
 } from "../../_utils/transaction";
-import { defaultNetwork, requiredBalanceUnstakingByNetwork, minStakedBalanceByNetwork } from "../../consts";
+import {
+  defaultNetwork,
+  requiredBalanceUnstakingByNetwork,
+  minStakedBalanceByNetwork,
+  networkDefaultStakingType,
+} from "../../consts";
 import { useAleoAddressUnbondingStatus } from "@/app/_services/aleo/hooks";
+import { getAleoTotalUnstakeFees } from "@/app/_services/aleo/utils";
+import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
   stakedBalance,
+  isAleoInstantWithdrawal,
 }: {
   inputAmount: UnstakingStates["coinAmountInput"];
   stakedBalance?: string;
+  isAleoInstantWithdrawal?: boolean;
 }) => {
   const { network, stakingType } = useShell();
   const { address, activeWallet, connectionStatus } = useWallet();
@@ -25,13 +35,25 @@ export const useUnstakeAmountInputValidation = ({
     address: address || undefined,
     network,
   });
+  const { pAleoToAleoRate } = usePondoData() || {};
+
+  const bufferValidationAmount = useMemo(() => {
+    if (network !== "aleo") return requiredBalanceUnstakingByNetwork[network || defaultNetwork].toString();
+
+    return getAleoTotalUnstakeFees({
+      amount: inputAmount || "",
+      stakingType: stakingType || networkDefaultStakingType.aleo!,
+      isInstant: isAleoInstantWithdrawal || false,
+      pAleoToAleoRate,
+    })?.toString();
+  }, [network, inputAmount, stakingType, isAleoInstantWithdrawal, pAleoToAleoRate]);
 
   const amountValidation = getBasicAmountValidation({
     amount: inputAmount,
     min: "0",
     max: stakedBalance,
     safeMin: minStakedBalance ? minStakedBalance.toString() : undefined,
-    bufferValidationAmount: requiredBalanceUnstakingByNetwork[network || defaultNetwork].toString(),
+    bufferValidationAmount,
     bufferValidationMax: balanceData,
   });
   const ctaValidation = getBasicTxCtaValidation({
@@ -91,6 +113,6 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
     case "exceeded":
       return "You are unstaking more than your staked balance.";
     case "bufferExceeded":
-      return "Insufficient balance for fee";
+      return "Insufficient balance for fee.";
   }
 };
