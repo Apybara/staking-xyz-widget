@@ -47,9 +47,10 @@ export const input = style({
 
 export const label = style({
   marginInlineStart: pxToRem(10),
-  color: colors.black000,
+  color: colors.black300,
 });
 
 globalStyle(`${label} a`, {
   textDecoration: "underline",
+  color: colors.black000,
 });
