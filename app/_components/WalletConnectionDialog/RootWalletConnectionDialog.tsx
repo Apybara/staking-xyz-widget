@@ -54,7 +54,7 @@ export const RootWalletConnectionDialog = ({
   return (
     <Dialog.Root open={dialog.open} onOpenChange={dialog.onOpenChange}>
       <Dialog.Main>
-        <Dialog.Content>
+        <Dialog.Content className={cn(S.content)}>
           <Dialog.Title className={cn(S.title)}>Select a wallet</Dialog.Title>
 
           <Checkbox
