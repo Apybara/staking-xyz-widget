@@ -51,12 +51,14 @@ export const accordionButton = style({
 });
 
 export const accordionButtonIcon = recipe({
-  base: {},
+  base: {
+    transform: "rotate(90deg)",
+  },
   variants: {
     state: {
       default: {},
       open: {
-        transform: "rotate(180deg) translateY(3px)",
+        transform: "rotate(270deg)",
       },
     },
   },

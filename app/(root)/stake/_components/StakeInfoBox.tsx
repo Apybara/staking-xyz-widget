@@ -1,45 +1,34 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import cn from "classnames";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
-import { unstakingPeriodByNetwork, defaultNetwork, networkCurrency, aleoFees } from "../../../consts";
+import { defaultNetwork, networkCurrency } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
 import { RewardsTooltip } from "../../_components/RewardsTooltip";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
-import { useStakeValidatorState } from "@/app/_contexts/StakingContext/hooks";
 import { getFormattedCoinValue } from "@/app/_utils/conversions";
-import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
-import {
-  getIsAleoNetwork,
-  getMicroCreditsToCredits,
-  getPAleoDepositMintingAmountFromAleo,
-} from "@/app/_services/aleo/utils";
+import { getPAleoDepositMintingAmountFromAleo } from "@/app/_services/aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 
+import { LiquidStakeInfoAccordion } from "./LiquidStakeInfoAccordion";
+import { NativeStakeInfoAccordion } from "./NativeStakeInfoAccordion";
+
 import * as S from "./stake.css";
-import { StakeInfoAccordion } from "./StakeInfoAccordion";
 
 export const StakeInfoBox = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput } = useStaking();
   const networkReward = useNetworkReward({ amount: coinAmountInput });
-  const { validatorDetails } = useStakeValidatorState();
   const { aleoToPAleoRate } = usePondoData() || {};
   const [isInfoAccordionOpen, setIsInfoAccordionOpen] = useState(false);
 
   const castedNetwork = network || defaultNetwork;
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
-  const unstakingPeriod = unstakingPeriodByNetwork[castedNetwork][stakingType || "native"];
-  const hasCommission = validatorDetails?.commission !== undefined;
-  const isAleo = getIsAleoNetwork(network);
   const isLiquid = stakingType === "liquid";
   const isNative = stakingType === "native";
-  const aleoTxFee = useDynamicAssetValueFromCoin({
-    coinVal: getMicroCreditsToCredits(aleoFees.stake[stakingType || "native"]),
-  });
 
   const fixedAleoToPAleoAmount = useMemo(() => {
     const val = getPAleoDepositMintingAmountFromAleo({
@@ -67,9 +56,13 @@ export const StakeInfoBox = () => {
     });
   }, [coinAmountInput, aleoToPAleoRate]);
 
+  useEffect(() => {
+    !hasInput && setIsInfoAccordionOpen(false);
+  }, [hasInput]);
+
   return (
     <div className={S.infoCardContainer}>
-      <InfoCard.Card className={cn(S.infoCard({ state: hasInput && isLiquid ? "hasAccordion" : "default" }))}>
+      <InfoCard.Card className={cn(S.infoCard({ state: hasInput ? "hasAccordion" : "default" }))}>
         <InfoCard.Stack>
           <InfoCard.StackItem className={S.rewardInfo}>
             <InfoCard.TitleBox>
@@ -78,22 +71,6 @@ export const StakeInfoBox = () => {
             </InfoCard.TitleBox>
             <InfoCard.Content className={S.rewardInfoValue}>{networkReward?.rewards.percentage}%</InfoCard.Content>
           </InfoCard.StackItem>
-          {hasInput && isAleo && isNative && (
-            <InfoCard.StackItem>
-              <InfoCard.TitleBox>
-                <InfoCard.Title>Transaction fee</InfoCard.Title>
-              </InfoCard.TitleBox>
-              <InfoCard.Content>{aleoTxFee}</InfoCard.Content>
-            </InfoCard.StackItem>
-          )}
-          {hasCommission && (
-            <InfoCard.StackItem>
-              <InfoCard.TitleBox>
-                <InfoCard.Title>Commission rate</InfoCard.Title>
-              </InfoCard.TitleBox>
-              <InfoCard.Content>{validatorDetails?.commission}%</InfoCard.Content>
-            </InfoCard.StackItem>
-          )}
           {hasInput && isLiquid && !isInfoAccordionOpen && (
             <InfoCard.StackItem>
               <InfoCard.TitleBox>
@@ -112,25 +89,11 @@ export const StakeInfoBox = () => {
               <InfoCard.Content>{receivableAleoToPAleoAmount}</InfoCard.Content>
             </InfoCard.StackItem>
           )}
-          {hasInput && isNative && (
-            <InfoCard.StackItem>
-              <InfoCard.TitleBox>
-                <InfoCard.Title>Unstaking period</InfoCard.Title>
 
-                <Tooltip
-                  className={S.stakingTooltip}
-                  trigger={<Icon name="info" />}
-                  content={<>It takes ~{unstakingPeriod} for unstaking to be completed.</>}
-                />
-              </InfoCard.TitleBox>
-              <InfoCard.Content>~{unstakingPeriod}</InfoCard.Content>
-            </InfoCard.StackItem>
-          )}
-
-          {isInfoAccordionOpen && <StakeInfoAccordion />}
+          {isInfoAccordionOpen && (isNative ? <NativeStakeInfoAccordion /> : <LiquidStakeInfoAccordion />)}
         </InfoCard.Stack>
       </InfoCard.Card>
-      {hasInput && isLiquid && (
+      {hasInput && (
         <div className={S.accordionButtonContainer}>
           <button className={S.accordionButton} onClick={() => setIsInfoAccordionOpen(!isInfoAccordionOpen)}>
             <Icon

@@ -18,7 +18,7 @@ import { useMemo } from "react";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 import { getFormattedCoinValue } from "@/app/_utils/conversions";
 
-export const StakeInfoAccordion = () => {
+export const LiquidStakeInfoAccordion = () => {
   const { network, stakingType } = useShell();
   const { coinAmountInput } = useStaking();
   const { aleoToPAleoRate } = usePondoData() || {};
