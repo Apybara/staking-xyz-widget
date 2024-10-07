@@ -44,6 +44,7 @@ export type AmountInputPadProps = BaseAmountInputPadProps & {
   isAvailableValueLoading?: boolean;
   onValueChange: (value: string) => void;
   hideCurrencyConversion?: boolean;
+  showInstantWithdrawal?: boolean;
   validatorInfo?: {
     isLoading: boolean;
     name: string;
@@ -67,6 +68,7 @@ export const AmountInputPad = ({
   onMax,
   error,
   hideCurrencyConversion,
+  showInstantWithdrawal,
   validatorInfo,
 }: AmountInputPadProps) => {
   const { network } = useShell();
@@ -180,6 +182,7 @@ export const AmountInputPad = ({
       isMaxDisabled={type === "stake" && BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalance)}
       error={error}
       hideCurrencyConversion={hideCurrencyConversion}
+      showInstantWithdrawal={showInstantWithdrawal}
       validatorInfo={validatorInfo}
     />
   );
