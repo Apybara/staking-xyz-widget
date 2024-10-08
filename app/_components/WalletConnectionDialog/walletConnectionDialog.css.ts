@@ -3,6 +3,10 @@ import { style, globalStyle } from "@vanilla-extract/css";
 import { pxToRem } from "../../../theme/utils";
 import { colors, weights } from "../../../theme/theme.css";
 
+export const content = style({
+  minInlineSize: pxToRem(255),
+});
+
 export const title = style({
   fontWeight: weights.semibold,
 });
