@@ -56,7 +56,7 @@ export const ActivityTable = () => {
     <>
       {isAleo && (
         <div className={S.infoBanner}>
-          <Icon name="info" /> <span>Activity may take a few min to appear</span>{" "}
+          <Icon name="info" /> <span>Activity may take a few min to appear.</span>{" "}
         </div>
       )}
       <ListTable.Tabs tabs={tabs} />
