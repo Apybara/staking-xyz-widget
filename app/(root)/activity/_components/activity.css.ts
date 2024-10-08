@@ -2,12 +2,6 @@ import { colors, weights } from "@/theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 import { globalStyle, style } from "@vanilla-extract/css";
 
-export const container = style({});
-
-globalStyle(`${container} > div`, {
-  gap: pxToRem(8),
-});
-
 export const infoBanner = style({
   display: "flex",
   justifyContent: "center",
