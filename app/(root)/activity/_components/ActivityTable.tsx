@@ -19,6 +19,7 @@ import { getIsAleoNetwork } from "../../../_services/aleo/utils";
 import { useActivity } from "../../../_services/stakingOperator/hooks";
 import { networkExplorerTx, defaultNetwork } from "../../../consts";
 import * as S from "./activity.css";
+import { Icon } from "@/app/_components/Icon";
 
 export const ActivityTable = () => {
   const { network } = useShell();
@@ -26,6 +27,8 @@ export const ActivityTable = () => {
   const { offset, setOffset, limit, filterKey, setFilterKey } = params;
   const { formattedEntries, isLoading, error, disableNextPage, lastOffset, refetch } = query || {};
   const tabs = useTabs({ filterKey, setFilterKey });
+
+  const isAleo = getIsAleoNetwork(network);
 
   if (isLoading) {
     return (
@@ -51,6 +54,11 @@ export const ActivityTable = () => {
 
   return (
     <>
+      {isAleo && (
+        <div className={S.infoBanner}>
+          <Icon name="info" /> <span>Activity may take a few min to appear</span>{" "}
+        </div>
+      )}
       <ListTable.Tabs tabs={tabs} />
       {formattedEntries?.length ? (
         <ListTable.Pad>
