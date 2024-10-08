@@ -70,6 +70,7 @@ export const amountInputPad = recipe({
     borderRadius: pxToRem(8),
     paddingBlockStart: pxToRem(30),
     paddingBlockEnd: pxToRem(30),
+    overflow: "hidden",
   },
   variants: {
     hasErrorMessage: {
@@ -224,23 +225,45 @@ globalStyle(`${validatorAddress} span`, {
   fontWeight: `${weights.regular}`,
 });
 
-export const instantWithdrawal = style({
-  inlineSize: "100%",
-  paddingInline: pxToRem(20),
-  blockSize: pxToRem(42),
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  borderTop: `1px solid ${colors.black800}`,
+export const instantWithdrawal = recipe({
+  base: {
+    inlineSize: "100%",
+    paddingInline: pxToRem(20),
+    blockSize: pxToRem(42),
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTop: `1px solid ${colors.black800}`,
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        backgroundColor: colors.black900,
+        cursor: "not-allowed",
+      },
+    },
+  },
 });
 
-export const instantWithdrawalLabel = style({
-  fontSize: pxToRem(14),
-  fontWeight: weights.bold,
-  color: colors.black100,
-  display: "flex",
-  alignItems: "center",
-  gap: pxToRem(4),
+export const instantWithdrawalLabel = recipe({
+  base: {
+    fontSize: pxToRem(14),
+    fontWeight: weights.bold,
+    color: colors.black100,
+    display: "flex",
+    alignItems: "center",
+    gap: pxToRem(4),
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        opacity: 0.25,
+        pointerEvents: "none",
+      },
+    },
+  },
 });
 
 export const instantWithdrawalTooltip = style({

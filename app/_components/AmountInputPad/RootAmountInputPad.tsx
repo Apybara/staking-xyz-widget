@@ -84,7 +84,7 @@ export const RootAmountInputPad = ({
           address={validatorInfo?.address}
         />
       )}
-      {showInstantWithdrawal && <InstantWithdrawalOption />}
+      {showInstantWithdrawal && <InstantWithdrawalOption disabled={!inputField?.value || inputField?.value === "0"} />}
     </div>
   );
 };

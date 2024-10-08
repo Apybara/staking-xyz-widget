@@ -65,7 +65,9 @@ const AleoUnstakeInfo = () => {
           }
           content={
             <>
-              {`You can withdraw ${aleoUnbondingAmount} now!`}
+              {isLiquid
+                ? `You need to withdraw before making a new unstaking request.`
+                : `You can withdraw ${aleoUnbondingAmount} now!`}
               <Arrow className={S.withdrawTooltipArrow} />
             </>
           }
