@@ -21,7 +21,8 @@ export type IconProps = {
     | "x"
     | "telegram"
     | "doc"
-    | "sent";
+    | "sent"
+    | "skip";
   size?: number;
   className?: string;
 };

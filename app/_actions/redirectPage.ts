@@ -15,7 +15,7 @@ import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } 
 import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
-  const { network, currency, stakingType, validator, userId } = searchParams || {};
+  const { network, currency, stakingType, validator } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
 
   const headersList = headers();
@@ -33,11 +33,11 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
     page,
     stakingType: stakingType as StakingType,
   });
-  const isStakingTypeInvalid = (stakingType || validator) && !defaultStakingType;
+  const isStakingTypeInvalid = (!!stakingType || !!validator) && !defaultStakingType;
   const isStakingTypeExpected = !stakingType && !!defaultStakingType && (page === "stake" || page === "unstake");
   const isImportPage = page === "import";
   const isValidatorSelectionUnsupported =
-    !!validator && networkInfo[castedNetwork]?.supportsValidatorSelection !== true;
+    !!validator && (page !== "stake" || networkInfo[castedNetwork]?.supportsValidatorSelection !== true);
   const networkParamAndAlias = getNetworkParamFromValidAlias(castedNetwork || "");
   const isMultipleNetworks = Array.isArray(network);
 
