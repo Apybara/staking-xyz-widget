@@ -16,25 +16,26 @@ export const useWidgetRouterGate = ({ status, setStates }: WidgetStates) => {
   const { isOnMobileDevice } = useShell();
   const searchParams = useSearchParams();
 
+  // Redirect to the stake page on initial visit
   useEffect(() => {
-    // Redirect to the stake page on initial visit
-    if (connectionStatus === "disconnected" && pathname === "/" && status === "loading") {
+    if (pathname === "/" && status === "loading") {
       router.push(stakePageLink);
       return;
     }
 
-    // Redirect to the home page if the user is not connected and the page is the activity or rewards page
+    setStates({ status: "loaded" });
+  }, [pathname, status]);
+
+  // Redirect to the home page if the user is not connected and the page is the activity or rewards page
+  useEffect(() => {
     if (
       connectionStatus === "disconnected" &&
       status !== "loading" &&
       ["/activity", "/rewards", "rewards/history"].includes(pathname)
     ) {
       router.push(homePageLink);
-      return;
     }
-
-    setStates({ status: "loaded" });
-  }, [pathname, connectionStatus, status]);
+  }, [pathname, connectionStatus]);
 
   // Redirect to the default network if the current network is disabled on mobile
   useEffect(() => {
