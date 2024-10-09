@@ -28,7 +28,7 @@ export const tabButton = recipe({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    gap: pxToRem(4),
+    gap: pxToRem(6),
   },
   variants: {
     state: {
@@ -54,6 +54,11 @@ export const tabButton = recipe({
   defaultVariants: {
     state: "default",
   },
+});
+
+export const activeTabIcon = style({
+  display: "flex",
+  color: colors.green900,
 });
 
 export const tooltip = style({

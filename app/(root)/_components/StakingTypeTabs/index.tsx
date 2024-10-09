@@ -28,6 +28,11 @@ export const StakingTypeTabs = () => {
               onClick={() => onUpdateRouter(value)}
               disabled={disabled}
             >
+              {activeStakingType === value && (
+                <span className={S.activeTabIcon}>
+                  <Icon name="circleCheck" />
+                </span>
+              )}
               <span>{label}</span>
               {disabled && <Tooltip className={S.tooltip} trigger={<Icon name="info" />} content="Coming soon!" />}
             </button>
