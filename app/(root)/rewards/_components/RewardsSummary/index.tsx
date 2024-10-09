@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import cn from "classnames";
 import BigNumber from "bignumber.js";
 import { useDialog } from "../../../../_contexts/UIContext";
@@ -60,30 +61,35 @@ export const RewardsSummary = () => {
 
 const FirstSection = () => {
   const { data: addressRewards, isLoading: isAddressRewardsLoading } = useAddressRewards() || {};
-  const { cumulativeRewards } = addressRewards || {};
-  const hasAccruedRewards = addressRewards && addressRewards.accruedRewards;
+  const { cumulativeRewards, accruedRewards, lastNativeRewardsIndexedTime } = addressRewards || {};
 
+  const bigNumberCumulativeRewards = BigNumber(cumulativeRewards || 0);
+  const isCumulativeRewardsNegativeOrZero = bigNumberCumulativeRewards.isLessThanOrEqualTo(0);
   const isCumulativeRewardsSmall =
-    cumulativeRewards && BigNumber(cumulativeRewards).isLessThan(1) && BigNumber(cumulativeRewards).isGreaterThan(0);
+    cumulativeRewards && bigNumberCumulativeRewards.isLessThan(1) && bigNumberCumulativeRewards.isGreaterThan(0);
   const formattedCumulative = useDynamicAssetValueFromCoin({
-    coinVal: BigNumber(cumulativeRewards || 0).isLessThan(0) ? 0 : cumulativeRewards,
+    coinVal: isCumulativeRewardsNegativeOrZero ? 0 : cumulativeRewards,
     minValue: !isCumulativeRewardsSmall ? undefined : 0.000001,
     formatOptions: !isCumulativeRewardsSmall ? undefined : { mantissa: 6 },
   });
+
+  const tooltipCopy = useMemo(() => {
+    if (accruedRewards) {
+      return "This is the sum of all rewards claimed on this address.";
+    }
+
+    const timeString = lastNativeRewardsIndexedTime ? `Calculated at ${lastNativeRewardsIndexedTime} UTC` : "";
+    if (!formattedCumulative || isCumulativeRewardsNegativeOrZero) {
+      return `Sum of all staking rewards earned. ${timeString}. If you just staked, new rewards will be updated in 5 mins.`;
+    }
+    return `Sum of all staking rewards earned. ${timeString}. Updates every 5 mins.`;
+  }, [accruedRewards, lastNativeRewardsIndexedTime, formattedCumulative, isCumulativeRewardsNegativeOrZero]);
 
   return (
     <section className={cn(S.card)}>
       <div className={cn(S.cardTitle)}>
         <h3>Cumulative rewards</h3>
-        <Tooltip
-          className={S.tooltip}
-          trigger={<Icon name="info" />}
-          content={
-            hasAccruedRewards
-              ? "This is the sum of all rewards claimed on this address."
-              : "This is the sum of all staking rewards earned on this address."
-          }
-        />
+        <Tooltip className={S.tooltip} trigger={<Icon name="info" />} content={tooltipCopy} />
       </div>
       {isAddressRewardsLoading ? (
         <Skeleton width={140} height={24} />
