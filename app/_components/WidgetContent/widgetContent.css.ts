@@ -26,7 +26,7 @@ globalStyle(`${widgetContentFull} ${widgetWrapper} > div > *:last-child`, {
 globalStyle(`${widgetWrapper} > div`, {
   display: "flex !important",
   flexDirection: "column",
-  gap: pxToRem(16),
+  gap: pxToRem(8),
   blockSize: "100%",
 });
 

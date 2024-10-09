@@ -15,11 +15,12 @@ import { AleoStakeProps } from "@/app/_services/aleo/types";
 import * as S from "./widgetContent.css";
 
 export type WidgetContentProps = {
+  className?: string;
   variant?: "default" | "full";
   children: ReactNode;
 };
 
-export const WidgetContent = ({ variant = "default", children }: WidgetContentProps) => {
+export const WidgetContent = ({ className, variant = "default", children }: WidgetContentProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const { setStates, network } = useShell();
   const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
@@ -74,7 +75,7 @@ export const WidgetContent = ({ variant = "default", children }: WidgetContentPr
 
   return (
     <ScrollArea.Root className={cn(S.widgetContent, { [S.widgetContentFull]: variant === "full" })} scrollHideDelay={0}>
-      <ScrollArea.Viewport ref={ref} className={S.widgetWrapper}>
+      <ScrollArea.Viewport ref={ref} className={cn(className, S.widgetWrapper)}>
         {children}
       </ScrollArea.Viewport>
       <ScrollArea.Scrollbar className={S.scrollbar} orientation="vertical">
