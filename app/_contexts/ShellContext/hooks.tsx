@@ -52,17 +52,12 @@ export const useNetworkChange = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { onUpdateRouter: onStakingTypeUpdate } = useStakingTypeChange();
 
   const onUpdateRouter = (net: Network) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     const activeCurrency = current.get("currency");
-    const stakingType = networkDefaultStakingType[net || defaultNetwork];
 
     current.set("network", networkIdToUrlParamAlias[net]);
-
-    stakingType && current.set("stakingType", stakingType);
-    onStakingTypeUpdate(stakingType);
 
     if (CoinVariants.includes(activeCurrency as NetworkCurrency)) {
       // activate currency when network is changed and the previous active currency is not FIAT

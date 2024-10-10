@@ -13,12 +13,12 @@ export const tabs = style({
 });
 
 export const tab = style({
-  width: "100%",
+  inlineSize: "100%",
 });
 
 export const tabButton = recipe({
   base: {
-    width: "100%",
+    inlineSize: "100%",
     textAlign: "center",
     paddingBlock: pxToRem(5),
     paddingInline: pxToRem(6),
