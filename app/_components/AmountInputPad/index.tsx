@@ -82,7 +82,7 @@ export const AmountInputPad = ({
 
   useEffect(() => {
     if (primaryValue === "") {
-      setStates({ instantWithdrawal: false });
+      setStates?.({ instantWithdrawal: false });
       onValueChange("");
       return;
     }
