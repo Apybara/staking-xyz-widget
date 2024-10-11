@@ -1,20 +1,32 @@
 import { style } from "@vanilla-extract/css";
 import { pxToRem } from "@/theme/utils";
 import { colors } from "@/theme/theme.css";
+import { recipe } from "@vanilla-extract/recipes";
 
-export const root = style({
-  width: pxToRem(26),
-  height: pxToRem(15),
-  position: "relative",
-  borderRadius: pxToRem(11),
-  backgroundColor: "#FFFFFF40",
-  boxShadow: "0px 0.5px 1.5px 0px #0000001F inset, 0px 0px 1px 0px #00000005 inset",
-  transition: "all 0.3s",
+export const root = recipe({
+  base: {
+    width: pxToRem(26),
+    height: pxToRem(15),
+    position: "relative",
+    borderRadius: pxToRem(11),
+    backgroundColor: "#FFFFFF40",
+    boxShadow: "0px 0.5px 1.5px 0px #0000001F inset, 0px 0px 1px 0px #00000005 inset",
+    transition: "all 0.3s",
 
-  selectors: {
-    '&[data-state="checked"]': {
-      backgroundColor: colors.green900,
-      boxShadow: "0px 0.5px 2.5px 0px #666666BF inset",
+    selectors: {
+      '&[data-state="checked"]': {
+        backgroundColor: colors.green900,
+        boxShadow: "0px 0.5px 2.5px 0px #666666BF inset",
+      },
+    },
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        opacity: 0.25,
+        pointerEvents: "none",
+      },
     },
   },
 });

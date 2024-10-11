@@ -5,6 +5,7 @@ import cn from "classnames";
 import { Skeleton } from "../Skeleton";
 import { MaxButton } from "./MaxButton";
 import { InputPadValidator } from "./InputPadValidator";
+import { InstantWithdrawalOption } from "./InstantWithdrawalOption";
 
 import * as S from "./amountInputPad.css";
 
@@ -21,6 +22,7 @@ export type RootAmountInputPadProps = {
   isMaxDisabled?: boolean;
   error?: ReactNode;
   hideCurrencyConversion?: boolean;
+  showInstantWithdrawal?: boolean;
   validatorInfo?: {
     isLoading: boolean;
     name: string;
@@ -42,10 +44,11 @@ export const RootAmountInputPad = ({
   isMaxDisabled,
   error,
   hideCurrencyConversion,
+  showInstantWithdrawal,
   validatorInfo,
 }: RootAmountInputPadProps) => {
   return (
-    <div className={cn(className, S.amountInputPad({ hasErrorMessage: !!error, hasValidator: !!validatorInfo }))}>
+    <div className={cn(className, S.amountInputPad)}>
       {isAvailableValueLoading && (
         <div className={cn(S.topBar)}>
           <Skeleton height={24} width={100} />
@@ -73,6 +76,7 @@ export const RootAmountInputPad = ({
           address={validatorInfo?.address}
         />
       )}
+      {showInstantWithdrawal && <InstantWithdrawalOption disabled={!inputField?.value || inputField?.value === "0"} />}
     </div>
   );
 };
