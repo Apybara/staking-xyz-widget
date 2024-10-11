@@ -8,7 +8,7 @@ import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 import * as S from "./amountInputPad.css";
 
 export const InstantWithdrawalOption = ({ disabled }: { disabled?: boolean }) => {
-  const { setStates } = useUnstaking();
+  const { setStates, instantWithdrawal } = useUnstaking();
 
   return (
     <div className={cn(S.instantWithdrawal({ state: disabled ? "disabled" : "default" }))}>
@@ -21,7 +21,11 @@ export const InstantWithdrawalOption = ({ disabled }: { disabled?: boolean }) =>
         />
       </div>
 
-      <Switch onChange={(checked) => setStates({ instantWithdrawal: checked })} disabled={disabled} />
+      <Switch
+        onChange={(checked) => setStates({ instantWithdrawal: checked })}
+        disabled={disabled}
+        checked={instantWithdrawal}
+      />
     </div>
   );
 };

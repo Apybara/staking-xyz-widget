@@ -23,6 +23,7 @@ import { getStringHasNumbersOnly } from "./InputField";
 import Tooltip from "../Tooltip";
 import { Icon } from "../Icon";
 import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
+import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 
 import * as S from "./amountInputPad.css";
 
@@ -72,6 +73,7 @@ export const AmountInputPad = ({
   validatorInfo,
 }: AmountInputPadProps) => {
   const { network } = useShell();
+  const { setStates } = useUnstaking();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
   const isAleo = getIsAleoNetwork(network);
@@ -80,6 +82,7 @@ export const AmountInputPad = ({
 
   useEffect(() => {
     if (primaryValue === "") {
+      setStates({ instantWithdrawal: false });
       onValueChange("");
       return;
     }
