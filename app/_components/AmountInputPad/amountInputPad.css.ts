@@ -241,7 +241,6 @@ export const instantWithdrawalLabel = recipe({
       default: {},
       disabled: {
         opacity: 0.25,
-        pointerEvents: "none",
       },
     },
   },
