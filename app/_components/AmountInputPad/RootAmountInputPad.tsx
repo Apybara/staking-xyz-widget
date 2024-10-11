@@ -48,15 +48,7 @@ export const RootAmountInputPad = ({
   validatorInfo,
 }: RootAmountInputPadProps) => {
   return (
-    <div
-      className={cn(
-        className,
-        S.amountInputPad({
-          hasErrorMessage: !!error,
-          hasNoPaddingBottom: !!validatorInfo || !!showInstantWithdrawal,
-        }),
-      )}
-    >
+    <div className={cn(className, S.amountInputPad)}>
       {isAvailableValueLoading && (
         <div className={cn(S.topBar)}>
           <Skeleton height={24} width={100} />
