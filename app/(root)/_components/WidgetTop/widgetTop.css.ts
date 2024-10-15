@@ -14,7 +14,6 @@ export const pageTop = style({
   display: "flex",
   alignItems: "center",
   padding: pxToRem(16),
-  paddingBlockEnd: pxToRem(8),
   zIndex: 2,
   borderBottom: `1px solid transparent`,
   transition: "background-color 0.3s",
@@ -24,6 +23,10 @@ export const pageTopFixed = style({
   backgroundColor: colors.black750,
   borderColor: colors.black700,
   boxShadow: "0px 0px 50px 0px #00000080",
+});
+
+export const pageTopActivity = style({
+  paddingBlockEnd: pxToRem(8),
 });
 
 export const title = recipe({
