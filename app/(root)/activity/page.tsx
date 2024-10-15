@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import cn from "classnames";
 import type { RouterStruct } from "../../types";
 import { PageViewTop } from "../_components/WidgetTop";
 import { getLinkWithSearchParams } from "../../_utils/routes";
@@ -18,7 +19,7 @@ export default async function Activity({ searchParams }: RouterStruct) {
   return (
     <>
       <PageViewTop page="Activity" homeURL={getLinkWithSearchParams(searchParams, "")} />
-      <WidgetContent className={S.activityPage} variant="full">
+      <WidgetContent className={cn({ [S.aleoActivityPage]: network === "aleo" })} variant="full">
         <ActivityTable />
       </WidgetContent>
     </>

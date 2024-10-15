@@ -2,9 +2,9 @@ import { colors, weights } from "@/theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 import { globalStyle, style } from "@vanilla-extract/css";
 
-export const activityPage = style({});
+export const aleoActivityPage = style({});
 
-globalStyle(`div.${activityPage} > div`, {
+globalStyle(`div.${aleoActivityPage} > div`, {
   gap: pxToRem(8),
 });
 
@@ -28,9 +28,9 @@ export const errorPad = style({
   justifyContent: "center !important",
 });
 
-export const activityPad = style({});
-export const activityList = style({});
+export const aleoActivityPad = style({});
+export const aleoActivityList = style({});
 
-globalStyle(`div.${activityPad}, ul.${activityList}`, {
+globalStyle(`div.${aleoActivityPad}, ul.${aleoActivityList}`, {
   gap: pxToRem(16),
 });
