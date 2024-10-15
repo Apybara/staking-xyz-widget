@@ -62,8 +62,10 @@ export const PageViewTop = ({
 }) => {
   const { isScrollActive } = useShell();
 
+  const isActivityPage = page.toLowerCase() === "activity";
+
   return (
-    <div className={cn(S.pageTop, { [S.pageTopFixed]: isScrollActive })}>
+    <div className={cn(S.pageTop, { [S.pageTopFixed]: isScrollActive, [S.pageTopActivity]: isActivityPage })}>
       <Link href={homeURL} className={cn(S.button())}>
         <Icon name="cross" size={20} />
       </Link>

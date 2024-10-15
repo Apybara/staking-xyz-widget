@@ -34,7 +34,7 @@ export const ActivityTable = () => {
     return (
       <>
         <Skeleton width="100%" height={26} />
-        <ListTable.Pad>
+        <ListTable.Pad className={S.activityPad}>
           {[...Array(limit)].map((_, index) => (
             <Skeleton key={`activity-skeleton-${index}`} width="100%" height={36} />
           ))}
@@ -61,8 +61,8 @@ export const ActivityTable = () => {
       )}
       <ListTable.Tabs tabs={tabs} />
       {formattedEntries?.length ? (
-        <ListTable.Pad>
-          <ListTable.List>
+        <ListTable.Pad className={S.activityPad}>
+          <ListTable.List className={S.activityList}>
             {formattedEntries?.map((activity, index) => (
               <ListItem key={index + activity.id} activity={activity} network={network} />
             ))}
