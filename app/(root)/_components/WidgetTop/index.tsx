@@ -60,12 +60,12 @@ export const PageViewTop = ({
   homeURL: string;
   endBox?: ReactNode;
 }) => {
-  const { isScrollActive } = useShell();
+  const { isScrollActive, network } = useShell();
 
-  const isActivityPage = page.toLowerCase() === "activity";
+  const isAleoActivityPage = network === "aleo" && page.toLowerCase() === "activity";
 
   return (
-    <div className={cn(S.pageTop, { [S.pageTopFixed]: isScrollActive, [S.pageTopActivity]: isActivityPage })}>
+    <div className={cn(S.pageTop, { [S.pageTopFixed]: isScrollActive, [S.pageTopActivity]: isAleoActivityPage })}>
       <Link href={homeURL} className={cn(S.button())}>
         <Icon name="cross" size={20} />
       </Link>

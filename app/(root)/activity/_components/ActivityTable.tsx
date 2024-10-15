@@ -1,4 +1,5 @@
 "use client";
+import cn from "classnames";
 import type { Network } from "../../../types";
 import type { TabButtonProps } from "../../../_components/TabButton";
 import type {
@@ -34,7 +35,7 @@ export const ActivityTable = () => {
     return (
       <>
         <Skeleton width="100%" height={26} />
-        <ListTable.Pad className={S.activityPad}>
+        <ListTable.Pad className={cn({ [S.aleoActivityPad]: isAleo })}>
           {[...Array(limit)].map((_, index) => (
             <Skeleton key={`activity-skeleton-${index}`} width="100%" height={36} />
           ))}
@@ -61,8 +62,8 @@ export const ActivityTable = () => {
       )}
       <ListTable.Tabs tabs={tabs} />
       {formattedEntries?.length ? (
-        <ListTable.Pad className={S.activityPad}>
-          <ListTable.List className={S.activityList}>
+        <ListTable.Pad className={cn({ [S.aleoActivityPad]: isAleo })}>
+          <ListTable.List className={cn({ [S.aleoActivityList]: isAleo })}>
             {formattedEntries?.map((activity, index) => (
               <ListItem key={index + activity.id} activity={activity} network={network} />
             ))}
