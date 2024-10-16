@@ -22,11 +22,11 @@ import {
 import { useEffect, useState } from "react";
 import { getCalculatedRewards, getLastOffset } from "../utils";
 import { getTimeDiffInSingleUnits } from "@/app/_utils/time";
-import { fromUnixTime } from "date-fns";
+import { fromUnixTime, format } from "date-fns";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getAleoFromPAleo } from "../../aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
-import { useAleoNativeStakedBalanceByAddress, usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
+import { usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
@@ -67,6 +67,7 @@ export const useAleoAddressRewards = ({ address, network }: { address: string; n
       dailyRewards: null,
       accruedRewards: null,
       lastCycleRewards: null,
+      lastNativeRewardsIndexedTime: format(fromUnixTime(stakingOperatorData?.lastIndexed || 0), "yyyy-MM-dd HH:mm:ss"),
     },
     isLoading,
     isRefetching,

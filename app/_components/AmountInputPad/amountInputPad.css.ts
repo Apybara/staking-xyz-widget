@@ -56,35 +56,14 @@ export const mainControlBox = style({
   gap: pxToRem(4),
   inlineSize: "100%",
   paddingInline: pxToRem(20),
+  marginBlockStart: pxToRem(20),
+  marginBlockEnd: pxToRem(32),
 });
 
-export const amountInputPad = recipe({
-  base: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: pxToRem(20),
-    backgroundColor: colors.black700,
-    border: `1px solid ${colors.black800}`,
-    borderRadius: pxToRem(8),
-    paddingBlockStart: pxToRem(30),
-    paddingBlockEnd: pxToRem(30),
-  },
-  variants: {
-    hasErrorMessage: {
-      true: {
-        paddingBlockEnd: pxToRem(40),
-      },
-      false: {},
-    },
-    hasValidator: {
-      true: {
-        paddingBlockEnd: "0",
-      },
-      false: {},
-    },
-  },
+export const amountInputPad = style({
+  backgroundColor: colors.black700,
+  border: `1px solid ${colors.black800}`,
+  borderRadius: pxToRem(8),
 });
 
 export const topBar = style({
@@ -92,9 +71,9 @@ export const topBar = style({
   justifyContent: "space-between",
   alignItems: "center",
   inlineSize: "100%",
-  marginBlockStart: pxToRem(-16),
+  marginBlockStart: pxToRem(14),
   paddingInline: pxToRem(20),
-  blockSize: pxToRem(24),
+  minBlockSize: pxToRem(24),
 });
 
 export const topBarInfo = style({
@@ -158,7 +137,8 @@ export const errorMessage = style({
   textWrap: "pretty",
   display: "block",
   maxInlineSize: "100%",
-  marginBlockEnd: pxToRem(-16),
+  marginBlockStart: pxToRem(-8),
+  marginBlockEnd: pxToRem(14),
   paddingInline: pxToRem(20),
 });
 
@@ -222,4 +202,51 @@ globalStyle(`${validatorName} span`, {
 globalStyle(`${validatorAddress} span`, {
   color: `${colors.black300}`,
   fontWeight: `${weights.regular}`,
+});
+
+export const instantWithdrawal = recipe({
+  base: {
+    inlineSize: "100%",
+    paddingInline: pxToRem(20),
+    minBlockSize: pxToRem(43),
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTop: `1px solid ${colors.black800}`,
+    borderBottomLeftRadius: pxToRem(8),
+    borderBottomRightRadius: pxToRem(8),
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        backgroundColor: colors.black900,
+        cursor: "not-allowed",
+      },
+    },
+  },
+});
+
+export const instantWithdrawalLabel = recipe({
+  base: {
+    fontSize: pxToRem(14),
+    fontWeight: weights.bold,
+    color: colors.black100,
+    display: "flex",
+    alignItems: "center",
+    gap: pxToRem(4),
+  },
+  variants: {
+    state: {
+      default: {},
+      disabled: {
+        opacity: 0.25,
+      },
+    },
+  },
+});
+
+export const instantWithdrawalTooltip = style({
+  maxInlineSize: pxToRem(303),
+  textAlign: "center",
 });

@@ -19,6 +19,7 @@ export const UnstakeAmountInputPad = () => {
       }}
       error={inputErrorMessage}
       hideCurrencyConversion={!!isAleoLiquidNetwork}
+      showInstantWithdrawal={!!isAleoLiquidNetwork}
       {...amountInputPad}
     />
   );

@@ -23,6 +23,7 @@ import { getStringHasNumbersOnly } from "./InputField";
 import Tooltip from "../Tooltip";
 import { Icon } from "../Icon";
 import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
+import { useUnstaking } from "@/app/_contexts/UnstakingContext";
 
 import * as S from "./amountInputPad.css";
 
@@ -44,6 +45,7 @@ export type AmountInputPadProps = BaseAmountInputPadProps & {
   isAvailableValueLoading?: boolean;
   onValueChange: (value: string) => void;
   hideCurrencyConversion?: boolean;
+  showInstantWithdrawal?: boolean;
   validatorInfo?: {
     isLoading: boolean;
     name: string;
@@ -67,9 +69,11 @@ export const AmountInputPad = ({
   onMax,
   error,
   hideCurrencyConversion,
+  showInstantWithdrawal,
   validatorInfo,
 }: AmountInputPadProps) => {
   const { network } = useShell();
+  const { setStates } = useUnstaking();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
   const isAleo = getIsAleoNetwork(network);
@@ -78,6 +82,7 @@ export const AmountInputPad = ({
 
   useEffect(() => {
     if (primaryValue === "") {
+      setStates?.({ instantWithdrawal: false });
       onValueChange("");
       return;
     }
@@ -180,6 +185,7 @@ export const AmountInputPad = ({
       isMaxDisabled={type === "stake" && BigNumber(availableValue || "0").isLessThanOrEqualTo(requiredBalance)}
       error={error}
       hideCurrencyConversion={hideCurrencyConversion}
+      showInstantWithdrawal={showInstantWithdrawal}
       validatorInfo={validatorInfo}
     />
   );

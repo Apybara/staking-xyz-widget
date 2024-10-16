@@ -57,6 +57,7 @@ export const CurrencyTabs = ({ activeCurrency, activeNetworkCurrency, onCurrency
 const CurrencySelect = ({ activeCurrency, activeNetworkCurrency, onCurrencyChange }: CurrencyTabsProps) => {
   return (
     <Select.Main
+      value={activeCurrency}
       defaultValue={activeCurrency}
       onValueChange={(value) => onCurrencyChange(value as Currency)}
       triggerContent={<Select.TriggerSet label="Currency" className={cn(S.selectTrigger)} />}

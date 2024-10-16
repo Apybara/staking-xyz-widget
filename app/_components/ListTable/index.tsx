@@ -28,10 +28,11 @@ export const Pad = ({ className, children }: PadProps) => {
 };
 
 export type ListProps = {
+  className?: string;
   children: ReactNode;
 };
-export const List = ({ children }: ListProps) => {
-  return <ul className={cn(S.list)}>{children}</ul>;
+export const List = ({ className, children }: ListProps) => {
+  return <ul className={cn(S.list, className)}>{children}</ul>;
 };
 
 export type ItemProps = {

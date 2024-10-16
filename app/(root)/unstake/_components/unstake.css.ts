@@ -71,7 +71,7 @@ export const withdrawButton = style({
   border: 0,
   borderRadius: pxToRem(8),
   color: colors.green900,
-  blockSize: pxToRem(20),
+  blockSize: pxToRem(24),
   paddingInline: pxToRem(8),
   fontSize: pxToRem(12),
   lineHeight: 1,

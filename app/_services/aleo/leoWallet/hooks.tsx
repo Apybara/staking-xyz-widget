@@ -123,7 +123,6 @@ export const useLeoWalletStates = () => {
 
 export const useLeoWalletConnector = () => {
   const { select } = useLeoWallet();
-  useLeoWalletLocalStorageHack();
 
   return async () => {
     await select("Leo Wallet" as WalletName);
@@ -177,15 +176,4 @@ export const useIsLeoWalletInstalled = () => {
 export const useLeoWalletHasStoredConnection = () => {
   const [leoWalletName] = useLocalStorage<string | undefined>("walletName", undefined);
   return leoWalletName === "Leo Wallet";
-};
-
-// This hack is necessary to avoid various Leo Wallet bugs caused by the wallet name being stored in local storage.
-const useLeoWalletLocalStorageHack = () => {
-  const { wallet } = useLeoWallet();
-
-  useEffect(() => {
-    if (wallet) {
-      localStorage.removeItem("walletName");
-    }
-  }, [wallet]);
 };

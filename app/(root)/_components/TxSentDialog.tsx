@@ -30,7 +30,7 @@ export const TxSentDialog = () => {
 
       <TransactionDialog.StepsBox>
         <p className={S.sentText}>
-          The transaction will show up in the activity page in 2~3 minutes if it&apos;s successful.
+          The transaction will show up in the activity page in 2-3 minutes if it&apos;s successful.
         </p>
       </TransactionDialog.StepsBox>
 

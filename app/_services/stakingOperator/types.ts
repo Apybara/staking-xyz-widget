@@ -334,6 +334,7 @@ export type AddressRewardsResponse = CommonResponse<
 
 export type AleoAddressRewardsResponse = {
   cumulativeRewards: number;
+  lastIndexed: number;
 };
 
 export type AddressRewardsHistoryResponse = CommonEntriesResponse<
