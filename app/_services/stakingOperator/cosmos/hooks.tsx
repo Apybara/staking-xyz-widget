@@ -221,6 +221,7 @@ export const useCosmosAddressRewards = ({ network, address }: { network: Network
       }),
       dailyRewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.daily_rewards }),
       accruedRewards: getCoinValueFromDenom({ network: castedNetwork, amount: data?.data?.accrued_rewards }),
+      lastNativeRewardsIndexedTime: null,
     },
     refetch,
   };

@@ -15,7 +15,7 @@ export const pad = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: pxToRem(16),
+  gap: pxToRem(18),
   paddingInline: pxToRem(20),
   paddingBlockStart: pxToRem(20),
   paddingBlockEnd: pxToRem(16),
@@ -31,7 +31,7 @@ globalStyle(`${pad} .skeleton-container:not(:last-of-type)`, {
 export const list = style({
   display: "flex",
   flexDirection: "column",
-  gap: pxToRem(16),
+  gap: pxToRem(18),
   inlineSize: "100%",
 });
 

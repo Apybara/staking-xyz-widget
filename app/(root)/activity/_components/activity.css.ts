@@ -2,6 +2,12 @@ import { colors, weights } from "@/theme/theme.css";
 import { pxToRem } from "@/theme/utils";
 import { globalStyle, style } from "@vanilla-extract/css";
 
+export const aleoActivityPage = style({});
+
+globalStyle(`div.${aleoActivityPage} > div`, {
+  gap: pxToRem(8),
+});
+
 export const infoBanner = style({
   display: "flex",
   justifyContent: "center",
@@ -20,4 +26,11 @@ export const infoBanner = style({
 
 export const errorPad = style({
   justifyContent: "center !important",
+});
+
+export const aleoActivityPad = style({});
+export const aleoActivityList = style({});
+
+globalStyle(`div.${aleoActivityPad}, ul.${aleoActivityList}`, {
+  gap: pxToRem(16),
 });

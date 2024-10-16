@@ -1,12 +1,10 @@
 "use client";
-import type { StakingType } from "@/app/types";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import { unstakingPeriodByNetwork, defaultNetwork } from "../../../consts";
 import Tooltip from "@/app/_components/Tooltip";
 import { Icon } from "@/app/_components/Icon";
-import Switch from "@/app/_components/Switch";
 
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";
 import { getFormattedAleoFromPAleo } from "@/app/_services/aleo/utils";
@@ -17,7 +15,7 @@ import * as S from "./unstake.css";
 
 export const UnstakeSecondaryInfoBox = () => {
   const { network, stakingType } = useShell();
-  const { coinAmountInput, instantWithdrawal, setStates } = useUnstaking();
+  const { coinAmountInput, instantWithdrawal } = useUnstaking();
   const { pAleoToAleoRate } = usePondoData() || {};
 
   const hasInput = coinAmountInput !== "" && coinAmountInput !== "0";
@@ -38,20 +36,6 @@ export const UnstakeSecondaryInfoBox = () => {
       <InfoCard.Stack>
         {isAleo && isLiquid && (
           <>
-            <InfoCard.StackItem>
-              <InfoCard.TitleBox>
-                <InfoCard.Title>Instant withdrawal</InfoCard.Title>
-
-                <Tooltip
-                  className={S.unstakingTooltip}
-                  trigger={<Icon name="info" />}
-                  content="Instant withdrawals have a fee of 0.25%. They will be processed immediately without any waiting period."
-                />
-              </InfoCard.TitleBox>
-              <InfoCard.Content>
-                <Switch onChange={(checked) => setStates({ instantWithdrawal: checked })} />
-              </InfoCard.Content>
-            </InfoCard.StackItem>
             {!instantWithdrawal ? (
               <InfoCard.StackItem>
                 <InfoCard.TitleBox>
