@@ -1,7 +1,6 @@
-import type { WalletConnectionStatus, Network, TxType } from "../types";
+import type { WalletConnectionStatus, Network } from "../types";
 import BigNumber from "bignumber.js";
-import { aleoFees, feeRatioByNetwork } from "../consts";
-import { getAleoFromPAleo, getMicroCreditsToCredits, getPAleoInstantWithdrawFee } from "../_services/aleo/utils";
+import { feeRatioByNetwork } from "../consts";
 
 export const getBasicAmountValidation = ({
   amount,
@@ -59,6 +58,7 @@ export const getBasicTxCtaValidation = ({
   unbondingDelegatedValidator,
   invalidValidator,
   differentValidator,
+  hasPendingTxs,
 }: {
   amountValidation: BasicAmountValidationResult;
   walletConnectionStatus: WalletConnectionStatus;
@@ -71,7 +71,9 @@ export const getBasicTxCtaValidation = ({
   unbondingDelegatedValidator?: boolean;
   invalidValidator?: boolean;
   differentValidator?: boolean;
+  hasPendingTxs?: boolean;
 }): BasicTxCtaValidationResult => {
+  if (hasPendingTxs) return "pendingTxs";
   if (liquidRebalancing) return "liquidRebalancing";
   if (withdrawFirst) return "withdrawFirst";
   if (withdrawing) return "withdrawing";
@@ -145,6 +147,7 @@ export type BasicTxCtaValidationResult =
   | "liquidRebalancing"
   | "withdrawing"
   | "withdrawFirst"
+  | "pendingTxs"
   | "disconnected"
   | "connecting"
   | "submittable";

@@ -4,14 +4,14 @@ import { pxToRem } from "@/theme/utils";
 
 export const sendingTransactionsCapsule = style({
   position: "fixed",
-  left: pxToRem(20),
-  bottom: pxToRem(20),
+  insetInlineStart: pxToRem(20),
+  insetBlockEnd: pxToRem(20),
   inlineSize: pxToRem(280),
   blockSize: pxToRem(70),
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
-  gap: pxToRem(10),
+  gap: pxToRem(12),
   backgroundColor: colors.black700,
   borderRadius: pxToRem(8),
   paddingInline: pxToRem(16),
@@ -42,7 +42,7 @@ export const content = style({
 export const title = style({
   display: "flex",
   alignItems: "center",
-  gap: pxToRem(4),
+  gap: pxToRem(6),
   color: colors.black000,
   fontSize: pxToRem(16),
   lineHeight: 1,
