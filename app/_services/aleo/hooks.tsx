@@ -297,17 +297,17 @@ const useAleoBroadcastTx = ({
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
   const operatorResponseQuery = getOperatorResponseQuery({ type });
-  // const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
-  //   "sendingTransactions",
-  //   [],
-  // );
+  const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
+    "sendingTransactions",
+    [],
+  );
 
   const searchParams = useSearchParams();
   const uuidParam = searchParams.get("userId");
 
   const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
-  // const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
-  const { toggleOpen: toggleTxSentDialog } = useDialog("txSent");
+  const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
+  // const { toggleOpen: toggleTxSentDialog } = useDialog("txSent");
 
   const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -349,88 +349,80 @@ const useAleoBroadcastTx = ({
 
       onBroadcasting?.();
 
-      // const timestamp = Date.now();
-      // const newSendingTransactions = [
-      //   {
-      //     address,
-      //     network: network || defaultNetwork,
-      //     title: sendingTransactionsTitleMap[type][stakingType as StakingType],
-      //     timestamp,
-      //     txId,
-      //     amount: txAmount,
-      //     status: "pending",
-      //   },
-      //   ...sendingTransactions,
-      // ] as Array<SendingTransaction>;
+      const timestamp = Date.now();
+      const newSendingTransactions = [
+        {
+          address,
+          network: network || defaultNetwork,
+          title: sendingTransactionsTitleMap[type][stakingType as StakingType],
+          timestamp,
+          txId,
+          amount: txAmount,
+          status: "pending",
+        },
+        ...sendingTransactions,
+      ] as Array<SendingTransaction>;
 
-      // setSendingTransactions(newSendingTransactions);
-      // toggleSendingTransactionsDialog(true);
-
-      toggleTxSentDialog(true);
+      setSendingTransactions(newSendingTransactions);
+      toggleSendingTransactionsDialog(true);
+      // toggleTxSentDialog(true);
       toggleTxProcedureDialog(false);
       onReset?.();
 
-      setMonitorTxByAddress({
-        apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-        address: address || "",
-        type,
-        stakingType: stakingType as StakingType,
-        amount: getCreditsToMicroCredits(amount || 0),
-      });
+      let txRes: AleoTxStatusResponse | undefined = undefined;
 
-      // Coinbase Quest user tracking
-      if (isAleoOnlyInstance && uuidParam) {
-        setCoinbaseUserTracking({
-          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-          address: address || "",
-          transactionId: txId || "",
-          userId: uuidParam,
-        });
+      txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
+
+      if (txRes?.status === "success") {
+        setSendingTransactions((prevTransactions) =>
+          prevTransactions?.map((transaction) =>
+            transaction.txId === txId ? { ...transaction, status: "success" } : transaction,
+          ),
+        );
       }
 
-      // let txRes: AleoTxStatusResponse | undefined = undefined;
+      if (!txRes || txRes.status === "error") {
+        return {
+          txId: txRes?.txId,
+          uuid,
+          isError: true,
+          uuidParam,
+        };
+      }
 
-      // txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
-
-      // if (txRes?.status === "success") {
-      //   setSendingTransactions((prevTransactions) =>
-      //     prevTransactions?.map((transaction) =>
-      //       transaction.txId === txId ? { ...transaction, status: "success" } : transaction,
-      //     ),
-      //   );
-      // }
-
-      // if (!txRes || txRes.status === "error") {
-      //   return {
-      //     txId: txRes?.txId,
-      //     uuid,
-      //     isError: true,
-      //   };
-      // }
-
-      // return {
-      //   txId: txRes.txId || txId,
-      //   uuid,
-      //   amount,
-      // };
+      return {
+        txId: txRes.txId || txId,
+        uuid,
+        amount,
+        uuidParam,
+      };
     },
-    // onSuccess: ({ txId, isError, amount }) => {
-    //   const validTxId = wallet === "leoWallet" ? undefined : txId;
+    onSuccess: ({ txId, isError, amount, uuidParam }) => {
+      const validTxId = wallet === "leoWallet" ? undefined : txId;
 
-    //   if (isError) {
-    //     const error = new Error("Sign in wallet failed");
-    //     onError?.(error, validTxId);
-    //   } else {
-    //     onSuccess?.(validTxId);
-    //     setMonitorTxByAddress({
-    //       apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-    //       address: address || "",
-    //       type,
-    //       stakingType: stakingType as StakingType,
-    //       amount: getCreditsToMicroCredits(amount || 0),
-    //     });
-    //   }
-    // },
+      if (isError) {
+        const error = new Error("Sign in wallet failed");
+        onError?.(error, validTxId);
+      } else {
+        onSuccess?.(validTxId);
+        // Coinbase Quest user tracking
+        if (isAleoOnlyInstance && uuidParam) {
+          setCoinbaseUserTracking({
+            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            address: address || "",
+            transactionId: txId || "",
+            userId: uuidParam,
+          });
+        }
+        setMonitorTxByAddress({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          address: address || "",
+          type,
+          stakingType: stakingType as StakingType,
+          amount: getCreditsToMicroCredits(amount || 0),
+        });
+      }
+    },
     onError: (error) => onError?.(error),
   });
 
