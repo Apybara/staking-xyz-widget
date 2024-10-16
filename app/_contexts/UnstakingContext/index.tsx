@@ -44,7 +44,11 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
     stakedBalance: stakedBalanceValue,
     isAleoInstantWithdrawal: states.instantWithdrawal,
   });
-  const inputErrorMessage = useUnstakeInputErrorMessage({ amountValidation, inputAmount: states.coinAmountInput });
+  const inputErrorMessage = useUnstakeInputErrorMessage({
+    amountValidation,
+    inputAmount: states.coinAmountInput,
+    ctaValidation,
+  });
   const { procedures, resetStates } = useTxProcedure({
     address,
     network: network || defaultNetwork,

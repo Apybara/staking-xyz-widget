@@ -350,10 +350,12 @@ const useAleoBroadcastTx = ({
       onBroadcasting?.();
 
       const timestamp = Date.now();
-      const newSendingTransactions = [
+      const newSendingTransactions: Array<SendingTransaction> = [
         {
           address,
           network: network || defaultNetwork,
+          stakingType: stakingType as StakingType,
+          type,
           title: sendingTransactionsTitleMap[type][stakingType as StakingType],
           timestamp,
           txId,
@@ -361,7 +363,7 @@ const useAleoBroadcastTx = ({
           status: "pending",
         },
         ...sendingTransactions,
-      ] as Array<SendingTransaction>;
+      ];
 
       setSendingTransactions(newSendingTransactions);
       toggleSendingTransactionsDialog(true);
