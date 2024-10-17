@@ -1,17 +1,16 @@
-import moment from "moment";
+import type { SendingTransaction } from "../../types";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
-import type { SendingTransaction } from "../../types";
 import { useShell } from "@/app/_contexts/ShellContext";
+import { pluralize } from "@/app/_utils";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import { getDynamicAssetValueFromCoin } from "@/app/_utils/conversions";
 import { Icon } from "../Icon";
 import * as Dialog from "../Dialog";
 import { LoadingSpinner } from "../LoadingSpinner";
-
-import * as S from "./sendingTransactionsDialog.css";
 import Tooltip from "../Tooltip";
-import { pluralize } from "@/app/_utils";
+import { TimeText } from "./TimeText";
+import * as S from "./sendingTransactionsDialog.css";
 
 export type RootSendingTransactionsDialogProps = {
   dialog: {
@@ -31,8 +30,8 @@ export const RootSendingTransactionsDialog = ({
   const { currency, coinPrice, network } = useShell();
   const activityLink = useLinkWithSearchParams("activity");
 
-  const isSomeCompleted = networkSendingTransactions.some((transaction) => transaction.status === "success");
-  const isAllCompleted = networkSendingTransactions.every((transaction) => transaction.status === "success");
+  const isSomeCompleted = networkSendingTransactions.some((transaction) => transaction.status !== "pending");
+  const isAllCompleted = networkSendingTransactions.every((transaction) => transaction.status !== "pending");
 
   const formattedTransactionsText = pluralize({ value: networkSendingTransactions.length, unit: "transaction" });
   const formattedTransactionsTextWithVerb = pluralize({
@@ -70,7 +69,7 @@ export const RootSendingTransactionsDialog = ({
                     <div className={S.itemInfo}>
                       <div className={S.titleContainer}>
                         <h5 className={cn(S.itemTitle)}>{title}</h5>
-                        <p className={cn(S.itemSubtitle)}>{moment(timestamp).fromNow()}</p>
+                        <TimeText timestamp={timestamp} />
                       </div>
                       <h5 className={cn(S.itemTitle)}>
                         {getDynamicAssetValueFromCoin({ currency, coinPrice, network, coinVal: amount })}
