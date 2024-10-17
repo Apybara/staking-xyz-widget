@@ -270,7 +270,7 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
     queryKey: ["aleoLatestBlockHeight", network],
     queryFn: () => getAleoLatestBlockHeight({ apiUrl: networkEndpoints.aleo.rpc }),
     refetchOnWindowFocus: true,
-    refetchInterval: 180000,
+    refetchInterval: 2000,
   });
 
   return {
