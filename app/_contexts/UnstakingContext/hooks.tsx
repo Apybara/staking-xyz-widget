@@ -96,7 +96,7 @@ export const useUnstakeInputErrorMessage = ({
       return defaultMessage;
     case "aleo":
       if (ctaValidation === "pendingTxs") {
-        return "Please wait for the sending transaction to complete.";
+        return "Please wait for the previous transaction to confirm.";
       }
       switch (stakingType) {
         case "liquid":
@@ -142,6 +142,6 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
     case "exceeded":
       return "You are unstaking more than your staked balance.";
     case "bufferExceeded":
-      return "Insufficient balance for fee.";
+      return "Insufficient balance for fees.";
   }
 };

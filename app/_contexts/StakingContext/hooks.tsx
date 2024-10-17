@@ -150,7 +150,7 @@ export const useStakeInputErrorMessage = ({ amountValidation }: { amountValidati
             case "exceeded":
               return "Insufficient balance";
             case "bufferExceeded":
-              return "Insufficient balance for fee";
+              return "Insufficient balance for fees.";
           }
       }
   }
@@ -166,7 +166,7 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
     case "exceeded":
       return "Insufficient balance";
     case "bufferExceeded":
-      return "Insufficient balance for fee";
+      return "Insufficient balance for fees.";
   }
 };
 

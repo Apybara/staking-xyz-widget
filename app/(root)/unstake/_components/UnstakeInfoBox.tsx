@@ -61,7 +61,7 @@ const AleoUnstakeInfo = () => {
     if (aleoUnstakeStatus?.isWithdrawable) {
       const ctaText = hasPendingTxs ? "Withdrawing" : "Withdraw";
       const tooltipText = hasPendingTxs
-        ? "Please wait for the sending transaction to complete."
+        ? "Please wait for the previous transaction to confirm."
         : isLiquid
           ? `You need to withdraw before making a new unstaking request.`
           : `You can withdraw ${aleoUnbondingAmount} now!`;
