@@ -34,7 +34,7 @@ const textMap: Record<UnstakingStates["ctaState"], string> = {
   invalid: validAmountText,
   insufficient: validAmountText,
   exceeded: validAmountText,
-  bufferExceeded: "Insufficient balance for fee",
+  bufferExceeded: "Insufficient balance for fees",
   invalidValidator: "Please check the address on URL",
   differentValidator: "",
   closedValidator: "",
