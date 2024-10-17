@@ -53,7 +53,6 @@ export type GetTxResultProps = {
   wallet: WalletType | null;
   leoWallet: Wallet | null;
   address: string;
-  network: AleoStakeProps["chainId"];
 };
 
 export type LeoWalletNetworkId = (typeof LeoWalletNetworkIds)[number];
