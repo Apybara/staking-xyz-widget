@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import numbro from "numbro";
 import { RootFooter } from "./RootFooter";
 import { useNetworkStatus, useServerStatus } from "@/app/_services/stakingOperator/hooks";
@@ -9,6 +10,10 @@ import { networkInfo } from "@/app/consts";
 export const Footer = () => {
   const { network } = useShell();
   const networkName = networkInfo[network as keyof typeof networkInfo]?.name;
+
+  const [latestBlockHeight, setLatestBlockHeight] = useState("0");
+  const [isRefetchingBlockHeight, setIsRefetchingBlockHeight] = useState<boolean | undefined>(false);
+  const [isBlockHeightError, setIsBlockHeightError] = useState<boolean | Error>(false);
 
   const networkStatus = useNetworkStatus();
   const serverStatus = useServerStatus();
@@ -34,22 +39,36 @@ export const Footer = () => {
   const isError = networkStatusError || serverStatusError || isNetworkOffline || isServerDown;
   const isRefetching = isRefetchingNetworkStatus || isRefetchingServerStatus;
 
+  useEffect(() => {
+    (!latestBlockHeight || latestBlockHeight === "0") && setLatestBlockHeight(networkStatusData?.blockHeight);
+    isRefetching === false && setIsRefetchingBlockHeight(false);
+    isError === false && setIsBlockHeightError(false);
+
+    const intervalId = setInterval(() => {
+      setLatestBlockHeight(networkStatusData?.blockHeight);
+      setIsRefetchingBlockHeight(isRefetching);
+      setIsBlockHeightError(isError);
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [networkStatusData?.blockHeight, isRefetching, isError]);
+
   const errorMessage = isNetworkOffline
     ? `${networkName} has a problem`
     : isServerDown
       ? "Our server has a problem"
       : "An error has occured";
 
-  const formattedBlockHeight = numbro(networkStatusData?.blockHeight).format({
+  const formattedBlockHeight = numbro(latestBlockHeight).format({
     thousandSeparated: true,
     mantissa: 0,
   });
 
   return (
     <RootFooter
-      isRefetching={isLoading || isRefetching}
-      networkStatus={isLoading ? "idle" : isError ? "error" : "default"}
-      blockHeight={isLoading ? "Loading.." : isError ? errorMessage : formattedBlockHeight}
+      isRefetching={isLoading || isRefetchingBlockHeight}
+      networkStatus={isLoading ? "idle" : isBlockHeightError ? "error" : "default"}
+      blockHeight={isLoading ? "Loading.." : isBlockHeightError ? errorMessage : formattedBlockHeight}
     />
   );
 };
