@@ -120,9 +120,7 @@ export const TxProcedureDialog = ({
         ))}
       </TransactionDialog.StepsBox>
       {isLeoWalletLoading && (
-        <p className={S.slowTxWarning}>
-          Please try refreshing your browser if this process is taking longer than 2 minutes
-        </p>
+        <p className={S.slowTxWarning}>Please refresh your browser if this process is taking longer than 2 minutes.</p>
       )}
       {!allProceduresCompleted ? (
         <TransactionDialog.CTAButton
