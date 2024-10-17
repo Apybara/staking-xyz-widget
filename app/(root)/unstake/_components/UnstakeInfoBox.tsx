@@ -5,6 +5,7 @@ import cn from "classnames";
 import BigNumber from "bignumber.js";
 import { useShell } from "../../../_contexts/ShellContext";
 import { useWallet } from "../../../_contexts/WalletContext";
+import { useUnstaking } from "../../../_contexts/UnstakingContext";
 import * as InfoCard from "../../../_components/InfoCard";
 import type { StakingType } from "@/app/types";
 import Tooltip from "@/app/_components/Tooltip";
@@ -41,6 +42,7 @@ const AleoUnstakeInfo = () => {
     network,
   });
   const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
+  const { ctaState } = useUnstaking();
 
   const isLiquid = stakingType === "liquid";
   const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
@@ -54,21 +56,32 @@ const AleoUnstakeInfo = () => {
   const remainingTimeString = times ? `${times.time} ${times?.unit} left` : `${unstakingPeriod} left`;
 
   const titleContent = useMemo(() => {
+    const hasPendingTxs = ctaState === "pendingTxs";
+
     if (aleoUnstakeStatus?.isWithdrawable) {
+      const ctaText = hasPendingTxs ? "Withdrawing" : "Withdraw";
+      const tooltipText = hasPendingTxs
+        ? "Please wait for the previous transaction to confirm."
+        : isLiquid
+          ? `You need to withdraw before making a new unstaking request.`
+          : `You can withdraw ${aleoUnbondingAmount} now!`;
+
       return (
         <Tooltip
-          className={S.withdrawableTooltip}
+          className={S.withdrawableTooltip({ active: !hasPendingTxs })}
           trigger={
-            <button className={S.withdrawButton} onClick={() => toggleClaimingProcedureDialog(true)}>
-              Withdraw
+            <button
+              className={S.withdrawButton({ disabled: hasPendingTxs })}
+              disabled={hasPendingTxs}
+              onClick={() => toggleClaimingProcedureDialog(true)}
+            >
+              {ctaText}
             </button>
           }
           content={
             <>
-              {isLiquid
-                ? `You need to withdraw before making a new unstaking request.`
-                : `You can withdraw ${aleoUnbondingAmount} now!`}
-              <Arrow className={S.withdrawTooltipArrow} />
+              {tooltipText}
+              <Arrow className={S.withdrawTooltipArrow({ active: !hasPendingTxs })} />
             </>
           }
         />
@@ -76,7 +89,7 @@ const AleoUnstakeInfo = () => {
     }
 
     return <p className={cn(S.remainingDays)}>{remainingTimeString}</p>;
-  }, [isLiquid, aleoUnstakeStatus?.isWithdrawable, aleoUnbondingAmount, remainingTimeString]);
+  }, [isLiquid, aleoUnstakeStatus?.isWithdrawable, aleoUnbondingAmount, remainingTimeString, ctaState]);
 
   if (!aleoUnstakeStatus) return null;
 

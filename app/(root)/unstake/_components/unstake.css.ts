@@ -1,6 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css";
 import { colors, weights } from "../../../../theme/theme.css";
 import { pxToRem } from "../../../../theme/utils";
+import { recipe } from "@vanilla-extract/recipes";
 
 export const triggerTexts = style({
   flexGrow: 1,
@@ -56,28 +57,70 @@ export const claimableStatus = style({
   backgroundColor: colors.yellow900,
 });
 
-export const withdrawableTooltip = style({
-  maxInlineSize: pxToRem(148),
-  padding: pxToRem(16),
-  backgroundColor: colors.green100,
-  border: 0,
-  color: colors.green900,
-  textAlign: "center",
-  borderRadius: pxToRem(8),
+export const withdrawableTooltip = recipe({
+  base: {
+    maxInlineSize: pxToRem(200),
+    padding: pxToRem(16),
+    backgroundColor: colors.green100,
+    border: 0,
+    color: colors.green900,
+    textAlign: "center",
+    borderRadius: pxToRem(8),
+  },
+  variants: {
+    active: {
+      true: {},
+      false: {
+        color: colors.black600,
+        backgroundColor: colors.black700,
+      },
+    },
+  },
+  defaultVariants: {
+    active: true,
+  },
 });
 
-export const withdrawButton = style({
-  backgroundColor: colors.green100,
-  border: 0,
-  borderRadius: pxToRem(8),
-  color: colors.green900,
-  blockSize: pxToRem(24),
-  paddingInline: pxToRem(8),
-  fontSize: pxToRem(12),
-  lineHeight: 1,
-  fontWeight: weights.bold,
+export const withdrawButton = recipe({
+  base: {
+    backgroundColor: colors.green100,
+    border: 0,
+    borderRadius: pxToRem(8),
+    color: colors.green900,
+    blockSize: pxToRem(24),
+    paddingInline: pxToRem(8),
+    fontSize: pxToRem(12),
+    lineHeight: 1,
+    fontWeight: weights.bold,
+  },
+  variants: {
+    disabled: {
+      true: {
+        cursor: "progress",
+        color: colors.black600,
+        backgroundColor: colors.black700,
+      },
+      false: {},
+    },
+  },
+  defaultVariants: {
+    disabled: false,
+  },
 });
 
-export const withdrawTooltipArrow = style({
-  fill: colors.green100,
+export const withdrawTooltipArrow = recipe({
+  base: {
+    fill: colors.green100,
+  },
+  variants: {
+    active: {
+      true: {},
+      false: {
+        fill: colors.black700,
+      },
+    },
+  },
+  defaultVariants: {
+    active: true,
+  },
 });

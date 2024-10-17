@@ -1,13 +1,12 @@
 import type { WalletStates } from "../../_contexts/WalletContext/types";
 import type { AleoWalletType, AleoNetwork, Network, StakingType, SendingTransaction } from "../../types";
 import type { BaseTxProcedure, TxProcedureType } from "../txProcedure/types";
-import type { AleoStakeProps, AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
+import type { AleoTxParams, AleoTxStatusResponse, AleoTxStep } from "./types";
 import type { DialogTypeVariant } from "@/app/_contexts/UIContext/types";
 import { useEffect } from "react";
 import BigNumber from "bignumber.js";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import useLocalStorage from "use-local-storage";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import {
   stakingOperatorUrlByNetwork,
@@ -57,6 +56,7 @@ import { networkEndpoints, isAleoOnlyInstance } from "@/app/consts";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { usePondoData } from "./pondo/hooks";
 import { useDialog } from "@/app/_contexts/UIContext";
+import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
 
 const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
 
@@ -297,17 +297,14 @@ const useAleoBroadcastTx = ({
   const txMethodByWallet = useAleoTxMethodByWallet({ wallet, type });
   const castedNetwork = (isAleoNetwork ? network : "aleo") as AleoNetwork;
   const operatorResponseQuery = getOperatorResponseQuery({ type });
-  // const [sendingTransactions, setSendingTransactions] = useLocalStorage<Array<SendingTransaction>>(
-  //   "sendingTransactions",
-  //   [],
-  // );
+  const { sendingTransactions, setSendingTransactions } = useSendingTransactions();
 
   const searchParams = useSearchParams();
   const uuidParam = searchParams.get("userId");
 
   const { toggleOpen: toggleTxProcedureDialog } = useDialog(txProcedureMap[type] as DialogTypeVariant);
-  // const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
-  const { toggleOpen: toggleTxSentDialog } = useDialog("txSent");
+  const { toggleOpen: toggleSendingTransactionsDialog } = useDialog("sendingTransactions");
+  // const { toggleOpen: toggleTxSentDialog } = useDialog("txSent");
 
   const aleoAddressUnbondingData = useAleoAddressUnbondingStatus({
     address: address || undefined,
@@ -317,7 +314,7 @@ const useAleoBroadcastTx = ({
     (type === "claim" && isAleoNetwork && stakingType === "liquid" ? aleoAddressUnbondingData?.amount : amount) || "";
 
   const { error, mutate, reset } = useMutation({
-    mutationKey: ["aleoTx", type, txAmount, wallet, network, address, instantWithdrawal, uuidParam],
+    mutationKey: ["aleoTx", type, txAmount, wallet, network, address, instantWithdrawal, uuidParam, isAleoTestnet],
     mutationFn: async () => {
       if (!address || !txMethodByWallet) {
         throw new Error("Failed to broadcast transaction: missing address or txMethodByWallet");
@@ -349,88 +346,84 @@ const useAleoBroadcastTx = ({
 
       onBroadcasting?.();
 
-      // const timestamp = Date.now();
-      // const newSendingTransactions = [
-      //   {
-      //     address,
-      //     network: network || defaultNetwork,
-      //     title: sendingTransactionsTitleMap[type][stakingType as StakingType],
-      //     timestamp,
-      //     txId,
-      //     amount: txAmount,
-      //     status: "pending",
-      //   },
-      //   ...sendingTransactions,
-      // ] as Array<SendingTransaction>;
+      const timestamp = Date.now();
+      const newSendingTransactions: Array<SendingTransaction> = [
+        {
+          address,
+          isAleoTestnet,
+          network: network || defaultNetwork,
+          stakingType: stakingType as StakingType,
+          type,
+          title: sendingTransactionsTitleMap[type][stakingType as StakingType],
+          timestamp,
+          txId,
+          amount: txAmount,
+          status: "pending",
+        },
+        ...sendingTransactions,
+      ];
 
-      // setSendingTransactions(newSendingTransactions);
-      // toggleSendingTransactionsDialog(true);
-
-      toggleTxSentDialog(true);
+      setSendingTransactions(newSendingTransactions);
+      toggleSendingTransactionsDialog(true);
+      // toggleTxSentDialog(true);
       toggleTxProcedureDialog(false);
       onReset?.();
 
-      setMonitorTxByAddress({
-        apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-        address: address || "",
-        type,
-        stakingType: stakingType as StakingType,
-        amount: getCreditsToMicroCredits(amount || 0),
-      });
+      let txRes: AleoTxStatusResponse | undefined = undefined;
 
-      // Coinbase Quest user tracking
-      if (isAleoOnlyInstance && uuidParam) {
-        setCoinbaseUserTracking({
-          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-          address: address || "",
-          transactionId: txId || "",
-          userId: uuidParam,
-        });
+      txRes = await getTxResult({ txId, wallet, leoWallet, address });
+
+      if (!!txRes?.status && txRes?.status !== "loading") {
+        const status = txRes.status === "success" ? "success" : "failed";
+        setSendingTransactions((prevTransactions) =>
+          prevTransactions?.map((transaction) =>
+            transaction.txId === txId ? { ...transaction, status } : transaction,
+          ),
+        );
       }
 
-      // let txRes: AleoTxStatusResponse | undefined = undefined;
+      if (!txRes || txRes.status === "error") {
+        return {
+          txId: txRes?.txId,
+          uuid,
+          isError: true,
+          uuidParam,
+        };
+      }
 
-      // txRes = await getTxResult({ txId, wallet, leoWallet, address, network: network as AleoStakeProps["chainId"] });
-
-      // if (txRes?.status === "success") {
-      //   setSendingTransactions((prevTransactions) =>
-      //     prevTransactions?.map((transaction) =>
-      //       transaction.txId === txId ? { ...transaction, status: "success" } : transaction,
-      //     ),
-      //   );
-      // }
-
-      // if (!txRes || txRes.status === "error") {
-      //   return {
-      //     txId: txRes?.txId,
-      //     uuid,
-      //     isError: true,
-      //   };
-      // }
-
-      // return {
-      //   txId: txRes.txId || txId,
-      //   uuid,
-      //   amount,
-      // };
+      return {
+        txId: txRes.txId || txId,
+        uuid,
+        amount,
+        uuidParam,
+      };
     },
-    // onSuccess: ({ txId, isError, amount }) => {
-    //   const validTxId = wallet === "leoWallet" ? undefined : txId;
+    onSuccess: ({ txId, isError, amount, uuidParam }) => {
+      const validTxId = wallet === "leoWallet" ? undefined : txId;
 
-    //   if (isError) {
-    //     const error = new Error("Sign in wallet failed");
-    //     onError?.(error, validTxId);
-    //   } else {
-    //     onSuccess?.(validTxId);
-    //     setMonitorTxByAddress({
-    //       apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-    //       address: address || "",
-    //       type,
-    //       stakingType: stakingType as StakingType,
-    //       amount: getCreditsToMicroCredits(amount || 0),
-    //     });
-    //   }
-    // },
+      if (isError) {
+        const error = new Error("Sign in wallet failed");
+        onError?.(error, validTxId);
+      } else {
+        onSuccess?.(validTxId);
+        // Coinbase Quest user tracking
+        if (isAleoOnlyInstance && uuidParam) {
+          setCoinbaseUserTracking({
+            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            address: address || "",
+            transactionId: txId || "",
+            userId: uuidParam,
+          });
+        }
+        setMonitorTxByAddress({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          address: address || "",
+          type,
+          stakingType: stakingType as StakingType,
+          amount: getCreditsToMicroCredits(amount || 0),
+        });
+      }
+    },
     onError: (error) => onError?.(error),
   });
 

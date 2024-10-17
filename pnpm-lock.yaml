@@ -62,8 +62,8 @@ importers:
         specifier: ^0.0.21
         version: 0.0.21(react@18.2.0)
       "@puzzlehq/sdk":
-        specifier: ^0.5.4
-        version: 0.5.4(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: ^0.5.5
+        version: 0.5.5(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
       "@radix-ui/react-accordion":
         specifier: ^1.2.1
         version: 1.2.1(@types/react-dom@18.2.21)(@types/react@18.2.65)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1470,21 +1470,21 @@ packages:
     resolution:
       { integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw== }
 
-  "@puzzlehq/sdk-core@0.5.4":
+  "@puzzlehq/sdk-core@0.5.5":
     resolution:
-      { integrity: sha512-8YRCm1ub+f8k9ikqRVewukiBuoOCI8qYjZAm8KwcLv/RUMpbn8Sf4PQRcSRTTsbfj+L28QvShBkkaD6arWqyuQ== }
+      { integrity: sha512-/FYBAKrlYUJZOQ/m0as3cS7Ovvtdw5cYPk0++/cZ9OM85j7vxkj+9QTKbl8unwUfUotjAsmz3Qa6MJ3Qqv+QJA== }
     peerDependencies:
       buffer: ^6.0.3
 
-  "@puzzlehq/sdk@0.5.4":
+  "@puzzlehq/sdk@0.5.5":
     resolution:
-      { integrity: sha512-lTICnETpmAfKZW8r59zEFdrTMBnTX/7ZdFDHVrnfws6jZ6+dt5oizPv2RrzQKO/D3apY838zzu9bZKoj4f/s/w== }
+      { integrity: sha512-/iBLBpdHp9fXhUp8RkAixFO6n0ETjojYlkcy4Elt3nNzivv2sEvA8LmppPEXJLexa6OZRW/HeUaIyWI2Hr8qZw== }
     peerDependencies:
       react: ^18.2.0
 
-  "@puzzlehq/types@1.0.25":
+  "@puzzlehq/types@1.0.27":
     resolution:
-      { integrity: sha512-v/LXeuenC7WoVPP8R87TSXzX8DXFfAfV0qeYARQMJHDZIbqwnhHDMVA6/S6IkiSoRCrqMA73IVv/Y884SDJNnw== }
+      { integrity: sha512-NXRfm7dtqTu1JuumGJIaV5MUSmhA/Kl6d8mgZbww5eoZy8OTysiYpbOskvocXPXyZKy18TQ9t5iptqC7qab+OA== }
 
   "@puzzlehq/walletconnect-modal-core@0.0.6":
     resolution:
@@ -8777,9 +8777,9 @@ snapshots:
 
   "@protobufjs/utf8@1.1.0": {}
 
-  "@puzzlehq/sdk-core@0.5.4(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)":
+  "@puzzlehq/sdk-core@0.5.5(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)":
     dependencies:
-      "@puzzlehq/types": 1.0.25
+      "@puzzlehq/types": 1.0.27
       "@puzzlehq/walletconnect-modal-sign-html": 0.0.6(@types/react@18.2.65)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       "@walletconnect/types": 2.14.0
       "@walletconnect/utils": 2.14.0
@@ -8810,10 +8810,10 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  "@puzzlehq/sdk@0.5.4(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)":
+  "@puzzlehq/sdk@0.5.5(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)":
     dependencies:
-      "@puzzlehq/sdk-core": 0.5.4(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
-      "@puzzlehq/types": 1.0.25
+      "@puzzlehq/sdk-core": 0.5.5(@types/react@18.2.65)(buffer@6.0.3)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+      "@puzzlehq/types": 1.0.27
       "@tanstack/query-core": 4.36.1
       "@tanstack/react-query": 4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       "@tanstack/react-query-devtools": 4.36.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -8852,7 +8852,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  "@puzzlehq/types@1.0.25":
+  "@puzzlehq/types@1.0.27":
     dependencies:
       zod: 3.21.1
 

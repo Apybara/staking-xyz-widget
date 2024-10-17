@@ -4,7 +4,8 @@ import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useWalletBalance } from "@/app/_services/wallet/hooks";
 import {
-  BasicAmountValidationResult,
+  type BasicAmountValidationResult,
+  type BasicTxCtaValidationResult,
   getBasicAmountValidation,
   getBasicTxCtaValidation,
 } from "../../_utils/transaction";
@@ -17,6 +18,7 @@ import {
 import { useAleoAddressUnbondingStatus } from "@/app/_services/aleo/hooks";
 import { getAleoTotalUnstakeFees } from "@/app/_services/aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
+import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -36,6 +38,7 @@ export const useUnstakeAmountInputValidation = ({
     network,
   });
   const { pAleoToAleoRate } = usePondoData() || {};
+  const hasPendingTxs = useHasPendingTxs();
 
   const bufferValidationAmount = useMemo(() => {
     if (network !== "aleo") return requiredBalanceUnstakingByNetwork[network || defaultNetwork].toString();
@@ -61,6 +64,7 @@ export const useUnstakeAmountInputValidation = ({
     walletConnectionStatus: connectionStatus,
     withdrawing: stakingType === "liquid" && !!aleoUnstakeStatus,
     withdrawFirst: stakingType === "liquid" && aleoUnstakeStatus?.isWithdrawable,
+    hasPendingTxs,
   });
 
   return { amountValidation, ctaValidation };
@@ -69,9 +73,11 @@ export const useUnstakeAmountInputValidation = ({
 export const useUnstakeInputErrorMessage = ({
   amountValidation,
   inputAmount,
+  ctaValidation,
 }: {
   amountValidation: BasicAmountValidationResult;
   inputAmount: UnstakingStates["coinAmountInput"];
+  ctaValidation: BasicTxCtaValidationResult;
 }) => {
   const { address } = useWallet();
   const { network, stakingType } = useShell();
@@ -88,6 +94,9 @@ export const useUnstakeInputErrorMessage = ({
     case "cosmoshubtestnet":
       return defaultMessage;
     case "aleo":
+      if (ctaValidation === "pendingTxs") {
+        return "Please wait for the previous transaction to confirm.";
+      }
       switch (stakingType) {
         case "liquid":
           if (!!aleoUnstakeStatus && !aleoUnstakeStatus?.isWithdrawable) {
@@ -103,6 +112,20 @@ export const useUnstakeInputErrorMessage = ({
   }
 };
 
+const useHasPendingTxs = () => {
+  const { stakingType } = useShell();
+  const { sendingTransactions } = useSendingTransactions();
+
+  const unstakeOrWithdrawTxs = sendingTransactions.filter(
+    (transaction) =>
+      transaction.type === "undelegate" || transaction.type === "instant_undelegate" || transaction.type === "claim",
+  );
+  const stakingTypeTxs = unstakeOrWithdrawTxs.filter((transaction) => transaction.stakingType === stakingType);
+  const hasPendingTxs = stakingTypeTxs.some((transaction) => transaction.status === "pending");
+
+  return hasPendingTxs;
+};
+
 const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: BasicAmountValidationResult }) => {
   switch (amountValidation) {
     case "valid":
@@ -113,6 +136,6 @@ const getDefaultInputErrorMessage = ({ amountValidation }: { amountValidation: B
     case "exceeded":
       return "You are unstaking more than your staked balance.";
     case "bufferExceeded":
-      return "Insufficient balance for fee.";
+      return "Insufficient balance for fees.";
   }
 };

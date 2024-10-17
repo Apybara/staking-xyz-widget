@@ -30,7 +30,7 @@ export const TopBox = ({ className, title, type, isAssistiveVisualActive = true 
         <Icon name="circleCheck" size={40} />
         {isAssistiveVisualActive && <Image src={iconMap[type]} width={40} height={40} alt="Assistive visual" />}
       </div>
-      <h2 className={cn(S.title)}>{title || titleMap[type]}</h2>
+      <Dialog.Title className={cn(S.title)}>{title || titleMap[type]}</Dialog.Title>
     </div>
   );
 };

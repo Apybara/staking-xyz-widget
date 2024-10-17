@@ -1,3 +1,4 @@
+import { TxProcedureType } from "./_services/txProcedure/types";
 import {
   NetworkVariants,
   CoinVariants,
@@ -77,6 +78,9 @@ type Device = "mobile" | "desktop";
 export type SendingTransaction = {
   address: string;
   network: Network;
+  isAleoTestnet: boolean;
+  stakingType: StakingType;
+  type: TxProcedureType;
   title: string;
   timestamp: number;
   amount: string;

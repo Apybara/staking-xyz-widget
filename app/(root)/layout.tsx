@@ -9,7 +9,7 @@ import { WidgetShell } from "../_components/WidgetShell";
 import { WalletAccountDialog } from "../_components/WalletAccountDialog";
 import { WalletConnectionDialog } from "../_components/WalletConnectionDialog";
 import { SendingTransactionsDialog } from "../_components/SendingTransactionsDialog";
-import { TxSentDialog } from "./_components/TxSentDialog";
+// import { TxSentDialog } from "./_components/TxSentDialog";
 import { getAllCoinPrices } from "../_services/coinMarketCap";
 import * as S from "./root.css";
 
@@ -40,8 +40,8 @@ const Base = async ({ children }: { children: ReactNode }) => {
       <div className={cn(S.base)}>{children}</div>
       <WalletAccountDialog />
       <WalletConnectionDialog />
-      <TxSentDialog />
-      {/* <SendingTransactionsDialog /> */}
+      {/* <TxSentDialog /> */}
+      <SendingTransactionsDialog />
     </WidgetProviders>
   );
 };
