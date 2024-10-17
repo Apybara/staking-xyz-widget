@@ -27,7 +27,7 @@ export const RewardsSummary = () => {
   return (
     <>
       <WidgetContent>
-        <FirstSection />
+        {/* <FirstSection /> */}
         <SecondSection />
         <InfoCard.Card>
           <InfoCard.Stack>
