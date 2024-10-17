@@ -2,7 +2,12 @@ import type { AleoNetwork, Network, StakingType } from "../../../types";
 import type * as T from "../types";
 import BigNumber from "bignumber.js";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { networkDefaultStakingType, serverUrlByNetwork, stakingOperatorUrlByNetwork } from "../../../consts";
+import {
+  networkDefaultStakingType,
+  networkEndpoints,
+  serverUrlByNetwork,
+  stakingOperatorUrlByNetwork,
+} from "../../../consts";
 import {
   getIsAleoNetwork,
   getCoinValueFromDenom,
@@ -27,6 +32,7 @@ import { useShell } from "@/app/_contexts/ShellContext";
 import { getAleoFromPAleo } from "../../aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
 import { usePAleoBalanceByAddress } from "@/app/_services/aleo/hooks";
+import { getAleoLatestBlockHeight } from "../../aleo/sdk";
 
 export const useAleoAddressRewards = ({ address, network }: { address: string; network: Network | null }) => {
   const shouldEnable = getIsAleoNetwork(network || "") && getIsAleoAddressFormat(address);
@@ -240,7 +246,13 @@ export const useAleoAddressHistoricalStakingAmount = ({
 };
 
 export const useAleoStatus = ({ network }: { network: Network | null }) => {
-  const { data, isLoading, isRefetching, error, refetch } = useQuery({
+  const {
+    data: networkStatusData,
+    isLoading: isLoadingNetworkStatus,
+    isRefetching: isRefetchingNetworkStatus,
+    error: networkStatusError,
+    refetch,
+  } = useQuery({
     enabled: getIsAleoNetwork(network || ""),
     queryKey: ["aleoStatus", network],
     queryFn: () => getNetworkStatus({ apiUrl: stakingOperatorUrlByNetwork[network || "aleo"] }),
@@ -248,7 +260,29 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
     refetchInterval: 180000,
   });
 
-  return { data, isLoading, isRefetching, error, refetch };
+  const {
+    data: latestBlockHeightData,
+    isLoading: isLoadingLatestBlockHeight,
+    isRefetching: isRefetchingLatestBlockHeight,
+    error: latestBlockHeightError,
+  } = useQuery({
+    enabled: getIsAleoNetwork(network || ""),
+    queryKey: ["aleoLatestBlockHeight", network],
+    queryFn: () => getAleoLatestBlockHeight({ apiUrl: networkEndpoints.aleo.rpc }),
+    refetchOnWindowFocus: true,
+    refetchInterval: 180000,
+  });
+
+  return {
+    data: {
+      networkOffline: networkStatusData?.networkOffline,
+      blockHeight: latestBlockHeightData,
+    },
+    isLoading: isLoadingNetworkStatus || isLoadingLatestBlockHeight,
+    isRefetching: isRefetchingNetworkStatus || isRefetchingLatestBlockHeight,
+    error: networkStatusError || latestBlockHeightError,
+    refetch,
+  };
 };
 
 export const useAleoReward = ({ network, amount }: { network: Network | null; amount: string }) => {
