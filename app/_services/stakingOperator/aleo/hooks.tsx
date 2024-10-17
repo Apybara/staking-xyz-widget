@@ -245,13 +245,18 @@ export const useAleoAddressHistoricalStakingAmount = ({
   };
 };
 
-export const useAleoStatus = ({ network }: { network: Network | null }) => {
+export const useAleoStatus = ({
+  network,
+  blockHeightRefetchInterval = 2000,
+}: {
+  network: Network | null;
+  blockHeightRefetchInterval?: number;
+}) => {
   const {
     data: networkStatusData,
     isLoading: isLoadingNetworkStatus,
     isRefetching: isRefetchingNetworkStatus,
     error: networkStatusError,
-    refetch,
   } = useQuery({
     enabled: getIsAleoNetwork(network || ""),
     queryKey: ["aleoStatus", network],
@@ -270,7 +275,7 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
     queryKey: ["aleoLatestBlockHeight", network],
     queryFn: () => getAleoLatestBlockHeight({ apiUrl: networkEndpoints.aleo.rpc }),
     refetchOnWindowFocus: true,
-    refetchInterval: 2000,
+    refetchInterval: blockHeightRefetchInterval,
   });
 
   return {
@@ -281,7 +286,6 @@ export const useAleoStatus = ({ network }: { network: Network | null }) => {
     isLoading: isLoadingNetworkStatus || isLoadingLatestBlockHeight,
     isRefetching: isRefetchingNetworkStatus || isRefetchingLatestBlockHeight,
     error: networkStatusError || latestBlockHeightError,
-    refetch,
   };
 };
 
