@@ -15,6 +15,7 @@ import { RewardsTooltip } from "../../../_components/RewardsTooltip";
 import { rewardsFrequencyByNetwork, defaultNetwork } from "../../../../consts";
 import { useDynamicAssetValueFromCoin } from "../../../../_utils/conversions/hooks";
 import { useNetworkReward, useAddressRewards, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
+import { getIsAleoNetwork } from "@/app/_services/aleo/utils";
 import * as S from "./rewardsSummary.css";
 
 export const RewardsSummary = () => {
@@ -24,10 +25,12 @@ export const RewardsSummary = () => {
     useNetworkReward({ amount: stakedBalance }) || {};
   const isEstRewardsLoading = isNetworkRewardsLoading || isStakedBalanceLoading;
 
+  const isAleo = getIsAleoNetwork(network);
+
   return (
     <>
       <WidgetContent>
-        {/* <FirstSection /> */}
+        {!isAleo && <FirstSection />}
         <SecondSection />
         <InfoCard.Card>
           <InfoCard.Stack>
