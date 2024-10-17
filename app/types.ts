@@ -78,6 +78,7 @@ type Device = "mobile" | "desktop";
 export type SendingTransaction = {
   address: string;
   network: Network;
+  isAleoTestnet: boolean;
   stakingType: StakingType;
   type: TxProcedureType;
   title: string;
