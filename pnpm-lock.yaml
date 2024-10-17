@@ -184,8 +184,8 @@ importers:
         specifier: ^9.1.0
         version: 9.1.0(eslint@8.57.0)
       husky:
-        specifier: ^9.0.11
-        version: 9.0.11
+        specifier: ^9.1.6
+        version: 9.1.6
       lint-staged:
         specifier: ^15.2.2
         version: 15.2.2
@@ -2428,11 +2428,6 @@ packages:
   '@vanilla-extract/private@1.0.3':
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
 
-  '@vanilla-extract/recipes@0.5.2':
-    resolution: {integrity: sha512-IcDw3tFOcSJ+DUxL8MIGbg03eyccYb6NBO/rcgp439PDuHxo5GIQefVeGc1L5mIr/lUVPwDc1N5OXTHiGpiz1A==}
-    peerDependencies:
-      '@vanilla-extract/css': ^1.0.0
-
   '@vanilla-extract/recipes@0.5.5':
     resolution: {integrity: sha512-VadU7+IFUwLNLMgks29AHav/K5h7DOEfTU91RItn5vwdPfzduodNg317YbgWCcpm7FSXkuR3B3X8ZOi95UOozA==}
     peerDependencies:
@@ -3873,8 +3868,8 @@ packages:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
 
-  husky@9.0.11:
-    resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
+  husky@9.1.6:
+    resolution: {integrity: sha512-sqbjZKK7kf44hfdE94EoX8MZNk0n7HeW37O4YrVGCF4wzgQjp+akPAkfUK5LZ6KuR/6sqeAVuXHji+RzQgOn5A==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -6940,7 +6935,7 @@ snapshots:
       '@react-aria/utils': 3.23.2(react@18.2.0)
       '@vanilla-extract/css': 1.14.1
       '@vanilla-extract/dynamic': 2.1.0
-      '@vanilla-extract/recipes': 0.5.2(@vanilla-extract/css@1.14.1)
+      '@vanilla-extract/recipes': 0.5.5(@vanilla-extract/css@1.14.1)
       animejs: 3.2.2
       bignumber.js: 9.1.2
       client-only: 0.0.1
@@ -9267,10 +9262,6 @@ snapshots:
       - webpack
 
   '@vanilla-extract/private@1.0.3': {}
-
-  '@vanilla-extract/recipes@0.5.2(@vanilla-extract/css@1.14.1)':
-    dependencies:
-      '@vanilla-extract/css': 1.14.1
 
   '@vanilla-extract/recipes@0.5.5(@vanilla-extract/css@1.14.1)':
     dependencies:
@@ -11682,7 +11673,7 @@ snapshots:
 
   human-signals@5.0.0: {}
 
-  husky@9.0.11: {}
+  husky@9.1.6: {}
 
   idb-keyval@6.2.1: {}
 
