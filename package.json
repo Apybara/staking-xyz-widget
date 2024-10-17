@@ -22,7 +22,7 @@
     "@cosmos-kit/keplr-extension": "^2.10.0",
     "@cosmos-kit/keplr-mobile": "^2.9.0",
     "@cosmos-kit/leap-extension": "^2.10.0",
-    "@cosmos-kit/leap-mobile": "^2.9.0",
+    "@cosmos-kit/leap-mobile": "^2.13.1",
     "@cosmos-kit/okxwallet": "^2.7.0",
     "@cosmos-kit/react": "^2.13.0",
     "@cosmos-kit/react-lite": "^2.9.0",
