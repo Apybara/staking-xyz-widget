@@ -1,7 +1,5 @@
 import type { UnstakingStates } from "./types";
-import type { SendingTransaction } from "@/app/types";
 import { useMemo } from "react";
-import useLocalStorage from "use-local-storage";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useWalletBalance } from "@/app/_services/wallet/hooks";
@@ -20,6 +18,7 @@ import {
 import { useAleoAddressUnbondingStatus } from "@/app/_services/aleo/hooks";
 import { getAleoTotalUnstakeFees } from "@/app/_services/aleo/utils";
 import { usePondoData } from "@/app/_services/aleo/pondo/hooks";
+import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
 
 export const useUnstakeAmountInputValidation = ({
   inputAmount,
@@ -114,15 +113,10 @@ export const useUnstakeInputErrorMessage = ({
 };
 
 const useHasPendingTxs = () => {
-  const { network, stakingType } = useShell();
-  const { address } = useWallet();
-  const [transactions] = useLocalStorage<Array<SendingTransaction>>("sendingTransactions", []);
+  const { stakingType } = useShell();
+  const { sendingTransactions } = useSendingTransactions();
 
-  const networkTxs =
-    transactions?.filter(
-      (transaction) => transaction.network === (network || defaultNetwork) && transaction.address === address,
-    ) || [];
-  const unstakeOrWithdrawTxs = networkTxs.filter(
+  const unstakeOrWithdrawTxs = sendingTransactions.filter(
     (transaction) =>
       transaction.type === "undelegate" || transaction.type === "instant_undelegate" || transaction.type === "claim",
   );
