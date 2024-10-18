@@ -10,7 +10,7 @@ export const Footer = () => {
   const { network } = useShell();
   const networkName = networkInfo[network as keyof typeof networkInfo]?.name;
 
-  const networkStatus = useNetworkStatus();
+  const networkStatus = useNetworkStatus({ blockHeightRefetchInterval: 10000 });
   const serverStatus = useServerStatus();
 
   const {

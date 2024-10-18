@@ -354,11 +354,20 @@ export const useNetworkReward = (args?: { defaultNetwork?: Network; amount?: str
   }
 };
 
-export const useNetworkStatus = (defaultNetwork?: string) => {
+export const useNetworkStatus = ({
+  defaultNetwork,
+  blockHeightRefetchInterval,
+}: {
+  defaultNetwork?: string;
+  blockHeightRefetchInterval?: number;
+}) => {
   const { network } = useShell();
   const celestiaStatus = cosmos.useCosmosStatus({ network: getIsCelestia(network) ? network : null });
   const cosmoshubStatus = cosmos.useCosmosStatus({ network: getIsCosmosHub(network) ? network : null });
-  const aleoStatus = aleo.useAleoStatus({ network: getIsAleoNetwork(network) ? network : null });
+  const aleoStatus = aleo.useAleoStatus({
+    network: getIsAleoNetwork(network) ? network : null,
+    blockHeightRefetchInterval,
+  });
 
   switch (defaultNetwork || network) {
     case "celestia":
