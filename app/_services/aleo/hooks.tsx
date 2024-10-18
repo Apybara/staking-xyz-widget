@@ -363,6 +363,16 @@ const useAleoBroadcastTx = ({
         ...sendingTransactions,
       ];
 
+      // Coinbase Quest user tracking
+      if (isAleoOnlyInstance && uuidParam) {
+        setCoinbaseUserTracking({
+          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+          address: address || "",
+          transactionId: txId || "",
+          userId: uuidParam,
+        });
+      }
+
       setSendingTransactions(newSendingTransactions);
       toggleSendingTransactionsDialog(true);
       // toggleTxSentDialog(true);
@@ -406,15 +416,6 @@ const useAleoBroadcastTx = ({
         onError?.(error, validTxId);
       } else {
         onSuccess?.(validTxId);
-        // Coinbase Quest user tracking
-        if (isAleoOnlyInstance && uuidParam) {
-          setCoinbaseUserTracking({
-            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-            address: address || "",
-            transactionId: txId || "",
-            userId: uuidParam,
-          });
-        }
         setMonitorTxByAddress({
           apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
           address: address || "",
