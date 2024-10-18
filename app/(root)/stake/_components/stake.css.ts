@@ -75,7 +75,7 @@ export const infoCardContainer = style({
 
 export const infoCard = recipe({
   base: {
-    border: 0,
+    border: "0 !important",
   },
   variants: {
     state: {
