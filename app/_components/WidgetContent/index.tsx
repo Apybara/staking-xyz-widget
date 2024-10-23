@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import cn from "classnames";
+import { useSearchParams } from "next/navigation";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import { useShell } from "@/app/_contexts/ShellContext";
@@ -10,6 +11,8 @@ import { getTxResult } from "@/app/_services/aleo/utils";
 import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
 
 import * as S from "./widgetContent.css";
+import { setCoinbaseUserTracking } from "@/app/_services/stakingOperator/aleo";
+import { isAleoOnlyInstance, stakingOperatorUrlByNetwork } from "@/app/consts";
 
 export type WidgetContentProps = {
   className?: string;
@@ -19,8 +22,11 @@ export type WidgetContentProps = {
 
 export const WidgetContent = ({ className, variant = "default", children }: WidgetContentProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { setStates } = useShell();
+  const { setStates, network } = useShell();
   const { sendingTransactions, setSendingTransactions } = useSendingTransactions();
+
+  const searchParams = useSearchParams();
+  const uuidParam = searchParams.get("userId");
 
   const { activeWallet: wallet, address, connectionStatus } = useWallet();
   const { wallet: leoWallet } = useLeoWallet();
@@ -28,6 +34,7 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
   const checkSendingTransactions = async () => {
     for (const transaction of sendingTransactions) {
       const txId = transaction.txId;
+      const isCoinbaseTracked = transaction.isCoinbaseTracked;
 
       const txRes = await getTxResult({
         txId,
@@ -39,9 +46,21 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
       if (!!txRes?.status && txRes?.status !== "loading") {
         const status = txRes.status === "success" ? "success" : "failed";
 
+        // Coinbase Quest user tracking
+        if (status === "success" && !isCoinbaseTracked && isAleoOnlyInstance && uuidParam) {
+          setCoinbaseUserTracking({
+            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            address: address || "",
+            transactionId: txId || "",
+            userId: uuidParam,
+          });
+        }
+
         setSendingTransactions((prevTransactions) =>
           prevTransactions?.map((transaction) =>
-            transaction.txId === txId ? { ...transaction, status } : transaction,
+            transaction.txId === txId
+              ? { ...transaction, status, isCoinbaseTracked: status === "success" }
+              : transaction,
           ),
         );
       }

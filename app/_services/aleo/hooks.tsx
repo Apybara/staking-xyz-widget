@@ -351,6 +351,7 @@ const useAleoBroadcastTx = ({
         {
           address,
           isAleoTestnet,
+          isCoinbaseTracked: false,
           network: network || defaultNetwork,
           stakingType: stakingType as StakingType,
           type,
@@ -362,16 +363,6 @@ const useAleoBroadcastTx = ({
         },
         ...sendingTransactions,
       ];
-
-      // Coinbase Quest user tracking
-      if (isAleoOnlyInstance && uuidParam) {
-        setCoinbaseUserTracking({
-          apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
-          address: address || "",
-          transactionId: txId || "",
-          userId: uuidParam,
-        });
-      }
 
       setSendingTransactions(newSendingTransactions);
       toggleSendingTransactionsDialog(true);
@@ -385,9 +376,22 @@ const useAleoBroadcastTx = ({
 
       if (!!txRes?.status && txRes?.status !== "loading") {
         const status = txRes.status === "success" ? "success" : "failed";
+
+        // Coinbase Quest user tracking
+        if (status === "success" && isAleoOnlyInstance && uuidParam) {
+          setCoinbaseUserTracking({
+            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            address: address || "",
+            transactionId: txId || "",
+            userId: uuidParam,
+          });
+        }
+
         setSendingTransactions((prevTransactions) =>
           prevTransactions?.map((transaction) =>
-            transaction.txId === txId ? { ...transaction, status } : transaction,
+            transaction.txId === txId
+              ? { ...transaction, status, isCoinbaseTracked: status === "success" }
+              : transaction,
           ),
         );
       }
