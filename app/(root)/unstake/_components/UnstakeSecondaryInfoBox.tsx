@@ -29,7 +29,7 @@ export const UnstakeSecondaryInfoBox = () => {
   });
   const formattedAleoTotalFees = useDynamicAssetValueFromCoin({
     coinVal: aleoTotalFees,
-    formatOptions: aleoTotalFees && aleoTotalFees < 1 ? { mantissa: 4 } : undefined,
+    formatOptions: { mantissa: 4 },
   });
 
   if (!hasInput) return null;

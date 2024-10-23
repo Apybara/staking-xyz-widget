@@ -10,6 +10,7 @@ import { WalletAccountDialog } from "../_components/WalletAccountDialog";
 import { WalletConnectionDialog } from "../_components/WalletConnectionDialog";
 import { SendingTransactionsDialog } from "../_components/SendingTransactionsDialog";
 // import { TxSentDialog } from "./_components/TxSentDialog";
+import { QuestWarningBannerAndDialog } from "../_components/QuestWarningBannerAndDialog";
 import { getAllCoinPrices } from "../_services/coinMarketCap";
 import * as S from "./root.css";
 
@@ -18,6 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <Base>
       <Header />
       <main className={cn(S.main)}>
+        <QuestWarningBannerAndDialog />
         <WidgetShell>{children}</WidgetShell>
       </main>
       <Footer />
