@@ -18,11 +18,13 @@ export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"
 };
 
 export const getLinkWithSearchParams = (searchParams: RouterStruct["searchParams"], page: string) => {
-  const { network, currency } = searchParams || {};
+  const { network, currency, device, userId } = searchParams || {};
   const params = new Array();
 
   if (network?.length) params.push(["network", network]);
   if (currency?.length) params.push(["currency", currency]);
+  if (device?.length) params.push(["device", device]);
+  if (userId?.length) params.push(["userId", userId]);
 
   const current = new URLSearchParams(params);
   const search = current.toString();
