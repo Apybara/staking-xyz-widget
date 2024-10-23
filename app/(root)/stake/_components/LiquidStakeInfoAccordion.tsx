@@ -30,6 +30,7 @@ export const LiquidStakeInfoAccordion = () => {
   const isAleo = getIsAleoNetwork(network);
   const aleoTxFee = useDynamicAssetValueFromCoin({
     coinVal: getMicroCreditsToCredits(aleoFees.stake[stakingType || "native"]),
+    formatOptions: { mantissa: 4 },
   });
 
   const fixedAleoToPAleoAmount = useMemo(() => {
