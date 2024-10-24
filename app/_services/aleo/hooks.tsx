@@ -351,7 +351,6 @@ const useAleoBroadcastTx = ({
         {
           address,
           isAleoTestnet,
-          isCoinbaseTracked: false,
           network: network || defaultNetwork,
           stakingType: stakingType as StakingType,
           type,
@@ -389,9 +388,7 @@ const useAleoBroadcastTx = ({
 
         setSendingTransactions((prevTransactions) =>
           prevTransactions?.map((transaction) =>
-            transaction.txId === txId
-              ? { ...transaction, status, isCoinbaseTracked: status === "success" }
-              : transaction,
+            transaction.txId === txId ? { ...transaction, status } : transaction,
           ),
         );
       }
