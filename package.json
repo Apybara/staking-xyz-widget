@@ -11,7 +11,7 @@
     "type-check": "tsc -p tsconfig.json --noEmit --incremental false"
   },
   "dependencies": {
-    "@cosmjs/amino": "^0.32.3",
+    "@cosmjs/amino": "^0.32.4",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmjs/encoding": "^0.32.3",
     "@cosmjs/launchpad": "^0.27.1",
