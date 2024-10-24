@@ -77,8 +77,10 @@ type Device = "mobile" | "desktop";
 
 export type SendingTransaction = {
   address: string;
+  userId: string;
   network: Network;
   isAleoTestnet: boolean;
+  isCoinbaseTracked: boolean;
   stakingType: StakingType;
   type: TxProcedureType;
   title: string;
