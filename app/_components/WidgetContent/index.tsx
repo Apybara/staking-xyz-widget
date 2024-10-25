@@ -22,7 +22,7 @@ export type WidgetContentProps = {
 
 export const WidgetContent = ({ className, variant = "default", children }: WidgetContentProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { setStates, network } = useShell();
+  const { setStates } = useShell();
   const { sendingTransactions, setSendingTransactions } = useSendingTransactions();
 
   const searchParams = useSearchParams();
@@ -50,7 +50,7 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
         // Coinbase Quest user tracking
         if (status === "success" && !isCoinbaseTracked && isAleoOnlyInstance && userId) {
           setCoinbaseUserTracking({
-            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            apiUrl: stakingOperatorUrlByNetwork.aleo,
             address: address || "",
             transactionId: txId || "",
             userId,
