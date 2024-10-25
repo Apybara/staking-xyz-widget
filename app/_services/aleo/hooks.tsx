@@ -381,7 +381,7 @@ const useAleoBroadcastTx = ({
         // Coinbase Quest user tracking
         if (status === "success" && isAleoOnlyInstance && uuidParam) {
           setCoinbaseUserTracking({
-            apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
+            apiUrl: stakingOperatorUrlByNetwork.aleo,
             address: address || "",
             transactionId: txId || "",
             userId: uuidParam,
