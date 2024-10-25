@@ -350,7 +350,7 @@ const useAleoBroadcastTx = ({
       const newSendingTransactions: Array<SendingTransaction> = [
         {
           address,
-          userId: uuidParam as string,
+          userId: uuidParam,
           isAleoTestnet,
           isCoinbaseTracked: false,
           network: network || defaultNetwork,
