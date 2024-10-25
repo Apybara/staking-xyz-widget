@@ -1,6 +1,6 @@
 "use server";
 
-import type { Network, RouterStruct, StakingType } from "../types";
+import type { ExpectedSearchParams, Network, StakingType } from "../types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
@@ -14,11 +14,11 @@ import {
 import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } from "../_utils";
 import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
 
-export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
+export default async function redirectPage(searchParams: ExpectedSearchParams, page: string) {
   const { network, currency, stakingType, validator } = searchParams || {};
   const current = getCurrentSearchParams(searchParams);
 
-  const headersList = headers();
+  const headersList = await headers();
   const hostname = headersList.get("x-forwarded-host");
 
   const isAleoUrl = ALEO_URLS.includes(hostname as string);

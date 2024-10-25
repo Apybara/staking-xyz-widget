@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { RouterStruct } from "../../types";
+import type { PageProps } from "../../types";
 import { revalidateTag } from "next/cache";
 import { getLinkWithSearchParams } from "../../_utils/routes";
 import { getLatestReleaseTag } from "../../_services/gitHub";
@@ -10,13 +10,14 @@ import { MoreNavCard } from "./_components/MoreNavCard";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import * as S from "./_components/more.css";
 
-export default async function More({ searchParams }: RouterStruct) {
+export default async function More({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
   const latestReleaseTag = await getLatestReleaseTag();
   revalidateTag("latestReleaseFromGitHub");
 
   return (
     <>
-      <PageViewTop page="More" homeURL={getLinkWithSearchParams(searchParams, "")} />
+      <PageViewTop page="More" homeURL={getLinkWithSearchParams(resolvedSearchParams, "")} />
       <ul className={S.main}>
         <li>
           <MoreNavCard
@@ -44,6 +45,6 @@ export default async function More({ searchParams }: RouterStruct) {
   );
 }
 
-export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
-  return getDynamicPageMetadata({ page: "More", networkParam: searchParams?.network });
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "More", networkParam: (await searchParams)?.network });
 }

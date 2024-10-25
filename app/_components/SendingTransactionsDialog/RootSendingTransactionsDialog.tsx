@@ -3,7 +3,7 @@ import cn from "classnames";
 import { useRouter } from "next/navigation";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { pluralize } from "@/app/_utils";
-import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { useLinkWithSearchParams } from "@/app/_utils/clientRoutes";
 import { getDynamicAssetValueFromCoin } from "@/app/_utils/conversions";
 import { Icon } from "../Icon";
 import * as Dialog from "../Dialog";

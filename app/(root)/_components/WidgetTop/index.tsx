@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useShell } from "@/app/_contexts/ShellContext";
 // import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 import { Icon } from "../../../_components/Icon";
-import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { useLinkWithSearchParams } from "@/app/_utils/clientRoutes";
 import * as S from "./widgetTop.css";
 
 export const DefaultViewTop = () => {

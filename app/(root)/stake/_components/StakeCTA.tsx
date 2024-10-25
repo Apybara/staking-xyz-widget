@@ -4,7 +4,7 @@ import type { StakingStates } from "../../../_contexts/StakingContext/types";
 import { useDialog } from "../../../_contexts/UIContext";
 import { useStaking } from "../../../_contexts/StakingContext";
 import { type CTAButtonProps, CTAButton } from "../../../_components/CTAButton";
-import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { useLinkWithSearchParams } from "@/app/_utils/clientRoutes";
 
 export const StakeCTA = () => {
   const router = useRouter();

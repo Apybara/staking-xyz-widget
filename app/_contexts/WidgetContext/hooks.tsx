@@ -2,7 +2,7 @@ import type { WidgetStates } from "./types";
 import { useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { defaultNetwork, mobileDisabledNetworks } from "../../consts";
-import { useLinkWithSearchParams } from "../../_utils/routes";
+import { useLinkWithSearchParams } from "../../_utils/clientRoutes";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 

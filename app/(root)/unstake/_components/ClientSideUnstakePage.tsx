@@ -1,5 +1,5 @@
 "use client";
-import type { RouterStruct } from "../../../types";
+import type { ExpectedSearchParams } from "../../../types";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { UnstakingProvider } from "../../../_contexts/UnstakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
@@ -13,7 +13,7 @@ import { UnstakeCTA } from "./UnstakeCTA";
 import { UnstakingProcedureDialog } from "./UnstakingProcedureDialog";
 import { useShell } from "@/app/_contexts/ShellContext";
 
-export const ClientSideUnstakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
+export const ClientSideUnstakePage = ({ searchParams }: { searchParams: ExpectedSearchParams }) => {
   const { stakingType } = useShell();
 
   return (

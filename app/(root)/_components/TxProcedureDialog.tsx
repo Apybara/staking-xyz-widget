@@ -7,7 +7,7 @@ import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import * as TransactionDialog from "../../_components/TransactionDialog";
-import { useLinkWithSearchParams } from "../../_utils/routes";
+import { useLinkWithSearchParams } from "../../_utils/clientRoutes";
 import { networkExplorerTx, defaultNetwork } from "../../consts";
 import { UnstakingStates } from "@/app/_contexts/UnstakingContext/types";
 import { StakingStates } from "@/app/_contexts/StakingContext/types";

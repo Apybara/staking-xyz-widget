@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import type { RouterStruct } from "../../types";
+import type { PageProps } from "../../types";
 import redirectPage from "../../_actions/redirectPage";
-import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { ClientSideRedelegatePage } from "./_components/ClientSideRedelegatePage";
 
-export default async function Import({ searchParams }: RouterStruct) {
-  const { network } = searchParams || {};
-  await redirectPage(searchParams, "import");
-  await revalidatePageQueries(network);
+export default async function Import({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  await redirectPage(resolvedSearchParams, "import");
 
-  return <ClientSideRedelegatePage searchParams={searchParams} />;
+  return <ClientSideRedelegatePage searchParams={resolvedSearchParams} />;
 }
 
-export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
-  return getDynamicPageMetadata({ page: "Import", networkParam: searchParams?.network });
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "Import", networkParam: (await searchParams)?.network });
 }

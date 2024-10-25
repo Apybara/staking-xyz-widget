@@ -1,7 +1,7 @@
 import Link from "next/link";
 import BigNumber from "bignumber.js";
 import { Icon } from "@/app/_components/Icon";
-import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { useLinkWithSearchParams } from "@/app/_utils/clientRoutes";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { useAddressRewards, useNetworkReward, useStakedBalance } from "@/app/_services/stakingOperator/hooks";
 import { useDynamicAssetValueFromCoin } from "@/app/_utils/conversions/hooks";

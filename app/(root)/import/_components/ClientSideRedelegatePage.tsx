@@ -1,5 +1,5 @@
 "use client";
-import type { RouterStruct } from "../../../types";
+import type { ExpectedSearchParams } from "../../../types";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
 import { RedelegatingProvider } from "@/app/_contexts/RedelegatingContext";
@@ -19,7 +19,7 @@ import { RedelegatingProcedureDialog } from "./RedelegatingProcedureDialog";
 
 import * as S from "./redelegate.css";
 
-export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
+export const ClientSideRedelegatePage = ({ searchParams }: { searchParams: ExpectedSearchParams }) => {
   const { toggleOpen } = useDialog("importHelp");
 
   const { data, isLoading } = useExternalDelegations() || {};

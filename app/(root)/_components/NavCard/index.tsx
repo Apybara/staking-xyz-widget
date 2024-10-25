@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { RouterStruct } from "../../../types";
+import type { ExpectedSearchParams } from "../../../types";
 import cn from "classnames";
 import Link from "next/link";
 import { Icon } from "../../../_components/Icon";
@@ -48,7 +48,7 @@ export const Card = ({ disabled = false, searchParams, page, endBox }: NavCardPr
 
 export type NavCardProps = {
   disabled?: boolean;
-  searchParams: RouterStruct["searchParams"];
+  searchParams: ExpectedSearchParams;
   page: "stake" | "unstake" | "rewards" | "activity";
   endBox?: {
     title: ReactNode;

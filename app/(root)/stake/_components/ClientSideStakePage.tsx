@@ -1,5 +1,5 @@
 "use client";
-import type { RouterStruct } from "../../../types";
+import type { ExpectedSearchParams } from "../../../types";
 import { getLinkWithSearchParams } from "../../../_utils/routes";
 import { StakingProvider } from "../../../_contexts/StakingContext";
 import { PageViewTop } from "../../_components/WidgetTop";
@@ -11,7 +11,7 @@ import { StakeCTA } from "./StakeCTA";
 import { WidgetContent } from "@/app/_components/WidgetContent";
 import { StakingProcedureDialog } from "./StakingProcedureDialog";
 
-export const ClientSideStakePage = ({ searchParams }: { searchParams: RouterStruct["searchParams"] }) => {
+export const ClientSideStakePage = ({ searchParams }: { searchParams: ExpectedSearchParams }) => {
   return (
     <StakingProvider>
       <PageViewTop page="Stake" homeURL={getLinkWithSearchParams(searchParams, "")} />

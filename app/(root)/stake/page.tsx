@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import type { RouterStruct } from "../../types";
+import type { PageProps } from "../../types";
 import redirectPage from "../../_actions/redirectPage";
-import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { ClientSideStakePage } from "./_components/ClientSideStakePage";
 
-export default async function Stake({ searchParams }: RouterStruct) {
-  const { network } = searchParams || {};
-  await redirectPage(searchParams, "stake");
-  await revalidatePageQueries(network);
+export default async function Stake({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  await redirectPage(resolvedSearchParams, "stake");
 
-  return <ClientSideStakePage searchParams={searchParams} />;
+  return <ClientSideStakePage searchParams={resolvedSearchParams} />;
 }
 
-export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
-  return getDynamicPageMetadata({ page: "Stake", networkParam: searchParams?.network });
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "Stake", networkParam: (await searchParams)?.network });
 }

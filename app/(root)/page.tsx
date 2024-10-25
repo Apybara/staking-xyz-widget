@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import type { RouterStruct } from "../types";
+import type { PageProps } from "../types";
 import cn from "classnames";
 import redirectPage from "../_actions/redirectPage";
 import { getDynamicPageMetadata } from "../_utils/site";
-import revalidatePageQueries from "../_actions/revalidatePageQueries";
 import { DefaultViewTop } from "./_components/WidgetTop";
 import { WidgetContent } from "../_components/WidgetContent";
 import { HeroCard } from "./_components/HeroCard";
@@ -13,10 +12,9 @@ import { RewardsNavCard } from "./_components/RewardsNavCard";
 import { ActivityNavCard } from "./_components/ActivityNavCard";
 import * as S from "./root.css";
 
-export default async function Home({ searchParams }: RouterStruct) {
-  const { network } = searchParams || {};
-  await redirectPage(searchParams, "");
-  await revalidatePageQueries(network);
+export default async function Home({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  await redirectPage(resolvedSearchParams, "");
 
   return (
     <>
@@ -24,16 +22,16 @@ export default async function Home({ searchParams }: RouterStruct) {
       <WidgetContent variant="full">
         <HeroCard />
         <nav className={cn(S.nav)}>
-          <StakeNavCard searchParams={searchParams} />
-          <UnstakeNavCard searchParams={searchParams} />
-          <RewardsNavCard searchParams={searchParams} />
-          <ActivityNavCard searchParams={searchParams} />
+          <StakeNavCard searchParams={resolvedSearchParams} />
+          <UnstakeNavCard searchParams={resolvedSearchParams} />
+          <RewardsNavCard searchParams={resolvedSearchParams} />
+          <ActivityNavCard searchParams={resolvedSearchParams} />
         </nav>
       </WidgetContent>
     </>
   );
 }
 
-export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
-  return getDynamicPageMetadata({ page: "", networkParam: searchParams?.network });
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "", networkParam: (await searchParams)?.network });
 }

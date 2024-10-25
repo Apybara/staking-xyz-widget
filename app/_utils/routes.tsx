@@ -1,9 +1,8 @@
-import type { Network, RouterStruct } from "../types";
-import { useSearchParams } from "next/navigation";
+import type { Network, ExpectedSearchParams } from "../types";
 import { defaultNetwork, networkIdToUrlParamAlias, networkUrlParamToId } from "../consts";
 import { getIsNetworkValid } from ".";
 
-export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"]) => {
+export const getCurrentSearchParams = (searchParams: ExpectedSearchParams) => {
   const { network, currency, device, validator, userId, stakingType } = searchParams || {};
   const params = new Array();
 
@@ -17,7 +16,7 @@ export const getCurrentSearchParams = (searchParams: RouterStruct["searchParams"
   return new URLSearchParams(params);
 };
 
-export const getLinkWithSearchParams = (searchParams: RouterStruct["searchParams"], page: string) => {
+export const getLinkWithSearchParams = (searchParams: ExpectedSearchParams, page: string) => {
   const { network, currency, device, userId } = searchParams || {};
   const params = new Array();
 
@@ -27,15 +26,6 @@ export const getLinkWithSearchParams = (searchParams: RouterStruct["searchParams
   if (userId?.length) params.push(["userId", userId]);
 
   const current = new URLSearchParams(params);
-  const search = current.toString();
-  const query = search ? `?${search}` : "";
-
-  return `/${page}${query}`;
-};
-
-export const useLinkWithSearchParams = (page: string) => {
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const search = current.toString();
   const query = search ? `?${search}` : "";
 

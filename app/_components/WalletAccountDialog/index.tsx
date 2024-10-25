@@ -7,7 +7,7 @@ import { useProceduralStates } from "../../_utils/hooks";
 import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { useRouter } from "next/navigation";
-import { useLinkWithSearchParams } from "@/app/_utils/routes";
+import { useLinkWithSearchParams } from "@/app/_utils/clientRoutes";
 import { useFormattedNetworkValue } from "../../_utils/conversions/hooks";
 import { walletsInfo, defaultNetwork } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";

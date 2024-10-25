@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import type { RouterStruct } from "../../types";
+import type { PageProps } from "../../types";
 import redirectPage from "../../_actions/redirectPage";
-import revalidatePageQueries from "../../_actions/revalidatePageQueries";
 import { getDynamicPageMetadata } from "../../_utils/site";
 import { ClientSideUnstakePage } from "./_components/ClientSideUnstakePage";
 
-export default async function Unstake({ searchParams }: RouterStruct) {
-  const { network } = searchParams || {};
-  await redirectPage(searchParams, "unstake");
-  await revalidatePageQueries(network);
+export default async function Unstake({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  await redirectPage(resolvedSearchParams, "unstake");
 
-  return <ClientSideUnstakePage searchParams={searchParams} />;
+  return <ClientSideUnstakePage searchParams={resolvedSearchParams} />;
 }
 
-export async function generateMetadata({ searchParams }: RouterStruct): Promise<Metadata> {
-  return getDynamicPageMetadata({ page: "Unstake", networkParam: searchParams?.network });
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  return getDynamicPageMetadata({ page: "Unstake", networkParam: (await searchParams)?.network });
 }

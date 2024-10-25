@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useDialog } from "../../_contexts/UIContext";
 import * as TransactionDialog from "../../_components/TransactionDialog";
-import { useLinkWithSearchParams } from "../../_utils/routes";
+import { useLinkWithSearchParams } from "../../_utils/clientRoutes";
 
 import * as S from "../../_components/TransactionDialog/delegationDialog.css";
 

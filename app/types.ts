@@ -60,15 +60,17 @@ export type NetworkWalletType = {
 };
 export type WalletConnectionStatus = "connecting" | "connected" | "disconnecting" | "disconnected";
 
-export type RouterStruct = {
-  searchParams?: {
-    network?: string;
-    currency?: string;
-    device?: Device;
-    stakingType?: string;
-    validator?: string;
-    userId?: string;
-  };
+export type ExpectedSearchParams = {
+  network?: string;
+  currency?: string;
+  device?: Device;
+  stakingType?: string;
+  validator?: string;
+  userId?: string;
+};
+
+export type PageProps = {
+  searchParams: Promise<ExpectedSearchParams>;
 };
 
 export type TxType = "stake" | "unstake" | "instant_unstake" | "redelegate" | "claim" | "withdraw";

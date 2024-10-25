@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 }
 
 const Base = async ({ children }: { children: ReactNode }) => {
-  const headersList = headers();
+  const headersList = await headers();
   const userAgent = headersList.get("user-agent");
   const { type } = new UAParser(userAgent || undefined).getDevice();
   const coinPrices = await getAllCoinPrices({});

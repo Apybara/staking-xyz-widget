@@ -43,7 +43,7 @@ const getCoinPriceFromCoinMarketCap = async ({ network, amount = 1, currency = [
         "X-CMC_PRO_API_KEY": process.env.COIN_MARKET_CAP_API_KEY,
       } as HeadersInit,
       next: {
-        revalidate: 1800,
+        revalidate: 180,
         tags: ["coin-price" + networkCoinPriceSymbol[network]],
       },
     },
