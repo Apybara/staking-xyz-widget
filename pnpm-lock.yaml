@@ -138,8 +138,8 @@ importers:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
       react-loading-skeleton:
-        specifier: ^3.4.0
-        version: 3.4.0(react@18.2.0)
+        specifier: ^3.5.0
+        version: 3.5.0(react@18.2.0)
       ua-parser-js:
         specifier: ^1.0.37
         version: 1.0.37
@@ -4814,8 +4814,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-loading-skeleton@3.4.0:
-    resolution: {integrity: sha512-1oJEBc9+wn7BbkQQk7YodlYEIjgeR+GrRjD+QXkVjwZN7LGIcAFHrx4NhT7UHGBxNY1+zax3c+Fo6XQM4R7CgA==}
+  react-loading-skeleton@3.5.0:
+    resolution: {integrity: sha512-gxxSyLbrEAdXTKgfbpBEFZCO/P153DnqSCQau2+o6lNy1jgMRr2MmRmOzMmyrwSaSYLRB8g7b0waYPmUjz7IhQ==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -12703,7 +12703,7 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-loading-skeleton@3.4.0(react@18.2.0):
+  react-loading-skeleton@3.5.0(react@18.2.0):
     dependencies:
       react: 18.2.0
 
