@@ -57,6 +57,7 @@ import { useShell } from "@/app/_contexts/ShellContext";
 import { usePondoData } from "./pondo/hooks";
 import { useDialog } from "@/app/_contexts/UIContext";
 import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
+import { getIsUserIdValid } from "@/app/_utils/aleoQuest";
 
 const defaultChainId = isAleoTestnet ? "testnet" : "mainnet";
 
@@ -364,7 +365,7 @@ const useAleoBroadcastTx = ({
       ];
 
       // Coinbase Quest user tracking
-      if (isAleoOnlyInstance && uuidParam) {
+      if (isAleoOnlyInstance && uuidParam && getIsUserIdValid(uuidParam)) {
         setCoinbaseUserTracking({
           apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
           address: address || "",
