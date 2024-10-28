@@ -3,7 +3,8 @@ import { useSearchParams, usePathname } from "next/navigation";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { Icon } from "@/app/_components/Icon";
 import * as Dialog from "../Dialog";
-import { CTAButton } from "../CTAButton";
+import { CTAButton, LinkCTAButton } from "../CTAButton";
+import { getIsUserIdValid } from "@/app/_utils/aleoQuest";
 import * as S from "./questWarningBannerAndDialog.css";
 
 export const QuestWarningBannerAndDialog = () => {
@@ -11,8 +12,9 @@ export const QuestWarningBannerAndDialog = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
+  const isUserIdValid = getIsUserIdValid(userId || undefined);
 
-  const shouldShowBanner = pathname === "/stake" && network === "aleo" && !!isOnMobileDevice && !userId;
+  const shouldShowBanner = pathname === "/stake" && network === "aleo" && !!isOnMobileDevice && !isUserIdValid;
   if (!shouldShowBanner) return null;
 
   return (
@@ -36,9 +38,21 @@ export const QuestWarningBannerAndDialog = () => {
               to the Coinbase Quest page and click Start to open this page again.
             </Dialog.Description>
           </div>
-          <Dialog.Close asChild>
-            <CTAButton variant="tertiary">Dismiss</CTAButton>
-          </Dialog.Close>
+          <div className={S.dialogBottom}>
+            <Dialog.Close asChild>
+              <CTAButton variant="tertiary">Dismiss</CTAButton>
+            </Dialog.Close>
+            <Dialog.Close asChild>
+              <LinkCTAButton
+                variant="secondary"
+                href="https://coinbase.com/learning-rewards/aleo/lesson/6?type=quest&campaign=aleo-quest"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open the Aleo Quest page
+              </LinkCTAButton>
+            </Dialog.Close>
+          </div>
         </Dialog.Content>
       </Dialog.Main>
     </Dialog.Root>
