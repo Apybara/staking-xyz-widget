@@ -74,3 +74,10 @@ export const dialogDescription = style({
   lineHeight: 1.4,
   color: colors.black000,
 });
+
+export const dialogBottom = style({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  gap: pxToRem(8),
+});

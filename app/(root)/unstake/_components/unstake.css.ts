@@ -59,7 +59,7 @@ export const claimableStatus = style({
 
 export const withdrawableTooltip = recipe({
   base: {
-    maxInlineSize: pxToRem(200),
+    maxInlineSize: pxToRem(240),
     padding: pxToRem(16),
     backgroundColor: colors.green100,
     border: 0,
@@ -68,16 +68,20 @@ export const withdrawableTooltip = recipe({
     borderRadius: pxToRem(8),
   },
   variants: {
-    active: {
-      true: {},
-      false: {
+    variant: {
+      active: {},
+      neutral: {
         color: colors.black600,
         backgroundColor: colors.black700,
+      },
+      warning: {
+        color: colors.yellow900,
+        backgroundColor: colors.yellow100,
       },
     },
   },
   defaultVariants: {
-    active: true,
+    variant: "active",
   },
 });
 
@@ -94,17 +98,23 @@ export const withdrawButton = recipe({
     fontWeight: weights.bold,
   },
   variants: {
-    disabled: {
-      true: {
+    variant: {
+      active: {},
+      neutral: {
         cursor: "progress",
         color: colors.black600,
         backgroundColor: colors.black700,
       },
-      false: {},
+      warning: {
+        cursor: "not-allowed",
+        color: colors.yellow900,
+        backgroundColor: colors.yellow100,
+        opacity: 0.5,
+      },
     },
   },
   defaultVariants: {
-    disabled: false,
+    variant: "active",
   },
 });
 
@@ -113,14 +123,17 @@ export const withdrawTooltipArrow = recipe({
     fill: colors.green100,
   },
   variants: {
-    active: {
-      true: {},
-      false: {
+    variant: {
+      active: {},
+      neutral: {
         fill: colors.black700,
+      },
+      warning: {
+        fill: colors.yellow100,
       },
     },
   },
   defaultVariants: {
-    active: true,
+    variant: "active",
   },
 });
