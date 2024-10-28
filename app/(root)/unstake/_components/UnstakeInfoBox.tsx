@@ -1,4 +1,5 @@
 "use client";
+import type { BasicTxCtaValidationResult } from "@/app/_utils/transaction";
 import { useMemo } from "react";
 import { Arrow } from "@radix-ui/react-tooltip";
 import cn from "classnames";
@@ -13,6 +14,7 @@ import * as AccordionInfoCard from "../../../_components/AccordionInfoCard";
 import { getTimeUnitStrings } from "../../../_utils/time";
 import { getDynamicAssetValueFromCoin } from "../../../_utils/conversions";
 import { useDialog } from "@/app/_contexts/UIContext";
+import { useWalletBalance } from "../../../_services/wallet/hooks";
 import { useAleoAddressUnbondingStatus } from "../../../_services/aleo/hooks";
 import { useUnbondingDelegations } from "../../../_services/stakingOperator/hooks";
 import { defaultNetwork, unstakingPeriodByNetwork } from "../../../consts";
@@ -35,16 +37,15 @@ export const UnstakeInfoBox = () => {
 };
 
 const AleoUnstakeInfo = () => {
-  const { address } = useWallet();
+  const { address, activeWallet } = useWallet();
   const { currency, coinPrice, network, stakingType } = useShell();
   const aleoUnstakeStatus = useAleoAddressUnbondingStatus({
     address: address || undefined,
     network,
   });
-  const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
   const { ctaState } = useUnstaking();
+  const { data: walletBalance } = useWalletBalance({ address, network: "aleo", activeWallet }) || {};
 
-  const isLiquid = stakingType === "liquid";
   const unstakingPeriod = unstakingPeriodByNetwork[network || defaultNetwork][stakingType as StakingType];
   const aleoUnbondingAmount = getDynamicAssetValueFromCoin({
     currency,
@@ -55,52 +56,88 @@ const AleoUnstakeInfo = () => {
   const times = aleoUnstakeStatus?.completionTime && getTimeUnitStrings(aleoUnstakeStatus.completionTime);
   const remainingTimeString = times ? `${times.time} ${times?.unit} left` : `${unstakingPeriod} left`;
 
-  const titleContent = useMemo(() => {
-    const hasPendingTxs = ctaState === "pendingTxs";
-
-    if (aleoUnstakeStatus?.isWithdrawable) {
-      const ctaText = hasPendingTxs ? "Withdrawing" : "Withdraw";
-      const tooltipText = hasPendingTxs
-        ? "Please wait for the previous transaction to confirm."
-        : isLiquid
-          ? `You need to withdraw before making a new unstaking request.`
-          : `You can withdraw ${aleoUnbondingAmount} now!`;
-
-      return (
-        <Tooltip
-          className={S.withdrawableTooltip({ active: !hasPendingTxs })}
-          trigger={
-            <button
-              className={S.withdrawButton({ disabled: hasPendingTxs })}
-              disabled={hasPendingTxs}
-              onClick={() => toggleClaimingProcedureDialog(true)}
-            >
-              {ctaText}
-            </button>
-          }
-          content={
-            <>
-              {tooltipText}
-              <Arrow className={S.withdrawTooltipArrow({ active: !hasPendingTxs })} />
-            </>
-          }
-        />
-      );
-    }
-
-    return <p className={cn(S.remainingDays)}>{remainingTimeString}</p>;
-  }, [isLiquid, aleoUnstakeStatus?.isWithdrawable, aleoUnbondingAmount, remainingTimeString, ctaState]);
-
-  if (!aleoUnstakeStatus) return null;
+  if (!aleoUnstakeStatus || !aleoUnbondingAmount || !walletBalance) return null;
 
   return (
     <InfoCard.Card>
       <InfoCard.StackItem>
-        <InfoCard.TitleBox>{titleContent}</InfoCard.TitleBox>
+        <InfoCard.TitleBox>
+          <AleoTitleContent
+            isWithdrawable={aleoUnstakeStatus.isWithdrawable}
+            aleoUnbondingAmount={aleoUnbondingAmount}
+            remainingTimeString={remainingTimeString}
+            ctaState={ctaState}
+            walletBalance={walletBalance}
+          />
+        </InfoCard.TitleBox>
         <InfoCard.Content>{aleoUnbondingAmount}</InfoCard.Content>
       </InfoCard.StackItem>
     </InfoCard.Card>
   );
+};
+
+const AleoTitleContent = ({
+  isWithdrawable,
+  aleoUnbondingAmount,
+  remainingTimeString,
+  ctaState,
+  walletBalance,
+}: {
+  isWithdrawable: boolean;
+  aleoUnbondingAmount: string;
+  remainingTimeString: string;
+  ctaState: BasicTxCtaValidationResult;
+  walletBalance: string;
+}) => {
+  const isLiquid = useShell().stakingType === "liquid";
+  const { toggleOpen: toggleClaimingProcedureDialog } = useDialog("claimingProcedure");
+
+  const hasPendingTxs = ctaState === "pendingTxs";
+  const hasSufficientBalanceForFees = BigNumber(walletBalance).isGreaterThanOrEqualTo(0.15);
+
+  const tooltipText = useMemo(() => {
+    if (hasPendingTxs) return "Please wait for the previous transaction to confirm.";
+    if (!hasSufficientBalanceForFees) return "Insufficient balance for fees.";
+    if (isLiquid) return "You need to withdraw before making a new unstaking request.";
+    return `You can withdraw ${aleoUnbondingAmount} now!`;
+  }, [hasPendingTxs, isLiquid, hasSufficientBalanceForFees, aleoUnbondingAmount]);
+
+  const ctaText = useMemo(() => {
+    if (hasPendingTxs) return "Withdrawing";
+    if (!hasSufficientBalanceForFees) return "Withdraw";
+    return "Withdraw";
+  }, [hasPendingTxs, hasSufficientBalanceForFees]);
+
+  const statusVariant = useMemo(() => {
+    if (hasPendingTxs) return "neutral";
+    if (!hasSufficientBalanceForFees) return "warning";
+    return "active";
+  }, [hasPendingTxs, hasSufficientBalanceForFees]);
+
+  if (isWithdrawable) {
+    return (
+      <Tooltip
+        className={S.withdrawableTooltip({ variant: statusVariant })}
+        trigger={
+          <button
+            className={S.withdrawButton({ variant: statusVariant })}
+            disabled={statusVariant !== "active"}
+            onClick={() => toggleClaimingProcedureDialog(true)}
+          >
+            {ctaText}
+          </button>
+        }
+        content={
+          <>
+            {tooltipText}
+            <Arrow className={S.withdrawTooltipArrow({ variant: statusVariant })} />
+          </>
+        }
+      />
+    );
+  }
+
+  return <p className={cn(S.remainingDays)}>{remainingTimeString}</p>;
 };
 
 const DefaultUnstakeInfo = () => {
