@@ -35,7 +35,6 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
     for (const transaction of sendingTransactions) {
       const txId = transaction.txId;
       const isCoinbaseTracked = transaction.isCoinbaseTracked;
-      const userId = uuidParam || transaction.userId;
 
       const txRes = await getTxResult({
         txId,
@@ -48,12 +47,12 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
         const status = txRes.status === "success" ? "success" : "failed";
 
         // Coinbase Quest user tracking
-        if (status === "success" && !isCoinbaseTracked && isAleoOnlyInstance && userId) {
+        if (status === "success" && !isCoinbaseTracked && isAleoOnlyInstance && uuidParam) {
           setCoinbaseUserTracking({
             apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
             address: address || "",
             transactionId: txId || "",
-            userId,
+            userId: uuidParam,
           });
         }
 

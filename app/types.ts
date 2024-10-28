@@ -77,7 +77,7 @@ type Device = "mobile" | "desktop";
 
 export type SendingTransaction = {
   address: string;
-  userId: string | null;
+  userId: string;
   network: Network;
   isAleoTestnet: boolean;
   isCoinbaseTracked: boolean;
