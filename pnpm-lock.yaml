@@ -15,8 +15,8 @@ importers:
         specifier: ^0.32.3
         version: 0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@cosmjs/encoding':
-        specifier: ^0.32.3
-        version: 0.32.3
+        specifier: ^0.32.4
+        version: 0.32.4
       '@cosmjs/launchpad':
         specifier: ^0.27.1
         version: 0.27.1
@@ -403,8 +403,8 @@ packages:
   '@cosmjs/encoding@0.31.3':
     resolution: {integrity: sha512-6IRtG0fiVYwyP7n+8e54uTx2pLYijO48V3t9TLiROERm5aUAIzIlz6Wp0NYaI5he9nh1lcEGJ1lkquVKFw3sUg==}
 
-  '@cosmjs/encoding@0.32.3':
-    resolution: {integrity: sha512-p4KF7hhv8jBQX3MkB3Defuhz/W0l3PwWVYU2vkVuBJ13bJcXyhU9nJjiMkaIv+XP+W2QgRceqNNgFUC5chNR7w==}
+  '@cosmjs/encoding@0.32.4':
+    resolution: {integrity: sha512-tjvaEy6ZGxJchiizzTn7HVRiyTg1i4CObRRaTRPknm5EalE13SV+TCHq38gIDfyUeden4fCuaBVEdBR5+ti7Hw==}
 
   '@cosmjs/json-rpc@0.32.3':
     resolution: {integrity: sha512-JwFRWZa+Y95KrAG8CuEbPVOSnXO2uMSEBcaAB/FBU3Mo4jQnDoUjXvt3vwtFWxfAytrWCn1I4YDFaOAinnEG/Q==}
@@ -6018,14 +6018,14 @@ snapshots:
   '@cosmjs/amino@0.32.2':
     dependencies:
       '@cosmjs/crypto': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/utils': 0.32.3
 
   '@cosmjs/amino@0.32.3':
     dependencies:
       '@cosmjs/crypto': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/utils': 0.32.3
 
@@ -6033,7 +6033,7 @@ snapshots:
     dependencies:
       '@cosmjs/amino': 0.32.3
       '@cosmjs/crypto': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/proto-signing': 0.32.3
       '@cosmjs/stargate': 0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -6091,7 +6091,7 @@ snapshots:
 
   '@cosmjs/crypto@0.32.3':
     dependencies:
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/utils': 0.32.3
       '@noble/hashes': 1.3.3
@@ -6123,7 +6123,7 @@ snapshots:
       bech32: 1.1.4
       readonly-date: 1.0.0
 
-  '@cosmjs/encoding@0.32.3':
+  '@cosmjs/encoding@0.32.4':
     dependencies:
       base64-js: 1.5.1
       bech32: 1.1.4
@@ -6196,7 +6196,7 @@ snapshots:
     dependencies:
       '@cosmjs/amino': 0.32.3
       '@cosmjs/crypto': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/utils': 0.32.3
       cosmjs-types: 0.9.0
@@ -6215,7 +6215,7 @@ snapshots:
     dependencies:
       '@confio/ics23': 0.6.8
       '@cosmjs/amino': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/proto-signing': 0.32.3
       '@cosmjs/stream': 0.32.3
@@ -6232,7 +6232,7 @@ snapshots:
     dependencies:
       '@confio/ics23': 0.6.8
       '@cosmjs/amino': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/math': 0.32.3
       '@cosmjs/proto-signing': 0.32.3
       '@cosmjs/stream': 0.32.3
@@ -6252,7 +6252,7 @@ snapshots:
   '@cosmjs/tendermint-rpc@0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@cosmjs/crypto': 0.32.3
-      '@cosmjs/encoding': 0.32.3
+      '@cosmjs/encoding': 0.32.4
       '@cosmjs/json-rpc': 0.32.3
       '@cosmjs/math': 0.32.3
       '@cosmjs/socket': 0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
