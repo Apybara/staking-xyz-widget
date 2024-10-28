@@ -4,6 +4,7 @@ import { useShell } from "@/app/_contexts/ShellContext";
 import { Icon } from "@/app/_components/Icon";
 import * as Dialog from "../Dialog";
 import { CTAButton, LinkCTAButton } from "../CTAButton";
+import { getIsUserIdValid } from "@/app/_utils/aleoQuest";
 import * as S from "./questWarningBannerAndDialog.css";
 
 export const QuestWarningBannerAndDialog = () => {
@@ -11,8 +12,9 @@ export const QuestWarningBannerAndDialog = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
+  const isUserIdValid = getIsUserIdValid(userId || undefined);
 
-  const shouldShowBanner = pathname === "/stake" && network === "aleo" && !!isOnMobileDevice && !userId;
+  const shouldShowBanner = pathname === "/stake" && network === "aleo" && !!isOnMobileDevice && !isUserIdValid;
   if (!shouldShowBanner) return null;
 
   return (
