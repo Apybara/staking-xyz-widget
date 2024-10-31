@@ -17,7 +17,7 @@
     "@cosmjs/launchpad": "^0.27.1",
     "@cosmjs/proto-signing": "^0.32.3",
     "@cosmjs/stargate": "^0.32.3",
-    "@cosmjs/tendermint-rpc": "^0.32.3",
+    "@cosmjs/tendermint-rpc": "^0.32.4",
     "@cosmos-kit/core": "^2.11.0",
     "@cosmos-kit/keplr-extension": "^2.10.0",
     "@cosmos-kit/keplr-mobile": "^2.9.0",
