@@ -51,8 +51,8 @@ importers:
         specifier: ^2.13.0
         version: 2.13.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@interchain-ui/react@1.23.11(@types/react@18.2.65)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
       '@cosmos-kit/react-lite':
-        specifier: ^2.9.0
-        version: 2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: ^2.15.1
+        version: 2.15.1(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
       '@demox-labs/aleo-wallet-adapter-base':
         specifier: ^0.0.22
         version: 0.0.22
@@ -334,8 +334,14 @@ packages:
   '@chain-registry/client@1.44.4':
     resolution: {integrity: sha512-ofa8AhXX0t0M21IpVGUtw6F/Mza8hS6PWGJZfAphgr4kf9w8+zLKGSRtSvtBChi/BaXd6lUax1dczY1vgLK9LA==}
 
+  '@chain-registry/client@1.53.3':
+    resolution: {integrity: sha512-lgAUs82pTPVR8NFTUS9+3BQXy3OEmtCu1m3427Kt583ZRS6bpNhCRlz0wesaVeghnpXXQMIThwki277Qgf6vOg==}
+
   '@chain-registry/keplr@1.64.4':
     resolution: {integrity: sha512-8/5FhWhH36Zo2oBkFtzauNfwWFbeIAp0PuiXztqqJluRkyFUUh4E4OcgHzqeT9C4hmAhoU4c7B0Bgc0QCYr82A==}
+
+  '@chain-registry/keplr@1.74.19':
+    resolution: {integrity: sha512-Ng9cle+V3KP/OGkN4StqXOEFJKoIFBGx+z9IKL4O/w+yxrQB3LtBn92H239/U3u+7bPc7I26gfXZHSM4IdzetQ==}
 
   '@chain-registry/types@0.18.3':
     resolution: {integrity: sha512-l2WS6+xhHFClzyijrXa9pKcZHtGeU4UHWncWRFZ+O9OXvksr7t+RevRvyAKs9/cJ/DihjuYseszexcueAqmuVg==}
@@ -343,11 +349,20 @@ packages:
   '@chain-registry/types@0.41.4':
     resolution: {integrity: sha512-LeW2nXd0dmnI+TC4L2xC3RNooUthUfou1yFcdsinSW6EP9qEwo2BwwnWWAcMG+dsPvXfM4AfmisVBrxbX2OKqw==}
 
+  '@chain-registry/types@0.46.15':
+    resolution: {integrity: sha512-gzf+pkAbEZ7fKuTuwmrEAEcx1K/BNrKuCnB9s+WwSo9Ad/3s+GV5LOXcOOxjjHh9Mrs9kvnxKvzKjOwWu8gDJw==}
+
   '@chain-registry/types@0.50.1':
     resolution: {integrity: sha512-HPPN4NPYXW9i7TRHNLJOdKK84z9m0mByy4mY+jHE3t9zIvOz0nK0qEG00uAlgakJvPeoh2ge7gWUAUOTNcbd6A==}
 
+  '@chain-registry/types@0.50.3':
+    resolution: {integrity: sha512-ICX9fEz53PaclXc5kYxEoGh43emGU2GZWUm3h2Y8vXoM+k+/6gV5hCJFqgM4lP3db7m10Oy8w3xeNmjbU27dUg==}
+
   '@chain-registry/utils@1.42.4':
     resolution: {integrity: sha512-9Bt5ga2ofLmZSAN4OQnHJRextWgECGHxCzLrQM6KpreqxqRoZFn3jA6TZsEM4/O01QpBmbUQ+VSurIpNkmY1mw==}
+
+  '@chain-registry/utils@1.51.3':
+    resolution: {integrity: sha512-go1h4n4F7n0O1GqohT4b9mD+WpYrKnXPJTutIVexnescgHlE9y8TxNZYpC0lkO/eO1RmDyc1lhtu8IVDuEWfzQ==}
 
   '@coinbase/wallet-sdk@3.9.3':
     resolution: {integrity: sha512-N/A2DRIf0Y3PHc1XAMvbBUu4zisna6qAdqABMZwBMNEfWrXpAwx16pZGkYCLGE+Rvv1edbcB2LYDRnACNcmCiw==}
@@ -469,6 +484,9 @@ packages:
   '@cosmos-kit/core@2.11.0':
     resolution: {integrity: sha512-jYvy/0h5hveJqzD6emVDODEY3bVI2ZUfawZx1TrMJRjZ6gqn/GDwNB4JdsIuZx/pO/XB6FBjk1tf9WptyE9Y/A==}
 
+  '@cosmos-kit/core@2.15.0':
+    resolution: {integrity: sha512-oqAgBRqYd60bbxhLP/XLM1X9PQCyUd2Hr1pQf9jnaoiq5O7z/PD4Hoow1E9C2RWbBcFjK6d1s/bXNkFj+zFn0w==}
+
   '@cosmos-kit/keplr-extension@2.10.0':
     resolution: {integrity: sha512-wBLPJOzyQUq72rHPdLjRFWQzQXc112AO7hUI76lI3JDbfJP4Hz/EJSinNygmYfIkyd3gKaudj7PjCYaK4tXcTA==}
     peerDependencies:
@@ -499,8 +517,8 @@ packages:
   '@cosmos-kit/okxwallet@2.7.0':
     resolution: {integrity: sha512-HIo20RSzP9EaJwuJLcD5hMjVybpxgVmyjJjL0D9xZKQ6FmwQoTufHZnSNk6qEhgyH3bZ3H/O+P3tOztP4b1t4g==}
 
-  '@cosmos-kit/react-lite@2.9.0':
-    resolution: {integrity: sha512-sjExfQRXrWtp74g2yIHCzqsaYGTb/CuDMonmX1bwrmfnetXjX+Yf4LAB2kR7lsU3/V6v8f/mA/izsy/mxmQaSw==}
+  '@cosmos-kit/react-lite@2.15.1':
+    resolution: {integrity: sha512-ET+SV4mEM/7TWn0fcKBO0Wxr8mi0YLMjJNPde8aXhN4Dn3wMLU20Gup/vM1RR0iYCKg4pmvKmiSXrSoW1UsQ+A==}
     peerDependencies:
       '@types/react': '>= 17'
       '@types/react-dom': '>= 17'
@@ -2411,9 +2429,6 @@ packages:
   '@vanilla-extract/babel-plugin-debug-ids@1.0.5':
     resolution: {integrity: sha512-Rc9A6ylsw7EBErmpgqCMvc/Z/eEZxI5k1xfLQHw7f5HHh3oc5YfzsAsYU/PdmSNjF1dp3sGEViBdDltvwnfVaA==}
 
-  '@vanilla-extract/css@1.14.1':
-    resolution: {integrity: sha512-V4JUuHNjZgl64NGfkDJePqizkNgiSpphODtZEs4cCPuxLAzwOUJYATGpejwimJr1n529kq4DEKWexW22LMBokw==}
-
   '@vanilla-extract/css@1.16.0':
     resolution: {integrity: sha512-05JTbvG1E0IrSZKZ5el2EM9CmAX0XSdsNY+d4aRZxDvYf3/hwxomvFFEz2b/awjgg9yTVHW83Wq19wE4OoTEMg==}
 
@@ -2427,9 +2442,6 @@ packages:
     resolution: {integrity: sha512-/11nYE5a3waT0lwRps+2thvyQlBKi4wK+SF8za/QWwO5GTD3O/bZ3nl96MC00SXZHALHwbV1trdtqVLCq9Xqpw==}
     peerDependencies:
       next: '>=12.1.7'
-
-  '@vanilla-extract/private@1.0.3':
-    resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
 
   '@vanilla-extract/private@1.0.6':
     resolution: {integrity: sha512-ytsG/JLweEjw7DBuZ/0JCN4WAQgM9erfSTdS1NQY778hFQSZ6cfCDEZZ0sgVm4k54uNz6ImKB33AYvSR//fjxw==}
@@ -5965,9 +5977,25 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  '@chain-registry/client@1.53.3':
+    dependencies:
+      '@chain-registry/types': 0.50.3
+      '@chain-registry/utils': 1.51.3
+      bfs-path: 1.0.2
+      cross-fetch: 3.1.8
+    transitivePeerDependencies:
+      - encoding
+
   '@chain-registry/keplr@1.64.4':
     dependencies:
       '@chain-registry/types': 0.41.4
+      '@keplr-wallet/cosmos': 0.12.28
+      '@keplr-wallet/crypto': 0.12.28
+      semver: 7.6.0
+
+  '@chain-registry/keplr@1.74.19':
+    dependencies:
+      '@chain-registry/types': 0.50.3
       '@keplr-wallet/cosmos': 0.12.28
       '@keplr-wallet/crypto': 0.12.28
       semver: 7.6.0
@@ -5978,11 +6006,21 @@ snapshots:
 
   '@chain-registry/types@0.41.4': {}
 
+  '@chain-registry/types@0.46.15': {}
+
   '@chain-registry/types@0.50.1': {}
+
+  '@chain-registry/types@0.50.3': {}
 
   '@chain-registry/utils@1.42.4':
     dependencies:
       '@chain-registry/types': 0.41.4
+      bignumber.js: 9.1.2
+      sha.js: 2.4.11
+
+  '@chain-registry/utils@1.51.3':
+    dependencies:
+      '@chain-registry/types': 0.50.3
       bignumber.js: 9.1.2
       sha.js: 2.4.11
 
@@ -6335,6 +6373,43 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
+  '@cosmos-kit/core@2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@chain-registry/client': 1.53.3
+      '@chain-registry/keplr': 1.74.19
+      '@chain-registry/types': 0.46.15
+      '@cosmjs/amino': 0.32.3
+      '@cosmjs/cosmwasm-stargate': 0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@cosmjs/proto-signing': 0.32.3
+      '@cosmjs/stargate': 0.32.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@dao-dao/cosmiframe': 0.1.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
+      '@walletconnect/types': 2.11.0
+      bowser: 2.11.0
+      cosmjs-types: 0.9.0
+      events: 3.3.0
+      nock: 13.5.4
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - debug
+      - encoding
+      - ioredis
+      - supports-color
+      - uWebSockets.js
+      - utf-8-validate
+
   '@cosmos-kit/keplr-extension@2.10.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@chain-registry/keplr': 1.64.4
@@ -6502,10 +6577,10 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@cosmos-kit/react-lite@2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@cosmos-kit/react-lite@2.15.1(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)':
     dependencies:
-      '@chain-registry/types': 0.41.4
-      '@cosmos-kit/core': 2.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@chain-registry/types': 0.46.15
+      '@cosmos-kit/core': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@dao-dao/cosmiframe': 0.1.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)
       '@types/react': 18.2.65
       '@types/react-dom': 18.2.21
@@ -6538,7 +6613,7 @@ snapshots:
     dependencies:
       '@chain-registry/types': 0.41.4
       '@cosmos-kit/core': 2.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@cosmos-kit/react-lite': 2.9.0(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
+      '@cosmos-kit/react-lite': 2.15.1(@cosmjs/amino@0.32.3)(@cosmjs/proto-signing@0.32.3)(@types/react-dom@18.2.21)(@types/react@18.2.65)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)
       '@interchain-ui/react': 1.23.11(@types/react@18.2.65)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@react-icons/all-files': 4.1.0(react@18.2.0)
       '@types/react': 18.2.65
@@ -6951,9 +7026,9 @@ snapshots:
       '@react-aria/listbox': 3.11.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@react-aria/overlays': 3.21.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@react-aria/utils': 3.23.2(react@18.2.0)
-      '@vanilla-extract/css': 1.14.1
+      '@vanilla-extract/css': 1.16.0
       '@vanilla-extract/dynamic': 2.1.0
-      '@vanilla-extract/recipes': 0.5.5(@vanilla-extract/css@1.14.1)
+      '@vanilla-extract/recipes': 0.5.5(@vanilla-extract/css@1.16.0)
       animejs: 3.2.2
       bignumber.js: 9.1.2
       client-only: 0.0.1
@@ -6961,7 +7036,7 @@ snapshots:
       copy-to-clipboard: 3.3.3
       immer: 10.0.4
       lodash: 4.17.21
-      rainbow-sprinkles: 0.17.1(@vanilla-extract/css@1.14.1)(@vanilla-extract/dynamic@2.1.0)
+      rainbow-sprinkles: 0.17.1(@vanilla-extract/css@1.16.0)(@vanilla-extract/dynamic@2.1.0)
       react: 18.2.0
       react-aria: 3.32.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-dom: 18.2.0(react@18.2.0)
@@ -6969,6 +7044,7 @@ snapshots:
       zustand: 4.5.2(@types/react@18.2.65)(immer@10.0.4)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
+      - babel-plugin-macros
 
   '@internationalized/date@3.5.2':
     dependencies:
@@ -9221,20 +9297,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vanilla-extract/css@1.14.1':
-    dependencies:
-      '@emotion/hash': 0.9.1
-      '@vanilla-extract/private': 1.0.3
-      chalk: 4.1.2
-      css-what: 6.1.0
-      cssesc: 3.0.0
-      csstype: 3.1.3
-      deep-object-diff: 1.1.9
-      deepmerge: 4.3.1
-      media-query-parser: 2.0.2
-      modern-ahocorasick: 1.0.1
-      outdent: 0.8.0
-
   '@vanilla-extract/css@1.16.0':
     dependencies:
       '@emotion/hash': 0.9.1
@@ -9254,7 +9316,7 @@ snapshots:
 
   '@vanilla-extract/dynamic@2.1.0':
     dependencies:
-      '@vanilla-extract/private': 1.0.3
+      '@vanilla-extract/private': 1.0.6
 
   '@vanilla-extract/integration@7.1.1(@types/node@20.11.26)(terser@5.29.1)':
     dependencies:
@@ -9298,13 +9360,7 @@ snapshots:
       - terser
       - webpack
 
-  '@vanilla-extract/private@1.0.3': {}
-
   '@vanilla-extract/private@1.0.6': {}
-
-  '@vanilla-extract/recipes@0.5.5(@vanilla-extract/css@1.14.1)':
-    dependencies:
-      '@vanilla-extract/css': 1.14.1
 
   '@vanilla-extract/recipes@0.5.5(@vanilla-extract/css@1.16.0)':
     dependencies:
@@ -12687,9 +12743,9 @@ snapshots:
 
   radix3@1.1.1: {}
 
-  rainbow-sprinkles@0.17.1(@vanilla-extract/css@1.14.1)(@vanilla-extract/dynamic@2.1.0):
+  rainbow-sprinkles@0.17.1(@vanilla-extract/css@1.16.0)(@vanilla-extract/dynamic@2.1.0):
     dependencies:
-      '@vanilla-extract/css': 1.14.1
+      '@vanilla-extract/css': 1.16.0
       '@vanilla-extract/dynamic': 2.1.0
 
   randombytes@2.1.0:
