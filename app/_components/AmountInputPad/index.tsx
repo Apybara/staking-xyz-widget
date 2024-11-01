@@ -73,7 +73,6 @@ export const AmountInputPad = ({
   validatorInfo,
 }: AmountInputPadProps) => {
   const { network } = useShell();
-  const { setStates } = useUnstaking();
   const castedNetwork = network || defaultNetwork;
   const networkCurrency = networkCurrencyMap[castedNetwork];
   const isAleo = getIsAleoNetwork(network);
@@ -82,7 +81,6 @@ export const AmountInputPad = ({
 
   useEffect(() => {
     if (primaryValue === "") {
-      setStates?.({ instantWithdrawal: false });
       onValueChange("");
       return;
     }
