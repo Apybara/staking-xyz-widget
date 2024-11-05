@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@chain-registry/types": "^0.50.1",
-    "@keplr-wallet/types": "^0.12.76",
+    "@keplr-wallet/types": "^0.12.151",
     "@types/logrocket-react": "^3.0.3",
     "@types/node": "^22",
     "@types/react": "^18",
