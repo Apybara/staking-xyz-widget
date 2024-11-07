@@ -8,8 +8,10 @@ import { useShell } from "@/app/_contexts/ShellContext";
 import { useWallet } from "@/app/_contexts/WalletContext";
 import { getTxResult } from "@/app/_services/aleo/utils";
 import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
+import { eventActionMap } from "@/app/_services/postHog/consts";
 
 import * as S from "./widgetContent.css";
+import { usePostHog } from "posthog-js/react";
 
 export type WidgetContentProps = {
   className?: string;
@@ -25,9 +27,13 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
   const { activeWallet: wallet, address, connectionStatus } = useWallet();
   const { wallet: leoWallet } = useLeoWallet();
 
+  const posthog = usePostHog();
+
   const checkSendingTransactions = async () => {
     for (const transaction of sendingTransactions) {
       const txId = transaction.txId;
+      const type = transaction.type;
+      const isTrackedOnPosthog = transaction.isTrackedOnPosthog;
 
       const txRes = await getTxResult({
         txId,
@@ -38,10 +44,16 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
 
       if (!!txRes?.status && txRes?.status !== "loading") {
         const status = txRes.status === "success" ? "success" : "failed";
+        const action = eventActionMap[type];
+
+        !isTrackedOnPosthog &&
+          posthog.capture(
+            status === "success" ? `${type}_tx_flow${action}_succeeded` : `${type}_tx_flow${action}_failed`,
+          );
 
         setSendingTransactions((prevTransactions) =>
           prevTransactions?.map((transaction) =>
-            transaction.txId === txId ? { ...transaction, status } : transaction,
+            transaction.txId === txId ? { ...transaction, status, isTrackedOnPosthog: true } : transaction,
           ),
         );
       }
