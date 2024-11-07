@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { usePostHog } from "posthog-js/react";
 import cn from "classnames";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
@@ -11,7 +12,6 @@ import { useSendingTransactions } from "@/app/_components/SendingTransactionsDia
 import { eventActionMap } from "@/app/_services/postHog/consts";
 
 import * as S from "./widgetContent.css";
-import { usePostHog } from "posthog-js/react";
 
 export type WidgetContentProps = {
   className?: string;
