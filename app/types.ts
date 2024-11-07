@@ -79,6 +79,7 @@ export type SendingTransaction = {
   address: string;
   network: Network;
   isAleoTestnet: boolean;
+  isTrackedOnPosthog: boolean;
   stakingType: StakingType;
   type: TxProcedureType;
   title: string;
