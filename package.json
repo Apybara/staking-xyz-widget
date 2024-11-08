@@ -61,7 +61,7 @@
     "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
-    "@chain-registry/types": "^0.50.1",
+    "@chain-registry/types": "^0.50.8",
     "@keplr-wallet/types": "^0.12.76",
     "@types/logrocket-react": "^3.0.3",
     "@types/node": "^22",
