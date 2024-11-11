@@ -3,6 +3,7 @@ import type * as T from "./types";
 import { createContext, useContext, useReducer } from "react";
 import { useActivity, useLastOffsetActivity } from "../../_services/stakingOperator/hooks";
 import { useInitLogRocket } from "../../_services/logRocket/hooks";
+import { useSentry } from "../../_services/sentry/hooks";
 
 import { useWidgetRouterGate } from "./hooks";
 
@@ -14,6 +15,7 @@ export const WidgetProvider = ({ children }: T.WidgetProviderProps) => {
   const [states, setStates] = useReducer<T.UseWidgetReducer>((prev, next) => ({ ...prev, ...next }), initialStates);
 
   useInitLogRocket();
+  useSentry();
   useWidgetRouterGate({ status: states.status, setStates });
 
   // Prefetch queries
