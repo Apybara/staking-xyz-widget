@@ -154,8 +154,8 @@ importers:
         version: 3.0.0(react@18.2.0)
     devDependencies:
       '@chain-registry/types':
-        specifier: ^0.50.1
-        version: 0.50.1
+        specifier: ^0.50.11
+        version: 0.50.11
       '@keplr-wallet/types':
         specifier: ^0.12.76
         version: 0.12.76
@@ -346,8 +346,8 @@ packages:
   '@chain-registry/types@0.41.4':
     resolution: {integrity: sha512-LeW2nXd0dmnI+TC4L2xC3RNooUthUfou1yFcdsinSW6EP9qEwo2BwwnWWAcMG+dsPvXfM4AfmisVBrxbX2OKqw==}
 
-  '@chain-registry/types@0.50.1':
-    resolution: {integrity: sha512-HPPN4NPYXW9i7TRHNLJOdKK84z9m0mByy4mY+jHE3t9zIvOz0nK0qEG00uAlgakJvPeoh2ge7gWUAUOTNcbd6A==}
+  '@chain-registry/types@0.50.11':
+    resolution: {integrity: sha512-QJHvEbWkALE5wJKN9Im8wETvygJoqbieRLOA2seE/u2fcx1VklG3QXuUEIc2+Q4qFbhOrJaSRJ4DcvjR7mkMWw==}
 
   '@chain-registry/utils@1.42.4':
     resolution: {integrity: sha512-9Bt5ga2ofLmZSAN4OQnHJRextWgECGHxCzLrQM6KpreqxqRoZFn3jA6TZsEM4/O01QpBmbUQ+VSurIpNkmY1mw==}
@@ -6513,7 +6513,7 @@ snapshots:
 
   '@chain-registry/types@0.41.4': {}
 
-  '@chain-registry/types@0.50.1': {}
+  '@chain-registry/types@0.50.11': {}
 
   '@chain-registry/utils@1.42.4':
     dependencies:
