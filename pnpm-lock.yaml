@@ -102,8 +102,8 @@ importers:
         specifier: ^9.1.2
         version: 9.1.2
       chain-registry:
-        specifier: 1.33.2
-        version: 1.33.2
+        specifier: 1.69.31
+        version: 1.69.31
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -331,14 +331,14 @@ packages:
   '@chain-registry/keplr@1.64.4':
     resolution: {integrity: sha512-8/5FhWhH36Zo2oBkFtzauNfwWFbeIAp0PuiXztqqJluRkyFUUh4E4OcgHzqeT9C4hmAhoU4c7B0Bgc0QCYr82A==}
 
-  '@chain-registry/types@0.18.3':
-    resolution: {integrity: sha512-l2WS6+xhHFClzyijrXa9pKcZHtGeU4UHWncWRFZ+O9OXvksr7t+RevRvyAKs9/cJ/DihjuYseszexcueAqmuVg==}
-
   '@chain-registry/types@0.41.4':
     resolution: {integrity: sha512-LeW2nXd0dmnI+TC4L2xC3RNooUthUfou1yFcdsinSW6EP9qEwo2BwwnWWAcMG+dsPvXfM4AfmisVBrxbX2OKqw==}
 
   '@chain-registry/types@0.50.1':
     resolution: {integrity: sha512-HPPN4NPYXW9i7TRHNLJOdKK84z9m0mByy4mY+jHE3t9zIvOz0nK0qEG00uAlgakJvPeoh2ge7gWUAUOTNcbd6A==}
+
+  '@chain-registry/types@0.50.12':
+    resolution: {integrity: sha512-bGz9Ddhx0yK8jI1jfosjYOxqd0mLpOiokljggUNFez/9KPHM9V782s0U2t+AQEwEu6/+52yblxDWzcmyPv+jqA==}
 
   '@chain-registry/utils@1.42.4':
     resolution: {integrity: sha512-9Bt5ga2ofLmZSAN4OQnHJRextWgECGHxCzLrQM6KpreqxqRoZFn3jA6TZsEM4/O01QpBmbUQ+VSurIpNkmY1mw==}
@@ -3403,8 +3403,8 @@ packages:
     resolution: {integrity: sha512-2hWHHMVrfffgoEmsAUh8vCxHoLa1vgodtC73+C5cSarkJlwTapnqAzcHINlP6Ej0DXuP4OmmJ9LF+JaNM5Lj/g==}
     engines: {node: '>=12.19'}
 
-  chain-registry@1.33.2:
-    resolution: {integrity: sha512-n1q72/t9UJYMFP3SL2ecqpAMGvr6pz4v+oyE36GQseMTooseqgBtcx2Nx1FiO4TFATqQo5T/c2CENzrXpgMpzA==}
+  chain-registry@1.69.31:
+    resolution: {integrity: sha512-P5EoJRCC+GejFW6z/tDgF3IePaH8Hj03z8B9JzMyh0xMDMb4rrewglao7aRMQyi0oAwSJsEpxTsx8SyISaKGFw==}
 
   chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -6476,13 +6476,11 @@ snapshots:
       '@keplr-wallet/crypto': 0.12.28
       semver: 7.6.0
 
-  '@chain-registry/types@0.18.3':
-    dependencies:
-      '@babel/runtime': 7.24.0
-
   '@chain-registry/types@0.41.4': {}
 
   '@chain-registry/types@0.50.1': {}
+
+  '@chain-registry/types@0.50.12': {}
 
   '@chain-registry/utils@1.42.4':
     dependencies:
@@ -11644,10 +11642,9 @@ snapshots:
 
   cbor-web@8.1.0: {}
 
-  chain-registry@1.33.2:
+  chain-registry@1.69.31:
     dependencies:
-      '@babel/runtime': 7.24.0
-      '@chain-registry/types': 0.18.3
+      '@chain-registry/types': 0.50.12
 
   chalk@2.4.2:
     dependencies:
