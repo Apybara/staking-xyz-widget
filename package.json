@@ -58,7 +58,7 @@
     "use-local-storage": "^3.0.0"
   },
   "devDependencies": {
-    "@chain-registry/types": "^0.50.6",
+    "@chain-registry/types": "^0.50.13",
     "@keplr-wallet/types": "^0.12.152",
     "@types/node": "^22",
     "@types/react": "^18",
