@@ -41,7 +41,7 @@
     "@vanilla-extract/recipes": "^0.5.5",
     "aleo-wallet-adapter-leo": "link: @demox-labs/aleo-wallet-adapter-leo",
     "bignumber.js": "^9.1.2",
-    "chain-registry": "1.69.23",
+    "chain-registry": "1.69.32",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "graz": "^0.1.15",
