@@ -1,7 +1,8 @@
-import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, StakingType } from "./types";
+import type { Network, NetworkInfo, NetworkCurrency, WalletInfo, WalletType, StakingType, TxType } from "./types";
 import CelestiaLogo from "./_assets/networks/celestia-logo.svg";
 import CosmosHubLogo from "./_assets/networks/cosmos-hub-logo.svg";
 import AleoLogo from "./_assets/networks/aleo-logo.svg";
+import { TxProcedureType } from "./_services/txProcedure/types";
 
 export const isAleoTestnet = process.env.NEXT_PUBLIC_ALEO_USE_TESTNET === "true";
 export const isAleoOnlyInstance = process.env.NEXT_PUBLIC_ALEO_ONLY_INSTANCE === "true";
@@ -571,3 +572,11 @@ export const ALEO_MTSP_ID =
 export const PALEO_INSTANT_WITHDRAWAL_FEE_RATIO = 0.0025;
 
 export const SENTRY_DSN = "https://643f741c11417b63f07b0ed27657fcc3@sentry.staking.xyz/2";
+
+export const txProcedureMap: Record<TxProcedureType, TxType> = {
+  delegate: "stake",
+  undelegate: "unstake",
+  instant_undelegate: "instant_unstake",
+  redelegate: "redelegate",
+  claim: "claim",
+};

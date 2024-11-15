@@ -10,6 +10,7 @@ import { useWallet } from "@/app/_contexts/WalletContext";
 import { getTxResult } from "@/app/_services/aleo/utils";
 import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
 import { eventActionMap } from "@/app/_services/postHog/consts";
+import { txProcedureMap } from "@/app/consts";
 
 import * as S from "./widgetContent.css";
 
@@ -44,11 +45,14 @@ export const WidgetContent = ({ className, variant = "default", children }: Widg
 
       if (!!txRes?.status && txRes?.status !== "loading") {
         const status = txRes.status === "success" ? "success" : "failed";
-        const action = eventActionMap[type];
+        const formattedType = txProcedureMap[type];
+        const action = eventActionMap[formattedType];
 
         !isTrackedOnPosthog &&
           posthog.capture(
-            status === "success" ? `${type}_tx_flow${action}_succeeded` : `${type}_tx_flow${action}_failed`,
+            status === "success"
+              ? `${formattedType}_tx_flow${action}_succeeded`
+              : `${formattedType}_tx_flow${action}_failed`,
           );
 
         setSendingTransactions((prevTransactions) =>
