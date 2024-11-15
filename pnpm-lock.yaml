@@ -30,8 +30,8 @@ importers:
         specifier: ^0.32.4
         version: 0.32.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@cosmos-kit/core':
-        specifier: ^2.11.0
-        version: 2.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^2.15.0
+        version: 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@cosmos-kit/keplr-extension':
         specifier: ^2.14.0
         version: 2.14.0(@cosmjs/amino@0.32.4)(@cosmjs/proto-signing@0.32.4)(bufferutil@4.0.8)(starknet@6.11.0)(utf-8-validate@5.0.10)
@@ -316,26 +316,17 @@ packages:
   '@celo/utils@3.2.0':
     resolution: {integrity: sha512-Om1mTzwsdV6FVPvraafcJeRnzz7Xv/lyGmyZaoEZ9fErRadu9ZrOsuDQniYe+lD78DQ0NATxJL04WjhEKVkn+A==}
 
-  '@chain-registry/client@1.44.4':
-    resolution: {integrity: sha512-ofa8AhXX0t0M21IpVGUtw6F/Mza8hS6PWGJZfAphgr4kf9w8+zLKGSRtSvtBChi/BaXd6lUax1dczY1vgLK9LA==}
-
   '@chain-registry/client@1.53.12':
     resolution: {integrity: sha512-nfeEuz0gjCR+IewHSOtxHHKb2F6FvxU9G9kNYmCwe75u9S3txvv8XC91zaWEkwZigx01c/wWsiEjDUauiwBdSg==}
 
   '@chain-registry/keplr@1.74.31':
     resolution: {integrity: sha512-6X9CwWYkLTxgvGzMyQUkLSbgsAYEh/cCAL3139cKXKz2cs3QwbxvP/M+gJ/aBsWlCxerjfxd/bqhpjHLmOiKWA==}
 
-  '@chain-registry/types@0.41.4':
-    resolution: {integrity: sha512-LeW2nXd0dmnI+TC4L2xC3RNooUthUfou1yFcdsinSW6EP9qEwo2BwwnWWAcMG+dsPvXfM4AfmisVBrxbX2OKqw==}
-
   '@chain-registry/types@0.46.15':
     resolution: {integrity: sha512-gzf+pkAbEZ7fKuTuwmrEAEcx1K/BNrKuCnB9s+WwSo9Ad/3s+GV5LOXcOOxjjHh9Mrs9kvnxKvzKjOwWu8gDJw==}
 
   '@chain-registry/types@0.50.12':
     resolution: {integrity: sha512-bGz9Ddhx0yK8jI1jfosjYOxqd0mLpOiokljggUNFez/9KPHM9V782s0U2t+AQEwEu6/+52yblxDWzcmyPv+jqA==}
-
-  '@chain-registry/utils@1.42.4':
-    resolution: {integrity: sha512-9Bt5ga2ofLmZSAN4OQnHJRextWgECGHxCzLrQM6KpreqxqRoZFn3jA6TZsEM4/O01QpBmbUQ+VSurIpNkmY1mw==}
 
   '@chain-registry/utils@1.51.12':
     resolution: {integrity: sha512-XBojoTJtDF5Ka9/XSSgrE9+sFlcaFnK9laqDgUeRPYHi2D9G03ZeGueM1lu5vm0KfMPtX8B3TnJlEJqfUXZBAA==}
@@ -468,9 +459,6 @@ packages:
 
   '@cosmology/lcd@0.12.0':
     resolution: {integrity: sha512-f2mcySYO1xdislAhuWtNFmg4q/bzY3Aem2UkDzYzI0ZELVev5i2Pi0bQrYUNTeNg1isAo0Kyrdqj/4YPqEwjGA==}
-
-  '@cosmos-kit/core@2.11.0':
-    resolution: {integrity: sha512-jYvy/0h5hveJqzD6emVDODEY3bVI2ZUfawZx1TrMJRjZ6gqn/GDwNB4JdsIuZx/pO/XB6FBjk1tf9WptyE9Y/A==}
 
   '@cosmos-kit/core@2.15.0':
     resolution: {integrity: sha512-oqAgBRqYd60bbxhLP/XLM1X9PQCyUd2Hr1pQf9jnaoiq5O7z/PD4Hoow1E9C2RWbBcFjK6d1s/bXNkFj+zFn0w==}
@@ -4247,10 +4235,6 @@ packages:
   lossless-json@4.0.2:
     resolution: {integrity: sha512-+z0EaLi2UcWi8MZRxA5iTb6m4Ys4E80uftGY+yG5KNFJb5EceQXOhdW/pWJZ8m97s26u7yZZAYMcKWNztSZssA==}
 
-  lru-cache@10.2.0:
-    resolution: {integrity: sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==}
-    engines: {node: 14 || >=16.14}
-
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
@@ -5339,9 +5323,6 @@ packages:
     resolution: {integrity: sha512-k24RCVWlEcjkdOxYmVJgeD/0a1TiSpqLg+ZalVGV9lsnr4yqu0w7tX/x2xX6G4zpkgQnRf89lxuZ1wsbjXM8lw==}
     hasBin: true
 
-  ufo@1.4.0:
-    resolution: {integrity: sha512-Hhy+BhRBleFjpJ2vchUNN40qgkh0366FWJGqVLYBHev0vpHTrXSA0ryT+74UiW6KWsldNurQMKGqCm1M2zBciQ==}
-
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
 
@@ -5981,15 +5962,6 @@ snapshots:
     transitivePeerDependencies:
       - fp-ts
 
-  '@chain-registry/client@1.44.4':
-    dependencies:
-      '@chain-registry/types': 0.41.4
-      '@chain-registry/utils': 1.42.4
-      bfs-path: 1.0.2
-      cross-fetch: 3.1.8
-    transitivePeerDependencies:
-      - encoding
-
   '@chain-registry/client@1.53.12':
     dependencies:
       '@chain-registry/types': 0.50.12
@@ -6006,17 +5978,9 @@ snapshots:
       '@keplr-wallet/crypto': 0.12.28
       semver: 7.6.0
 
-  '@chain-registry/types@0.41.4': {}
-
   '@chain-registry/types@0.46.15': {}
 
   '@chain-registry/types@0.50.12': {}
-
-  '@chain-registry/utils@1.42.4':
-    dependencies:
-      '@chain-registry/types': 0.41.4
-      bignumber.js: 9.1.2
-      sha.js: 2.4.11
 
   '@chain-registry/utils@1.51.12':
     dependencies:
@@ -6356,42 +6320,6 @@ snapshots:
       axios: 0.27.2
     transitivePeerDependencies:
       - debug
-
-  '@cosmos-kit/core@2.11.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@chain-registry/client': 1.44.4
-      '@chain-registry/types': 0.41.4
-      '@cosmjs/amino': 0.32.4
-      '@cosmjs/cosmwasm-stargate': 0.32.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@cosmjs/proto-signing': 0.32.4
-      '@cosmjs/stargate': 0.32.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@dao-dao/cosmiframe': 0.1.0(@cosmjs/amino@0.32.4)(@cosmjs/proto-signing@0.32.4)
-      '@walletconnect/types': 2.11.0
-      bowser: 2.11.0
-      cosmjs-types: 0.9.0
-      events: 3.3.0
-      nock: 13.5.4
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bufferutil
-      - debug
-      - encoding
-      - ioredis
-      - supports-color
-      - uWebSockets.js
-      - utf-8-validate
 
   '@cosmos-kit/core@2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
@@ -7705,7 +7633,7 @@ snapshots:
   '@parcel/watcher-wasm@2.4.1':
     dependencies:
       is-glob: 4.0.3
-      micromatch: 4.0.5
+      micromatch: 4.0.8
 
   '@parcel/watcher-win32-arm64@2.4.1':
     optional: true
@@ -7720,7 +7648,7 @@ snapshots:
     dependencies:
       detect-libc: 1.0.3
       is-glob: 4.0.3
-      micromatch: 4.0.5
+      micromatch: 4.0.8
       node-addon-api: 7.1.0
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.4.1
@@ -9109,7 +9037,7 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/jsonrpc-ws-connection': 1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/keyvaluestorage': 1.1.1
-      '@walletconnect/logger': 2.0.1
+      '@walletconnect/logger': 2.1.2
       '@walletconnect/relay-api': 1.0.9
       '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
@@ -9274,7 +9202,7 @@ snapshots:
   '@walletconnect/jsonrpc-utils@1.0.8':
     dependencies:
       '@walletconnect/environment': 1.0.1
-      '@walletconnect/jsonrpc-types': 1.0.3
+      '@walletconnect/jsonrpc-types': 1.0.4
       tslib: 1.14.1
 
   '@walletconnect/jsonrpc-ws-connection@1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
@@ -9402,7 +9330,7 @@ snapshots:
 
   '@walletconnect/relay-api@1.0.9':
     dependencies:
-      '@walletconnect/jsonrpc-types': 1.0.3
+      '@walletconnect/jsonrpc-types': 1.0.4
       tslib: 1.14.1
 
   '@walletconnect/relay-auth@1.0.4':
@@ -9518,7 +9446,7 @@ snapshots:
       '@walletconnect/heartbeat': 1.2.1
       '@walletconnect/jsonrpc-types': 1.0.3
       '@walletconnect/keyvaluestorage': 1.1.1
-      '@walletconnect/logger': 2.0.1
+      '@walletconnect/logger': 2.1.2
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -11933,8 +11861,6 @@ snapshots:
 
   lossless-json@4.0.2: {}
 
-  lru-cache@10.2.0: {}
-
   lru-cache@10.4.3: {}
 
   lru-cache@5.1.1:
@@ -12100,7 +12026,7 @@ snapshots:
 
   nock@13.5.4:
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.7
       json-stringify-safe: 5.0.1
       propagate: 2.0.1
     transitivePeerDependencies:
@@ -12268,7 +12194,7 @@ snapshots:
 
   path-scurry@1.10.1:
     dependencies:
-      lru-cache: 10.2.0
+      lru-cache: 10.4.3
       minipass: 7.0.4
 
   path-scurry@1.11.1:
@@ -13076,8 +13002,6 @@ snapshots:
 
   ua-parser-js@1.0.39: {}
 
-  ufo@1.4.0: {}
-
   ufo@1.5.3: {}
 
   uint8arrays@3.1.0:
@@ -13129,11 +13053,11 @@ snapshots:
       destr: 2.0.3
       h3: 1.11.1
       listhen: 1.7.2
-      lru-cache: 10.2.0
+      lru-cache: 10.4.3
       mri: 1.2.0
       node-fetch-native: 1.6.4
       ofetch: 1.3.4
-      ufo: 1.4.0
+      ufo: 1.5.3
     optionalDependencies:
       idb-keyval: 6.2.1
     transitivePeerDependencies:
