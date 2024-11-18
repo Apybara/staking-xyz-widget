@@ -1,16 +1,9 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { usePostHog } from "posthog-js/react";
 import cn from "classnames";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import { useShell } from "@/app/_contexts/ShellContext";
-import { useWallet } from "@/app/_contexts/WalletContext";
-import { getTxResult } from "@/app/_services/aleo/utils";
-import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
-import { eventActionMap } from "@/app/_services/postHog/consts";
-import { txProcedureMap } from "@/app/consts";
 
 import * as S from "./widgetContent.css";
 
@@ -23,50 +16,6 @@ export type WidgetContentProps = {
 export const WidgetContent = ({ className, variant = "default", children }: WidgetContentProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const { setStates } = useShell();
-  const { sendingTransactions, setSendingTransactions } = useSendingTransactions();
-
-  const { activeWallet: wallet, address, connectionStatus } = useWallet();
-  const { wallet: leoWallet } = useLeoWallet();
-
-  const posthog = usePostHog();
-
-  const checkSendingTransactions = async () => {
-    for (const transaction of sendingTransactions) {
-      const txId = transaction.txId;
-      const type = transaction.type;
-      const isTrackedOnPosthog = transaction.isTrackedOnPosthog;
-
-      const txRes = await getTxResult({
-        txId,
-        wallet,
-        leoWallet,
-        address: address as string,
-      });
-
-      if (!!txRes?.status && txRes?.status !== "loading") {
-        const status = txRes.status === "success" ? "success" : "failed";
-        const formattedType = txProcedureMap[type];
-        const action = eventActionMap[formattedType];
-
-        !isTrackedOnPosthog &&
-          posthog.capture(
-            status === "success"
-              ? `${formattedType}_tx_flow${action}_succeeded`
-              : `${formattedType}_tx_flow${action}_failed`,
-          );
-
-        setSendingTransactions((prevTransactions) =>
-          prevTransactions?.map((transaction) =>
-            transaction.txId === txId ? { ...transaction, status, isTrackedOnPosthog: true } : transaction,
-          ),
-        );
-      }
-    }
-  };
-
-  useEffect(() => {
-    connectionStatus === "connected" && checkSendingTransactions();
-  }, [connectionStatus]);
 
   const setScrollActive = () => {
     setStates({ isScrollActive: !!ref.current?.scrollTop });
