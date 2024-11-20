@@ -9,6 +9,7 @@ import { useWallet } from "../../../_contexts/WalletContext";
 import { getIsCosmosNetwork, getCoinValueFromDenom } from "../utils";
 import { getIsGrazWalletType } from "./utils";
 import { chainInfo } from "./consts";
+import { networkWalletPrefixes } from "../../../consts";
 
 const defaultNetwork = "celestia";
 
@@ -83,7 +84,10 @@ export const useGrazWalletBalance = ({ address, network, activeWallet }: UseWall
         const castedNetwork = (network || defaultNetwork) as CosmosNetwork;
 
         return await client?.getAllBalances(
-          toBech32(chainInfo[castedNetwork].bech32Config.bech32PrefixAccAddr, fromBech32(address!).data),
+          toBech32(
+            chainInfo[castedNetwork].bech32Config?.bech32PrefixAccAddr || networkWalletPrefixes[castedNetwork],
+            fromBech32(address!).data,
+          ),
         );
       } catch (error) {
         throw error;
