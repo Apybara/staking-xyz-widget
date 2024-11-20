@@ -3,11 +3,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import cn from "classnames";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { useWallet as useLeoWallet } from "@demox-labs/aleo-wallet-adapter-react";
 import { useShell } from "@/app/_contexts/ShellContext";
-import { useWallet } from "@/app/_contexts/WalletContext";
-import { getTxResult } from "@/app/_services/aleo/utils";
-import { useSendingTransactions } from "@/app/_components/SendingTransactionsDialog";
 
 import * as S from "./widgetContent.css";
 
@@ -20,37 +16,6 @@ export type WidgetContentProps = {
 export const WidgetContent = ({ className, variant = "default", children }: WidgetContentProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const { setStates } = useShell();
-  const { sendingTransactions, setSendingTransactions } = useSendingTransactions();
-
-  const { activeWallet: wallet, address, connectionStatus } = useWallet();
-  const { wallet: leoWallet } = useLeoWallet();
-
-  const checkSendingTransactions = async () => {
-    for (const transaction of sendingTransactions) {
-      const txId = transaction.txId;
-
-      const txRes = await getTxResult({
-        txId,
-        wallet,
-        leoWallet,
-        address: address as string,
-      });
-
-      if (!!txRes?.status && txRes?.status !== "loading") {
-        const status = txRes.status === "success" ? "success" : "failed";
-
-        setSendingTransactions((prevTransactions) =>
-          prevTransactions?.map((transaction) =>
-            transaction.txId === txId ? { ...transaction, status } : transaction,
-          ),
-        );
-      }
-    }
-  };
-
-  useEffect(() => {
-    connectionStatus === "connected" && checkSendingTransactions();
-  }, [connectionStatus]);
 
   const setScrollActive = () => {
     setStates({ isScrollActive: !!ref.current?.scrollTop });

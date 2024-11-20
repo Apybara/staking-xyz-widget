@@ -352,6 +352,7 @@ const useAleoBroadcastTx = ({
         {
           address,
           isAleoTestnet,
+          isTrackedOnPosthog: false,
           network: network || defaultNetwork,
           stakingType: stakingType as StakingType,
           type,
@@ -417,6 +418,11 @@ const useAleoBroadcastTx = ({
         onError?.(error, validTxId);
       } else {
         onSuccess?.(validTxId);
+        setSendingTransactions((prevTransactions) =>
+          prevTransactions?.map((transaction) =>
+            transaction.txId === txId ? { ...transaction, isTrackedOnPosthog: true } : transaction,
+          ),
+        );
         setMonitorTxByAddress({
           apiUrl: stakingOperatorUrlByNetwork[network || "aleo"],
           address: address || "",

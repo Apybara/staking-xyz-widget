@@ -18,9 +18,9 @@ import { getUTCStringFromUnixTimestamp, getUTCStringFromUnixTimeString } from ".
 import { useDynamicAssetValueFromCoin } from "../../../_utils/conversions/hooks";
 import { getIsAleoNetwork } from "../../../_services/aleo/utils";
 import { useActivity } from "../../../_services/stakingOperator/hooks";
-import { networkExplorerTx, defaultNetwork } from "../../../consts";
-import * as S from "./activity.css";
+import { networkExplorerTx, defaultNetwork, isAleoOnlyInstance } from "../../../consts";
 import { Icon } from "@/app/_components/Icon";
+import * as S from "./activity.css";
 
 export const ActivityTable = () => {
   const { network } = useShell();
@@ -29,7 +29,7 @@ export const ActivityTable = () => {
   const { formattedEntries, isLoading, error, disableNextPage, lastOffset, refetch } = query || {};
   const tabs = useTabs({ filterKey, setFilterKey });
 
-  const isAleo = getIsAleoNetwork(network);
+  const isAleo = isAleoOnlyInstance || getIsAleoNetwork(network);
 
   if (isLoading) {
     return (
