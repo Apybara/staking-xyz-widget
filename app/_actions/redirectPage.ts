@@ -2,7 +2,7 @@
 
 import type { Network, RouterStruct, StakingType } from "../types";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   ALEO_URLS,
   defaultNetwork,
@@ -13,6 +13,7 @@ import {
 } from "../consts";
 import { getIsNetworkValid, getIsCurrencyValid, getIsNetworkCurrencyPairValid } from "../_utils";
 import { getCurrentSearchParams, getNetworkParamFromValidAlias } from "../_utils/routes";
+import { getIsCosmosNetwork } from "../_services/cosmos/utils";
 
 export default async function redirectPage(searchParams: RouterStruct["searchParams"], page: string) {
   const { network, currency, stakingType, validator } = searchParams || {};
@@ -20,6 +21,11 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
 
   const headersList = headers();
   const hostname = headersList.get("x-forwarded-host");
+
+  if (getIsCosmosNetwork(network as Network)) {
+    notFound();
+    return;
+  }
 
   const isAleoUrl = ALEO_URLS.includes(hostname as string);
   const castedNetwork = isAleoUrl ? "aleo" : (network as Network) || defaultNetwork;

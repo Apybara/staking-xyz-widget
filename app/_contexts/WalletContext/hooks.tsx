@@ -14,6 +14,7 @@ import {
   useAleoWalletStates,
   useAleoWalletHasStoredConnection,
 } from "../../_services/aleo/hooks";
+import { WalletConnectionStatus } from "@/app/types";
 
 export const useWalletsSupport = ({ setStates }: { setStates: WalletStates["setStates"] }) => {
   const cosmosWalletsSupport = useCosmosWalletSupports();
@@ -39,7 +40,12 @@ export const useActiveWalletStates = ({ setStates }: { setStates: WalletStates["
   const { network } = useShell();
 
   const isCosmosNetwork = network && getIsCosmosNetwork(network);
-  const cosmosWalletStates = useCosmosWalletStates({ network: isCosmosNetwork ? network : undefined });
+  // const cosmosWalletStates = useCosmosWalletStates({ network: isCosmosNetwork ? network : undefined });
+  const cosmosWalletStates = {
+    activeWallet: null,
+    address: null,
+    connectionStatus: "disconnected" as WalletConnectionStatus,
+  };
 
   const isAleoNetwork = network && getIsAleoNetwork(network);
   const aleoWalletStates = useAleoWalletStates();

@@ -36,18 +36,18 @@ export const WidgetProviders = ({
     <PostHogProvider>
       <QueryClientProvider client={queryClient}>
         <ShellProvider initialCoinPrice={initialCoinPrice} isOnMobileDevice={isOnMobileDevice}>
-          <CosmosProviders walletConnectAPIKey={walletConnectAPIKey}>
-            <AleoProviders>
-              <WalletProvider>
-                <UIContextProvider>
-                  <WidgetProvider>
-                    <PostHogPageView />
-                    {children}
-                  </WidgetProvider>
-                </UIContextProvider>
-              </WalletProvider>
-            </AleoProviders>
-          </CosmosProviders>
+          {/* <CosmosProviders walletConnectAPIKey={walletConnectAPIKey}> */}
+          <AleoProviders>
+            <WalletProvider>
+              <UIContextProvider>
+                <WidgetProvider>
+                  <PostHogPageView />
+                  {children}
+                </WidgetProvider>
+              </UIContextProvider>
+            </WalletProvider>
+          </AleoProviders>
+          {/* </CosmosProviders> */}
         </ShellProvider>
       </QueryClientProvider>
     </PostHogProvider>

@@ -5,6 +5,8 @@ import { RootHeader } from "./RootHeader";
 import { useNetworkChange, useCurrencyChange } from "../../_contexts/ShellContext/hooks";
 import { useShell } from "@/app/_contexts/ShellContext";
 import { getLinkWithSearchParams } from "../../_utils/routes";
+import { getIsCosmosNetwork } from "@/app/_services/cosmos/utils";
+import { Network } from "@/app/types";
 
 export const Header = () => {
   const { network, stakingType } = useShell();
@@ -23,8 +25,11 @@ export const Header = () => {
     "",
   );
 
+  const isCosmosNetwork = getIsCosmosNetwork(network as Network);
+
   return (
     <RootHeader
+      showHeaderMenu={!isCosmosNetwork}
       showCurrencyTool={!isAleoLiquidUnstakePage}
       currencyTabs={{
         activeCurrency: activeCurrency,
