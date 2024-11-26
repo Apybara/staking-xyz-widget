@@ -11,6 +11,7 @@ import { useLinkWithSearchParams } from "@/app/_utils/routes";
 import { useFormattedNetworkValue } from "../../_utils/conversions/hooks";
 import { walletsInfo, defaultNetwork } from "../../consts";
 import { RootWalletAccountDialog } from "./RootWalletAccountDialog";
+import { AleoWalletType } from "@/app/types";
 
 export const WalletAccountDialog = () => {
   const router = useRouter();
@@ -24,12 +25,12 @@ export const WalletAccountDialog = () => {
   const formattedBalance = useFormattedNetworkValue({ val: balanceData });
   const { isLoading, setIsLoading, error, setError } = useProceduralStates();
   const { open, toggleOpen } = useDialog("walletAccount");
-  const disconnectors = useWalletDisconnectors(network || defaultNetwork);
+  const disconnectors = useWalletDisconnectors();
   const homePageLink = useLinkWithSearchParams("");
 
   // NOTE: triggering this hook here to ensure CosmosKit wallet status are updated.
   // The `useCosmosWalletStates` hook triggered in WalletContext doesn't update the status for unknown reasons.
-  useActiveWalletStates({ setStates });
+  // useActiveWalletStates({ setStates });
 
   const captureDisconnectSuccess = usePostHogEvent("wallet_disconnect_succeeded");
 
@@ -61,7 +62,7 @@ export const WalletAccountDialog = () => {
           setIsLoading(true);
 
           try {
-            await disconnectors[activeWallet]();
+            await disconnectors[activeWallet as AleoWalletType]();
             captureDisconnectSuccess({ wallet: activeWallet, address });
           } catch (e) {
             console.error(e);

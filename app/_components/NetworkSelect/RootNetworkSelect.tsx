@@ -5,6 +5,7 @@ import * as Select from "../Select";
 import { networkVariants, networkInfo, mobileDisabledNetworks } from "../../consts";
 import * as S from "./networkSelect.css";
 import { useNetworkReward } from "@/app/_services/stakingOperator/hooks";
+import { getIsCosmosNetwork } from "@/app/_services/cosmos/utils";
 
 export type RootNetworkSelectProps = {
   activeNetwork: Network;
@@ -81,8 +82,11 @@ const NetworkItem = ({ network, isOnMobileDevice }: { network: Network; isOnMobi
 
 const useNetworkOptions = () => {
   const isAleoEnabled = process.env.NEXT_PUBLIC_ALEO_ENABLED === "true";
+  const networkVariantsWithoutCosmos = networkVariants.filter((network) => !getIsCosmosNetwork(network));
 
-  const enabledNetworks = isAleoEnabled ? networkVariants : networkVariants.filter((network) => network !== "aleo");
+  const enabledNetworks = isAleoEnabled
+    ? networkVariantsWithoutCosmos
+    : networkVariantsWithoutCosmos.filter((network) => network !== "aleo");
   const disabledNetworks = isAleoEnabled ? [] : [networkInfo.aleo];
 
   return { enabledNetworks, disabledNetworks };
