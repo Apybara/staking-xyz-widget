@@ -1,7 +1,6 @@
 import type { Network, WalletType } from "../../types";
 import type { TxProcedure, TxProcedureState, TxStepCallbacks } from "../txProcedure/types";
 import { useEffect, useState } from "react";
-import { useCosmosTxProcedures } from "../cosmos/hooks";
 import { ClaimingStates } from "./types";
 import { useAleoTxProcedures } from "../aleo/hooks";
 
@@ -17,14 +16,14 @@ export const useClaimingProcedures = ({
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
   const { signState, signStep } = useTxProcedureStates();
 
-  const { baseProcedures: cosmosBaseProcedures } =
-    useCosmosTxProcedures({
-      type: "claim",
-      network,
-      wallet,
-      address,
-      signStep,
-    }) || {};
+  // const { baseProcedures: cosmosBaseProcedures } =
+  //   useCosmosTxProcedures({
+  //     type: "claim",
+  //     network,
+  //     wallet,
+  //     address,
+  //     signStep,
+  //   }) || {};
 
   const { baseProcedures: aleoBaseProcedures } =
     useAleoTxProcedures({
@@ -36,11 +35,11 @@ export const useClaimingProcedures = ({
     }) || {};
 
   const updateStates = () => {
-    if (cosmosBaseProcedures?.length) {
-      signState.setState("active");
-      signState.setTxHash(undefined);
-      signState.setError(null);
-    }
+    // if (cosmosBaseProcedures?.length) {
+    //   signState.setState("active");
+    //   signState.setTxHash(undefined);
+    //   signState.setError(null);
+    // }
     if (aleoBaseProcedures?.length) {
       signState.setState("active");
       signState.setTxHash(undefined);
@@ -57,30 +56,30 @@ export const useClaimingProcedures = ({
     }
   }, [address]);
 
-  useEffect(() => {
-    if (cosmosBaseProcedures?.length && signState.state === null) {
-      updateStates();
-    }
-  }, [cosmosBaseProcedures?.length]);
+  // useEffect(() => {
+  //   if (cosmosBaseProcedures?.length && signState.state === null) {
+  //     updateStates();
+  //   }
+  // }, [cosmosBaseProcedures?.length]);
 
   useEffect(() => {
-    if (cosmosBaseProcedures?.length) {
-      const proceduresArray = cosmosBaseProcedures
-        .map((procedure) => {
-          if (procedure.step === "sign") {
-            return {
-              ...procedure,
-              state: signState.state,
-              txHash: signState.txHash,
-              error: signState.error,
-              setState: signState.setState,
-            };
-          }
-        })
-        .filter((procedure) => procedure !== undefined);
+    // if (cosmosBaseProcedures?.length) {
+    //   const proceduresArray = cosmosBaseProcedures
+    //     .map((procedure) => {
+    //       if (procedure.step === "sign") {
+    //         return {
+    //           ...procedure,
+    //           state: signState.state,
+    //           txHash: signState.txHash,
+    //           error: signState.error,
+    //           setState: signState.setState,
+    //         };
+    //       }
+    //     })
+    //     .filter((procedure) => procedure !== undefined);
 
-      setProcedures(proceduresArray as Array<TxProcedure>);
-    }
+    //   setProcedures(proceduresArray as Array<TxProcedure>);
+    // }
     if (aleoBaseProcedures?.length) {
       setProcedures([
         {
@@ -92,14 +91,14 @@ export const useClaimingProcedures = ({
         },
       ]);
     }
-  }, [cosmosBaseProcedures?.length, aleoBaseProcedures?.length, signState.state, signState.txHash, signState.error]);
+  }, [aleoBaseProcedures?.length, signState.state, signState.txHash, signState.error]);
 
   return {
     procedures,
     resetProceduresStates: async () => {
-      if (cosmosBaseProcedures?.length) {
-        updateStates();
-      }
+      // if (cosmosBaseProcedures?.length) {
+      //   updateStates();
+      // }
     },
   };
 };

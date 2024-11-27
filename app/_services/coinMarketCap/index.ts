@@ -7,8 +7,15 @@ export const getAllCoinPrices = async ({
   amount = 1,
   currency = ["USD", "EUR"],
 }: Omit<GetCoinPriceProps, "network">) => {
-  const celestiaPrice = await getCoinPriceByNetwork({ network: "celestia", amount, currency });
-  const cosmoshubPrice = await getCoinPriceByNetwork({ network: "cosmoshub", amount, currency });
+  const cosmosPrice = {
+    raw: null,
+    formatted: {
+      USD: 0,
+      EUR: 0,
+    },
+  };
+  const celestiaPrice = cosmosPrice;
+  const cosmoshubPrice = cosmosPrice;
   const aleoPrice = await getCoinPriceByNetwork({ network: "aleo", amount, currency });
 
   return {

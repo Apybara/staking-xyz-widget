@@ -3,7 +3,6 @@ import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
 import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
-import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { defaultNetwork } from "../../consts";
 import { useRedelegateValidation } from "./hooks";
 import { useExternalDelegations } from "@/app/_services/stakingOperator/hooks";
@@ -26,10 +25,6 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
   const { ctaValidation } = useRedelegateValidation({
     isAgreementChecked: !!states.isAgreementChecked,
   });
-  const { data: cosmosSigningClient } = useCosmosSigningClient({
-    network: network || defaultNetwork,
-    wallet: activeWallet,
-  });
   const { procedures, resetStates } = useTxProcedure({
     address,
     network: network || defaultNetwork,
@@ -44,7 +39,7 @@ export const RedelegatingProvider = ({ children }: T.RedelegatingProviderProps) 
         ...states,
         ctaState: ctaValidation,
         procedures,
-        cosmosSigningClient: cosmosSigningClient || null,
+        cosmosSigningClient: null,
         resetProceduresStates: resetStates,
         setStates,
       }}
