@@ -2,7 +2,6 @@ import * as T from "./types";
 import { createContext, useContext, useMemo, useReducer } from "react";
 import { useShell } from "../ShellContext";
 import { useWallet } from "../WalletContext";
-import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
 import { getIsAleoNetwork } from "../../_services/aleo/utils";
 import { usePAleoBalanceByAddress } from "../../_services/aleo/hooks";
@@ -35,10 +34,6 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
     return stakedBalanceQuery?.stakedBalance;
   }, [isAleoNetwork, stakingType, pAleoBalanceQuery, stakedBalanceQuery]);
 
-  const { data: cosmosSigningClient } = useCosmosSigningClient({
-    network: network || defaultNetwork,
-    wallet: activeWallet,
-  });
   const { amountValidation, ctaValidation } = useUnstakeAmountInputValidation({
     inputAmount: states.coinAmountInput,
     stakedBalance: stakedBalanceValue,
@@ -73,7 +68,7 @@ export const UnstakingProvider = ({ children }: T.UnstakingProviderProps) => {
           isLoading: stakedBalance?.isLoading || false,
           error: stakedBalance?.error || null,
         },
-        cosmosSigningClient: cosmosSigningClient || null,
+        cosmosSigningClient: null,
         resetProceduresStates: resetStates,
         setStates,
       }}

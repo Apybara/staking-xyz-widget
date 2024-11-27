@@ -23,7 +23,7 @@ export default async function redirectPage(searchParams: RouterStruct["searchPar
   const hostname = headersList.get("x-forwarded-host");
 
   if (getIsCosmosNetwork(network as Network)) {
-    notFound();
+    redirect("/cosmos");
     return;
   }
 

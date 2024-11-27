@@ -3,7 +3,6 @@ import { createContext, useContext, useReducer } from "react";
 import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useTxProcedure } from "@/app/_services/txProcedure/hooks";
-import { useCosmosSigningClient } from "../../_services/cosmos/hooks";
 import { useInputStates } from "../../_components/AmountInputPad/hooks";
 import { defaultGlobalCurrency, defaultNetwork } from "../../consts";
 import { useStakeAmountInputValidation, useStakeInputErrorMessage } from "./hooks";
@@ -23,10 +22,7 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
     inputAmount: states.coinAmountInput,
   });
   const inputErrorMessage = useStakeInputErrorMessage({ amountValidation });
-  const { data: cosmosSigningClient } = useCosmosSigningClient({
-    network: castedNetwork,
-    wallet: activeWallet,
-  });
+
   const { procedures, resetStates } = useTxProcedure({
     address,
     network: castedNetwork,
@@ -45,7 +41,7 @@ export const StakingProvider = ({ children }: T.StakingProviderProps) => {
         inputErrorMessage,
         procedures,
         amountInputPad,
-        cosmosSigningClient: cosmosSigningClient || null,
+        cosmosSigningClient: null,
         resetProceduresStates: resetStates,
         setStates,
       }}

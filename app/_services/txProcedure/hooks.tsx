@@ -19,20 +19,20 @@ export const useTxProcedure = ({
   const [procedures, setProcedures] = useState<Array<TxProcedure> | undefined>(undefined);
   const { authState, signState, authStep, signStep } = useTxProcedureStates();
 
-  const {
-    baseProcedures: cosmosBaseProcedures,
-    isAuthApproved,
-    authTxHash,
-    refetchAuthCheck,
-  } = useCosmosTxProcedures({
-    amount,
-    network,
-    wallet,
-    address,
-    type,
-    authStep,
-    signStep,
-  }) || {};
+  // const {
+  //   baseProcedures: cosmosBaseProcedures,
+  //   isAuthApproved,
+  //   authTxHash,
+  //   refetchAuthCheck,
+  // } = useCosmosTxProcedures({
+  //   amount,
+  //   network,
+  //   wallet,
+  //   address,
+  //   type,
+  //   authStep,
+  //   signStep,
+  // }) || {};
 
   const { baseProcedures: aleoBaseProcedures } =
     useAleoTxProcedures({
@@ -46,14 +46,14 @@ export const useTxProcedure = ({
     }) || {};
 
   const updateStates = () => {
-    if (cosmosBaseProcedures?.length) {
-      authState.setState(isAuthApproved ? "success" : "active");
-      authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
-      authState.setError(null);
-      signState.setState(!isAuthApproved ? "idle" : "active");
-      signState.setTxHash(undefined);
-      signState.setError(null);
-    }
+    // if (cosmosBaseProcedures?.length) {
+    //   authState.setState(isAuthApproved ? "success" : "active");
+    //   authState.setTxHash(isAuthApproved && authTxHash ? authTxHash : undefined);
+    //   authState.setError(null);
+    //   signState.setState(!isAuthApproved ? "idle" : "active");
+    //   signState.setTxHash(undefined);
+    //   signState.setError(null);
+    // }
     if (aleoBaseProcedures?.length) {
       authState.setState("success");
       authState.setTxHash(undefined);
@@ -76,42 +76,42 @@ export const useTxProcedure = ({
     }
   }, [address]);
 
-  useEffect(() => {
-    if (cosmosBaseProcedures?.length && authState.state === null && signState.state === null) {
-      updateStates();
-    }
-  }, [cosmosBaseProcedures?.length, isAuthApproved, authTxHash]);
+  // useEffect(() => {
+  //   if (cosmosBaseProcedures?.length && authState.state === null && signState.state === null) {
+  //     updateStates();
+  //   }
+  // }, [cosmosBaseProcedures?.length, isAuthApproved, authTxHash]);
+
+  // useEffect(() => {
+  //   updateStates();
+  // }, [isAuthApproved, authTxHash]);
 
   useEffect(() => {
-    updateStates();
-  }, [isAuthApproved, authTxHash]);
+    // if (cosmosBaseProcedures?.length) {
+    //   const proceduresArray = cosmosBaseProcedures
+    //     .map((procedure) => {
+    //       if (procedure.step === "auth") {
+    //         return {
+    //           ...procedure,
+    //           state: authState.state,
+    //           txHash: authState.txHash,
+    //           error: authState.error,
+    //           setState: authState.setState,
+    //         };
+    //       } else if (procedure.step === "sign") {
+    //         return {
+    //           ...procedure,
+    //           state: signState.state,
+    //           txHash: signState.txHash,
+    //           error: signState.error,
+    //           setState: signState.setState,
+    //         };
+    //       }
+    //     })
+    //     .filter((procedure) => procedure !== undefined);
 
-  useEffect(() => {
-    if (cosmosBaseProcedures?.length) {
-      const proceduresArray = cosmosBaseProcedures
-        .map((procedure) => {
-          if (procedure.step === "auth") {
-            return {
-              ...procedure,
-              state: authState.state,
-              txHash: authState.txHash,
-              error: authState.error,
-              setState: authState.setState,
-            };
-          } else if (procedure.step === "sign") {
-            return {
-              ...procedure,
-              state: signState.state,
-              txHash: signState.txHash,
-              error: signState.error,
-              setState: signState.setState,
-            };
-          }
-        })
-        .filter((procedure) => procedure !== undefined);
-
-      setProcedures(proceduresArray as Array<TxProcedure>);
-    }
+    //   setProcedures(proceduresArray as Array<TxProcedure>);
+    // }
     if (aleoBaseProcedures?.length) {
       setProcedures([
         {
@@ -124,7 +124,7 @@ export const useTxProcedure = ({
       ]);
     }
   }, [
-    cosmosBaseProcedures?.length,
+    // cosmosBaseProcedures?.length,
     aleoBaseProcedures?.length,
     authState.state,
     authState.txHash,
@@ -139,9 +139,9 @@ export const useTxProcedure = ({
     resetStates: async () => {
       updateStates();
 
-      if (cosmosBaseProcedures?.length) {
-        await refetchAuthCheck?.();
-      }
+      // if (cosmosBaseProcedures?.length) {
+      //   await refetchAuthCheck?.();
+      // }
     },
   };
 };
