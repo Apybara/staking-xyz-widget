@@ -11,7 +11,7 @@ export const DiscontinuingSupport = () => {
       active={!!(network && getIsCosmosNetwork(network))}
       title="Discontinuing support"
       subtitle="Discontinuing support"
-      message="Please note that Staking.xyz will discontinue support for Cosmos Hub and Celestia on November 29. You can
+      message="Please note that Staking.xyz will discontinue support for Cosmos Hub and Celestia on December 9. You can
               manage your staking positions using Keplr or Leap wallet."
     />
   );
