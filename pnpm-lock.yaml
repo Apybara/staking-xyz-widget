@@ -148,8 +148,8 @@ importers:
         specifier: ^0.50.6
         version: 0.50.12
       '@keplr-wallet/types':
-        specifier: ^0.12.152
-        version: 0.12.156(starknet@6.11.0)
+        specifier: ^0.12.159
+        version: 0.12.159(starknet@6.11.0)
       '@types/node':
         specifier: ^22
         version: 22.9.0
@@ -860,6 +860,11 @@ packages:
 
   '@keplr-wallet/types@0.12.156':
     resolution: {integrity: sha512-Z/Lf6VEsl/Am3birKE8ZEVZj/x5YGSoTdFMDtq/EfcB+hcJ/ogoiZTVEBweAig/2zcu7MsZvFTVMEXu5+y3e4A==}
+    peerDependencies:
+      starknet: ^6
+
+  '@keplr-wallet/types@0.12.159':
+    resolution: {integrity: sha512-Kn4zBFwagMJRLOBXmZeS8IiKoPRAFpjt3tVgteYwNNE0g+xAyXkk7XbeIIJxHKM33LNfAAxCbw/7tzkKddqL2w==}
     peerDependencies:
       starknet: ^6
 
@@ -6361,7 +6366,7 @@ snapshots:
       '@cosmjs/proto-signing': 0.32.4
       '@cosmos-kit/core': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@keplr-wallet/provider-extension': 0.12.156(starknet@6.11.0)
-      '@keplr-wallet/types': 0.12.156(starknet@6.11.0)
+      '@keplr-wallet/types': 0.12.159(starknet@6.11.0)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -6995,6 +7000,11 @@ snapshots:
       long: 4.0.0
 
   '@keplr-wallet/types@0.12.156(starknet@6.11.0)':
+    dependencies:
+      long: 4.0.0
+      starknet: 6.11.0
+
+  '@keplr-wallet/types@0.12.159(starknet@6.11.0)':
     dependencies:
       long: 4.0.0
       starknet: 6.11.0
@@ -11261,7 +11271,7 @@ snapshots:
       '@cosmsnap/snapper': 0.1.29
       '@dao-dao/cosmiframe': 0.1.0(@cosmjs/amino@0.32.4)(@cosmjs/proto-signing@0.32.4)
       '@keplr-wallet/cosmos': 0.12.28
-      '@keplr-wallet/types': 0.12.156(starknet@6.11.0)
+      '@keplr-wallet/types': 0.12.159(starknet@6.11.0)
       '@leapwallet/cosmos-social-login-capsule-provider': 0.0.30(@types/react@18.2.65)(bufferutil@4.0.8)(fp-ts@2.16.5)(immer@9.0.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(utf-8-validate@5.0.10)(zod@3.21.1)
       '@metamask/providers': 12.0.0
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
