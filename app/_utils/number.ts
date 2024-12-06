@@ -15,7 +15,7 @@ export const getDoesNumberHasDecimals = (val: number) => {
 
 export const getDecimalCounts = (val: number) => {
   if (!getDoesNumberHasDecimals(val)) return 0;
-  return val.toString().split(".")[1].length;
+  return val.toString()?.split(".")?.[1]?.length || 0;
 };
 
 export const getFormattedMantissa = ({ val, maxMantissa }: { val?: number | string; maxMantissa?: number }) => {
