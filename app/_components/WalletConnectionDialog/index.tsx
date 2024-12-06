@@ -1,5 +1,5 @@
 "use client";
-import type { WalletType } from "../../types";
+import type { AleoWalletType, WalletType } from "../../types";
 import { useEffect, useState } from "react";
 import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
@@ -20,14 +20,14 @@ export const WalletConnectionDialog = () => {
   const { walletsSupport, connectionStatus, activeWallet, isEagerlyConnecting, keplrSuggestConnectError, setStates } =
     useWallet();
   const { open, toggleOpen } = useDialog("walletConnection");
-  const connectors = useWalletConnectors(network || defaultNetwork);
-  const disconnectors = useWalletDisconnectors(network || defaultNetwork);
-  const cosmosKitConnectionError = useCosmosKitError({
-    network,
-    modalOpen: open,
-    walletType: connectingWallet,
-    keplrSuggestConnectError,
-  });
+  const connectors = useWalletConnectors();
+  const disconnectors = useWalletDisconnectors();
+  // const cosmosKitConnectionError = useCosmosKitError({
+  //   network,
+  //   modalOpen: open,
+  //   walletType: connectingWallet,
+  //   keplrSuggestConnectError,
+  // });
   const leoWalletConnectError = useLeoWalletConnectError();
 
   // Success connection event is tracked in WalletContext
@@ -60,11 +60,11 @@ export const WalletConnectionDialog = () => {
   // because both don't throw errors from the `connect` methods.
   useEffect(() => {
     if (connectionStatus === "connecting") return;
-    if (open && (cosmosKitConnectionError || leoWalletConnectError) && connectingWallet) {
+    if (open && leoWalletConnectError && connectingWallet) {
       setError(new Error(`Failed to connect to ${connectingWallet}`));
       captureWalletConnectFailed({ wallet: connectingWallet, address: "" });
     }
-  }, [open, cosmosKitConnectionError, leoWalletConnectError, connectingWallet, connectionStatus]);
+  }, [open, leoWalletConnectError, connectingWallet, connectionStatus]);
 
   return (
     <RootWalletConnectionDialog
@@ -102,7 +102,7 @@ export const WalletConnectionDialog = () => {
           setError(null);
 
           try {
-            if (!connectors?.[wallet.id]) throw new Error("Connector not found");
+            if (!connectors?.[wallet.id as AleoWalletType]) throw new Error("Connector not found");
             // @ts-ignore
             await connectors[wallet.id]();
             setError(null);
@@ -114,8 +114,8 @@ export const WalletConnectionDialog = () => {
       }}
       isOnMobileDevice={isOnMobileDevice}
       onCancelConnection={(wallet) => {
-        if (!wallet || !disconnectors?.[wallet.id]) throw new Error("Disconnector not found");
-        disconnectors[wallet.id]?.();
+        if (!wallet || !disconnectors?.[wallet.id as AleoWalletType]) throw new Error("Disconnector not found");
+        disconnectors[wallet.id as AleoWalletType]?.();
         setStates({ connectionStatus: "disconnected" });
       }}
     />

@@ -23,7 +23,7 @@ export const getAleoTotalUnstakeFees = ({
   if (amount === "" || amount === "0") return undefined;
 
   const txFee = getMicroCreditsToCredits(aleoFees.unstake[stakingType || "native"]);
-  if (!isInstant) {
+  if (!isInstant || stakingType === "native") {
     return txFee;
   }
 
