@@ -289,15 +289,15 @@ export const aleoDefaultClaimFee = "88711";
 export const aleoFees = {
   stake: {
     native: "182079",
-    liquid: "477543",
+    liquid: "245471",
   },
   unstake: {
     native: "365356",
-    liquid: "532935",
+    liquid: "302247",
   },
   instant_unstake: {
     native: null,
-    liquid: "556319",
+    liquid: "308791",
   },
   redelegate: {
     native: null,
@@ -309,7 +309,7 @@ export const aleoFees = {
   },
   withdraw: {
     native: "88711",
-    liquid: "126015",
+    liquid: "85588",
   },
 };
 
