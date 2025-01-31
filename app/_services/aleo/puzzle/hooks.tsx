@@ -2,7 +2,7 @@ import type { WalletStates } from "../../../_contexts/WalletContext/types";
 import type * as T from "./types";
 import { useCallback, useEffect, useMemo } from "react";
 import useLocalStorage from "use-local-storage";
-import { useAccount, useBalance, useConnect, useDisconnect } from "@puzzlehq/sdk";
+import { useAccount, useBalance, useConnect, useDisconnect, Network } from "@puzzlehq/sdk";
 import { usePuzzleStates as useGlobalPuzzleStates } from "@/app/_providers/Aleo/Puzzle/PuzzleStatesContext";
 import {
   puzzleLiquidStake,
@@ -13,7 +13,7 @@ import {
   puzzleWithdraw,
 } from ".";
 import { useShell } from "@/app/_contexts/ShellContext";
-
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_IMAGE, SITE_WALLET_CONNECT_LOGO } from "@/app/consts";
 export const usePuzzleStake = () => {
   const { stakingType } = useShell();
   const { account } = useAccount();
@@ -76,9 +76,25 @@ export const usePuzzleWithdraw = () => {
   };
 };
 
+const usePuzzleConnect = () => {
+  return useConnect({
+    dAppInfo: {
+      name: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      iconUrl: SITE_WALLET_CONNECT_LOGO,
+    },
+    permissions: {
+      programIds: {
+        [Network.AleoMainnet]: [process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID || ""],
+        [Network.AleoTestnet]: [process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID || ""],
+      },
+    },
+  });
+};
+
 export const usePuzzleStates = () => {
   const { account } = useAccount();
-  const { isConnected } = useConnect();
+  const { isConnected } = usePuzzleConnect();
   const { connectionStatus, setStates } = useGlobalPuzzleStates();
   const { data: balance } = usePuzzleBalance({ address: account?.address || null }) || {};
 
@@ -101,7 +117,7 @@ export const usePuzzleStates = () => {
 export const usePuzzleConnector = () => {
   const { setStates } = useGlobalPuzzleStates();
   const { account } = useAccount();
-  const { isConnected, connect: puzzleConnect } = useConnect();
+  const { isConnected, connect: puzzleConnect } = usePuzzleConnect();
   const { data: balance } = usePuzzleBalance({ address: account?.address || null }) || {};
 
   const connect = useCallback(async () => {
@@ -145,7 +161,7 @@ export const usePuzzleDisconnector = () => {
 };
 
 export const usePuzzleBalance = ({ address }: { address: string | null }) => {
-  const { isConnected } = useConnect();
+  const { isConnected } = usePuzzleConnect();
   const { balances, loading, error } = useBalance({ address: address || undefined });
 
   if (!address || !isConnected || !balances?.[0]?.values) return null;

@@ -1,5 +1,4 @@
-import type { AleoWalletNetworkIds, AleoInstanceChainId } from "./types";
-import type { AleoWalletType } from "@/app/types";
+import { Network as PuzzleNetwork } from "@puzzlehq/sdk";
 import { WalletAdapterNetwork as LeoNetworkId } from "@demox-labs/aleo-wallet-adapter-base";
 
 export const LeoWalletNetworkIds: Array<LeoNetworkId> = [
@@ -9,22 +8,16 @@ export const LeoWalletNetworkIds: Array<LeoNetworkId> = [
 ] as const;
 export const leoWalletNetworkIds = [...LeoWalletNetworkIds];
 
-// NOTE:
-// Puzzle's network IDs are not the same as Aleo's network IDs
-// https://docs.puzzle.online/sdk-free/overview/#walletconnect-chain-ids
-export const PuzzleNetworkIds = ["aleo:1"] as const;
+export const PuzzleNetworkIds = [PuzzleNetwork.AleoTestnet, PuzzleNetwork.AleoMainnet] as const;
 export const puzzleNetworkIds = [...PuzzleNetworkIds];
 
-export const aleoNetworkIdByWallet: Record<
-  AleoInstanceChainId,
-  Record<AleoWalletType, AleoWalletNetworkIds | string>
-> = {
+export const aleoNetworkIdByWallet = {
   mainnet: {
-    leoWallet: LeoNetworkId.MainnetBeta,
-    puzzle: "aleo:1",
+    leoWallet: LeoNetworkId.MainnetBeta as LeoNetworkId,
+    puzzle: PuzzleNetwork.AleoMainnet as PuzzleNetwork,
   },
   testnet: {
-    leoWallet: LeoNetworkId.TestnetBeta,
-    puzzle: "aleo:1",
+    leoWallet: LeoNetworkId.TestnetBeta as LeoNetworkId,
+    puzzle: PuzzleNetwork.AleoTestnet as PuzzleNetwork,
   },
 };
