@@ -48,16 +48,14 @@ export const puzzleStake = async ({
 }: T.PuzzleStakeProps) => {
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
   try {
-    const { eventId, error } = await requestCreateEvent(
-      {
-        type: EventType.Execute,
-        programId: "credits.aleo",
-        functionId: "bond_public",
-        fee: getMicroCreditsToCredits(txFee || aleoFees.stake.native),
-        inputs: [validatorAddress, address, transactionAmount],
-      },
-      aleoNetworkIdByWallet[chainId].puzzle,
-    );
+    const { eventId, error } = await requestCreateEvent({
+      type: EventType.Execute,
+      programId: "credits.aleo",
+      functionId: "bond_public",
+      fee: getMicroCreditsToCredits(txFee || aleoFees.stake.native),
+      inputs: [validatorAddress, address, transactionAmount],
+      network: aleoNetworkIdByWallet[chainId].puzzle,
+    });
 
     if (error) throw new Error(error);
     if (!eventId) throw new Error("No eventId returned from bond_public requestCreateEvent");
@@ -82,19 +80,17 @@ export const puzzleLiquidStake = async ({
   }).txMicroCreditsInput;
 
   try {
-    const { eventId, error } = await requestCreateEvent(
-      {
-        type: EventType.Execute,
-        programId:
-          (isAleoTestnet
-            ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
-            : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
-        functionId: "deposit_public_as_signer",
-        fee: txFee || 0,
-        inputs: [transactionAmount, transactionMintAmount, address],
-      },
-      aleoNetworkIdByWallet[chainId].puzzle,
-    );
+    const { eventId, error } = await requestCreateEvent({
+      type: EventType.Execute,
+      programId:
+        (isAleoTestnet
+          ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+          : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
+      functionId: "deposit_public_as_signer",
+      fee: txFee || 0,
+      inputs: [transactionAmount, transactionMintAmount, address],
+      network: aleoNetworkIdByWallet[chainId].puzzle,
+    });
 
     if (error) throw new Error(error);
     if (!eventId) throw new Error("No eventId returned from deposit_public_as_signer requestCreateEvent");
@@ -109,16 +105,14 @@ export const puzzleUnstake = async ({ address, amount, chainId = defaultChainId,
   const transactionAmount = getCreditsToMicroCredits(amount) + "u64";
 
   try {
-    const { eventId, error } = await requestCreateEvent(
-      {
-        type: EventType.Execute,
-        programId: "credits.aleo",
-        functionId: "unbond_public",
-        fee: getMicroCreditsToCredits(txFee || aleoFees.unstake.native),
-        inputs: [address, transactionAmount],
-      },
-      aleoNetworkIdByWallet[chainId].puzzle,
-    );
+    const { eventId, error } = await requestCreateEvent({
+      type: EventType.Execute,
+      programId: "credits.aleo",
+      functionId: "unbond_public",
+      fee: getMicroCreditsToCredits(txFee || aleoFees.unstake.native),
+      inputs: [address, transactionAmount],
+      network: aleoNetworkIdByWallet[chainId].puzzle,
+    });
 
     if (error) throw new Error(error);
     if (!eventId) throw new Error("No eventId returned from unbond_public requestCreateEvent");
@@ -142,19 +136,17 @@ export const puzzleLiquidUnstake = async ({
   const inputs = instantWithdrawal ? [txPAleoAmount, txAleoAmount] : [txPAleoAmount];
 
   try {
-    const { eventId, error } = await requestCreateEvent(
-      {
-        type: EventType.Execute,
-        programId:
-          (isAleoTestnet
-            ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
-            : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
-        functionId: instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
-        fee: txFee || 0,
-        inputs,
-      },
-      aleoNetworkIdByWallet[chainId].puzzle,
-    );
+    const { eventId, error } = await requestCreateEvent({
+      type: EventType.Execute,
+      programId:
+        (isAleoTestnet
+          ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+          : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
+      functionId: instantWithdrawal ? "instant_withdraw_public" : "withdraw_public",
+      fee: txFee || 0,
+      inputs,
+      network: aleoNetworkIdByWallet[chainId].puzzle,
+    });
 
     if (error) throw new Error(error);
     if (!eventId) throw new Error("No eventId returned from withdraw_public requestCreateEvent");
@@ -167,16 +159,14 @@ export const puzzleLiquidUnstake = async ({
 
 export const puzzleWithdraw = async ({ address, chainId = defaultChainId, txFee }: T.PuzzleWithdrawProps) => {
   try {
-    const { eventId, error } = await requestCreateEvent(
-      {
-        type: EventType.Execute,
-        programId: "credits.aleo",
-        functionId: "claim_unbond_public",
-        fee: getMicroCreditsToCredits(txFee || aleoFees.withdraw.native),
-        inputs: [address],
-      },
-      aleoNetworkIdByWallet[chainId].puzzle,
-    );
+    const { eventId, error } = await requestCreateEvent({
+      type: EventType.Execute,
+      programId: "credits.aleo",
+      functionId: "claim_unbond_public",
+      fee: getMicroCreditsToCredits(txFee || aleoFees.withdraw.native),
+      inputs: [address],
+      network: aleoNetworkIdByWallet[chainId].puzzle,
+    });
 
     if (error) throw new Error(error);
     if (!eventId) throw new Error("No eventId returned from claim_unbond_public requestCreateEvent");
@@ -196,19 +186,17 @@ export const puzzleLiquidWithdraw = async ({
   const transactionAmount = getCreditsToMicroCredits(amount as string) + "u64";
 
   try {
-    const { eventId, error } = await requestCreateEvent(
-      {
-        type: EventType.Execute,
-        programId:
-          (isAleoTestnet
-            ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
-            : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
-        functionId: "claim_withdrawal_public",
-        fee: txFee || 0,
-        inputs: [address, transactionAmount],
-      },
-      aleoNetworkIdByWallet[chainId].puzzle,
-    );
+    const { eventId, error } = await requestCreateEvent({
+      type: EventType.Execute,
+      programId:
+        (isAleoTestnet
+          ? process.env.NEXT_PUBLIC_ALEOTESTNET_PONDO_CORE_ID
+          : process.env.NEXT_PUBLIC_ALEO_PONDO_CORE_ID) || "pondo_protocol.aleo",
+      functionId: "claim_withdrawal_public",
+      fee: txFee || 0,
+      inputs: [address, transactionAmount],
+      network: aleoNetworkIdByWallet[chainId].puzzle,
+    });
 
     if (error) throw new Error(error);
     if (!eventId) throw new Error("No eventId returned from claim_withdrawal_public requestCreateEvent");
