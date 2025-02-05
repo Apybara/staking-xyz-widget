@@ -571,7 +571,7 @@ export const ALEO_MTSP_ID =
   (isAleoTestnet ? process.env.NEXT_PUBLIC_ALEOTESTNET_MTSP_ID : process.env.NEXT_PUBLIC_ALEO_MTSP_ID) || "";
 export const PALEO_INSTANT_WITHDRAWAL_FEE_RATIO = 0.0025;
 
-export const SENTRY_DSN = "https://643f741c11417b63f07b0ed27657fcc3@sentry.staking.xyz/2";
+export const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || "";
 
 export const txProcedureMap: Record<TxProcedureType, TxType> = {
   delegate: "stake",
