@@ -22,7 +22,7 @@
     "@cosmos-kit/keplr-extension": "^2.14.0",
     "@cosmos-kit/keplr-mobile": "^2.14.1",
     "@cosmos-kit/leap-extension": "^2.14.1",
-    "@cosmos-kit/leap-mobile": "^2.13.1",
+    "@cosmos-kit/leap-mobile": "^2.13.7",
     "@cosmos-kit/okxwallet": "^2.11.0",
     "@cosmos-kit/react-lite": "^2.15.1",
     "@demox-labs/aleo-wallet-adapter-base": "^0.0.22",
