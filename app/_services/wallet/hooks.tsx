@@ -1,7 +1,7 @@
 import type { CosmosNetwork, CosmosWalletType, AleoNetwork, AleoWalletType } from "../../types";
 import type { UseWalletConnectors, UseWalletDisconnectors, UseWalletBalanceGettersProps } from "./types";
-import { getIsCosmosNetwork, getIsCosmosWalletType } from "../cosmos/utils";
-import { useCosmosWalletBalance, useCosmosWalletConnectors, useCosmosWalletDisconnectors } from "../cosmos/hooks";
+// import { getIsCosmosNetwork, getIsCosmosWalletType } from "../cosmos/utils";
+// import { useCosmosWalletBalance, useCosmosWalletConnectors, useCosmosWalletDisconnectors } from "../cosmos/hooks";
 import { getIsAleoNetwork, getIsAleoWalletType } from "../aleo/utils";
 import { useAleoWalletConnectors, useAleoWalletDisconnectors, useAleoWalletBalance } from "../aleo/hooks";
 

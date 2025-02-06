@@ -2,7 +2,7 @@
 
 import type { Network, RouterStruct, StakingType } from "../types";
 import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import {
   ALEO_URLS,
   defaultNetwork,
