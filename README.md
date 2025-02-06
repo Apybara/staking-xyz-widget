@@ -27,7 +27,7 @@ $ pnpm dev
 Valid environment variables are required to run the app. Please follow these steps:
 
 1. Duplicate and rename the `.env.example` file to `.env`
-2. Ask for the valid variables from the teammates and replace the placeholders in the newly created `.env` with the valid ones
+2. Replace the placeholders in the newly created `.env` with the valid ones
 
 ## Quality check
 

@@ -1,7 +1,7 @@
 import type { TxProcedure, TxProcedureState, TxProcedureType, TxStepCallbacks } from "./types";
 import type { CosmosTxParams } from "../cosmos/types";
 import { useEffect, useState } from "react";
-import { useCosmosTxProcedures } from "../cosmos/hooks";
+// import { useCosmosTxProcedures } from "../cosmos/hooks";
 import { useAleoTxProcedures } from "../aleo/hooks";
 // import { getStakeFees } from "@/app/_utils/transaction";
 

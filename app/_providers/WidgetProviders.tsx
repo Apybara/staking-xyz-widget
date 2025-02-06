@@ -7,7 +7,7 @@ import { ShellProvider } from "../_contexts/ShellContext";
 import { WalletProvider } from "../_contexts/WalletContext";
 import { UIContextProvider } from "../_contexts/UIContext";
 import { WidgetProvider } from "../_contexts/WidgetContext";
-import { CosmosProviders } from "./Cosmos";
+// import { CosmosProviders } from "./Cosmos";
 import { AleoProviders } from "./Aleo";
 import { PostHogProvider } from "./PostHog";
 
