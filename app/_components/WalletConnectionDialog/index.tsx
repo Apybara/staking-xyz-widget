@@ -8,7 +8,7 @@ import { useProceduralStates } from "../../_utils/hooks";
 import { useCosmosKitError } from "../../_services/cosmos/cosmosKit/hooks";
 import { useLeoWalletConnectError } from "@/app/_services/aleo/leoWallet/hooks";
 import { useWalletConnectors, useWalletDisconnectors } from "../../_services/wallet/hooks";
-import { usePostHogEvent } from "../../_services/postHog/hooks";
+// import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { networkWalletInfos, defaultNetwork } from "../../consts";
 import { RootWalletConnectionDialog } from "./RootWalletConnectionDialog";
 
@@ -31,7 +31,7 @@ export const WalletConnectionDialog = () => {
   const leoWalletConnectError = useLeoWalletConnectError();
 
   // Success connection event is tracked in WalletContext
-  const captureWalletConnectFailed = usePostHogEvent("wallet_connect_failed");
+  // const captureWalletConnectFailed = usePostHogEvent("wallet_connect_failed");
 
   // Eager connection states
   useEffect(() => {
@@ -62,7 +62,7 @@ export const WalletConnectionDialog = () => {
     if (connectionStatus === "connecting") return;
     if (open && leoWalletConnectError && connectingWallet) {
       setError(new Error(`Failed to connect to ${connectingWallet}`));
-      captureWalletConnectFailed({ wallet: connectingWallet, address: "" });
+      // captureWalletConnectFailed({ wallet: connectingWallet, address: "" });
     }
   }, [open, leoWalletConnectError, connectingWallet, connectionStatus]);
 
@@ -108,7 +108,7 @@ export const WalletConnectionDialog = () => {
             setError(null);
           } catch (e) {
             setError(e as Error);
-            captureWalletConnectFailed({ wallet: wallet.id, address: "" });
+            // captureWalletConnectFailed({ wallet: wallet.id, address: "" });
           }
         },
       }}
