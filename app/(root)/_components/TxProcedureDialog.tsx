@@ -15,7 +15,7 @@ import { RedelegatingStates } from "@/app/_contexts/RedelegatingContext/types";
 import { DialogTypeVariant } from "@/app/_contexts/UIContext/types";
 import { ClaimingStates } from "@/app/_services/rewards/types";
 import type { TxType } from "@/app/types";
-import { useTxPostHogEvents } from "@/app/_services/postHog/hooks";
+// import { useTxPostHogEvents } from "@/app/_services/postHog/hooks";
 import { WalletStates } from "@/app/_contexts/WalletContext/types";
 
 import * as S from "../../_components/TransactionDialog/delegationDialog.css";
@@ -73,13 +73,13 @@ export const TxProcedureDialog = ({
     }
   }, [network, procedures?.[0]?.state]);
 
-  useTxPostHogEvents({
-    type: type === "withdraw" ? "claim" : type,
-    open,
-    amount: amountInputPad?.primaryValue || amount || "0",
-    uncheckedProcedures,
-    procedures,
-  });
+  // useTxPostHogEvents({
+  //   type: type === "withdraw" ? "claim" : type,
+  //   open,
+  //   amount: amountInputPad?.primaryValue || amount || "0",
+  //   uncheckedProcedures,
+  //   procedures,
+  // });
 
   return (
     <TransactionDialog.Shell

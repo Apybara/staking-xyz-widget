@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { usePostHog } from "posthog-js/react";
+// import { usePostHog } from "posthog-js/react";
 import type { SendingTransaction } from "../../types";
 import { useDialog } from "../../_contexts/UIContext";
 import { useShell } from "../../_contexts/ShellContext";
@@ -20,7 +20,7 @@ export const SendingTransactionsDialog = () => {
   const { activeWallet: wallet, address, connectionStatus } = useWallet();
   const { wallet: leoWallet } = useLeoWallet();
 
-  const posthog = usePostHog();
+  // const posthog = usePostHog();
 
   const checkSendingTransactions = async () => {
     for (const transaction of sendingTransactions) {
@@ -40,12 +40,12 @@ export const SendingTransactionsDialog = () => {
         const formattedType = txProcedureMap[type];
         const action = eventActionMap[formattedType];
 
-        !isTrackedOnPosthog &&
-          posthog.capture(
-            status === "success"
-              ? `${formattedType}_tx_flow${action}_succeeded`
-              : `${formattedType}_tx_flow${action}_failed`,
-          );
+        // !isTrackedOnPosthog &&
+        //   posthog.capture(
+        //     status === "success"
+        //       ? `${formattedType}_tx_flow${action}_succeeded`
+        //       : `${formattedType}_tx_flow${action}_failed`,
+        //   );
 
         setSendingTransactions((prevTransactions) =>
           prevTransactions?.map((transaction) =>

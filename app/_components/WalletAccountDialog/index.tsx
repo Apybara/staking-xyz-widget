@@ -4,7 +4,7 @@ import { useShell } from "../../_contexts/ShellContext";
 import { useWallet } from "../../_contexts/WalletContext";
 import { useActiveWalletStates } from "../../_contexts/WalletContext/hooks";
 import { useProceduralStates } from "../../_utils/hooks";
-import { usePostHogEvent } from "../../_services/postHog/hooks";
+// import { usePostHogEvent } from "../../_services/postHog/hooks";
 import { useWalletBalance, useWalletDisconnectors } from "../../_services/wallet/hooks";
 import { useRouter } from "next/navigation";
 import { useLinkWithSearchParams } from "@/app/_utils/routes";
@@ -32,7 +32,7 @@ export const WalletAccountDialog = () => {
   // The `useCosmosWalletStates` hook triggered in WalletContext doesn't update the status for unknown reasons.
   // useActiveWalletStates({ setStates });
 
-  const captureDisconnectSuccess = usePostHogEvent("wallet_disconnect_succeeded");
+  // const captureDisconnectSuccess = usePostHogEvent("wallet_disconnect_succeeded");
 
   if (!address || !activeWallet) {
     // TODO: HANDLE ERROR UI
@@ -63,7 +63,7 @@ export const WalletAccountDialog = () => {
 
           try {
             await disconnectors[activeWallet as AleoWalletType]();
-            captureDisconnectSuccess({ wallet: activeWallet, address });
+            // captureDisconnectSuccess({ wallet: activeWallet, address });
           } catch (e) {
             console.error(e);
             setError(e as Error);
