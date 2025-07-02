@@ -27,9 +27,50 @@ export const getAllCoinPrices = async ({
   };
 };
 
+const getCoinPriceFromCoinbase = async ({ coinId, amount = 1, currency = ["USD", "EUR"] }: { coinId: string; amount?: number; currency?: string[] }) => {
+  // Coinbase API only supports one currency per request, so fetch both in parallel
+  const supportedCurrencies = ["USD", "EUR"];
+  const results: Record<string, number> = {};
+
+  await Promise.all(
+    supportedCurrencies.map(async (cur) => {
+      try {
+        const url = `https://api.coinbase.com/v2/prices/${coinId.toLowerCase()}-${cur.toLowerCase()}/spot`;
+        const data = await fetchData(url);
+        results[cur] = parseFloat(data.data.amount);
+      } catch (e) {
+        results[cur] = 0;
+      }
+    })
+  );
+
+  const now = new Date().toISOString();
+  return {
+    data: {
+      symbol: coinId,
+      id: coinId,
+      name: coinId,
+      amount: amount,
+      last_updated: now,
+      quote: {
+        USD: { price: results.USD ?? 0, last_updated: now },
+        EUR: { price: results.EUR ?? 0, last_updated: now },
+      },
+    },
+    status: {
+      timestamp: now,
+      error_code: 0,
+      error_message: '',
+      elapsed: 0,
+      credit_count: 0,
+      notice: '',
+    },
+  };
+};
+
 export const getCoinPriceByNetwork = async ({ network, amount = 1, currency = ["USD", "EUR"] }: GetCoinPriceProps) => {
   try {
-    const res = (await getCoinPriceFromCoinMarketCap({ network, amount, currency })) as PriceConversionResponse;
+    const res = (await getCoinPriceFromCoinbase({ coinId: network, amount, currency })) as PriceConversionResponse;
     return {
       raw: res,
       formatted: {
@@ -40,19 +81,4 @@ export const getCoinPriceByNetwork = async ({ network, amount = 1, currency = ["
   } catch (error) {
     throw error;
   }
-};
-
-const getCoinPriceFromCoinMarketCap = async ({ network, amount = 1, currency = ["USD", "EUR"] }: GetCoinPriceProps) => {
-  return fetchData(
-    `https://pro-api.coinmarketcap.com/v2/tools/price-conversion?amount=${amount}&id=${networkPriceConversionId[network]}&convert=${currency.join(",")}`,
-    {
-      headers: {
-        "X-CMC_PRO_API_KEY": process.env.COIN_MARKET_CAP_API_KEY,
-      } as HeadersInit,
-      next: {
-        revalidate: 1800,
-        tags: ["coin-price" + networkCoinPriceSymbol[network]],
-      },
-    },
-  );
 };
